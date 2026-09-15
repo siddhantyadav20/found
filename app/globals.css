@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Reset, and the room.
+
+   Found has one committed look: it's night, and a phone is lit in front of
+   you. The phone's OS palette (`--os-*`) lives on `.screen` in
+   components/found/FoundPhone/FoundPhone.module.css, not here, because a
+   phone's OS never follows the page it's lying next to.
+
+   The reset is the portfolio's, so the components render exactly as they did
+   at sidbuilds.in/found.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
+  background-color: #0a0908;
+}
+
+body {
+  min-height: 100svh;
+  color: #f2ede6;
+  background-color: #0a0908;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

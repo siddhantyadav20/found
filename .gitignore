@@ -1,0 +1,37 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+/build
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+
+# env files — the template carries no secrets and is the record of which
+# variables the app reads.
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Source recordings (CC0, Freesound) and the original photo downloads. What
+# ships is the cut in public/ — see scripts/build-samples.mjs and
+# scripts/build-found-audio.mjs. Keep the originals in a backup.
+/samples-src
+
+# Claude Code's per-machine permission allowlist.
+.claude/settings.local.json

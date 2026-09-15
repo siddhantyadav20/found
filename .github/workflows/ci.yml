@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # `PageProps`/`LayoutProps` are globals Next generates from the routes;
+      # a fresh checkout has none until this writes them.
+      - run: npx next typegen
+
+      - run: npm run typecheck
+      - run: npm run lint
+      # Walks every episode as a perfect player and as curious ones.
+      - run: npm test
+
+      - run: npm run build
+        env:
+          # Placeholder until Found has its own domain. lib/origin.ts refuses
+          # to build on CI without one.
+          NEXT_PUBLIC_SITE_URL: http://localhost:3001
+
+      - run: npm run budget

@@ -1,0 +1,181 @@
+.home {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--os-top) + 14px) 20px 30px;
+  /* The same wallpaper as the lock screen, dimmed for icons to sit on. */
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.22) 40%, rgba(0, 0, 0, 0.58) 100%),
+    var(--wallpaper, linear-gradient(180deg, #0a0c1c 0%, #16132b 45%, #2a1a1c 100%)) center / cover no-repeat,
+    #0a0c1c;
+  animation: settle 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  /* `transform`, not `scale`: the entry animation owns `scale`. */
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.4s;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    scale: 1.06;
+  }
+}
+
+/* Under an open app: pushed back and dimmed, the way a phone keeps it. */
+.home[data-covered] {
+  transform: scale(0.94);
+  filter: brightness(0.55);
+}
+
+.widget {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 22px;
+  background: rgba(30, 30, 34, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--os-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+}
+
+.widgetLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--os-accent);
+}
+
+.widgetText {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Pages swipe sideways and snap, like a home screen. */
+.pages {
+  display: flex;
+  margin: 28px -20px 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.pages::-webkit-scrollbar {
+  display: none;
+}
+
+.page {
+  flex: 0 0 100%;
+  padding: 0 20px;
+  scroll-snap-align: start;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px 12px;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.pageDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transition: background-color 0.25s;
+}
+
+.pageDot[data-on] {
+  background: #fff;
+}
+
+.dock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: auto;
+  padding: 14px 12px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.18);
+}
+
+.icon {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tile {
+  position: relative;
+  width: min(62px, 100%);
+  aspect-ratio: 1;
+  transition:
+    scale 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2),
+    filter 0.2s;
+}
+
+/* Pressed: the icon sinks and darkens a touch, like the real thing. */
+.icon:active .tile {
+  scale: 0.88;
+  filter: brightness(0.8);
+}
+
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: var(--os-danger);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+  animation: pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+
+@keyframes pop {
+  from {
+    scale: 0;
+  }
+}
+
+.label {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.dock .label {
+  display: none;
+}
