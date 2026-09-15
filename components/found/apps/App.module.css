@@ -126,6 +126,13 @@
   display: none;
 }
 
+/* Larger Text (Settings → Display & Brightness): an app's content is laid
+   out bigger and reflows to fit, the way Dynamic Type does it. The screen
+   carries the attribute; see lib/found/prefs.ts. */
+:global([data-large-text]) .body {
+  zoom: 1.15;
+}
+
 /* Room under the content for a floating tab bar. */
 .body[data-tabbed] {
   padding-bottom: 116px;

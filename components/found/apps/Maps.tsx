@@ -82,7 +82,13 @@ export default function Maps({ state, nav, arg }: AppProps) {
             data-on={selected === p.id || undefined}
             transform={`translate(${p.x} ${p.y})`}
             onClick={() => tap(p.id)}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter" && e.key !== " ") return;
+              e.preventDefault();
+              tap(p.id);
+            }}
             role="button"
+            tabIndex={0}
             aria-label={p.label}
           >
             <circle r="7" className={styles.hit} />

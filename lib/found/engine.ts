@@ -312,8 +312,8 @@ export function clockNow(s: CaseState, now: number): string {
   return plugged ? hhmm(EP2_CLOCK.base, minutesSince(plugged, now, EP2_CLOCK.cap)) : EP2_CLOCK.base;
 }
 
-/** When something happened, as the phone would print it. */
-function stamp(s: CaseState, at: number | undefined): string {
+/** When something happened, as the phone would print it ("Mon 08:14"). */
+export function stamp(s: CaseState, at: number | undefined): string {
   if (at === undefined) return "now";
   const ep2 = s.at["ep:2"];
   return `Mon ${ep2 !== undefined && at >= ep2 ? clockNow({ ...s, flags: [...s.flags, "ep:2"] }, at) : morning(s, at)}`;

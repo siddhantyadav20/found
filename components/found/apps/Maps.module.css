@@ -81,8 +81,14 @@
   transition: opacity 0.2s;
 }
 
-.place[data-on] .ring {
+.place[data-on] .ring,
+.place:focus-visible .ring {
   opacity: 1;
+}
+
+/* A pin reached by keyboard shows its ring instead of a browser outline. */
+.place:focus {
+  outline: none;
 }
 
 .pin {

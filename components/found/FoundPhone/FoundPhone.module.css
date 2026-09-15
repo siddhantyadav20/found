@@ -114,6 +114,12 @@
   -webkit-user-select: none;
 }
 
+/* Anything reached by keyboard says so, in the phone's own blue. */
+.screen :focus-visible {
+  outline: 2px solid var(--ios-blue);
+  outline-offset: 2px;
+}
+
 /* The island, on the drawn phone only: on a real phone, the real one is there. */
 .osIsland {
   position: absolute;
@@ -275,6 +281,183 @@
   transform-origin: 50% 70%;
 }
 
+/* An app opening out of the icon (or widget) it was tapped from. --zt, --zs
+   and --zr lay the layer over that box; they're worked out in index.tsx
+   (`zoomOver`) about this layer's own 50% 70% origin. */
+.appLayer[data-zoom] {
+  animation: zoom 0.44s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+@keyframes zoom {
+  from {
+    translate: var(--zt);
+    scale: var(--zs);
+    border-radius: var(--zr);
+    opacity: 0.5;
+  }
+}
+
+/* --- Notification Centre --------------------------------------------------- */
+
+/* The top edge, over the status bar: pull it down, or tap it. */
+.pullZone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 31;
+  height: var(--os-top);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* Below the status bar, over everything else: the lock screen's wallpaper,
+   blurred, with the history on it. */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 29;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--os-top) + 14px) 14px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  translate: 0 -100%;
+  transition: translate 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+  touch-action: none;
+}
+
+.shade::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  background: var(--wallpaper, linear-gradient(180deg, #0a0c1c 0%, #2a1a1c 100%)) center / cover no-repeat;
+  filter: blur(22px) brightness(0.55) saturate(1.3);
+}
+
+.shade[data-state="open"] {
+  translate: 0 0;
+}
+
+.shadeHead {
+  display: grid;
+  justify-items: center;
+}
+
+.shadeDay {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shadeClock {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.shadeLabel {
+  margin: 22px 4px 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.shadeList {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.shadeList::-webkit-scrollbar {
+  display: none;
+}
+
+.notice {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  width: 100%;
+  padding: 11px 14px 11px 11px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--glass-fill-dark);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.noticeIcon {
+  width: 38px;
+  height: 38px;
+}
+
+.noticeBody {
+  display: grid;
+  min-width: 0;
+}
+
+.noticeTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.noticeTop span {
+  flex: none;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.noticeText {
+  overflow: hidden;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The grabber at the bottom: tap it, or push the whole thing back up. */
+.shadeClose {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 26px;
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.shadeClose span {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
 /* --- Home indicator ------------------------------------------------------- */
 
 /* Tap it, or swipe up from it: either goes home. */
@@ -366,6 +549,22 @@
   color: var(--os-dim);
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* Held: the whole message, and the banner stays until it's tapped or flicked. */
+.banner[data-expanded] {
+  align-items: flex-start;
+}
+
+.banner[data-expanded] .bannerBody {
+  overflow: visible;
+  white-space: normal;
+}
+
+.bannerHint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--os-faint);
 }
 
 .bannerNow {

@@ -82,13 +82,14 @@ Built: shared chrome and switches; Notes as an iOS note (Notes yellow, a checkli
 - **Medical ID; the charge screen; the moment the battery dies.**
 - **A guard:** no banners while the phone is dead or charging.
 
-### S3 — iOS: the system around the apps
+### S3 — iOS: the system around the apps · *done 2026-09-16, except calibration*
+Built: apps zoom out of the icon or widget they were opened from and shrink back into it; Notification Centre (drag down from the top edge, or tap it) lists everything that has arrived, newest first, and a tap opens the thread; holding a banner expands it and stops it auto-dismissing; Recently Deleted is locked behind Face ID, which fails on a stranger and falls back to the passcode (decided: yes); Settings → Display & Brightness → Larger Text, kept per device across cases; a visible focus ring in iOS blue, and map pins reachable by keyboard. Android vibration was already in `buzz()`. Calibration is still waiting on the screenshots.
 - **Motion:** apps zoom open from their icon and shrink back into it.
 - **Notification Centre:** pull down from the top for the history of everything that's arrived.
 - **Banners:** a long-press expands one. The existing flick-away and tap-to-open are kept.
-- **Recently Deleted asks for Face ID, as iOS does,** which fails on a stranger and falls back to the passcode. *Decide first:* it adds a step before a key clue.
+- **Recently Deleted asks for Face ID, as iOS does,** which fails on a stranger and falls back to the passcode.
 - **The buzz vibrates Android phones** (`navigator.vibrate`) in step with the sound.
-- **Calibration against Siddhant's iPhone screenshots** (see "Only Siddhant").
+- **Calibration against Siddhant's iPhone screenshots** (see "Only Siddhant"). *Still open.*
 - **Accessibility inside the phone:**
   - screen-reader labels throughout
   - visible focus
@@ -213,8 +214,9 @@ Not asked for; each one is flagged here so it can be cut.
 
 - A **working search** in Messages, and **Share and Delete that refuse** with a buzz (S1).
 - A **camera line** in the photo info card (S1).
-- **Face ID on Recently Deleted** (S3, decide first).
-- **Android vibration** with the buzz (S3).
+- **Face ID on Recently Deleted** (S3, approved).
+- **Android vibration** with the buzz (it was already there).
+- **Larger Text** in the phone's Settings (S3).
 - **No banners on a dead phone** (S2).
 - The **case report card** with missed clues (S7).
 - **Repeat-play measurement** on `/stats`, and **result share cards** (S11).

@@ -7,6 +7,7 @@ import type { Photo } from "@/content/found/types";
 import { all, has } from "@/lib/found/engine";
 import * as play from "../FoundPhone/actions";
 import AppBar, { Chevron } from "./AppBar";
+import FaceGate from "./FaceGate";
 import PhotoFrame, { PhotoViewer } from "./PhotoFrame";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
@@ -35,6 +36,15 @@ function CollectionsGlyph() {
   );
 }
 
+function LockGlyph() {
+  return (
+    <svg viewBox="0 0 20 20" className={styles.lockGlyph} aria-label="Locked">
+      <path d="M6.5 9V6.8a3.5 3.5 0 0 1 7 0V9" />
+      <rect x="4.8" y="9" width="10.4" height="7.8" rx="2" />
+    </svg>
+  );
+}
+
 function TrashGlyph() {
   return (
     <svg viewBox="0 0 24 24" className={styles.rowGlyph} aria-hidden="true">
@@ -55,6 +65,9 @@ export default function Photos({ state }: AppProps) {
   const [album, setAlbum] = useState<"recents" | "deleted">("recents");
   const [viewing, setViewing] = useState<string | null>(null);
   const body = useRef<HTMLDivElement>(null);
+  // Recently Deleted is behind Face ID, once per visit to Photos (FaceGate).
+  const [unlocked, setUnlocked] = useState(false);
+  const [gate, setGate] = useState(false);
   const recovered = has(state, "did:recover-van");
   // A recovered photo moves back to the Library, dated when it was put back.
   const where = (p: Photo) => (p.album === "deleted" && p.recoverable && recovered ? "recents" : p.album);
@@ -144,12 +157,12 @@ export default function Photos({ state }: AppProps) {
             <p className={app.groupLabel}>Utilities</p>
             <ul className={app.group}>
               <li>
-                <button type="button" className={app.row} onClick={() => setAlbum("deleted")}>
+                <button type="button" className={app.row} onClick={() => (unlocked ? setAlbum("deleted") : setGate(true))}>
                   <TrashGlyph />
                   <span className={app.rowMain}>
                     <span className={app.rowTitle}>Recently Deleted</span>
                   </span>
-                  <span className={app.rowMeta}>{bin.length}</span>
+                  {unlocked ? <span className={app.rowMeta}>{bin.length}</span> : <LockGlyph />}
                   <Chevron />
                 </button>
               </li>
@@ -176,6 +189,17 @@ export default function Photos({ state }: AppProps) {
             </button>
           </span>
         </nav>
+      )}
+
+      {gate && (
+        <FaceGate
+          onOpen={() => {
+            setUnlocked(true);
+            setGate(false);
+            setAlbum("deleted");
+          }}
+          onCancel={() => setGate(false)}
+        />
       )}
 
       {viewing && (

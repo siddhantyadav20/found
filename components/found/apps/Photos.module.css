@@ -54,6 +54,16 @@
   background: var(--os-panel-2);
 }
 
+.lockGlyph {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: var(--ios-grey);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
 .rowGlyph {
   flex: none;
   width: 26px;

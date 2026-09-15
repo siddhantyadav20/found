@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
 import { actionAvailable, all, battery, has } from "@/lib/found/engine";
+import { setLargerText, useLargerText } from "@/lib/found/prefs";
 import { say } from "@/lib/found/voice";
 import * as play from "../FoundPhone/actions";
 import { AppGlyph } from "../FoundPhone/icons";
@@ -14,7 +15,7 @@ import type { AppProps } from "./types";
 import app from "./App.module.css";
 import s from "./Settings.module.css";
 
-type Page = "root" | "wifi" | "sharing" | "messages" | "passcode" | "account";
+type Page = "root" | "wifi" | "sharing" | "messages" | "passcode" | "account" | "display";
 
 /* iOS's settings tiles: a white glyph on the setting's own colour. */
 const BLUE = "#0a84ff";
@@ -59,6 +60,13 @@ const BATTERY = (
     <rect x="3.5" y="8" width="15" height="8" rx="2.2" />
     <rect x="5.7" y="10.2" width="7.4" height="3.6" rx="1" className={s.solid} />
     <path d="M20.5 10.6v2.8" />
+  </>
+);
+
+const SUN = (
+  <>
+    <circle cx="12" cy="12" r="3.6" className={s.solid} />
+    <path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M6 6l1.4 1.4M16.6 16.6 18 18M6 18l1.4-1.4M16.6 7.4 18 6" />
   </>
 );
 
@@ -121,6 +129,7 @@ export default function Settings({ state }: AppProps) {
   const networks = ep.wifi.filter((n) => all(state, n.requires));
   const devices = ep.devices.filter((d) => all(state, d.requires));
   const owner = `${state.cast.name} ${ep.surname}`;
+  const largerText = useLargerText();
 
   useEffect(() => {
     if (page === "wifi") play.seeAll(networks.map((n) => n.evidence));
@@ -217,6 +226,23 @@ export default function Settings({ state }: AppProps) {
     );
   }
 
+  if (page === "display") {
+    return (
+      <section className={app.view}>
+        {Back("Display & Brightness")}
+        <div className={app.body}>
+          <ul className={app.group}>
+            <Row
+              title="Larger Text"
+              end={<Switch on={largerText} onChange={() => setLargerText(!largerText)} label="Larger Text" />}
+            />
+          </ul>
+          <p className={app.note}>Makes the text in apps bigger. It stays on this device, whatever case you play.</p>
+        </div>
+      </section>
+    );
+  }
+
   if (page === "account") {
     return (
       <section className={app.view}>
@@ -266,6 +292,7 @@ export default function Settings({ state }: AppProps) {
           />
         </ul>
         <ul className={app.group}>
+          <Row title="Display & Brightness" icon={<Tile bg={BLUE}>{SUN}</Tile>} onOpen={() => setPage("display")} />
           <Row title="Messages" icon={<Tile bg={GREEN}>{BUBBLE}</Tile>} onOpen={() => setPage("messages")} />
           <Row title="Face ID & Passcode" icon={<Tile bg={GREEN}>{FACE}</Tile>} onOpen={() => setPage("passcode")} />
         </ul>

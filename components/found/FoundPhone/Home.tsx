@@ -59,7 +59,7 @@ export default function Home({
 
   return (
     <div className={styles.home} data-covered={covered || undefined} inert={covered} aria-hidden={covered || undefined}>
-      <button type="button" className={styles.widget} onClick={() => nav.go("notes")}>
+      <button type="button" className={styles.widget} onClick={(e) => nav.go("notes", undefined, e.currentTarget.getBoundingClientRect())}>
         <span className={styles.widgetLabel}>{open ? "Open question" : "Case file"}</span>
         <span className={styles.widgetText}>
           {open ? say(open.question, state.cast, sessionVars(ep, state)) : "Look around. What you open, you keep."}
@@ -77,7 +77,7 @@ export default function Home({
           <div key={i} className={styles.page}>
             <div className={styles.grid}>
               {icons.map(({ app, label }) => (
-                <Icon key={app} app={app} label={label} onOpen={() => nav.go(app)} />
+                <Icon key={app} app={app} label={label} onOpen={(from) => nav.go(app, undefined, from)} />
               ))}
             </div>
           </div>
@@ -91,16 +91,32 @@ export default function Home({
 
       <div className={styles.dock}>
         {DOCK.map(({ app, label }) => (
-          <Icon key={app} app={app} label={label} badge={app === "messages" ? unread : 0} onOpen={() => nav.go(app)} />
+          <Icon key={app} app={app} label={label} badge={app === "messages" ? unread : 0} onOpen={(from) => nav.go(app, undefined, from)} />
         ))}
       </div>
     </div>
   );
 }
 
-function Icon({ app, label, badge = 0, onOpen }: { app: AppId; label: string; badge?: number; onOpen: () => void }) {
+function Icon({
+  app,
+  label,
+  badge = 0,
+  onOpen,
+}: {
+  app: AppId;
+  label: string;
+  badge?: number;
+  onOpen: (from?: DOMRect) => void;
+}) {
   return (
-    <button type="button" className={styles.icon} onClick={onOpen} aria-label={badge > 0 ? `${label}, ${badge} unread` : label}>
+    <button
+      type="button"
+      className={styles.icon}
+      // The tile's box, so the app can zoom out of it.
+      onClick={(e) => onOpen(e.currentTarget.querySelector("span")?.getBoundingClientRect())}
+      aria-label={badge > 0 ? `${label}, ${badge} unread` : label}
+    >
       <span className={styles.tile}>
         <AppGlyph app={app} />
         {badge > 0 && <span className={styles.badge}>{badge}</span>}

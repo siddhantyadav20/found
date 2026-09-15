@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { useCase } from "@/components/found/StoryContext";
-import type { AppId, Story } from "@/content/found/types";
+import type { AppId, LiveEvent, Story } from "@/content/found/types";
 import { useMounted } from "@/lib/clientValue";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
 import { dropLabel } from "@/lib/found/dropName";
-import { battery, clockNow, dueEvents, has, sessionVars, stage, type CaseState } from "@/lib/found/engine";
+import { battery, clockNow, dueEvents, has, sessionVars, stage, stamp, type CaseState } from "@/lib/found/engine";
+import { useLargerText } from "@/lib/found/prefs";
 import { progressServerSide, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { say } from "@/lib/found/voice";
 
@@ -35,7 +36,12 @@ import LockScreen from "./LockScreen";
 import styles from "./FoundPhone.module.css";
 
 type Route = { app: AppId | "home"; arg?: string };
-type Banner = { key: number; from: string; text: string; app: AppId; arg?: string };
+type Notice = { from: string; text: string; app: AppId; arg?: string };
+type Banner = Notice & { key: number };
+/** A box on the screen, relative to the screen: where an app was opened from. */
+type Origin = { x: number; y: number; w: number; h: number };
+/** An app layer laid over that box: the CSS values for zooming out of it or into it. */
+type Zoom = { translate: string; scale: string; radius: string };
 
 /** How long after the moment a live message waits before it arrives. Long
  *  enough to feel like someone typing; the big beats wait longer. */
@@ -56,8 +62,72 @@ const DYING_MS = 3400;
 /** From "Thank you." to Episode 2's end card. */
 const EPISODE_END_AFTER = 6000;
 /** An app shrinking back into the home screen; a page sliding away after a swipe back. */
-const CLOSE_MS = 260;
+const CLOSE_MS = 300;
 const BACK_MS = 260;
+/** Holding a banner this long opens it out to the whole message. */
+const HOLD_MS = 450;
+
+/**
+ * The transform that lays a full-screen app layer exactly over `o`, worked out
+ * about the layer's own transform origin (50% 70%, in the CSS), so a layer
+ * already shrinking under the finger carries on into the icon without a jump.
+ * The corner radius is set per axis so it reads as the icon's own corner once
+ * scaled.
+ */
+function zoomOver(o: Origin, width: number, height: number): Zoom {
+  const sx = o.w / width;
+  const sy = o.h / height;
+  return {
+    translate: `${o.x - 0.5 * width * (1 - sx)}px ${o.y - 0.7 * height * (1 - sy)}px`,
+    scale: `${sx} ${sy}`,
+    radius: `${0.225 * width}px / ${0.225 * height}px`,
+  };
+}
+
+/** What a live event shows as a notification, if anything: a text in a thread, or an app's own alert. */
+function noticeOf(ep: Story, s: CaseState, e: LiveEvent): Notice | null {
+  const vars = sessionVars(ep, s);
+  const thread = e.thread ? ep.threads.find((t) => t.id === e.thread) : undefined;
+  if (thread) {
+    const first = e.messages.find((m) => m.text) ?? e.messages[0];
+    return {
+      from: s.names[thread.id] ?? thread.contact,
+      text: first?.text ? say(first.text, s.cast, vars) : "Photo",
+      app: "messages",
+      arg: thread.id,
+    };
+  }
+  if (e.banner) {
+    const app: AppId = e.id === "e2-nightcam" ? "nightcam" : e.id === "e2-vault" ? "calculator" : "maps";
+    return { from: app === "maps" ? "Maps" : app === "nightcam" ? "NightCam" : "Calculator", text: say(e.banner, s.cast, vars), app };
+  }
+  return null;
+}
+
+/**
+ * Notification Centre's list, newest first: everything that arrived while the
+ * player had the phone, then what was already on the lock screen when it
+ * came. Rebuilt from the save, so it's all still there after a reload.
+ */
+function noticesOf(ep: Story, s: CaseState): (Notice & { key: string; time: string })[] {
+  const arrived: (Notice & { key: string; time: string })[] = [];
+  for (const f of s.flags) {
+    if (!f.startsWith("fired:")) continue;
+    const e = ep.events.find((x) => `fired:${x.id}` === f);
+    const n = e && noticeOf(ep, s, e);
+    if (!n) continue;
+    const at = s.at[f];
+    arrived.push({ ...n, key: f, time: at === undefined ? "" : (stamp(s, at).split(" ")[1] ?? "") });
+  }
+  const waiting = ep.lockscreen.notifications.map((n) => ({
+    from: n.from,
+    text: say(n.text, s.cast),
+    app: (n.from === "City Desk" ? "news" : "messages") as AppId,
+    key: `lock:${n.from}:${n.text}`,
+    time: "",
+  }));
+  return [...arrived.reverse(), ...waiting];
+}
 
 /** What piled up while the phone was dead, for the banner that says so. */
 const backlogOf = (ep: Story): number =>
@@ -94,6 +164,15 @@ export default function FoundPhone() {
   const bannerKey = useRef(0);
   const screenRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<HTMLDivElement>(null);
+  // Where the open app came from (an icon, the widget): it zooms out of
+  // there, and shrinks back into it.
+  const origin = useRef<Origin | null>(null);
+  const [zoom, setZoom] = useState<Zoom | null>(null);
+  const [shade, setShade] = useState<"closed" | "dragging" | "open">("closed");
+  const shadeRef = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const held = useRef(false);
+  const large = useLargerText();
 
   // The recorded buzz, decoded before the first text needs it.
   useEffect(() => warmBuzz(), []);
@@ -133,9 +212,14 @@ export default function FoundPhone() {
 
   const nav: Nav = useMemo(
     () => ({
-      go: (app, arg) => {
+      go: (app, arg, from) => {
+        const screen = screenRef.current?.getBoundingClientRect();
+        const o = from && screen ? { x: from.left - screen.left, y: from.top - screen.top, w: from.width, h: from.height } : null;
+        origin.current = o;
+        setZoom(o && screen ? zoomOver(o, screen.width, screen.height) : null);
         setRoute({ app, arg });
         setBanner(null);
+        setShade("closed");
       },
       home: () => setRoute({ app: "home" }),
     }),
@@ -147,8 +231,9 @@ export default function FoundPhone() {
      moving element is styled directly while the finger is down: a gesture
      re-rendering React sixty times a second would be the wrong trade. */
 
-  // The open app shrinks back into the home screen, which is already there
-  // underneath it.
+  // The open app shrinks back into the icon it came out of, over the home
+  // screen that's been underneath it all along. Opened from a banner or from
+  // another app, it has no icon to go back to, and shrinks toward the middle.
   const closeApp = () => {
     const el = appRef.current;
     if (!el) {
@@ -156,12 +241,54 @@ export default function FoundPhone() {
       return;
     }
     const ease = `${CLOSE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-    el.style.transition = `scale ${ease}, translate ${ease}, border-radius ${ease}, opacity ${CLOSE_MS}ms ease-in`;
-    el.style.scale = "0.3";
-    el.style.translate = "0 -18%";
-    el.style.borderRadius = "56px";
-    el.style.opacity = "0";
-    window.setTimeout(() => setRoute({ app: "home" }), CLOSE_MS - 40);
+    el.style.transition = `scale ${ease}, translate ${ease}, border-radius ${ease}, opacity ${CLOSE_MS}ms cubic-bezier(0.6, 0, 1, 1)`;
+    const into = origin.current && zoomOver(origin.current, el.clientWidth, el.clientHeight);
+    el.style.scale = into ? into.scale : "0.3";
+    el.style.translate = into ? into.translate : "0 -18%";
+    el.style.borderRadius = into ? into.radius : "56px";
+    el.style.opacity = into ? "0.15" : "0";
+    window.setTimeout(() => setRoute({ app: "home" }), CLOSE_MS - 30);
+  };
+
+  // Notification Centre comes down from the top edge with the finger, and
+  // stays if it came far enough (or was flicked).
+  const pullShade = (e: React.PointerEvent) => {
+    drag(e, {
+      engage: (dx, dy) => dy > 0 && dy > Math.abs(dx),
+      move: (_dx, dy) => {
+        setShade("dragging");
+        const el = shadeRef.current;
+        if (!el) return;
+        el.style.transition = "none";
+        el.style.translate = `0 calc(-100% + ${Math.max(0, dy)}px)`;
+      },
+      end: ({ dy, vy }) => {
+        const el = shadeRef.current;
+        if (el) {
+          el.style.transition = "";
+          el.style.translate = "";
+        }
+        setShade(dy > 90 || vy > 0.45 ? "open" : "closed");
+      },
+    });
+  };
+
+  // And goes back up the same way.
+  const pushShade = (e: React.PointerEvent) => {
+    const el = shadeRef.current;
+    if (!el) return;
+    drag(e, {
+      engage: (dx, dy) => dy < 0 && -dy > Math.abs(dx),
+      move: (_dx, dy) => {
+        el.style.transition = "none";
+        el.style.translate = `0 ${Math.min(0, dy)}px`;
+      },
+      end: ({ dy, vy }) => {
+        el.style.transition = "";
+        el.style.translate = "";
+        if (dy < -80 || vy < -0.45) setShade("closed");
+      },
+    });
   };
 
   // Swipe up from the home bar: the app shrinks toward a card as it rises,
@@ -225,12 +352,29 @@ export default function FoundPhone() {
     });
   };
 
-  // A banner flicked up goes away without opening anything. `transform`,
-  // because its arrival animation owns `translate`.
+  // A banner flicked up goes away without opening anything; held, it opens out
+  // to the whole message and stays. `transform`, because its arrival animation
+  // owns `translate`.
   const flickBanner = (e: React.PointerEvent<HTMLButtonElement>) => {
     const el = e.currentTarget;
+    held.current = false;
+    const hold = window.setTimeout(() => {
+      held.current = true;
+      setExpanded(true);
+    }, HOLD_MS);
+    const release = () => {
+      window.clearTimeout(hold);
+      window.removeEventListener("pointerup", release);
+      window.removeEventListener("pointercancel", release);
+    };
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
     drag(e, {
-      engage: (dx, dy) => dy < 0 && -dy > Math.abs(dx),
+      engage: (dx, dy) => {
+        const flick = dy < 0 && -dy > Math.abs(dx);
+        if (flick) window.clearTimeout(hold);
+        return flick;
+      },
       move: (_dx, dy) => {
         el.style.transition = "none";
         el.style.transform = `translateY(${Math.min(0, dy)}px)`;
@@ -267,10 +411,13 @@ export default function FoundPhone() {
     });
   }, []);
 
-  const showBanner = useCallback((b: Omit<Banner, "key">) => {
+  const showBanner = useCallback((b: Notice) => {
     bannerKey.current += 1;
+    setExpanded(false);
     setBanner({ ...b, key: bannerKey.current });
   }, []);
+
+  const notices = useMemo(() => (s ? noticesOf(ep, s) : []), [ep, s]);
 
   /* Live events, one at a time, each after a beat. Whatever is due fires in
      script order; the next one is scheduled when the state changes again. */
@@ -289,32 +436,22 @@ export default function FoundPhone() {
         setRoute({ app: "notes" });
         return;
       }
-      const vars = sessionVars(ep, cur);
-      const thread = due.thread ? ep.threads.find((t) => t.id === due.thread) : undefined;
-      if (thread) {
-        buzz();
-        const first = due.messages.find((m) => m.text) ?? due.messages[0];
-        setUnread((u) => new Set(u).add(thread.id));
-        showBanner({
-          from: cur.names[thread.id] ?? thread.contact,
-          text: first?.text ? say(first.text, cur.cast, vars) : "Photo",
-          app: "messages",
-          arg: thread.id,
-        });
-      } else if (due.banner) {
-        buzz();
-        const app: AppId = due.id === "e2-nightcam" ? "nightcam" : due.id === "e2-vault" ? "calculator" : "maps";
-        showBanner({ from: app === "maps" ? "Maps" : app === "nightcam" ? "NightCam" : "Calculator", text: say(due.banner, cur.cast, vars), app });
-      }
+      const n = noticeOf(ep, cur, due);
+      if (!n) return;
+      buzz();
+      const thread = n.app === "messages" ? n.arg : undefined;
+      if (thread) setUnread((u) => new Set(u).add(thread));
+      showBanner(n);
     }, EVENT_DELAY[due.id] ?? DEFAULT_DELAY);
     return () => window.clearTimeout(timer);
   }, [due, showBanner, ep]);
 
+  // A banner goes on its own, unless it's been held open.
   useEffect(() => {
-    if (!banner) return;
+    if (!banner || expanded) return;
     const timer = window.setTimeout(() => setBanner(null), BANNER_MS);
     return () => window.clearTimeout(timer);
-  }, [banner]);
+  }, [banner, expanded]);
 
   /* Episode 2 opens on three days of backlog: say so once, as it lands. */
   const unlocked2 = !!s && has(s, "did:unlock-2");
@@ -359,7 +496,9 @@ export default function FoundPhone() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented) return;
-      if (e.key === "Escape") setRoute({ app: "home" });
+      if (e.key !== "Escape") return;
+      setShade("closed");
+      setRoute({ app: "home" });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -381,6 +520,7 @@ export default function FoundPhone() {
           ref={screenRef}
           className={styles.screen}
           style={{ "--wallpaper": `url(${meta.wallpaper})` } as React.CSSProperties}
+          data-large-text={large || undefined}
           onPointerDown={swipeBack}
         >
           <span className={styles.osIsland} aria-hidden="true" />
@@ -403,7 +543,12 @@ export default function FoundPhone() {
                       phone: pulling the app away shows it. */}
                   <Home state={s} nav={nav} unread={unread.size} covered={route.app !== "home"} />
                   {route.app !== "home" && (
-                    <div ref={appRef} className={styles.appLayer}>
+                    <div
+                      ref={appRef}
+                      className={styles.appLayer}
+                      data-zoom={zoom ? "" : undefined}
+                      style={zoom ? ({ "--zt": zoom.translate, "--zs": zoom.scale, "--zr": zoom.radius } as React.CSSProperties) : undefined}
+                    >
                       <App
                         key={`${route.app}:${route.arg ?? ""}`}
                         route={route}
@@ -415,6 +560,53 @@ export default function FoundPhone() {
                     </div>
                   )}
                   <button type="button" className={styles.homeBar} aria-label="Home" onClick={closeApp} onPointerDown={pullHome} />
+
+                  {/* The top edge: pull down (or tap) for Notification Centre. */}
+                  <button
+                    type="button"
+                    className={styles.pullZone}
+                    aria-label="Notification Centre"
+                    onClick={() => setShade("open")}
+                    onPointerDown={pullShade}
+                  />
+                  <div
+                    ref={shadeRef}
+                    className={styles.shade}
+                    data-state={shade}
+                    role="dialog"
+                    aria-label="Notification Centre"
+                    aria-hidden={shade === "closed" || undefined}
+                    inert={shade === "closed"}
+                    onPointerDown={pushShade}
+                    data-no-swipe
+                  >
+                    <div className={styles.shadeHead}>
+                      <span className={styles.shadeDay}>Monday</span>
+                      <span className={styles.shadeClock}>{clockNow(s, now)}</span>
+                    </div>
+                    <p className={styles.shadeLabel}>Notification Centre</p>
+                    <ul className={styles.shadeList}>
+                      {notices.map((n) => (
+                        <li key={n.key}>
+                          <button type="button" className={styles.notice} onClick={() => nav.go(n.app, n.arg)}>
+                            <span className={styles.noticeIcon}>
+                              <AppGlyph app={n.app} />
+                            </span>
+                            <span className={styles.noticeBody}>
+                              <span className={styles.noticeTop}>
+                                <b>{n.from}</b>
+                                {n.time && <span>{n.time}</span>}
+                              </span>
+                              <span className={styles.noticeText}>{n.text}</span>
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    <button type="button" className={styles.shadeClose} onClick={() => setShade("closed")} aria-label="Close Notification Centre">
+                      <span />
+                    </button>
+                  </div>
                 </>
               )}
             </>
@@ -424,7 +616,15 @@ export default function FoundPhone() {
               type="button"
               key={banner.key}
               className={styles.banner}
-              onClick={() => nav.go(banner.app, banner.arg)}
+              data-expanded={expanded || undefined}
+              onClick={() => {
+                // The click that ends a long press only opens the banner out.
+                if (held.current) {
+                  held.current = false;
+                  return;
+                }
+                nav.go(banner.app, banner.arg);
+              }}
               onPointerDown={flickBanner}
               aria-live="polite"
             >
@@ -434,6 +634,7 @@ export default function FoundPhone() {
               <span className={styles.bannerText}>
                 <span className={styles.bannerFrom}>{banner.from}</span>
                 <span className={styles.bannerBody}>{banner.text}</span>
+                {expanded && <span className={styles.bannerHint}>Tap to open · flick up to dismiss</span>}
               </span>
               <span className={styles.bannerNow}>now</span>
             </button>
