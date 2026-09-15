@@ -30,6 +30,36 @@ These come from the pilot and aren't recoverable from the code alone.
 - **The funnel measures without identifying anyone.** Events are allowlisted
   (`lib/found/events.ts`) and no identifier is sent.
 
+## Decided 2026-09-15
+
+- **Release:** each case ships whole (every episode at once), and a new case
+  ships every week. Cases are built around Indian cities and references.
+- **Case two** is a different kind of found object from a phone, so the desk
+  never repeats itself.
+- **Money:** free. A paywall comes only once there are repeat players, and it
+  stays cheap: around ₹50 a case.
+- **Audience:** 16 and up, designed for people in India. Anyone can play.
+- **Voices:** real voices for everyone except the missing person. The missing
+  person stays a whisper, because their gender is dealt at random and a real
+  voice would give it away.
+- **Community:** no forum or comments yet. Build one once there's evidence a
+  community is forming.
+- **Photos must read as real photographs** taken on a phone, never as
+  generated or stock.
+- **Episode 2 starts only once the player's own device is really plugged in,**
+  where the browser can tell.
+- **The phone matches the player's platform:** iOS for iPhone, Android for
+  Android, and iOS everywhere else (laptops and desktops).
+  - **iOS** matches current iOS in layout, spacing, glass materials, motion
+    and gestures, with app icons matched as closely as possible. They're drawn
+    as our own SVG, never copied from Apple's files.
+  - **Android** is Google's current Material look (Pixel style), with Google's
+    icon set. Only the icons and the styling of elements change.
+  - **Both** keep Found's own type: Canela and Outfit.
+  - **iOS is built first.** Android follows.
+- **Photos:** Siddhant shoots what he can in India. Claude sources openly
+  licensed candidates for the rest, each approved before it's downloaded.
+
 ## Still open
 
 - Episode 2's NightCam fuel-can photo is a placeholder: no CC0 photo fits.
