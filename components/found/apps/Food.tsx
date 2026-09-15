@@ -1,29 +1,43 @@
 "use client";
 
 import { useStory } from "@/components/found/StoryContext";
-import AppBar from "./AppBar";
+import { refuse } from "@/lib/found/buzz";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
+import styles from "./Food.module.css";
 
-/** A food app, because everyone has one: a cake for Tara, chai on Tuesday night. */
+/**
+ * A food app, because everyone has one: a cake for Tara, chai on Tuesday
+ * night. A third-party app with its own orange, light like the real ones, so
+ * the status bar turns dark over it. Reorder only buzzes: it isn't your
+ * account to spend.
+ */
 export default function Food({ state }: AppProps) {
   const ep = useStory();
   return (
-    <section className={app.view}>
-      <AppBar />
+    <section className={`${app.view} ${styles.light}`} data-light-app>
+      <header className={styles.top}>
+        <span className={styles.brand}>dabba</span>
+        <span className={styles.where}>Delivering to {state.cast.name}</span>
+      </header>
       <div className={app.body}>
-        <h2 className={app.big}>Dabba</h2>
-        <p className={app.groupLabel}>Past orders</p>
-        <ul className={app.group}>
+        <p className={styles.section}>Past orders</p>
+        <ul className={styles.list}>
           {ep.food.map((o) => (
-            <li key={o.at} className={app.row}>
-              <span className={app.rowMain}>
-                <span className={app.rowTitle}>{o.item}</span>
-                <span className={app.rowSub}>
-                  {o.to} · {o.at} · paid by {state.cast.name}
+            <li key={o.at} className={styles.order}>
+              <span className={styles.main}>
+                <span className={styles.item}>{o.item}</span>
+                <span className={styles.meta}>
+                  {o.to} · {o.at}
                 </span>
+                <span className={styles.meta}>Paid by {state.cast.name}</span>
               </span>
-              <span className={app.rowMeta}>{o.price}</span>
+              <span className={styles.side}>
+                <span className={styles.price}>{o.price}</span>
+                <button type="button" className={styles.reorder} onClick={() => refuse()}>
+                  Reorder
+                </button>
+              </span>
             </li>
           ))}
         </ul>

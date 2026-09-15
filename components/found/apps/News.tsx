@@ -8,12 +8,16 @@ import { say } from "@/lib/found/voice";
 import AppBar from "./AppBar";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
-import styles from "./More.module.css";
+import styles from "./News.module.css";
 
 /**
- * The city, reporting on what the player did. Some paragraphs are only true
- * for this player — the photo they restored, the receipts they switched off,
- * the reply they sent — because the police are reading the same phone.
+ * The city, reporting on what the player did. Laid out as a news app lays
+ * out Today: the day, a large title, and stories as cards under their
+ * publication's masthead, City Desk, in its red.
+ *
+ * Some paragraphs are only true for this player (the photo they restored,
+ * the receipts they switched off, the reply they sent) because the police
+ * are reading the same phone.
  */
 export default function News({ state }: AppProps) {
   const ep = useStory();
@@ -27,16 +31,20 @@ export default function News({ state }: AppProps) {
     <section className={app.view}>
       <AppBar />
       <div className={app.body}>
-        <h2 className={app.big}>News</h2>
+        <p className={styles.date}>Monday</p>
+        <h2 className={app.big}>Today</h2>
         {list.length === 0 ? (
           <p className={app.empty}>No new stories. Background refresh is off in Low Power Mode.</p>
         ) : (
-          <ul className={styles.news}>
+          <ul className={styles.list}>
             {list.map((h) => (
               <li key={h.id}>
-                <button type="button" className={styles.newsItem} onClick={() => setOpen(h.id)}>
-                  <span className={styles.newsSource}>City Desk · {h.at}</span>
-                  <span className={styles.newsTitle}>{t(h.title)}</span>
+                <button type="button" className={styles.card} onClick={() => setOpen(h.id)}>
+                  <span className={styles.source}>
+                    <span className={styles.brand}>City Desk</span>
+                    <span className={styles.time}>{h.at}</span>
+                  </span>
+                  <span className={styles.title}>{t(h.title)}</span>
                 </button>
               </li>
             ))}
@@ -46,10 +54,11 @@ export default function News({ state }: AppProps) {
 
       {story && (
         <section className={app.view}>
-          <AppBar title="City Desk" onBack={() => setOpen(null)} backLabel="News" />
+          <AppBar onBack={() => setOpen(null)} backLabel="Today" />
           <div className={app.body}>
-            <p className={styles.newsSource}>{story.at}</p>
+            <p className={styles.masthead}>City Desk</p>
             <h2 className={styles.articleTitle}>{t(story.title)}</h2>
+            <p className={styles.byline}>City Desk · {story.at}</p>
             {story.lines
               .filter((l) => all(state, l.requires) && !(l.unless ?? []).some((f) => has(state, f)))
               .map((l) => (

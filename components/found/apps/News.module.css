@@ -1,0 +1,94 @@
+/* News: Today's stories as cards, each under City Desk's red masthead. */
+
+.date {
+  margin: 0 4px 2px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ios-grey);
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 16px 18px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--os-panel);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:active {
+  background: var(--os-panel-2);
+}
+
+.source {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* The publication's wordmark: its name, set tight and red. */
+.brand,
+.masthead {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ff4a5e;
+}
+
+.brand {
+  font-size: 15px;
+}
+
+.time {
+  font-size: 13px;
+  color: var(--ios-grey);
+}
+
+.title {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.masthead {
+  margin: 4px 0 10px;
+  font-size: 20px;
+}
+
+.articleTitle {
+  margin: 0 0 8px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 28px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.byline {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: var(--ios-grey);
+}
+
+.para {
+  margin: 0 0 14px;
+  font-size: 17px;
+  line-height: 1.5;
+  color: rgba(235, 235, 245, 0.88);
+  user-select: text;
+  -webkit-user-select: text;
+}

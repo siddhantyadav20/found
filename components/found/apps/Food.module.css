@@ -1,0 +1,93 @@
+/* Dabba: a third-party food-delivery app in its own orange, light like the
+   real ones. */
+
+.light[data-light-app] {
+  background: #f7f5f2;
+  color: #1c1c1e;
+}
+
+.top {
+  flex: none;
+  display: grid;
+  gap: 2px;
+  padding: 8px 18px 14px;
+}
+
+.brand {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #ff6b1a;
+}
+
+.where {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b6560;
+}
+
+.section {
+  margin: 0 4px 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(40, 20, 0, 0.08);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.item {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.meta {
+  font-size: 13px;
+  color: #6b6560;
+}
+
+.side {
+  flex: none;
+  display: grid;
+  justify-items: end;
+  align-content: space-between;
+  gap: 8px;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.reorder {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 99px;
+  background: #fff1e8;
+  color: #e85a0c;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}

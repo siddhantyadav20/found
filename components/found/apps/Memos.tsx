@@ -12,6 +12,8 @@ import styles from "./Memos.module.css";
 
 const BARS = 44;
 const TICK_MS = 150;
+/** How far the skip buttons jump, as Voice Memos' do. */
+const SKIP_S = 15;
 
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
@@ -25,6 +27,11 @@ function wave(id: string): number[] {
   });
 }
 
+/**
+ * Voice Memos, as iOS lays it out: All Recordings, each row opening in place
+ * into its waveform, times, and the transport (back 15, play, forward 15),
+ * with the transcript underneath.
+ */
 export default function Memos() {
   const ep = useStory();
   const [open, setOpen] = useState<string | null>(null);
@@ -37,7 +44,7 @@ export default function Memos() {
         <h2 className={app.big}>All Recordings</h2>
         <ul className={styles.list}>
           {ep.memos.map((m) => (
-            <li key={m.id} className={styles.item}>
+            <li key={m.id} className={styles.item} data-open={memo?.id === m.id || undefined}>
               <button type="button" className={styles.head} onClick={() => setOpen(open === m.id ? null : m.id)}>
                 <span className={styles.title}>{m.title}</span>
                 <span className={styles.meta}>
@@ -54,14 +61,28 @@ export default function Memos() {
   );
 }
 
+function Skip({ back }: { back?: boolean }) {
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <path d={back ? "M11 8.2A10 10 0 1 1 6 16.5" : "M21 8.2A10 10 0 1 0 26 16.5"} />
+      <path d={back ? "M11.6 4.2 11 8.2l4 1" : "M20.4 4.2 21 8.2l-4 1"} />
+      <text x="16" y="20" textAnchor="middle">
+        15
+      </text>
+    </svg>
+  );
+}
+
 /**
  * Playback. The recording plays through the site's own audio bus, so the
- * site's mute reaches it; the captions run on the same clock, one at a time.
- * Without a recording, each caption gets a sketch of its sound instead.
+ * site's mute reaches it; the transcript runs on the same clock, one line at
+ * a time. Without a recording, each line gets a sketch of its sound instead.
  */
 function Player({ memo }: { memo: Memo }) {
   const [playing, setPlaying] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  // Bumped by a skip, so the playback clock restarts from the new point.
+  const [jump, setJump] = useState(0);
   const at = useRef(0);
   const cued = useRef(new Set<number>());
   const lines = memo.transcript;
@@ -94,7 +115,7 @@ function Player({ memo }: { memo: Memo }) {
       }
     }, TICK_MS);
     return () => window.clearInterval(timer);
-  }, [playing, memo, lines, step]);
+  }, [playing, memo, lines, step, jump]);
 
   // Leaving the memo (or the app) stops it.
   useEffect(() => stopRecording, []);
@@ -115,43 +136,65 @@ function Player({ memo }: { memo: Memo }) {
     setPlaying(true);
   };
 
+  const skip = (delta: number) => {
+    const next = Math.max(0, Math.min(memo.seconds, at.current + delta));
+    at.current = next;
+    setElapsed(next);
+    // Lines before the new point count as heard; the rest can be heard again.
+    cued.current = new Set(Array.from({ length: Math.floor(next / step) }, (_, i) => i));
+    if (playing) {
+      stopRecording();
+      if (memo.src) void playRecording(memo.src, next);
+      setJump((j) => j + 1);
+    }
+  };
+
   const progress = elapsed / memo.seconds;
 
   return (
     <div className={styles.player}>
       <div className={styles.wave} aria-hidden="true">
         {bars.map((h, i) => (
-          <span
-            key={i}
-            className={styles.waveBar}
-            data-past={i / BARS < progress || undefined}
-            style={{ height: `${h * 100}%` }}
-          />
+          <span key={i} className={styles.waveBar} data-past={i / BARS < progress || undefined} style={{ height: `${h * 100}%` }} />
         ))}
+        <span className={styles.playhead} style={{ left: `${progress * 100}%` }} />
       </div>
       <div className={styles.times}>
         <span>{clock(elapsed)}</span>
         <span>−{clock(memo.seconds - elapsed)}</span>
       </div>
-      <button type="button" className={styles.play} onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
-        {playing ? (
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="6" y="5" width="4" height="14" rx="1" />
-            <rect x="14" y="5" width="4" height="14" rx="1" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M7 4.5v15l12.5-7.5L7 4.5Z" />
-          </svg>
-        )}
-      </button>
-      <ol className={styles.captions} aria-live="polite">
-        {lines.slice(0, shown).map((line, i) => (
-          <li key={i} data-now={i === shown - 1 || undefined}>
-            {line}
-          </li>
-        ))}
-      </ol>
+      <div className={styles.transport}>
+        <button type="button" className={styles.skip} onClick={() => skip(-SKIP_S)} aria-label={`Back ${SKIP_S} seconds`}>
+          <Skip back />
+        </button>
+        <button type="button" className={styles.play} onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
+          {playing ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="6" y="5" width="4" height="14" rx="1.2" />
+              <rect x="14" y="5" width="4" height="14" rx="1.2" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7.5 4.8v14.4a.8.8 0 0 0 1.2.7l11.6-7.2a.8.8 0 0 0 0-1.4L8.7 4.1a.8.8 0 0 0-1.2.7Z" />
+            </svg>
+          )}
+        </button>
+        <button type="button" className={styles.skip} onClick={() => skip(SKIP_S)} aria-label={`Forward ${SKIP_S} seconds`}>
+          <Skip />
+        </button>
+      </div>
+      {shown > 0 && (
+        <div className={styles.transcript}>
+          <p className={styles.transcriptLabel}>Transcript</p>
+          <ol className={styles.captions} aria-live="polite">
+            {lines.slice(0, shown).map((line, i) => (
+              <li key={i} data-now={i === shown - 1 || undefined}>
+                {line}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }

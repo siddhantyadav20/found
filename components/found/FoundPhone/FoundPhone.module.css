@@ -243,6 +243,28 @@
   background: rgba(255, 255, 255, 0.4);
 }
 
+/* Over a light app (Guardian, Dabba), the status bar and the home bar turn
+   dark, as iOS turns them. */
+.screen:has([data-light-app]) .status {
+  color: #000;
+}
+
+.screen:has([data-light-app]) .cell {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.screen:has([data-light-app]) .cellNum {
+  color: #000;
+}
+
+.screen:has([data-light-app]) .battery::after {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.screen:has([data-light-app]) .homeBar::before {
+  background: rgba(0, 0, 0, 0.62);
+}
+
 /* --- An open app ----------------------------------------------------------- */
 
 /* On its own layer, over the home screen, so it can shrink back into it. */

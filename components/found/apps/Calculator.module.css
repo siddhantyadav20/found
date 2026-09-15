@@ -1,3 +1,6 @@
+/* Calculator, as iOS 18 draws it: round keys, dark grey for the functions,
+   darker for the numbers, orange for the operators, a light display. */
+
 .calc {
   position: absolute;
   inset: 0;
@@ -17,9 +20,9 @@
 }
 
 .display {
-  margin: 0 6px 12px;
+  margin: 0 8px 14px;
   overflow: hidden;
-  font-size: 76px;
+  font-size: 78px;
   font-weight: 300;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -30,7 +33,7 @@
 }
 
 .display[data-long] {
-  font-size: 44px;
+  font-size: 46px;
 }
 
 .keys {
@@ -40,13 +43,15 @@
 }
 
 .key {
+  display: grid;
+  place-items: center;
   aspect-ratio: 1;
   border: 0;
-  border-radius: 999px;
+  border-radius: 50%;
   background: #333335;
   color: #fff;
   font: inherit;
-  font-size: 30px;
+  font-size: 34px;
   cursor: pointer;
   transition: filter 0.1s;
 }
@@ -56,27 +61,29 @@
 }
 
 .key[data-kind="fn"] {
-  background: #a5a5a7;
-  color: #000;
-  font-size: 24px;
+  background: #5c5c5f;
+  font-size: 28px;
 }
 
 .key[data-kind="op"] {
   background: #ff9f0a;
-  font-size: 34px;
+  font-size: 38px;
 }
 
-.key[data-wide] {
-  grid-column: span 2;
-  aspect-ratio: auto;
-  padding-left: 30px;
-  text-align: left;
+.mode {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .vaultNote {
   margin: 4px 4px 16px;
-  font-size: 13px;
-  color: var(--os-dim);
+  font-size: 14px;
+  color: var(--ios-grey);
 }
 
 .receipt {

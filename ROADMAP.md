@@ -62,7 +62,8 @@ real, then what brings people back. Sessions 1–15 happen before launch;
   - an info card with a camera line, the location, and the deletion note
 - **System colour:** iOS blue for the phone's own controls, Found's orange for game hints.
 
-### S2 — iOS: every other app
+### S2 — iOS: every other app · *done 2026-09-16*
+Built: shared chrome and switches; Notes as an iOS note (Notes yellow, a checklist for evidence, #tags); Maps (dark map, red pins, a glass sheet whose search filters Recents); Settings (coloured tiles, the account card, a locked Low Power Mode switch, "Face ID & Passcode"); Health; Voice Memos (red playhead, working ±15 s skips, a transcript); Calculator (the iOS 18 keys, ⌫ while typing); News ("Today", City Desk's masthead); Guardian and Dabba as light third-party apps with a dark status bar over them; NightCam in night-vision green; Medical ID's Done in blue; no banners while the phone is dead or charging. The charge screen and the power-off moment were already iOS-like and kept as they were.
 - **Shared chrome:** large titles, inset grouped lists, sheets and switches, to iOS spacing.
 - **Notes** (the case file):
   - question cards

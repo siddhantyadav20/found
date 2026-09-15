@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
 import { all, has, threadMessages } from "@/lib/found/engine";
-import { keyTap } from "@/lib/found/buzz";
+import { keyTap, refuse } from "@/lib/found/buzz";
 import { calc } from "@/lib/found/calc";
 import * as play from "../FoundPhone/actions";
 import AppBar, { Chevron } from "./AppBar";
@@ -14,7 +14,13 @@ import app from "./App.module.css";
 import styles from "./Calculator.module.css";
 
 const OPS = ["÷", "×", "−", "+"];
-const KEYS: { k: string; kind: "fn" | "num" | "op"; wide?: boolean }[] = [
+
+/**
+ * The keys as iOS 18 lays them out: the top-left key is ⌫ while there's
+ * something to delete and AC when there isn't, and the bottom-left key
+ * switches calculator modes (here it only buzzes: this isn't your phone).
+ */
+const KEYS: { k: string; kind: "fn" | "num" | "op" }[] = [
   { k: "AC", kind: "fn" },
   { k: "±", kind: "fn" },
   { k: "%", kind: "fn" },
@@ -31,12 +37,22 @@ const KEYS: { k: string; kind: "fn" | "num" | "op"; wide?: boolean }[] = [
   { k: "2", kind: "num" },
   { k: "3", kind: "num" },
   { k: "+", kind: "op" },
-  { k: "0", kind: "num", wide: true },
+  { k: "mode", kind: "num" },
+  { k: "0", kind: "num" },
   { k: ".", kind: "num" },
   { k: "=", kind: "op" },
 ];
 
 const KEYBOARD: Record<string, string> = { "*": "×", x: "×", "/": "÷", "-": "−", "+": "+", Enter: "=", "=": "=", ".": "." };
+
+function ModeGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.mode}>
+      <rect x="5" y="3.5" width="14" height="17" rx="3" />
+      <path d="M8.5 7.5h7M8.5 12h1M12 12h0M15.5 12h0M8.5 15.5h1M12 15.5h0M15.5 15.5h0" />
+    </svg>
+  );
+}
 
 /**
  * A working calculator, and a vault behind it: type the code, press =.
@@ -47,6 +63,9 @@ export default function Calculator({ state }: AppProps) {
   const [entry, setEntry] = useState("0");
   const [fresh, setFresh] = useState(true);
   const [inVault, setInVault] = useState(() => has(state, "lock:vault"));
+  const clearing = fresh || entry === "0";
+
+  const backspace = () => setEntry((e) => (e.length > 1 ? e.slice(0, -1) : "0"));
 
   const press = (k: string) => {
     keyTap();
@@ -61,6 +80,10 @@ export default function Calculator({ state }: AppProps) {
       });
       setFresh(false);
     } else if (k === "AC") {
+      if (!clearing) {
+        backspace();
+        return;
+      }
       setEntry("0");
       setFresh(true);
     } else if (k === "±") {
@@ -82,8 +105,6 @@ export default function Calculator({ state }: AppProps) {
     }
   };
 
-  const backspace = () => setEntry((e) => (e.length > 1 ? e.slice(0, -1) : "0"));
-
   useEffect(() => {
     if (inVault) return;
     const onKey = (e: KeyboardEvent) => {
@@ -91,7 +112,10 @@ export default function Calculator({ state }: AppProps) {
       if (/^\d$/.test(e.key)) press(e.key);
       else if (KEYBOARD[e.key]) press(KEYBOARD[e.key]);
       else if (e.key === "Backspace") backspace();
-      else return;
+      else if (e.key === "Escape") {
+        setEntry("0");
+        setFresh(true);
+      } else return;
       e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
@@ -107,18 +131,24 @@ export default function Calculator({ state }: AppProps) {
         {display}
       </p>
       <div className={styles.keys}>
-        {KEYS.map(({ k, kind, wide }) => (
-          <button
-            type="button"
-            key={k}
-            className={styles.key}
-            data-kind={kind}
-            data-wide={wide || undefined}
-            onClick={() => press(k)}
-          >
-            {k}
-          </button>
-        ))}
+        {KEYS.map(({ k, kind }) =>
+          k === "mode" ? (
+            <button type="button" key={k} className={styles.key} data-kind={kind} onClick={() => refuse()} aria-label="Calculator modes">
+              <ModeGlyph />
+            </button>
+          ) : (
+            <button
+              type="button"
+              key={k}
+              className={styles.key}
+              data-kind={kind}
+              onClick={() => press(k)}
+              aria-label={k === "AC" && !clearing ? "Delete" : undefined}
+            >
+              {k === "AC" && !clearing ? "⌫" : k}
+            </button>
+          ),
+        )}
       </div>
     </section>
   );

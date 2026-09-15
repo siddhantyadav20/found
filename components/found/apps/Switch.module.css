@@ -1,3 +1,5 @@
+/* The iOS switch: a grey track that turns green, a white knob that slides.
+   A switch the phone won't let you move is dimmed, the way iOS dims it. */
 .switch {
   position: relative;
   flex: none;
@@ -6,17 +8,20 @@
   padding: 0;
   border: 0;
   border-radius: 16px;
-  background: var(--os-panel-2);
+  background: rgba(120, 120, 128, 0.32);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
 }
 
 .switch[data-on] {
-  background: var(--os-good);
+  background: var(--ios-green);
 }
 
 .switch:disabled {
   cursor: default;
+  opacity: 0.5;
 }
 
 .knob {
@@ -27,7 +32,9 @@
   height: 27px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.18),
+    0 1px 1px rgba(0, 0, 0, 0.16);
   transition: translate 0.25s cubic-bezier(0.3, 0.9, 0.3, 1.1);
 }
 

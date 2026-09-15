@@ -25,11 +25,13 @@ const LANES = ["M8 40 H96", "M10 80 H96", "M11 122 H96", "M44 0 V60", "M76 60 V1
 const RAIL = "M54 0 C52 40 58 70 50 100 C46 114 36 128 30 140";
 
 /**
- * Maps. Its Recents are {name}'s Friday, and — once you've pinned the mill —
- * your Monday, right underneath. Above them, the thing a phone that shares
- * its location would show you: who it's sharing with, and a way to stop.
- * At the end of Episode 1 it shows who else can see this phone: the dot that
- * K. has been watching is you.
+ * Maps, as current iOS draws it: the dark map with red place pins, and a
+ * glass sheet at the bottom with its grabber, a search field (it filters the
+ * Recents) and the Recents themselves. Those are {name}'s Friday, and, once
+ * you've pinned the mill, your Monday right underneath. Above them, the thing
+ * a phone that shares its location would show you: who it's sharing with,
+ * and a way to stop. At the end of Episode 1 it shows who else can see this
+ * phone: the dot that K. has been watching is you.
  */
 export default function Maps({ state, nav, arg }: AppProps) {
   const ep = useStory();
@@ -37,12 +39,15 @@ export default function Maps({ state, nav, arg }: AppProps) {
   const question = pinFor ? ep.deductions.find((d) => d.id === pinFor) : undefined;
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const [query, setQuery] = useState("");
   const exposed = has(state, "fired:cliff-you");
   const sharing = !has(state, "did:sharing-off");
   const canStop = actionAvailable(ep, state, "sharing-off");
   const vars = sessionVars(ep, state);
   const t = (x: string) => say(x, state.cast, vars);
   const searches = ep.searches.filter((s) => all(state, s.requires));
+  const q = query.trim().toLowerCase();
+  const shown = q ? searches.filter((s) => s.query.toLowerCase().includes(q)) : searches;
 
   useEffect(() => {
     play.seeAll(ep.searches.map((s) => s.evidence));
@@ -81,9 +86,10 @@ export default function Maps({ state, nav, arg }: AppProps) {
             aria-label={p.label}
           >
             <circle r="7" className={styles.hit} />
-            <circle r="4" className={styles.ring} />
-            <circle r="2.1" className={styles.pin} />
-            <text y="-4.6" className={styles.label}>
+            <circle r="4.2" className={styles.ring} />
+            <circle r="2.3" className={styles.pin} />
+            <circle r="0.8" className={styles.pinDot} />
+            <text y="-4.8" className={styles.label}>
               {p.label}
             </text>
           </g>
@@ -105,6 +111,7 @@ export default function Maps({ state, nav, arg }: AppProps) {
       </svg>
 
       <div className={styles.sheet}>
+        <span className={styles.grabber} aria-hidden="true" />
         {question ? (
           <>
             <p className={styles.eyebrow}>{result?.ok ? "Solved" : "Pin it"}</p>
@@ -113,11 +120,25 @@ export default function Maps({ state, nav, arg }: AppProps) {
               {result ? result.text : t(question.ask)}
             </p>
             <button type="button" className={styles.button} onClick={() => nav.go("notes")}>
-              {result?.ok ? "Back to the case file" : "Cancel"}
+              {result?.ok ? "Back to the Case File" : "Cancel"}
             </button>
           </>
         ) : (
           <>
+            <label className={styles.search}>
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <circle cx="8.6" cy="8.6" r="5.6" />
+                <path d="m12.8 12.8 4.2 4.2" />
+              </svg>
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search Maps"
+                aria-label="Search Maps"
+                autoComplete="off"
+              />
+            </label>
             {exposed ? (
               <p className={styles.sharing}>
                 {sharing
@@ -127,7 +148,7 @@ export default function Maps({ state, nav, arg }: AppProps) {
             ) : (
               <div className={styles.share}>
                 <span className={styles.shareMain}>
-                  <span className={styles.shareTitle}>{sharing ? "Sharing location with K." : "Location sharing is off"}</span>
+                  <span className={styles.shareTitle}>{sharing ? "Sharing Location with K." : "Location Sharing Is Off"}</span>
                   <span className={styles.shareSub}>{sharing ? "Since Sat 00:05" : "You stopped sharing with K."}</span>
                 </span>
                 {sharing && canStop && (
@@ -137,20 +158,29 @@ export default function Maps({ state, nav, arg }: AppProps) {
                 )}
               </div>
             )}
-            <p className={styles.eyebrow}>Recents</p>
+            <p className={styles.section}>Recents</p>
             <ul className={styles.recents}>
-              {searches.map((s) => (
+              {shown.map((s) => (
                 <li key={`${s.query}:${s.at}`}>
                   <button type="button" className={styles.recent} onClick={() => s.place && setSelected(s.place)}>
-                    <span className={styles.recentQuery}>{s.query}</span>
-                    <span className={styles.recentAt}>
-                      {t(s.at)}
-                      {s.byYou && <span className={styles.byYou}>this phone, after it reached you</span>}
+                    <span className={styles.recentIcon} aria-hidden="true">
+                      <svg viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="6.5" />
+                        <path d="M10 6.4V10l2.4 1.6" />
+                      </svg>
+                    </span>
+                    <span className={styles.recentText}>
+                      <span className={styles.recentQuery}>{s.query}</span>
+                      <span className={styles.recentAt}>
+                        {t(s.at)}
+                        {s.byYou && <span className={styles.byYou}>this phone, after it reached you</span>}
+                      </span>
                     </span>
                   </button>
                 </li>
               ))}
             </ul>
+            {shown.length === 0 && <p className={styles.none}>No Results</p>}
           </>
         )}
       </div>

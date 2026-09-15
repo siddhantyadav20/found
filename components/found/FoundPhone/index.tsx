@@ -274,7 +274,11 @@ export default function FoundPhone() {
 
   /* Live events, one at a time, each after a beat. Whatever is due fires in
      script order; the next one is scheduled when the state changes again. */
-  const due = s ? dueEvents(ep, s)[0] : undefined;
+  // Nothing arrives on a phone that's dead, charging from dead, or dying:
+  // events wait until the screen is on again.
+  const screenNow = s ? stage(ep, s).screen : null;
+  const quiet = dying || screenNow === "charge" || screenNow === "end";
+  const due = s && !quiet ? dueEvents(ep, s)[0] : undefined;
   useEffect(() => {
     if (!due) return;
     const timer = window.setTimeout(() => {
