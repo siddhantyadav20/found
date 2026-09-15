@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import type { CaseState } from "@/lib/found/engine";
+import { resultOf } from "@/lib/found/result";
 import { say } from "@/lib/found/voice";
 import * as play from "./actions";
+import PassItOn from "./PassItOn";
 import { joinNextEpisode } from "./submit";
+import WhatOthersDid from "./WhatOthersDid";
 import styles from "./EndCard.module.css";
 
 /**
@@ -23,7 +26,9 @@ export default function EndCard({
   episode: 1 | 2;
   onReplay: () => void;
 }) {
+  const ep = useStory();
   const end = episode === 1 ? ep.end : ep.end2;
+  const result = resultOf(ep, state, episode);
   const next = episode + 1;
   const [vote, setVote] = useState<"yes" | "no" | null>(null);
   const [email, setEmail] = useState("");
@@ -53,6 +58,8 @@ export default function EndCard({
           <li key={q}>{say(q, state.cast)}</li>
         ))}
       </ul>
+
+      <WhatOthersDid state={state} episode={episode} />
 
       <div className={styles.ask}>
         <p className={styles.askText}>{end.ask}</p>
@@ -99,6 +106,8 @@ export default function EndCard({
           </form>
         )}
       </div>
+
+      <PassItOn result={result} />
 
       <div className={styles.footer}>
         <button type="button" className={styles.link} onClick={onReplay}>

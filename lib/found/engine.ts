@@ -72,10 +72,14 @@ export type CaseState = {
   readonly names: Readonly<Record<string, string>>;
   /** Monday morning, as Mum's app saw it. Frozen when Episode 1's battery dies. */
   readonly report?: Report;
+  /** The drop this playthrough arrived through, when someone passed the phone
+   *  on. Its milestones count against that drop; it is never shown. */
+  readonly via?: string;
 };
 
-export function newCase(cast: Cast, run: string, now: number): CaseState {
-  return { v: 2, run, cast, flags: [], hints: {}, started: now, at: {}, usage: {}, opens: {}, names: {} };
+export function newCase(cast: Cast, run: string, now: number, via?: string): CaseState {
+  const s: CaseState = { v: 2, run, cast, flags: [], hints: {}, started: now, at: {}, usage: {}, opens: {}, names: {} };
+  return via ? { ...s, via } : s;
 }
 
 export const has = (s: CaseState, flag: Flag): boolean => s.flags.includes(flag);
@@ -152,7 +156,8 @@ export type Answer = { state: CaseState; ok: boolean; reply: string };
  * Put a pick to a question: evidence ids for "show me", a place id for "pin
  * it", or typed words. Evidence the player hasn't seen doesn't count, so a
  * guessed id in a crafted request solves nothing. A wrong pick costs nothing
- * but a nudge.
+ * but a nudge, and is remembered (`did:wrong:<question>`) the way a wrong
+ * code is, so the shared result can mark it.
  */
 export function answer(ep: Story, s: CaseState, deductionId: string, pick: readonly string[] | string): Answer {
   const d = ep.deductions.find((x) => x.id === deductionId);
@@ -182,13 +187,13 @@ export function answer(ep: Story, s: CaseState, deductionId: string, pick: reado
       // contained it let "tick everything, press Show" solve every question.
       const within = accepts.find((combo) => combo.every((id) => picked.includes(id)));
       ok = !!within && picked.length === within.length;
-      if (within && !ok) return { state: s, ok, reply: TOO_MUCH };
+      if (within && !ok) return { state: add(s, `did:wrong:${d.id}`), ok, reply: TOO_MUCH };
     }
   }
 
   if (ok) return { state: add(s, `solved:${d.id}`), ok, reply: d.right };
   const nudge = keys.map((k) => d.nudges[k]).find(Boolean);
-  return { state: s, ok, reply: nudge ?? d.otherwise };
+  return { state: add(s, `did:wrong:${d.id}`), ok, reply: nudge ?? d.otherwise };
 }
 
 /** The reply to the right evidence shown with extra alongside it. */

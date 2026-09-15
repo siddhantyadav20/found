@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import type { Memo } from "@/content/found/types";
 import { cue, keepAwake, playRecording, stopRecording } from "@/lib/found/memoSound";
 import * as play from "../FoundPhone/actions";
@@ -26,6 +26,7 @@ function wave(id: string): number[] {
 }
 
 export default function Memos() {
+  const ep = useStory();
   const [open, setOpen] = useState<string | null>(null);
   const memo = ep.memos.find((m) => m.id === open);
 

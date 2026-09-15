@@ -1,6 +1,6 @@
 "use client";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import { has, morning } from "@/lib/found/engine";
 import AppBar from "./AppBar";
 import GuardianCard from "./GuardianCard";
@@ -14,6 +14,7 @@ import styles from "./More.module.css";
  * to be counting you. In Episode 2 it's Monday's report.
  */
 export default function Guardian({ state }: AppProps) {
+  const ep = useStory();
   const ep2 = has(state, "ep:2");
   const ms = Object.entries(state.usage)
     .filter(([k]) => k.startsWith("1:"))

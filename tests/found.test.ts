@@ -44,7 +44,7 @@ import {
   TOO_MUCH,
   type CaseState,
 } from "@/lib/found/engine";
-import { FOUND_EVENTS, MILESTONE_OF, isFoundEvent } from "@/lib/found/events";
+import { MILESTONE_OF, eventsFor, isFoundEvent } from "@/lib/found/events";
 import { upgrade } from "@/lib/found/progress";
 import { VARS, pickCast, say } from "@/lib/found/voice";
 
@@ -397,6 +397,8 @@ describe("playing it", () => {
     s = see(ep, s, "health-walk");
     const wrong = answer(ep, s, "went-home", ["group-home"]);
     expect(wrong.reply).toBe(ep.deductions[0].nudges["group-home"]);
+    // Remembered, like a wrong code, so the shared result can mark it.
+    expect(has(wrong.state, "did:wrong:went-home")).toBe(true);
     expect(answer(ep, s, "went-home", ["health-walk"]).ok).toBe(true);
   });
 
@@ -563,8 +565,8 @@ describe("saves", () => {
 describe("the funnel", () => {
   it("can count a wrong answer and every hint for every lock and question", () => {
     for (const id of [...ep.locks.map((l) => l.id), ...ep.deductions.map((d) => d.id)]) {
-      expect(isFoundEvent(`wrong:${id}`), id).toBe(true);
-      for (const tier of [1, 2, 3]) expect(isFoundEvent(`hint:${id}:${tier}`), id).toBe(true);
+      expect(isFoundEvent(ep, `wrong:${id}`), id).toBe(true);
+      for (const tier of [1, 2, 3]) expect(isFoundEvent(ep, `hint:${id}:${tier}`), id).toBe(true);
     }
   });
 
@@ -572,13 +574,13 @@ describe("the funnel", () => {
     const flags = new Set<string>();
     for (const style of [{}, { pickIndex: 1 }, { pickIndex: 2 }] as Style[]) for (const f of playThrough(style).state.flags) flags.add(f);
     for (const [flag, milestone] of Object.entries(MILESTONE_OF)) {
-      expect(FOUND_EVENTS, milestone).toContain(milestone);
+      expect(eventsFor(ep), milestone).toContain(milestone);
       expect(flags.has(flag), flag).toBe(true);
     }
   });
 
   it("refuses anything off the list", () => {
-    for (const bad of ["wrong:nope", "hint:passcode:4", "", 42, null]) expect(isFoundEvent(bad)).toBe(false);
+    for (const bad of ["wrong:nope", "hint:passcode:4", "", 42, null]) expect(isFoundEvent(ep, bad)).toBe(false);
   });
 
   it("names the route after the story", () => {

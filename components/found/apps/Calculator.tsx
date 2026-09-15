@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import { all, has, threadMessages } from "@/lib/found/engine";
 import { keyTap } from "@/lib/found/buzz";
 import { calc } from "@/lib/found/calc";
@@ -125,6 +125,7 @@ export default function Calculator({ state }: AppProps) {
 }
 
 function Vault({ state, onLock }: { state: AppProps["state"]; onLock: () => void }) {
+  const ep = useStory();
   const [open, setOpen] = useState<string | null>(null);
   const notes = ep.vault.notes.filter((n) => all(state, n.requires));
   const note = notes.find((n) => n.id === open);

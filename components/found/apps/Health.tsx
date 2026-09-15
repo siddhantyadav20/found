@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import * as play from "../FoundPhone/actions";
 import AppBar from "./AppBar";
 import app from "./App.module.css";
 import styles from "./Health.module.css";
-
-const PEAK = Math.max(1, ...ep.health.flatMap((d) => d.hours));
 
 /**
  * Steps, by day. It opens on the latest day, which is a flat line; Friday is
  * one tap back, and Friday doesn't stop at ten o'clock.
  */
 export default function Health() {
+  const ep = useStory();
+  const PEAK = Math.max(1, ...ep.health.flatMap((d) => d.hours));
   const [index, setIndex] = useState(ep.health.length - 1);
   const day = ep.health[index];
   const total = day.hours.reduce((a, b) => a + b, 0);

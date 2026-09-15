@@ -67,6 +67,13 @@ ol {
   list-style: none;
 }
 
+/* A returning player: their save exists, so the envelope the server drew is
+   about to be replaced by their phone. Don't paint it in the meantime.
+   components/found/SaveScript.tsx sets this before the first paint. */
+html[data-found-save] [data-envelope] {
+  visibility: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

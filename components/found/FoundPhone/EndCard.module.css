@@ -42,6 +42,18 @@
   color: rgba(242, 237, 230, 0.8);
 }
 
+/* What everyone else did: quieter than the questions, louder than the footer. */
+.others {
+  display: grid;
+  gap: 6px;
+  margin: -6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 15px;
+  color: #ffb58a;
+}
+
 .ask {
   display: grid;
   gap: 14px;

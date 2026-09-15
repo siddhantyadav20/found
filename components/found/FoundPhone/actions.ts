@@ -1,8 +1,9 @@
-import { story as ep } from "@/content/found/story";
-import type { AppId, Cast, Gender } from "@/content/found/types";
+import { FEATURED, type CaseId } from "@/content/cases";
+import type { AppId, Cast, Gender, Story } from "@/content/found/types";
+import { STORIES } from "@/content/stories";
 import * as engine from "@/lib/found/engine";
 import { MILESTONE_OF } from "@/lib/found/events";
-import { commit, readProgress } from "@/lib/found/progress";
+import { bindProgress, commit, readProgress } from "@/lib/found/progress";
 import { track } from "@/lib/found/track";
 import { pickCast } from "@/lib/found/voice";
 import { wakeAudio } from "@/lib/found/buzz";
@@ -15,7 +16,28 @@ import { wakeAudio } from "@/lib/found/buzz";
    saves the result, and counts any milestone it crossed. Components call
    these directly rather than threading callbacks through a dozen apps; the
    state comes back to them through the progress store.
+
+   They act on whichever case `bindCase` last named. A page plays one case,
+   and `CaseProvider` binds it as it renders in the browser, before any of
+   these can run. Rendering reads the story from context instead
+   (`useStory`), because the server renders the envelope too.
    =========================================================================== */
+
+let caseId: CaseId = FEATURED;
+let ep: Story = STORIES[FEATURED];
+/** The drop this page was opened through, if any. A new case remembers it. */
+let arrivedVia: string | undefined;
+
+export function bindCase(id: CaseId, via?: string): void {
+  caseId = id;
+  ep = STORIES[id];
+  arrivedVia = via;
+  bindProgress(id);
+}
+
+function beat(event: string, seconds?: number, via = readProgress()?.via): void {
+  track({ case: caseId, event, seconds, via });
+}
 
 function save(next: engine.CaseState): void {
   const prev = readProgress();
@@ -27,7 +49,7 @@ function save(next: engine.CaseState): void {
     for (const f of fresh) {
       at[f] ??= now;
       const milestone = MILESTONE_OF[f];
-      if (milestone) track(milestone, milestone === "end" ? (now - next.started) / 1000 : undefined);
+      if (milestone) beat(milestone, milestone === "end" ? (now - next.started) / 1000 : undefined, next.via);
     }
     next = { ...next, at };
   }
@@ -58,9 +80,14 @@ function runId(): string {
 /** The envelope is opened: deal the cast and start the case. Runs in a click. */
 export function start(): void {
   wakeAudio();
-  const s = engine.newCase(devCast() ?? pickCast(ep.names), runId(), Date.now());
+  const s = engine.newCase(devCast() ?? pickCast(ep.names), runId(), Date.now(), arrivedVia);
   commit(engine.see(ep, s, ep.envelope.evidence));
-  track("open");
+  beat("open", undefined, arrivedVia);
+}
+
+/** A passed-on link was opened. Counted once per page load, before the envelope is. */
+export function arrived(): void {
+  if (arrivedVia) beat("drop:arrive", undefined, arrivedVia);
 }
 
 export function see(id: string | undefined): void {
@@ -81,7 +108,7 @@ export function unlock(lockId: string, input: string): boolean {
   if (!s) return false;
   const r = engine.tryUnlock(ep, s, lockId, input);
   save(r.state);
-  if (!r.ok) track(`wrong:${lockId}`);
+  if (!r.ok) beat(`wrong:${lockId}`);
   return r.ok;
 }
 
@@ -98,8 +125,8 @@ export function answer(deductionId: string, pick: readonly string[] | string): e
   const s = readProgress();
   if (!s) return null;
   const r = engine.answer(ep, s, deductionId, pick);
-  if (r.ok) save(r.state);
-  else track(`wrong:${deductionId}`);
+  save(r.state);
+  if (!r.ok) beat(`wrong:${deductionId}`);
   return r;
 }
 
@@ -109,7 +136,7 @@ export function hint(id: string): string | null {
   const h = engine.hint(ep, s, id);
   if (!h) return null;
   save(h.state);
-  track(`hint:${id}:${h.tier}`);
+  beat(`hint:${id}:${h.tier}`);
   return h.text;
 }
 
@@ -161,10 +188,10 @@ export function reset(): void {
 }
 
 export function resumed(): void {
-  track("resume");
+  beat("resume");
 }
 
-/** A vote or a reaction, counted and nothing else. */
+/** A vote, a reaction or a share, counted and nothing else. */
 export function verdict(event: string): void {
-  track(event);
+  beat(event);
 }

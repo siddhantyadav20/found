@@ -1,0 +1,250 @@
+/* ===========================================================================
+   The desk: the same night room as the phone (FoundPhone.module.css), with a
+   lamp's pool of light on wood, a phone lying in it, and the dim shapes of
+   other things someone left behind.
+   =========================================================================== */
+
+.room {
+  min-height: 100svh;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 18px;
+  padding: calc(28px + env(safe-area-inset-top, 0px)) 20px calc(32px + env(safe-area-inset-bottom, 0px));
+  overflow: hidden;
+  background-color: #0a0908;
+  background-image:
+    radial-gradient(55% 40% at 50% 46%, rgba(255, 150, 80, 0.13), transparent 70%),
+    radial-gradient(90% 70% at 50% 8%, #2b221c 0%, #120f0d 55%, #070606 100%);
+  color: #f2ede6;
+  text-align: center;
+}
+
+.head {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.brand {
+  margin: 0 -0.5em 0 0;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(242, 237, 230, 0.8);
+}
+
+.tagline {
+  max-width: 22ch;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(22px, 5.6vw, 30px);
+  line-height: 1.25;
+}
+
+/* --- The desk ------------------------------------------------------------ */
+
+.desk {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(560px, 100%);
+  height: clamp(300px, 52svh, 440px);
+}
+
+/* Wood, only where the lamp reaches. */
+.desk::before {
+  content: "";
+  position: absolute;
+  inset: 22% -12% -6%;
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.06) 0 3px, transparent 3px 11px),
+    radial-gradient(closest-side, rgba(128, 84, 48, 0.6), rgba(62, 40, 24, 0.35) 62%, transparent 100%);
+}
+
+/* Things other people left: unnamed until their cases exist. */
+.thing {
+  position: absolute;
+  z-index: 1;
+  background: linear-gradient(160deg, #1d1814, #0f0c0a);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 18px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0.75;
+  filter: blur(1px);
+}
+
+.thingA {
+  left: 3%;
+  bottom: 12%;
+  width: 32%;
+  aspect-ratio: 1.45;
+  border-radius: 10px;
+  rotate: 9deg;
+}
+
+.thingB {
+  right: 5%;
+  bottom: 19%;
+  width: 15%;
+  aspect-ratio: 0.8;
+  border-radius: 22px;
+  rotate: -14deg;
+}
+
+/* --- The phone ----------------------------------------------------------- */
+
+.phone {
+  position: relative;
+  z-index: 2;
+  height: 88%;
+  aspect-ratio: 390 / 844;
+  border-radius: 34px;
+  background: linear-gradient(150deg, #2c2c2e 0%, #0d0d0e 38%, #1b1b1c 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 40px 80px rgba(0, 0, 0, 0.7),
+    0 0 90px rgba(255, 140, 60, 0.14);
+  rotate: -6deg;
+  /* One shiver per notification, in step with them landing. */
+  animation: buzz 1.6s ease-in-out 0.7s 4;
+  transition: scale 0.25s;
+}
+
+.phone:hover,
+.phone:focus-visible {
+  scale: 1.03;
+}
+
+.phone:focus-visible {
+  outline: 2px solid #ff8a3d;
+  outline-offset: 6px;
+}
+
+@keyframes buzz {
+  0%,
+  30%,
+  100% {
+    translate: 0 0;
+  }
+  4%,
+  12%,
+  20% {
+    translate: -2px 1px;
+  }
+  8%,
+  16%,
+  24% {
+    translate: 2px -1px;
+  }
+}
+
+.screen {
+  position: absolute;
+  inset: 6px;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding: 34px 9px 0;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #050505;
+}
+
+.wallpaper {
+  object-fit: cover;
+  opacity: 0.72;
+}
+
+.time {
+  position: relative;
+  margin-bottom: 14px;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: clamp(30px, 8svh, 44px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.notes {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  width: 100%;
+}
+
+.note {
+  display: grid;
+  gap: 1px;
+  padding: 7px 10px;
+  border-radius: 13px;
+  background: rgba(30, 30, 32, 0.66);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  text-align: left;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 11px;
+  line-height: 1.3;
+  color: #f5f5f7;
+  animation: arrive 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+  animation-delay: calc(0.7s + var(--i) * 1.6s);
+}
+
+.note b {
+  font-weight: 600;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    translate: 0 -10px;
+    scale: 0.96;
+  }
+}
+
+/* --- Under the desk ------------------------------------------------------ */
+
+.caption {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.eyebrow {
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ff8a3d;
+}
+
+.hint {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(20px, 5vw, 24px);
+  line-height: 1.3;
+}
+
+.cta {
+  margin-top: 6px;
+  padding: 14px 30px;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: scale 0.2s;
+}
+
+.cta:hover {
+  scale: 1.03;
+}
+
+.small {
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 13px;
+  color: rgba(242, 237, 230, 0.45);
+}

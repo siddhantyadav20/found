@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import type { AppId, Deduction } from "@/content/found/types";
 import { caseFile, deductionOpen, has, lockAvailable, sessionVars } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
@@ -61,6 +61,7 @@ function chooseLabel(n: number, need: number): string {
  * extras anyway.
  */
 export default function Notes({ state, nav }: AppProps) {
+  const ep = useStory();
   const vars = sessionVars(ep, state);
   const t = (x: string) => say(x, state.cast, vars);
   const [picking, setPicking] = useState<string | null>(null);

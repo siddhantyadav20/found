@@ -1,4 +1,4 @@
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import type { AppId } from "@/content/found/types";
 import { buildReport, has, type CaseState } from "@/lib/found/engine";
 import styles from "./GuardianCard.module.css";
@@ -26,6 +26,7 @@ const APP_NAMES: Record<AppId, string> = {
  * phone"; after, every line says "you".
  */
 export default function GuardianCard({ state }: { state: CaseState }) {
+  const ep = useStory();
   const r = state.report ?? buildReport(ep, state);
   const you = has(state, "solved:e2-who");
   const top = Math.max(1, ...r.apps.map((a) => a.minutes));

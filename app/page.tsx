@@ -1,31 +1,12 @@
 import type { Metadata } from "next";
-import FoundPhone from "@/components/found/FoundPhone";
-import { found } from "@/content/found";
+import Desk from "@/components/found/Desk";
 
 export const metadata: Metadata = {
-  title: found.title,
-  description: found.description,
-  alternates: { canonical: found.href },
-  openGraph: {
-    title: `${found.title} — Found`,
-    description: found.description,
-    url: found.href,
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${found.title} — Found`,
-    description: found.description,
-  },
+  title: { absolute: "Found" },
+  description: "Mysteries played on the missing person's phone. Someone left one on your desk.",
+  alternates: { canonical: "/" },
 };
 
-/**
- * Found: a mystery played on the missing person's phone.
- *
- * Moved here from the portfolio's /found, where it was piloted. Everything is
- * client-side; the server renders the room, and the envelope (or a saved case)
- * arrives once the browser has read storage.
- */
-export default function FoundPage() {
-  return <FoundPhone />;
+export default function Home() {
+  return <Desk />;
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import AppBar from "./AppBar";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
 
 /** A food app, because everyone has one: a cake for Tara, chai on Tuesday night. */
 export default function Food({ state }: AppProps) {
+  const ep = useStory();
   return (
     <section className={app.view}>
       <AppBar />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import { all, has, sessionVars } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
 import AppBar from "./AppBar";
@@ -16,6 +16,7 @@ import styles from "./More.module.css";
  * the reply they sent — because the police are reading the same phone.
  */
 export default function News({ state }: AppProps) {
+  const ep = useStory();
   const vars = sessionVars(ep, state);
   const t = (x: string) => say(x, state.cast, vars);
   const list = ep.headlines.filter((h) => all(state, h.requires)).reverse();

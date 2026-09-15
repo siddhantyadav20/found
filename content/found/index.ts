@@ -6,10 +6,12 @@
  * nothing outside `components/found` should carry. `tests/found.test.ts`
  * checks the title here matches the story's.
  *
- * Piloted at sidbuilds.in/found; standalone, the episode is the root.
+ * Piloted at sidbuilds.in/found. Standalone, it is one case among several:
+ * `content/cases.ts` lists it, and `/` is the desk it lies on.
  */
 export const found = {
-  href: "/",
+  id: "low-battery",
+  href: "/c/low-battery",
   title: "Low Battery",
   cta: "Play Low Battery",
   hint: "Someone is missing. You have their phone.",

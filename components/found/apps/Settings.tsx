@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import { actionAvailable, all, battery, has } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
 import * as play from "../FoundPhone/actions";
@@ -44,6 +44,7 @@ function Row({ title, meta, sub, onOpen }: { title: string; meta?: string; sub?:
  * something the phone did.
  */
 export default function Settings({ state }: AppProps) {
+  const ep = useStory();
   const [page, setPage] = useState<Page>("root");
   const t = (x: string) => say(x, state.cast);
   const ep2 = has(state, "ep:2");

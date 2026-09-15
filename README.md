@@ -36,14 +36,25 @@ To play on your phone, open `http://<your-mac's-LAN-IP>:3001` on the same Wi-Fi.
 ## Layout
 
 ```
-app/                     the one route (/), share card, /api/found (the funnel)
+app/
+  page.tsx               / — the desk: a phone buzzing among found things
+  c/[case]/              /c/low-battery — a case, from its cold open
+  d/[code]/              /d/<code> — a passed-on phone: an envelope with a friend's name
+  api/found/             the funnel (POST an event, GET it back) and /choices
+  api/drop/[code]/       how far a passed-on phone has got
 components/found/
-  FoundPhone/            the room, the device, lock screen, home, gestures, end cards
+  Desk/                  the homepage scene (server-rendered, no JS of its own)
+  FoundPhone/            the room, the device, lock screen, home, gestures, end cards,
+                         PassItOn (seal and send), WhatOthersDid
   apps/                  Messages, Photos, Notes, Maps, Calculator, Guardian, …
-content/found/           the script: episodes as typed data, no CMS
-  story.ts               episodes layered as Parts, gated on the episode flag
-lib/found/               engine (plays the script), progress (localStorage save),
-                         voice (the cast), buzz/memoSound, events + store (funnel)
+  StoryContext.tsx       which case this page plays (useStory / useCase)
+content/
+  cases.ts               every case, light: names, routes, share lines, teasers
+  stories.ts             every case's script, by id
+  found/                 Low Battery: episodes as typed data, no CMS
+lib/found/               engine (plays the script), progress (one save per case),
+                         result (the spoiler-free share), drops + dropStore,
+                         events + store (funnel), voice (the cast), buzz/memoSound
 lib/                     shared helpers carried from the portfolio: sound, sfx,
                          mail (Resend), upstash (Redis), visitorId, origin
 public/found/            CC0 photographs, wallpaper, memos
@@ -52,11 +63,21 @@ samples-src/             source recordings (git-ignored)
 
 ## Things worth knowing
 
-- **The save lives in `localStorage` under `sy-found-v1`.** To test Episode 2,
-  seed a save stopped at `dead`. Add `?cast=` to force the missing person's
-  cast instead of dealing it at random (`components/found/FoundPhone/actions.ts`).
-- **`GET /api/found` reads the funnel back.** Open in `next dev`; in production
-  it needs `?token=` matching `FOUND_STATS_TOKEN`, and is a 404 without it.
+- **Each case's save lives in `localStorage` under `found:<case>:save`**
+  (`found:low-battery:save`). Seed one with just the `dead` flag to land on
+  Episode 1's end card. Add `?cast=` to force the missing person's cast instead
+  of dealing it at random (`components/found/FoundPhone/actions.ts`).
+- **Testing a drop in one browser:** the sender's own save would resume on
+  their own link, so set it aside first (copy `found:low-battery:save` out,
+  remove it, open `/d/<code>`, then put it back). Sealed envelopes are
+  remembered under `found:sent`.
+- **Drops need a store.** `next dev` uses the in-memory stand-in
+  (`lib/upstashDev.ts`, emptied on restart). `next start` with no Upstash
+  variables can't seal anything, so "Pass it on" falls back to the case's plain
+  link, and a drop's preview image says "TO YOU".
+- **`GET /api/found?case=low-battery` reads a funnel back.** Open in `next dev`;
+  in production it needs `&token=` matching `FOUND_STATS_TOKEN`, and is a 404
+  without it. "What others did" stays hidden until 50 people have answered.
 - **`.env.local` is not Vercel.** Every production variable has to be set in
   the Vercel project too, and only reaches the next deploy.
 - **Canela is the trial licence** (`app/fonts.ts`), as in the portfolio. Swap

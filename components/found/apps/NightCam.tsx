@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import { has } from "@/lib/found/engine";
 import PhotoFrame, { PhotoViewer } from "./PhotoFrame";
 import type { AppProps } from "./types";
@@ -15,6 +15,7 @@ import styles from "./More.module.css";
  * them, and sharing needs the owner's face.
  */
 export default function NightCam({ state }: AppProps) {
+  const ep = useStory();
   const online = has(state, "did:wifi-on");
   const ep2 = has(state, "ep:2");
   const first = ep.photos.find((p) => p.id === ep.nightcam.firstFrame);

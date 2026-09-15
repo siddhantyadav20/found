@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import type { AppId } from "@/content/found/types";
 import { deductionOpen, sessionVars, type CaseState } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
@@ -53,6 +53,7 @@ export default function Home({
   unread: number;
   covered?: boolean;
 }) {
+  const ep = useStory();
   const [page, setPage] = useState(0);
   const open = [...ep.deductions].reverse().find((d) => deductionOpen(state, d));
 

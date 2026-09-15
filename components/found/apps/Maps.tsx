@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
 import { actionAvailable, all, has, sessionVars } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
 import * as play from "../FoundPhone/actions";
@@ -32,6 +32,7 @@ const RAIL = "M54 0 C52 40 58 70 50 100 C46 114 36 128 30 140";
  * K. has been watching is you.
  */
 export default function Maps({ state, nav, arg }: AppProps) {
+  const ep = useStory();
   const pinFor = arg?.startsWith("pin:") ? arg.slice(4) : null;
   const question = pinFor ? ep.deductions.find((d) => d.id === pinFor) : undefined;
   const [selected, setSelected] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export default function Maps({ state, nav, arg }: AppProps) {
 
   useEffect(() => {
     play.seeAll(ep.searches.map((s) => s.evidence));
-  }, []);
+  }, [ep]);
 
   const tap = (id: string) => {
     setSelected(id);

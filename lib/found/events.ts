@@ -1,13 +1,10 @@
-import { story as ep } from "@/content/found/story";
-import type { Flag } from "@/content/found/types";
+import type { Flag, Story } from "@/content/found/types";
 
 /* ===========================================================================
-   What the pilot measures, and nothing it doesn't.
+   What Found measures, and nothing it doesn't.
 
-   The whole reason Found lives in the portfolio for now is to learn whether
-   strangers start it, where they get stuck, whether they finish, and whether
-   the turn lands. So the list is a funnel, a map of where people struggle,
-   what they chose, and a few questions:
+   Whether strangers start a case, where they get stuck, whether they finish,
+   whether the turn lands, and whether they pass the phone on:
 
      open → unlock → d1 → d2 → vault → d3 → end                   Episode 1
      ep2-start → e2-who → e2-wanted → e2-why → e2-wifi →
@@ -17,10 +14,12 @@ import type { Flag } from "@/content/found/types";
      wrong:<id>, hint:<id>:<tier>                                 where it's too hard
      resume                                                       whether they come back
      ep2:yes|no, ep3:yes|no, email                                whether they want more
+     share:open|whatsapp|native|copy, drop:create                 whether they pass it on
+     drop:arrive → drop:open → drop:unlock → drop:end             whether that worked
 
-   An allowlist, shared by the browser and the route, so the store's keys are
-   bounded by this file rather than by whatever a request body says. No
-   identifier of any kind is sent.
+   An allowlist per case, shared by the browser and the route, so the store's
+   keys are bounded by this file rather than by whatever a request body says.
+   No identifier of any kind is sent.
    =========================================================================== */
 
 const MILESTONES = [
@@ -46,16 +45,56 @@ const MILESTONES = [
 const CHOICES = ["mum:lie", "mum:truth", "mum:silence", "k:threat"] as const;
 const VERDICTS = ["ep2:yes", "ep2:no", "ep3:yes", "ep3:no", "email", "e2-saw:yes", "e2-saw:maybe", "e2-saw:no"] as const;
 
-const puzzles = [...ep.locks.map((l) => l.id), ...ep.deductions.map((d) => d.id)];
+/**
+ * The loop that brings new players. The browser sends `drop:arrive` when a
+ * passed-on link is opened; the server counts `drop:open|unlock|end` itself
+ * when a player who arrived through a drop reaches `open`, `unlock` or `end`.
+ */
+export const SHARING = [
+  "share:open",
+  "share:whatsapp",
+  "share:native",
+  "share:copy",
+  "drop:create",
+  "drop:arrive",
+  "drop:open",
+  "drop:unlock",
+  "drop:end",
+] as const;
 
-export const FOUND_EVENTS: readonly string[] = [
-  ...MILESTONES,
-  ...CHOICES,
-  ...puzzles.flatMap((id) => [`wrong:${id}`, `hint:${id}:1`, `hint:${id}:2`, `hint:${id}:3`]),
-  ...VERDICTS,
-];
+/** Which milestones also count against the drop a player arrived through. */
+export const DROP_LEGS: Readonly<Record<string, "arrive" | "open" | "unlock" | "end">> = {
+  "drop:arrive": "arrive",
+  open: "open",
+  unlock: "unlock",
+  end: "end",
+};
 
-export const isFoundEvent = (x: unknown): x is string => typeof x === "string" && FOUND_EVENTS.includes(x);
+/** How Episode 2's phone came back: the player's real charger, one already
+ *  plugged in, or the on-screen cable where the browser can't read a battery. */
+export const POWER = ["charge:real", "charge:already", "charge:tap"] as const;
+
+const cache = new WeakMap<Story, readonly string[]>();
+
+/** Every event a case can report. */
+export function eventsFor(ep: Story): readonly string[] {
+  let list = cache.get(ep);
+  if (!list) {
+    const puzzles = [...ep.locks.map((l) => l.id), ...ep.deductions.map((d) => d.id)];
+    list = [
+      ...MILESTONES,
+      ...CHOICES,
+      ...puzzles.flatMap((id) => [`wrong:${id}`, `hint:${id}:1`, `hint:${id}:2`, `hint:${id}:3`]),
+      ...VERDICTS,
+      ...SHARING,
+      ...POWER,
+    ];
+    cache.set(ep, list);
+  }
+  return list;
+}
+
+export const isFoundEvent = (ep: Story, x: unknown): x is string => typeof x === "string" && eventsFor(ep).includes(x);
 
 type Tracked = (typeof MILESTONES)[number] | (typeof CHOICES)[number];
 

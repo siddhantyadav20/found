@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
-import { found } from "@/content/found";
-import { story as ep } from "@/content/found/story";
-import type { AppId } from "@/content/found/types";
+import { useCase } from "@/components/found/StoryContext";
+import type { AppId, Story } from "@/content/found/types";
 import { useMounted } from "@/lib/clientValue";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
+import { dropLabel } from "@/lib/found/dropName";
 import { battery, clockNow, dueEvents, has, sessionVars, stage, type CaseState } from "@/lib/found/engine";
 import { progressServerSide, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { say } from "@/lib/found/voice";
@@ -60,12 +60,13 @@ const CLOSE_MS = 260;
 const BACK_MS = 260;
 
 /** What piled up while the phone was dead, for the banner that says so. */
-const BACKLOG =
+const backlogOf = (ep: Story): number =>
   ep.threads.reduce((n, t) => n + t.messages.filter((m) => m.requires?.length === 1 && m.requires[0] === "ep:2").length, 0) +
   ep.headlines.filter((h) => h.requires?.length === 1 && h.requires[0] === "ep:2").length;
 
-/** Whether this page load has already reported a returning player. */
+/** Whether this page load has already reported a returning player, and an arrival. */
 let resumeCounted = false;
+let arrivalCounted = false;
 
 /**
  * The phone, the room it's in, and the order things happen.
@@ -81,6 +82,8 @@ let resumeCounted = false;
  * go back, flick a banner away.
  */
 export default function FoundPhone() {
+  const { story: ep, meta, to } = useCase();
+  const backlog = useMemo(() => backlogOf(ep), [ep]);
   const mounted = useMounted();
   const s = useSyncExternalStore(subscribeProgress, readProgress, progressServerSide);
   const [route, setRoute] = useState<Route>({ app: "home" });
@@ -103,6 +106,19 @@ export default function FoundPhone() {
     resumeCounted = true;
     play.resumed();
   }, []);
+
+  // A passed-on link, opened. Once per page load, played before or not.
+  useEffect(() => {
+    if (arrivalCounted) return;
+    arrivalCounted = true;
+    play.arrived();
+  }, []);
+
+  // The envelope really is what should show (a reset, or a save that couldn't
+  // be read), so SaveScript's "a phone is coming" no longer holds. Let it paint.
+  useEffect(() => {
+    if (mounted && !s) document.documentElement.removeAttribute("data-found-save");
+  }, [mounted, s]);
 
   // The status bar's clock moves with the story's.
   useEffect(() => {
@@ -288,7 +304,7 @@ export default function FoundPhone() {
       }
     }, EVENT_DELAY[due.id] ?? DEFAULT_DELAY);
     return () => window.clearTimeout(timer);
-  }, [due, showBanner]);
+  }, [due, showBanner, ep]);
 
   useEffect(() => {
     if (!banner) return;
@@ -304,10 +320,10 @@ export default function FoundPhone() {
     announced.current = true;
     const timer = window.setTimeout(() => {
       buzz();
-      showBanner({ from: "While it was off", text: `${BACKLOG} notifications`, app: "messages" });
+      showBanner({ from: "While it was off", text: `${backlog} notifications`, app: "messages" });
     }, 900);
     return () => window.clearTimeout(timer);
-  }, [unlocked2, showBanner]);
+  }, [unlocked2, showBanner, backlog]);
 
   /* The end of Episode 1: the last text lands, the phone holds, then the
      battery goes. Re-armed on a reload that lands in between. */
@@ -348,7 +364,10 @@ export default function FoundPhone() {
   const st = s ? stage(ep, s) : null;
   let body: React.ReactNode = null;
 
-  if (mounted && !s) body = <Envelope onOpen={play.start} />;
+  // No save: the envelope, on the server too, so the hook paints before any
+  // JavaScript arrives. A returning player's save only exists in the browser;
+  // SaveScript keeps the envelope from flashing up before their phone does.
+  if (!s) body = <Envelope onOpen={play.start} label={dropLabel(to ?? "", ep.envelope.label)} />;
   else if (mounted && s && st?.screen === "end") body = <EndCard state={s} episode={st.episode} onReplay={play.reset} />;
   else if (mounted && s && st) {
     const charging = st.episode === 2;
@@ -357,7 +376,7 @@ export default function FoundPhone() {
         <div
           ref={screenRef}
           className={styles.screen}
-          style={{ "--wallpaper": `url(${found.wallpaper})` } as React.CSSProperties}
+          style={{ "--wallpaper": `url(${meta.wallpaper})` } as React.CSSProperties}
           onPointerDown={swipeBack}
         >
           <span className={styles.osIsland} aria-hidden="true" />

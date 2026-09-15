@@ -28,7 +28,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${canela.variable} ${outfit.variable}`}>
+    <html
+      lang="en"
+      className={`${canela.variable} ${outfit.variable}`}
+      // SaveScript marks a returning player's page before React sees it.
+      suppressHydrationWarning
+    >
       <body>{children}</body>
     </html>
   );
