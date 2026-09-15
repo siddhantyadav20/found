@@ -34,5 +34,6 @@ These come from the pilot and aren't recoverable from the code alone.
 
 - Episode 2's NightCam fuel-can photo is a placeholder: no CC0 photo fits.
 - Episode 3 hasn't been started.
-- A domain, and a Vercel project, for this app.
+- A domain, and a Vercel project, for this app. Deliberately deferred: Found
+  stays local until it's a good product with multiple storylines.
 - Whether the portfolio's `/found` redirects here once this app is live.
