@@ -60,6 +60,22 @@ These come from the pilot and aren't recoverable from the code alone.
 - **Photos:** Siddhant shoots what he can in India. Claude sources openly
   licensed candidates for the rest, each approved before it's downloaded.
 
+## Decided 2026-09-16
+
+- **The plan is in `ROADMAP.md`,** in sessions S1–S17; the photo shot list is
+  `PHOTOS.md`.
+- **Recently Deleted asks for Face ID,** which fails on a stranger and falls
+  back to the passcode. It adds a step before a key clue, on purpose.
+- **Never losing a case needs no account.** A case number (12 characters,
+  given on request) keeps every case's save on the server for a year after
+  the last play, and a restore link brings them back on any device. The number
+  is the only key, like a drop's code: nothing ties it to a person.
+- **In-app browsers get a note, not a wall.** Inside Instagram or Facebook
+  the envelope suggests opening the case in Chrome or Safari, and lets you
+  play on anyway.
+- **"Start over" asks first,** and a finished episode stays on the desk
+  afterwards.
+
 ## Still open
 
 - Episode 2's NightCam fuel-can photo is a placeholder: no CC0 photo fits.

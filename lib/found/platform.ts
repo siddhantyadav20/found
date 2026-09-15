@@ -29,6 +29,22 @@ export function isHandheld(ua: string, maxTouchPoints = 0): boolean {
   return /iPhone|iPad|iPod|Android/i.test(ua) || (/Macintosh/i.test(ua) && maxTouchPoints > 1);
 }
 
+/** The in-app browsers that forget everything when closed, and that a link from a reel opens in. */
+export type InApp = "instagram" | "facebook";
+
+export function inAppBrowser(ua: string): InApp | null {
+  if (/Instagram/i.test(ua)) return "instagram";
+  if (/FBAN|FBAV|FB_IAB|FBIOS|FB4A/i.test(ua)) return "facebook";
+  return null;
+}
+
+/** The same page in Chrome, from inside an Android in-app browser (or the page itself, without Chrome). */
+export function chromeIntent(href: string): string {
+  const u = new URL(href);
+  const scheme = u.protocol.replace(":", "");
+  return `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=${scheme};package=com.android.chrome;S.browser_fallback_url=${encodeURIComponent(href)};end`;
+}
+
 const SERVER: Device = { os: "ios", handheld: false };
 let cached: Device | null = null;
 

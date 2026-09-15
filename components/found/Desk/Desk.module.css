@@ -248,3 +248,152 @@
   font-size: 13px;
   color: rgba(242, 237, 230, 0.45);
 }
+
+/* --- Your cases (drawn once the browser can read them) ------------------- */
+
+.yours {
+  display: grid;
+  gap: 12px;
+  width: min(420px, 100%);
+  margin-top: 10px;
+  text-align: left;
+  font-family: var(--font-ui), system-ui, sans-serif;
+}
+
+.yours > .eyebrow {
+  margin: 0;
+}
+
+.caseList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.caseRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.caseText {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.caseTitle {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 19px;
+}
+
+.caseStatus,
+.caseResult {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(242, 237, 230, 0.6);
+}
+
+.caseResult {
+  color: #ffb58a;
+}
+
+.caseCta {
+  flex: none;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.keep summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  color: rgba(242, 237, 230, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.keep summary::-webkit-details-marker {
+  display: none;
+}
+
+.keep[open] summary {
+  margin-bottom: 10px;
+}
+
+.haveLink {
+  justify-self: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  color: rgba(242, 237, 230, 0.5);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.haveForm {
+  display: grid;
+  gap: 8px;
+}
+
+.haveLabel {
+  font-size: 13px;
+  color: rgba(242, 237, 230, 0.6);
+}
+
+.haveRow {
+  display: flex;
+  gap: 8px;
+}
+
+.haveInput {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #f2ede6;
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+}
+
+.haveInput:focus {
+  outline: none;
+  border-color: #ff8a3d;
+}
+
+.haveGo {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f2ede6;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.haveError {
+  margin: 0;
+  font-size: 13px;
+  color: #ff8a7a;
+}

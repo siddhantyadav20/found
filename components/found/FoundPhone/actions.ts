@@ -3,7 +3,9 @@ import type { AppId, Cast, Gender, Story } from "@/content/found/types";
 import { STORIES } from "@/content/stories";
 import * as engine from "@/lib/found/engine";
 import { MILESTONE_OF } from "@/lib/found/events";
-import { bindProgress, commit, readProgress } from "@/lib/found/progress";
+import { afterCommit, bindProgress, commit, readProgress } from "@/lib/found/progress";
+import { MARK_EMOJI, resultOf } from "@/lib/found/result";
+import { markSolved, syncSave } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
 import { pickCast } from "@/lib/found/voice";
 import { wakeAudio } from "@/lib/found/buzz";
@@ -33,16 +35,25 @@ export function bindCase(id: CaseId, via?: string): void {
   ep = STORIES[id];
   arrivedVia = via;
   bindProgress(id);
+  // With a case number, every save also goes to the shelf.
+  afterCommit(syncSave);
 }
 
 function beat(event: string, seconds?: number, via = readProgress()?.via): void {
   track({ case: caseId, event, seconds, via });
 }
 
+/** An episode finished: its result is kept apart from the save, so it stays on the desk. */
+function solve(episode: 1 | 2, s: engine.CaseState): void {
+  const r = resultOf(ep, s, episode);
+  markSolved(caseId, { episode, minutes: r.minutes, marks: r.marks.map((m) => MARK_EMOJI[m]).join(""), at: Date.now() });
+}
+
 function save(next: engine.CaseState): void {
   const prev = readProgress();
   if (!prev || next === prev) return;
   const fresh = next.flags.filter((f) => !prev.flags.includes(f));
+  const ended: (1 | 2)[] = [];
   if (fresh.length) {
     const now = Date.now();
     const at: Record<string, number> = { ...next.at };
@@ -50,10 +61,13 @@ function save(next: engine.CaseState): void {
       at[f] ??= now;
       const milestone = MILESTONE_OF[f];
       if (milestone) beat(milestone, milestone === "end" ? (now - next.started) / 1000 : undefined, next.via);
+      if (milestone === "end") ended.push(1);
+      if (milestone === "ep2-end") ended.push(2);
     }
     next = { ...next, at };
   }
   commit(next);
+  for (const episode of ended) solve(episode, next);
 }
 
 /** `?cast=girl`, `?cast=boy` or `?cast=<name>` in dev, to play a specific version. */
@@ -182,8 +196,14 @@ export function openApp(): void {
   if (s) commit(engine.openApp(s));
 }
 
-/** Back in the envelope. The next open deals a new cast. */
+/**
+ * Back in the envelope. The next open deals a new cast. What was finished is
+ * kept first, for saves from before finishes were kept on their own.
+ */
 export function reset(): void {
+  const s = readProgress();
+  if (s && engine.has(s, "dead")) solve(1, s);
+  if (s && engine.has(s, "ep:2-done")) solve(2, s);
   commit(null);
 }
 

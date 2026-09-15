@@ -96,7 +96,8 @@ Built: apps zoom out of the icon or widget they were opened from and shrink back
   - reduced motion
   - larger text
 
-### S4 — Never lose a case
+### S4 — Never lose a case · *done 2026-09-16*
+Built: case numbers like `K7Q4-MX2P-R9TA` (12 characters, nothing that reads two ways), made on request and kept on the server for a year after the last play; with a number, every save goes up a couple of seconds after it changes and again as the page is left. `/r/<number>` restores on any device and keeps, case by case, whichever save got further; the desk takes a typed number too. The card sits on end cards, on the desk ("Your cases"), and on the envelope when storage is refused; on a laptop it shows a QR code (`qrcode-generator`, loaded only there). The Instagram/Facebook guard on the envelope opens Chrome on Android and points to ••• → Safari on iPhone, and "Play here anyway" dismisses it. "Start over" asks first; finishes are kept apart from saves, so a solved case stays on the desk after it.
 - **Case numbers:**
   - the save kept on the server under a code, for a year
   - a restore link that works on any device, with no account

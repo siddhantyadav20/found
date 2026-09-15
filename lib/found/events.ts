@@ -16,6 +16,8 @@ import type { Flag, Story } from "@/content/found/types";
      ep2:yes|no, ep3:yes|no, email                                whether they want more
      share:open|whatsapp|native|copy, drop:create                 whether they pass it on
      drop:arrive → drop:open → drop:unlock → drop:end             whether that worked
+     keep:number|copy|whatsapp|restore, reset:ask|yes             whether cases are kept
+     guard:inapp|chrome                                           in-app browsers, and leaving them
 
    An allowlist per case, shared by the browser and the route, so the store's
    keys are bounded by this file rather than by whatever a request body says.
@@ -74,6 +76,18 @@ export const DROP_LEGS: Readonly<Record<string, "arrive" | "open" | "unlock" | "
  *  plugged in, or the on-screen cable where the browser can't read a battery. */
 export const POWER = ["charge:real", "charge:already", "charge:tap"] as const;
 
+/** Never losing a case: case numbers, restores, starting over, and in-app browsers. */
+export const KEEPING = [
+  "keep:number",
+  "keep:copy",
+  "keep:whatsapp",
+  "keep:restore",
+  "reset:ask",
+  "reset:yes",
+  "guard:inapp",
+  "guard:chrome",
+] as const;
+
 const cache = new WeakMap<Story, readonly string[]>();
 
 /** Every event a case can report. */
@@ -88,6 +102,7 @@ export function eventsFor(ep: Story): readonly string[] {
       ...VERDICTS,
       ...SHARING,
       ...POWER,
+      ...KEEPING,
     ];
     cache.set(ep, list);
   }

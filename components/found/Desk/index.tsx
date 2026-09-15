@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { CASES, FEATURED } from "@/content/cases";
+import YourCases from "./YourCases";
 import styles from "./Desk.module.css";
 
 /** How many of the teaser's notifications land on the desk phone. */
@@ -14,9 +15,10 @@ const SHOWN = 4;
  * and picking it up opens the case. The shapes around it are other found
  * things, deliberately unnamed until their cases exist.
  *
- * Server-rendered, and it ships no JavaScript of its own: the buzzing and the
- * arriving notifications are CSS. A passed-on link never comes here; it goes
- * straight to its envelope (`/d/[code]`).
+ * Server-rendered: the buzzing and the arriving notifications are CSS. The
+ * one island is "Your cases" underneath, which only the browser can know. A
+ * passed-on link never comes here; it goes straight to its envelope
+ * (`/d/[code]`).
  */
 export default function Desk() {
   const meta = CASES[FEATURED];
@@ -54,6 +56,8 @@ export default function Desk() {
         </Link>
         <p className={styles.small}>More are being found.</p>
       </div>
+
+      <YourCases />
     </main>
   );
 }

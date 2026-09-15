@@ -1,6 +1,8 @@
 "use client";
 
 import { useCase } from "@/components/found/StoryContext";
+import { StorageWarning } from "../KeepCase";
+import InAppGuard from "./InAppGuard";
 import styles from "./Envelope.module.css";
 
 /**
@@ -9,10 +11,12 @@ import styles from "./Envelope.module.css";
  * shivers every few seconds, because the phone inside it is buzzing.
  *
  * Server-rendered. A passed-on phone's label carries the friend's name
- * (`label`); otherwise it's the story's own "TO YOU / BY HAND".
+ * (`label`); otherwise it's the story's own "TO YOU / BY HAND". Two notes
+ * only the browser can decide on join it there: inside Instagram or
+ * Facebook, and a browser that won't keep anything (a case number instead).
  */
 export default function Envelope({ onOpen, label }: { onOpen: () => void; label?: readonly string[] }) {
-  const { story: ep, minutes } = useCase();
+  const { id, story: ep, minutes } = useCase();
   return (
     <div className={styles.stage} data-envelope>
       <p className={styles.eyebrow}>Episode 1 · {ep.title}</p>
@@ -33,10 +37,14 @@ export default function Envelope({ onOpen, label }: { onOpen: () => void; label?
           <p key={line}>{line}</p>
         ))}
       </div>
+      <InAppGuard />
       <button type="button" className={styles.cta} onClick={onOpen}>
         {ep.envelope.cta}
       </button>
       <p className={styles.small}>Sound on. About {minutes ?? 30} minutes. Your progress is saved on this device.</p>
+      <div className={styles.keep}>
+        <StorageWarning caseId={id} />
+      </div>
     </div>
   );
 }

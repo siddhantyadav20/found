@@ -40,10 +40,14 @@ app/
   page.tsx               / — the desk: a phone buzzing among found things
   c/[case]/              /c/low-battery — a case, from its cold open
   d/[code]/              /d/<code> — a passed-on phone: an envelope with a friend's name
+  r/[number]/            /r/<case number> — brings a case number's cases onto this device
   api/found/             the funnel (POST an event, GET it back) and /choices
   api/drop/[code]/       how far a passed-on phone has got
+  api/shelf/             POST: a new case number · [number]: GET its saves, POST one
 components/found/
-  Desk/                  the homepage scene (server-rendered, no JS of its own)
+  Desk/                  the homepage scene (server-rendered) and YourCases, its one island
+  KeepCase/              the case number card, with a QR code on laptops
+  Restore/               the restore page
   FoundPhone/            the room, the device, lock screen, home, gestures, end cards,
                          PassItOn (seal and send), WhatOthersDid
   apps/                  Messages, Photos, Notes, Maps, Calculator, Guardian, …
@@ -71,6 +75,12 @@ samples-src/             source recordings (git-ignored)
   their own link, so set it aside first (copy `found:low-battery:save` out,
   remove it, open `/d/<code>`, then put it back). Sealed envelopes are
   remembered under `found:sent`.
+- **Case numbers** live under `found:number`, and a case's finishes under
+  `found:<case>:solved` (they outlive "Start over"). On the server they're
+  `found:shelf:<number>` plus a key per case (`lib/found/shelfStore.ts`), kept
+  a year after the last write. Dev switches: `?storage=refused` for the
+  private-browsing warning, `?inapp=instagram|facebook` for the in-app guard
+  (add `?os=android` for "Open in Chrome").
 - **Drops need a store.** `next dev` uses the in-memory stand-in
   (`lib/upstashDev.ts`, emptied on restart). `next start` with no Upstash
   variables can't seal anything, so "Pass it on" falls back to the case's plain

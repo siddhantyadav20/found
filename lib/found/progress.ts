@@ -20,9 +20,11 @@ import type { CaseState } from "./engine";
 export const saveKey = (caseId: string): string => `found:${caseId}:save`;
 
 let key: string | null = null;
+let boundId: string | null = null;
 let state: CaseState | null = null;
 let loaded = false;
 const listeners = new Set<() => void>();
+let onCommit: ((caseId: string, next: CaseState | null) => void) | null = null;
 
 /**
  * Point the store at one case's save. Idempotent, and cheap enough to call
@@ -33,8 +35,24 @@ export function bindProgress(caseId: string): void {
   const next = saveKey(caseId);
   if (next === key) return;
   key = next;
+  boundId = caseId;
   state = null;
   loaded = false;
+}
+
+/** The case the store is pointed at, if any. */
+export const boundCase = (): string | null => boundId;
+
+/** Told about every save that's written: how a case number keeps up (lib/found/shelf.ts). */
+export function afterCommit(fn: (caseId: string, next: CaseState | null) => void): void {
+  onCommit = fn;
+}
+
+/** Read the save again: a restore has just written one from another device. */
+export function reloadProgress(): void {
+  state = null;
+  loaded = false;
+  for (const fn of listeners) fn();
 }
 
 const isRecord = (x: unknown): x is Record<string, unknown> => !!x && typeof x === "object" && !Array.isArray(x);
@@ -98,4 +116,5 @@ export function commit(next: CaseState | null): void {
     // Full or refused. The case still holds for this visit.
   }
   for (const fn of listeners) fn();
+  if (boundId) onCommit?.(boundId, next);
 }
