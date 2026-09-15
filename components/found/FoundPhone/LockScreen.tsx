@@ -1,29 +1,58 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
-import { story as ep } from "@/content/found/story";
+import { useStory } from "@/components/found/StoryContext";
+import type { Story } from "@/content/found/types";
 import type { CaseState } from "@/lib/found/engine";
 import { keyTap, refuse } from "@/lib/found/buzz";
 import { say } from "@/lib/found/voice";
 import * as play from "./actions";
 import { drag } from "./drag";
+import { AppGlyph } from "./icons";
 import styles from "./LockScreen.module.css";
 
-const LOCK = ep.locks.find((l) => l.id === "passcode");
-const LENGTH = LOCK?.answer.length ?? 6;
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"] as const;
+/** The letters iOS prints under each digit of the passcode pad. */
+const LETTERS: Record<string, string> = { 2: "ABC", 3: "DEF", 4: "GHI", 5: "JKL", 6: "MNO", 7: "PQRS", 8: "TUV", 9: "WXYZ" };
+
+/** One digit of the pad: the number, and its letters underneath. */
+function Digit({ k }: { k: string }) {
+  return (
+    <>
+      <b>{k}</b>
+      {LETTERS[k] && <small>{LETTERS[k]}</small>}
+    </>
+  );
+}
+
+/** The torch and the camera, in the lock screen's bottom corners. */
+function Corner({ kind }: { kind: "torch" | "camera" }) {
+  return (
+    <span className={styles.round}>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        {kind === "torch" ? (
+          <path d="M8 3h8v3.2l-2 2.6V20a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V8.8L8 6.2Zm4 9.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" />
+        ) : (
+          <path d="M4.5 7.5h3l1.5-2.2h6l1.5 2.2h3a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18V9a1.5 1.5 0 0 1 1.5-1.5Zm7.5 3a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z" />
+        )}
+      </svg>
+    </span>
+  );
+}
 /** Lifted this far (px), or flicked, the lock screen lets go and asks for the code. */
 const LET_GO = 90;
 
 /** What piled up while it was dead, grouped the way a lock screen stacks it. */
-const BACKLOG: { from: string; text: string }[] = [
-  ...ep.threads
-    .map((t) => ({ from: t.contact, n: t.messages.filter((m) => m.requires?.includes("ep:2")).length }))
-    .filter((r) => r.n > 0)
-    .map((r) => ({ from: r.from, text: `${r.n} new message${r.n === 1 ? "" : "s"}` })),
-  { from: "City Desk", text: `${ep.headlines.filter((h) => h.requires?.includes("ep:2")).length} stories` },
-];
+function backlogOf(ep: Story): { from: string; text: string }[] {
+  return [
+    ...ep.threads
+      .map((t) => ({ from: t.contact, n: t.messages.filter((m) => m.requires?.includes("ep:2")).length }))
+      .filter((r) => r.n > 0)
+      .map((r) => ({ from: r.from, text: `${r.n} new message${r.n === 1 ? "" : "s"}` })),
+    { from: "City Desk", text: `${ep.headlines.filter((h) => h.requires?.includes("ep:2")).length} stories` },
+  ];
+}
 
 /**
  * The first puzzle. The notifications say someone is frightened, and the
@@ -50,6 +79,10 @@ export default function LockScreen({
   mode: "first" | "restart";
   clock: string;
 }) {
+  const ep = useStory();
+  const LOCK = ep.locks.find((l) => l.id === "passcode");
+  const LENGTH = LOCK?.answer.length ?? 6;
+  const BACKLOG = useMemo(() => backlogOf(ep), [ep]);
   const [screen, setScreen] = useState<"glance" | "pad" | "medical">("glance");
   const [code, setCode] = useState("");
   const [shakes, setShakes] = useState(0);
@@ -157,7 +190,7 @@ export default function LockScreen({
   if (screen === "pad") {
     return (
       <div className={styles.lock} data-dim>
-        <p className={styles.padTitle}>Enter passcode</p>
+        <p className={styles.padTitle}>Enter Passcode</p>
         {mode === "restart" && <p className={styles.restart}>Your passcode is required after the phone restarts</p>}
         <div key={shakes} className={styles.dots} data-shake={shakes > 0 || undefined}>
           {Array.from({ length: LENGTH }, (_, i) => (
@@ -173,8 +206,8 @@ export default function LockScreen({
         )}
         <div className={styles.keys}>
           {KEYS.map((k) => (
-            <button type="button" key={k} className={styles.key} onClick={() => press(k)}>
-              {k}
+            <button type="button" key={k} className={styles.key} onClick={() => press(k)} aria-label={k}>
+              <Digit k={k} />
             </button>
           ))}
           <button
@@ -185,8 +218,8 @@ export default function LockScreen({
           >
             Emergency
           </button>
-          <button type="button" className={styles.key} onClick={() => press("0")}>
-            0
+          <button type="button" className={styles.key} onClick={() => press("0")} aria-label="0">
+            <Digit k="0" />
           </button>
           <button type="button" className={styles.word} onClick={code ? erase : () => setScreen("glance")}>
             {code ? "Delete" : "Cancel"}
@@ -218,12 +251,21 @@ export default function LockScreen({
         <span className={styles.notes}>
           {notes.map((n) => (
             <span key={`${n.from}:${n.text}`} className={styles.note}>
-              <span className={styles.noteFrom}>{n.from}</span>
-              <span className={styles.noteText}>{t(n.text)}</span>
+              <span className={styles.noteIcon}>
+                <AppGlyph app={n.from === "City Desk" ? "news" : "messages"} />
+              </span>
+              <span className={styles.noteBody}>
+                <span className={styles.noteFrom}>{n.from}</span>
+                <span className={styles.noteText}>{t(n.text)}</span>
+              </span>
             </span>
           ))}
         </span>
-        <span className={styles.swipe}>Swipe up to unlock</span>
+        <span className={styles.bottom} aria-hidden="true">
+          <Corner kind="torch" />
+          <span className={styles.swipe}>Swipe up to unlock</span>
+          <Corner kind="camera" />
+        </span>
       </span>
     </button>
   );

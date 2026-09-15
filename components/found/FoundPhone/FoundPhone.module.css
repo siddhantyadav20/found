@@ -76,6 +76,26 @@
   --os-good: #32d74b;
   --os-top: 50px;
 
+  /* The phone's own controls speak iOS: system blue for back buttons, links,
+     sent bubbles and switches. Found's orange (--os-accent) is kept for the
+     game's layer: hints, the open question, what the story is pointing at. */
+  --ios-blue: #0a84ff;
+  --ios-green: #30d158;
+  --ios-grey: #8e8e93;
+  --ios-separator: rgba(84, 84, 88, 0.55);
+  --ios-incoming: #262629;
+
+  /* Liquid Glass, as current iOS draws its controls: a thin tinted fill over
+     a strong blur, and a rim of light along the top edge. One recipe, used by
+     the widget, the dock, the page dots, notifications, banners and keys. */
+  --glass-fill: rgba(255, 255, 255, 0.14);
+  --glass-fill-dark: rgba(42, 42, 48, 0.42);
+  --glass-blur: blur(28px) saturate(1.8);
+  --glass-edge:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16),
+    inset 0 -0.5px 0 rgba(255, 255, 255, 0.06);
+
   position: relative;
   width: 100%;
   height: 100%;
@@ -83,7 +103,9 @@
   border-radius: 49px;
   background: var(--os-bg);
   color: var(--os-text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Found's own type on the phone too: Outfit for the system, Canela where
+     iOS lets a person choose a face (the lock-screen clock, widgets). */
+  font-family: var(--font-ui), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
   line-height: 1.35;
   -webkit-font-smoothing: antialiased;
@@ -139,9 +161,9 @@
   align-items: flex-end;
   justify-content: space-between;
   padding: 0 28px 10px 36px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   pointer-events: none;
 }
 
@@ -275,12 +297,14 @@
   gap: 11px;
   align-items: center;
   padding: 11px 14px 11px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  background: rgba(38, 38, 40, 0.94);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+  border: 0;
+  border-radius: 26px;
+  background: rgba(40, 40, 46, 0.62);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    var(--glass-edge),
+    0 14px 40px rgba(0, 0, 0, 0.45);
   color: var(--os-text);
   font: inherit;
   text-align: left;

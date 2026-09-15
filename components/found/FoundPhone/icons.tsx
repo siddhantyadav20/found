@@ -1,114 +1,118 @@
 import type { AppId } from "@/content/found/types";
 import styles from "./icons.module.css";
 
-/* The phone's app icons, in the iPhone's idiom: a rounded-square tile in the
-   app's own colour (white for the apps that are mostly paper), one simple
-   glyph, and a soft light along the top edge. All drawn here: the language
-   is borrowed, none of Apple's artwork is. */
+/* The phone's app icons, drawn to sit as close to current iOS as a drawing
+   can: the platform's squircle tile, each app's own colour and mark, and the
+   glassy edge light iOS now puts on every icon (icons.module.css). All drawn
+   here as SVG; no artwork is copied from anywhere. The three apps that are
+   the story's own (Guardian, NightCam, Dabba) are ours outright. */
 
 const TILE: Record<AppId, string> = {
   envelope: "linear-gradient(180deg, #c9a06a, #9c7543)",
   lock: "linear-gradient(180deg, #4a4a4e, #2c2c2e)",
-  messages: "linear-gradient(180deg, #6af07e 0%, #16c23a 100%)",
-  photos: "linear-gradient(180deg, #ffffff 0%, #eeeef2 100%)",
-  maps: "linear-gradient(160deg, #f4f1e6 0%, #e3eed8 100%)",
-  health: "linear-gradient(180deg, #ffffff 0%, #f0f0f3 100%)",
-  memos: "linear-gradient(180deg, #2c2c2e 0%, #050505 100%)",
-  notes: "linear-gradient(180deg, #ffd84a 0%, #f8c81c 24%, #ffffff 24.5%, #f7f7f2 100%)",
-  calculator: "linear-gradient(180deg, #3a3a3c 0%, #111113 100%)",
-  settings: "linear-gradient(180deg, #d8d8dd 0%, #8e8e93 100%)",
+  messages: "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
+  photos: "linear-gradient(180deg, #ffffff 0%, #f4f4f6 100%)",
+  maps: "linear-gradient(160deg, #f6f3ea 0%, #e6efdc 100%)",
+  health: "linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%)",
+  memos: "linear-gradient(180deg, #232325 0%, #000 100%)",
+  notes: "linear-gradient(180deg, #ffd84a 0%, #f8c81c 23%, #ffffff 23.5%, #f8f8f4 100%)",
+  calculator: "linear-gradient(180deg, #2c2c2e 0%, #000 100%)",
+  settings: "linear-gradient(180deg, #e3e3e8 0%, #a1a1a8 100%)",
   guardian: "linear-gradient(180deg, #5eb0ff 0%, #1d6fe6 100%)",
   nightcam: "linear-gradient(180deg, #2a2f5c 0%, #080a18 100%)",
-  news: "linear-gradient(180deg, #ff6a6a 0%, #e4283f 100%)",
+  news: "linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%)",
   food: "linear-gradient(180deg, #ffb347 0%, #ff7a1a 100%)",
 };
 
-/** Glyphs that are the whole picture (a map, a page) rather than a mark on a tile. */
-const FULL: ReadonlySet<AppId> = new Set<AppId>(["maps", "notes"]);
+/** Glyphs that are the whole picture (a map, a page, a mark) rather than a mark on a tile. */
+const FULL: ReadonlySet<AppId> = new Set<AppId>(["maps", "notes", "photos", "health", "news"]);
+
+/** Photos' flower: eight overlapping petals, clockwise from the top. */
+const PETALS = ["#f8a326", "#f7cf2c", "#a6d25a", "#3fbf8f", "#3aa7dc", "#5b76d6", "#a45fcb", "#ee5b7b"];
 
 function Glyph({ app }: { app: AppId }) {
   switch (app) {
     case "messages":
       return (
-        <path
-          d="M12 4.6c4.8 0 8.4 3 8.4 6.9s-3.6 6.9-8.4 6.9c-1 0-1.9-.1-2.8-.4-1 .9-2.6 1.7-4.5 1.9.8-.8 1.4-1.9 1.5-3-1.6-1.3-2.6-3.2-2.6-5.4 0-3.9 3.6-6.9 8.4-6.9Z"
-          fill="#fff"
-        />
+        <g fill="#fff">
+          <ellipse cx="12" cy="11.3" rx="8.7" ry="7.3" />
+          <path d="M5.3 15.4c-.2 1.9-1.2 3.4-2.3 4.3 2.4.2 4.7-.6 6.3-2.1Z" />
+        </g>
       );
     case "photos":
       return (
-        <g>
-          <circle cx="16.4" cy="7.6" r="2.5" fill="#ff9f0a" />
-          <path d="M2.8 19.6 9.3 10.9l5.4 6.6-1.7 2.1Z" fill="#5ac8fa" />
-          <path d="m8.4 19.6 6.9-7.8 5.9 7.8Z" fill="#30d158" />
+        <g style={{ mixBlendMode: "multiply" }}>
+          {PETALS.map((c, i) => (
+            <ellipse key={c} cx="12" cy="7.35" rx="2.75" ry="4.6" fill={c} opacity="0.86" transform={`rotate(${i * 45} 12 12)`} />
+          ))}
         </g>
       );
     case "maps":
       return (
         <g>
-          <path d="M14 0h10v9.5H14z" fill="#c2e5a9" />
-          <path d="M7.6-1 10.8 25" stroke="#fff" strokeWidth="2.2" />
-          <path d="M-1 19.8 25 10.2" stroke="#fff" strokeWidth="4.6" />
-          <path d="M-1 19.8 25 10.2" stroke="#ffc933" strokeWidth="2.8" />
-          <circle cx="16.2" cy="17" r="3.5" fill="#0a84ff" stroke="#fff" strokeWidth="1.4" />
-          <path d="m16.2 14.7 1.6 3.9-1.6-.9-1.6.9Z" fill="#fff" />
+          <path d="M14.5 0H24v9.8h-9.5z" fill="#bfe3a3" />
+          <path d="M0 15.5h7.5V24H0z" fill="#d7ecc4" />
+          <path d="M8-1 11 25" stroke="#fff" strokeWidth="2.2" />
+          <path d="M-1 20 25 10" stroke="#fff" strokeWidth="4.8" />
+          <path d="M-1 20 25 10" stroke="#ffc42e" strokeWidth="3" />
+          <path d="M4.6 6.6c3.2 1.2 6.4 4.7 11.6 10.4" fill="none" stroke="#2f8cff" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="16.4" cy="17.2" r="3.6" fill="#0a84ff" stroke="#fff" strokeWidth="1.4" />
+          <path d="m16.4 14.9 1.6 3.9-1.6-.9-1.6.9Z" fill="#fff" />
         </g>
       );
     case "health":
       return (
-        <path d="M12 20s-7.8-4.6-7.8-10.2A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7.8 2.6C19.8 15.4 12 20 12 20Z" fill="#ff2d55" />
+        <path
+          transform="translate(10.6 2.2) scale(0.5)"
+          d="M12 21s-8.6-5.1-8.6-11.3A4.9 4.9 0 0 1 12 6.9a4.9 4.9 0 0 1 8.6 2.8C20.6 15.9 12 21 12 21Z"
+          fill="#ff2d55"
+        />
       );
     case "memos":
       return (
-        <path
-          d="M4.5 11v2M7 9v6M9.5 6.5v11M12 4.5v15M14.5 7.5v9M17 9.5v5M19.5 11v2"
-          stroke="#ff375f"
-          strokeWidth="1.9"
-          strokeLinecap="round"
-        />
+        <g strokeLinecap="round" strokeWidth="1.7">
+          <path d="M3.6 11.2v1.6M5.9 10v4M8.2 8.2v7.6M10.5 5.8v12.4" stroke="#ff453a" />
+          <path d="M12.8 4.6v14.8M15.1 7v10M17.4 9v6M19.7 10.6v2.8" stroke="#fff" />
+        </g>
       );
     case "notes":
       return (
         <g>
-          <path d="M0 5.9h24" stroke="#d6a900" strokeWidth="0.7" strokeDasharray="0.7 1.1" />
-          <path d="M3.6 10.8h16.8M3.6 14.4h16.8M3.6 18h10.4" stroke="#d1d1d6" strokeWidth="1.1" strokeLinecap="round" />
+          <path d="M0 5.8h24" stroke="#c99f00" strokeWidth="0.6" strokeDasharray="0.6 1" />
+          <path d="M3.4 10.4h17.2M3.4 13.8h17.2M3.4 17.2h11" stroke="#d1d1d6" strokeWidth="1" strokeLinecap="round" />
         </g>
       );
     case "calculator":
       return (
         <g strokeLinecap="round" strokeWidth="1.3">
-          <circle cx="7.4" cy="7.4" r="4.1" fill="#a5a5aa" />
-          <circle cx="16.6" cy="7.4" r="4.1" fill="#ff9f0a" />
-          <circle cx="7.4" cy="16.6" r="4.1" fill="#5a5a5f" />
-          <circle cx="16.6" cy="16.6" r="4.1" fill="#ff9f0a" />
-          <path d="M7.4 5.6v3.6M5.6 7.4h3.6" stroke="#1c1c1e" />
-          <path d="M14.8 7.4h3.6" stroke="#fff" />
-          <path d="m6.1 15.3 2.6 2.6m0-2.6-2.6 2.6" stroke="#fff" />
-          <path d="M14.8 15.8h3.6M14.8 17.4h3.6" stroke="#fff" />
+          <circle cx="7.6" cy="7.6" r="4" fill="#5c5c60" />
+          <circle cx="16.4" cy="7.6" r="4" fill="#ff9f0a" />
+          <circle cx="7.6" cy="16.4" r="4" fill="#5c5c60" />
+          <circle cx="16.4" cy="16.4" r="4" fill="#ff9f0a" />
+          <path d="M5.9 7.6h3.4" stroke="#fff" />
+          <path d="M16.4 5.9v3.4M14.7 7.6h3.4" stroke="#fff" />
+          <path d="m6.4 15.2 2.4 2.4m0-2.4-2.4 2.4" stroke="#fff" />
+          <path d="M14.7 15.6h3.4M14.7 17.2h3.4" stroke="#fff" />
         </g>
       );
     case "settings":
       return (
         <g>
-          {/* Twelve teeth: a thick dashed ring, 2.3 on and 1.73 off round r 7.7. */}
-          <circle cx="12" cy="12" r="7.7" fill="none" stroke="#3c3c40" strokeWidth="3.2" strokeDasharray="2.3 1.73" />
-          <circle cx="12" cy="12" r="6.4" fill="#3c3c40" />
-          <circle cx="12" cy="12" r="4.3" fill="#c7c7cc" />
-          <circle cx="12" cy="12" r="2.1" fill="#3c3c40" />
+          {/* Two geared rings, as the real one has: the outer's teeth are a
+              thick dashed ring, the inner's a finer one. */}
+          <circle cx="12" cy="12" r="8.6" fill="none" stroke="#3a3a3f" strokeWidth="2.6" strokeDasharray="1.7 1.2" />
+          <circle cx="12" cy="12" r="7.4" fill="#4a4a50" />
+          <circle cx="12" cy="12" r="6.1" fill="#d6d6db" />
+          <circle cx="12" cy="12" r="4.6" fill="none" stroke="#6e6e75" strokeWidth="1.5" strokeDasharray="1 0.9" />
+          <circle cx="12" cy="12" r="3.3" fill="#8e8e95" />
+          <circle cx="12" cy="12" r="1.5" fill="#3a3a3f" />
         </g>
       );
     case "guardian":
       return (
         <g>
           <path d="M12 3.6 5.2 6.2v5.3c0 4.3 2.9 7.4 6.8 8.9 3.9-1.5 6.8-4.6 6.8-8.9V6.2L12 3.6Z" fill="#fff" />
-          <path
-            d="m8.8 12.1 2.2 2.2 4.2-4.4"
-            fill="none"
-            stroke="#1d6fe6"
-            strokeWidth="1.9"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          <path d="m8.8 12.1 2.2 2.2 4.2-4.4" fill="none" stroke="#1d6fe6" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
         </g>
       );
     case "nightcam":
@@ -125,9 +129,9 @@ function Glyph({ app }: { app: AppId }) {
     case "news":
       return (
         <g>
-          <path d="M5 6.5h11.5v11a1.5 1.5 0 0 0 1.5 1.5H6.5A1.5 1.5 0 0 1 5 17.5Z" fill="#fff" />
-          <path d="M16.5 9.5H19v8a1.25 1.25 0 0 1-2.5 0Z" fill="#fff" opacity="0.75" />
-          <path d="M7.3 9.3h6.9M7.3 12h6.9M7.3 14.6h4.4" stroke="#e4283f" strokeWidth="1.3" strokeLinecap="round" />
+          {/* An N in two reds: the uprights, and the lighter stroke between them. */}
+          <path d="M5 5h4.2l5.8 8.7V19H10.8L5 10.3Z" fill="#ff6479" />
+          <path d="M5 5h4.2v14H5zM14.8 5H19v14h-4.2z" fill="#fa2d48" />
         </g>
       );
     case "food":
