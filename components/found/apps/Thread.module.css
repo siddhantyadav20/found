@@ -1,14 +1,84 @@
-.day {
-  margin: 18px 0 8px;
+/* One conversation, as iOS Messages draws it. */
+
+/* --- The top: back, and the person ---------------------------------------- */
+
+.head {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 2px 12px 6px;
+}
+
+.who {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+span.who {
+  cursor: default;
+}
+
+.whoName {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 190px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgba(120, 120, 128, 0.24);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.whoName span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.whoName svg {
+  flex: none;
+  width: 5px;
+  height: 9px;
+}
+
+.headEnd {
+  justify-self: end;
+}
+
+/* --- The conversation ------------------------------------------------------- */
+
+.body {
+  padding-top: 4px;
+}
+
+/* A time stamp: the day in bold, then the time. */
+.stamp {
+  margin: 16px 0 8px;
   font-size: 12px;
-  color: var(--os-faint);
+  color: var(--ios-grey);
   text-align: center;
+}
+
+.stamp b {
+  font-weight: 600;
 }
 
 .moved {
   margin: 70px 24px;
   font-size: 14px;
-  color: var(--os-faint);
+  color: var(--ios-grey);
   text-align: center;
 }
 
@@ -16,7 +86,11 @@
   display: grid;
   justify-items: start;
   gap: 2px;
-  margin: 3px 0;
+  margin: 1px 0;
+}
+
+.row[data-tail] {
+  margin-bottom: 8px;
 }
 
 .row[data-from="owner"] {
@@ -40,18 +114,19 @@
 }
 
 .sender {
-  margin: 6px 12px 0;
+  margin: 4px 14px 1px;
   font-size: 12px;
-  color: var(--os-faint);
+  color: var(--ios-grey);
 }
 
 .bubble {
-  max-width: 78%;
+  position: relative;
+  max-width: 76%;
   margin: 0;
-  padding: 8px 13px;
+  padding: 7px 13px 8px;
   border-radius: 19px;
-  background: var(--os-panel-2);
-  font-size: 16px;
+  background: var(--ios-incoming);
+  font-size: 17px;
   line-height: 1.3;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -60,8 +135,59 @@
 }
 
 .row[data-from="owner"] .bubble {
-  background: var(--os-owner);
+  background: var(--ios-blue);
   color: #fff;
+}
+
+/* The tail on the last bubble of a run: a curl of the bubble's colour,
+   trimmed by a curl of the background, the way iOS draws it. */
+.row[data-tail] .bubble::before,
+.row[data-tail] .bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 18px;
+}
+
+.row[data-tail][data-from="them"] .bubble::before {
+  left: -7px;
+  width: 20px;
+  background: var(--ios-incoming);
+  border-bottom-right-radius: 15px 14px;
+}
+
+.row[data-tail][data-from="them"] .bubble::after {
+  left: -10px;
+  width: 10px;
+  background: var(--os-bg);
+  border-bottom-right-radius: 10px;
+}
+
+.row[data-tail][data-from="owner"] .bubble::before {
+  right: -7px;
+  width: 20px;
+  background: var(--ios-blue);
+  border-bottom-left-radius: 15px 14px;
+}
+
+.row[data-tail][data-from="owner"] .bubble::after {
+  right: -10px;
+  width: 10px;
+  background: var(--os-bg);
+  border-bottom-left-radius: 10px;
+}
+
+/* A deleted message keeps its place, and says so. No tail on an outline. */
+.bubble[data-scrubbed] {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--os-line);
+  color: var(--ios-grey);
+  font-style: italic;
+}
+
+.row[data-tail] .bubble[data-scrubbed]::before,
+.row[data-tail] .bubble[data-scrubbed]::after {
+  display: none;
 }
 
 .photo {
@@ -70,45 +196,74 @@
   padding: 0;
   overflow: hidden;
   border: 0;
-  border-radius: 16px;
+  border-radius: 18px;
   background: none;
   cursor: pointer;
 }
 
-.time {
-  margin: 1px 10px 6px;
+.receipt {
+  margin: 1px 6px 4px;
   font-size: 11px;
-  color: var(--os-faint);
-}
-
-.composer {
-  flex: none;
-  margin: 6px 12px 34px;
-  padding: 10px 16px;
-  border: 1px solid var(--os-line);
-  border-radius: 20px;
-  font-size: 13px;
-  color: var(--os-faint);
-}
-
-/* A deleted message keeps its place, and says so. */
-.bubble[data-scrubbed] {
-  background: none;
-  box-shadow: inset 0 0 0 1px var(--os-line);
-  color: var(--os-faint);
-  font-style: italic;
+  font-weight: 500;
+  color: var(--ios-grey);
 }
 
 .card {
   max-width: 86%;
 }
 
-/* What the player can send, stacked where the keyboard would be. */
+/* --- The bottom: what can be sent ------------------------------------------ */
+
+.composer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 10px 30px;
+}
+
+.plus {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(120, 120, 128, 0.24);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge);
+}
+
+.plus svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--ios-grey);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: rgba(120, 120, 128, 0.16);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+  font-size: 15px;
+  color: var(--ios-grey);
+}
+
+/* What the player can send: glass chips, stacked where the keyboard would be. */
 .replies {
   flex: none;
   display: grid;
   gap: 6px;
-  margin: 4px 12px 34px;
+  margin: 4px 10px 30px;
   animation: rise 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) both;
 }
 
@@ -121,38 +276,35 @@
 
 .replyOption {
   justify-self: end;
-  max-width: 88%;
+  max-width: 86%;
   padding: 9px 14px;
-  border: 1px solid rgba(255, 138, 61, 0.45);
-  border-radius: 18px;
-  background: rgba(194, 65, 12, 0.18);
+  border: 0;
+  border-radius: 19px;
+  background: rgba(10, 132, 255, 0.2);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 132, 255, 0.55),
+    var(--glass-edge);
   color: var(--os-text);
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
   text-align: right;
   cursor: pointer;
 }
 
 .replyOption:hover {
-  background: rgba(194, 65, 12, 0.32);
+  background: rgba(10, 132, 255, 0.32);
 }
 
 .replyOption[data-silent] {
-  border-color: var(--os-line);
-  background: none;
-  color: var(--os-dim);
+  background: rgba(120, 120, 128, 0.16);
+  box-shadow: var(--glass-edge);
+  color: var(--ios-grey);
   font-style: italic;
 }
 
-.nameButton {
-  padding: 6px 8px;
-  border: 0;
-  background: none;
-  color: var(--os-accent);
-  font: inherit;
-  font-size: 15px;
-  cursor: pointer;
-}
+/* --- Naming an unknown number ---------------------------------------------- */
 
 .naming {
   display: flex;
@@ -163,23 +315,23 @@
 .nameInput {
   flex: 1;
   min-width: 0;
-  padding: 8px 12px;
-  border: 1px solid var(--os-line);
-  border-radius: 10px;
-  background: var(--os-panel);
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(118, 118, 128, 0.24);
   color: var(--os-text);
   font: inherit;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .nameSave {
-  padding: 8px 14px;
+  padding: 9px 16px;
   border: 0;
-  border-radius: 10px;
-  background: var(--os-accent);
-  color: #1a0d04;
+  border-radius: 99px;
+  background: var(--ios-blue);
+  color: #fff;
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -213,41 +365,21 @@
   min-height: 44px;
 }
 
-.contactDone {
-  padding: 8px 6px;
-  border: 0;
-  background: none;
-  color: var(--os-accent);
-  font: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
 .contactAvatar {
   align-self: center;
-  display: grid;
-  place-items: center;
-  width: 88px;
-  height: 88px;
   margin-top: 6px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #a5a5aa, #6c6c71);
-  color: #fff;
-  font-size: 38px;
-  font-weight: 600;
 }
 
 .contactName {
   margin: 12px 0 2px;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   text-align: center;
 }
 
 .contactSub {
   margin: 0;
-  font-size: 14px;
-  color: var(--os-dim);
+  font-size: 15px;
+  color: var(--ios-grey);
   text-align: center;
 }

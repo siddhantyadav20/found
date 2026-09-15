@@ -16,8 +16,10 @@ export function Chevron({ back = false }: { back?: boolean }) {
 }
 
 /**
- * An app's top bar: an optional back button, a title (which can open
- * something, like a contact's details), and room on the right.
+ * An app's top bar, as current iOS draws it: back is a small glass circle
+ * with a chevron, the title sits in the middle (and can open something, like
+ * a contact's details), and actions on the right are glass pills
+ * (`app.pill`).
  *
  * The back button carries `data-back`: swiping a screen right presses the
  * last one on the phone, so every screen with a back button can be swiped.
@@ -38,9 +40,8 @@ export default function AppBar({
   return (
     <header className={styles.bar}>
       {onBack ? (
-        <button type="button" className={styles.back} onClick={onBack} data-back>
+        <button type="button" className={styles.back} onClick={onBack} data-back aria-label={backLabel}>
           <Chevron back />
-          {backLabel}
         </button>
       ) : (
         <span />
