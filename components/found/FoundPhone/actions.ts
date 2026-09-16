@@ -5,7 +5,7 @@ import * as engine from "@/lib/found/engine";
 import { MILESTONE_OF } from "@/lib/found/events";
 import { afterCommit, bindProgress, commit, readProgress } from "@/lib/found/progress";
 import { MARK_EMOJI, resultOf } from "@/lib/found/result";
-import { markSolved, syncSave } from "@/lib/found/shelf";
+import { markSolved, noteBattery, syncSave } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
 import { pickCast } from "@/lib/found/voice";
 import { wakeAudio } from "@/lib/found/buzz";
@@ -67,6 +67,7 @@ function save(next: engine.CaseState): void {
     next = { ...next, at };
   }
   commit(next);
+  noteBattery(caseId, engine.battery(ep, next));
   for (const episode of ended) solve(episode, next);
 }
 
@@ -94,8 +95,9 @@ function runId(): string {
 /** The envelope is opened: deal the cast and start the case. Runs in a click. */
 export function start(): void {
   wakeAudio();
-  const s = engine.newCase(devCast() ?? pickCast(ep.names), runId(), Date.now(), arrivedVia);
-  commit(engine.see(ep, s, ep.envelope.evidence));
+  const s = engine.see(ep, engine.newCase(devCast() ?? pickCast(ep.names), runId(), Date.now(), arrivedVia), ep.envelope.evidence);
+  commit(s);
+  noteBattery(caseId, engine.battery(ep, s));
   beat("open", undefined, arrivedVia);
 }
 

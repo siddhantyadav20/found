@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Desk from "@/components/found/Desk";
+import { FEATURED } from "@/content/cases";
+import { estimatedMinutes } from "@/lib/found/store";
 
 export const metadata: Metadata = {
   title: { absolute: "Found" },
@@ -7,6 +9,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
-  return <Desk />;
+/** The luggage tag's "about N min" follows the real median, hourly. */
+export const revalidate = 3600;
+
+export default async function Home() {
+  return <Desk minutes={await estimatedMinutes(FEATURED)} />;
 }

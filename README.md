@@ -81,6 +81,10 @@ samples-src/             source recordings (git-ignored)
   a year after the last write. Dev switches: `?storage=refused` for the
   private-browsing warning, `?inapp=instagram|facebook` for the in-app guard
   (add `?os=android` for "Open in Chrome").
+- **The desk reads the same keys** (plus `found:<case>:battery`) to draw the
+  phone as you left it. Dev switches: `?arrived=1` on `/` for "Something else
+  arrived", `?away=1` on a case for "While you were away" without waiting
+  half an hour.
 - **Drops need a store.** `next dev` uses the in-memory stand-in
   (`lib/upstashDev.ts`, emptied on restart). `next start` with no Upstash
   variables can't seal anything, so "Pass it on" falls back to the case's plain

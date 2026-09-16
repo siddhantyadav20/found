@@ -4,10 +4,14 @@ import { STORIES } from "@/content/stories";
 import { newCase, tryUnlock, type CaseState } from "@/lib/found/engine";
 import { KEEPING, eventsFor } from "@/lib/found/events";
 import {
+  AWAY_MS,
   NUMBER_ALPHABET,
   ago,
+  arrivals,
   betterSolved,
   describeCase,
+  deskState,
+  wasAway,
   isSolved,
   normalizeCaseNumber,
   numberFromBytes,
@@ -105,6 +109,33 @@ describe("your cases, in a line", () => {
     expect(ago(0, 12 * 60_000)).toBe("12 min ago");
     expect(ago(0, hours(30))).toBe("yesterday");
     expect(ago(0, hours(24 * 5))).toBe("5 days ago");
+  });
+});
+
+describe("the desk remembers", () => {
+  const s = fresh();
+  const one: Solved = { episode: 1, minutes: 31, marks: "🟩", at: 0 };
+
+  it("draws the phone as it was left", () => {
+    expect(deskState(null, null)).toEqual({ kind: "new" });
+    expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1, name: "Kabir" });
+    expect(deskState(add(s, "dead"), one)).toEqual({ kind: "between", name: "Kabir" });
+    expect(deskState(add(s, "dead", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
+    expect(deskState(add(s, "dead", "ep:2", "ep:2-done"), one)).toEqual({ kind: "solved", solved: one, again: false });
+    expect(deskState(null, one)).toEqual({ kind: "solved", solved: one, again: true });
+  });
+
+  it("says something arrived only to someone who has been before", () => {
+    expect(arrivals(null, ["low-battery", "case-two"])).toEqual([]);
+    expect(arrivals(["low-battery"], ["low-battery", "case-two"])).toEqual(["case-two"]);
+    expect(arrivals(["low-battery", "case-two"], ["low-battery", "case-two"])).toEqual([]);
+  });
+
+  it("welcomes a player back after half an hour away", () => {
+    expect(wasAway(s, AWAY_MS - 1)).toBe(false);
+    expect(wasAway(s, AWAY_MS)).toBe(true);
+    const later = { ...s, at: { "lock:passcode": AWAY_MS } };
+    expect(wasAway(later, AWAY_MS + 60_000)).toBe(false);
   });
 });
 

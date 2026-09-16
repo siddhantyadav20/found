@@ -19,6 +19,11 @@ export const found = {
     "Someone is missing, and their phone has arrived in your post. A mystery in one sitting, played on the phone itself.",
   /** The missing person's lock screen: the game's, and the canvas phone's. */
   wallpaper: "/found/wallpaper.jpg",
+  /** For the desk's luggage tag. */
+  episodes: 2,
+  tone: "Grounded thriller",
+  /** Said on the envelope, before anyone opens it. */
+  note: "16+ · A missing person, stalking and threats.",
 } as const;
 
 /**

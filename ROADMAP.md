@@ -108,7 +108,8 @@ Built: case numbers like `K7Q4-MX2P-R9TA` (12 characters, nothing that reads two
 - **"Your cases" on the desk.**
 - **Keep the design doc current** with Siddhant's answers.
 
-### S5 — The desk remembers, and the first tap
+### S5 — The desk remembers, and the first tap · *done 2026-09-16*
+Built: the desk phone as you left it — new (buzzing), mid-case (your battery, "Case file · Episode 1 · Mira is still missing", "Continue · Ep 1"), between episodes (dark, charging, a cable off the desk, "Charge it · Ep 2"), solved (dark inside an evidence bag with its label, "Play again" or "Open it"); "Something else arrived" for a returning visitor when a new case appears. A luggage tag on hover, keyboard focus or a hold (episodes, length, tone). A sound toggle on the desk, and "Sound on" in the envelope's small print is the switch. Back after 30 minutes, "While you were away" arrives once anything already due has landed, and opens the case file on "Case so far". The first tap: the desk phone morphs into the envelope (or your phone) with React's `<ViewTransition>`; full screen on an Android phone; a Wake Lock while a case is in hand; the key nudges after 20 s untouched. The envelope reads "Sound on · headphones better · about N min · saves as you play" and "16+ · A missing person, stalking and threats." Checked on real devices still: the morph, full screen, the Wake Lock, and holding for the tag.
 - **Desk states:**
   - mid-case: your phone, your battery, "Continue · Ep 1"
   - between episodes: charging

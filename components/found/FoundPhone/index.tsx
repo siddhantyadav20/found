@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, ViewTransition } from "react";
 
 import { useCase } from "@/components/found/StoryContext";
 import type { AppId, LiveEvent, Story } from "@/content/found/types";
@@ -8,9 +8,12 @@ import { useMounted } from "@/lib/clientValue";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
 import { dropLabel } from "@/lib/found/dropName";
 import { battery, clockNow, dueEvents, has, sessionVars, stage, stamp, type CaseState } from "@/lib/found/engine";
+import { wasAway } from "@/lib/found/keeping";
+import { enterFullscreen } from "@/lib/found/platform";
 import { useLargerText } from "@/lib/found/prefs";
 import { progressServerSide, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { say } from "@/lib/found/voice";
+import { useWakeLock } from "@/lib/found/wakeLock";
 
 import Calculator from "../apps/Calculator";
 import Food from "../apps/Food";
@@ -137,6 +140,11 @@ const backlogOf = (ep: Story): number =>
 /** Whether this page load has already reported a returning player, and an arrival. */
 let resumeCounted = false;
 let arrivalCounted = false;
+/** Whether this page load came back to a case after a while (`?away=1` in dev), and has said so. */
+let awayFrom = false;
+let awayShown = false;
+/** From the phone's screen coming on to "While you were away". */
+const AWAY_BANNER_AFTER = 1400;
 
 /**
  * The phone, the room it's in, and the order things happen.
@@ -181,8 +189,13 @@ export default function FoundPhone() {
   // The module flag, not the effect, is what makes it once: Strict Mode and
   // Fast Refresh both run mount effects again.
   useEffect(() => {
-    if (resumeCounted || !readProgress()) return;
+    const saved = readProgress();
+    if (resumeCounted || !saved) return;
     resumeCounted = true;
+    // Read before anything this visit touches the save.
+    awayFrom =
+      wasAway(saved, Date.now()) ||
+      (process.env.NODE_ENV === "development" && new URLSearchParams(window.location.search).get("away") === "1");
     play.resumed();
   }, []);
 
@@ -466,6 +479,23 @@ export default function FoundPhone() {
     return () => window.clearTimeout(timer);
   }, [unlocked2, showBanner, backlog]);
 
+  /* Back after a while: once the phone is unlocked, and after anything that
+     was already due has arrived (so it isn't talked over), the case file
+     offers the case so far. Once per page load. */
+  useEffect(() => {
+    if (awayShown || !awayFrom || screenNow !== "phone" || due) return;
+    const timer = window.setTimeout(() => {
+      awayShown = true;
+      buzz();
+      showBanner({ from: "Case file", text: "While you were away: here's the case so far.", app: "notes", arg: "so-far" });
+    }, AWAY_BANNER_AFTER);
+    return () => window.clearTimeout(timer);
+  }, [screenNow, showBanner, due]);
+
+  // The screen stays on while there's a case in hand: not on the envelope,
+  // and not on an end card.
+  useWakeLock(!!s && screenNow !== "end");
+
   /* The end of Episode 1: the last text lands, the phone holds, then the
      battery goes. Re-armed on a reload that lands in between. */
   const lastWords = !!s && (has(s, "fired:cliff-voice-photo") || has(s, "fired:cliff-voice-read")) && !has(s, "dead");
@@ -510,11 +540,19 @@ export default function FoundPhone() {
   // No save: the envelope, on the server too, so the hook paints before any
   // JavaScript arrives. A returning player's save only exists in the browser;
   // SaveScript keeps the envelope from flashing up before their phone does.
-  if (!s) body = <Envelope onOpen={play.start} label={dropLabel(to ?? "", ep.envelope.label)} />;
+  if (!s) {
+    const open = () => {
+      enterFullscreen();
+      play.start();
+    };
+    body = <Envelope onOpen={open} label={dropLabel(to ?? "", ep.envelope.label)} />;
+  }
   else if (mounted && s && st?.screen === "end") body = <EndCard state={s} episode={st.episode} onReplay={play.reset} />;
   else if (mounted && s && st) {
     const charging = st.episode === 2;
     body = (
+      // The phone on the desk, picked up: it morphs into this one.
+      <ViewTransition name="found-phone" share="morph" default="none">
       <div className={styles.device}>
         <div
           ref={screenRef}
@@ -651,6 +689,7 @@ export default function FoundPhone() {
           )}
         </div>
       </div>
+      </ViewTransition>
     );
   }
 

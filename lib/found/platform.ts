@@ -60,6 +60,18 @@ function readDevice(): Device {
   return cached;
 }
 
+/**
+ * On an Android phone, the case takes the whole screen, as a game would. Call
+ * it inside the tap. iPhone Safari has no full screen for pages, and a
+ * laptop's is the player's own business.
+ */
+export function enterFullscreen(): void {
+  const { os, handheld } = readDevice();
+  if (os !== "android" || !handheld || document.fullscreenElement) return;
+  if (window.matchMedia("(display-mode: standalone)").matches) return;
+  document.documentElement.requestFullscreen?.({ navigationUI: "hide" }).catch(() => {});
+}
+
 /** Fixed for the life of the page, so nothing to subscribe to. */
 const never = () => () => {};
 

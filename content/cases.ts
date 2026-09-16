@@ -18,6 +18,11 @@ export type CaseMeta = {
   readonly description: string;
   /** The missing person's lock screen. */
   readonly wallpaper: string;
+  /** The desk's luggage tag: how many episodes, and what kind of story. */
+  readonly episodes: number;
+  readonly tone: string;
+  /** The content note on the envelope: the age, and what's in it. */
+  readonly note: string;
   /** What keeps landing on this case's lock screen. The desk cycles it. */
   readonly teaser: readonly { readonly from: string; readonly text: string }[];
 };

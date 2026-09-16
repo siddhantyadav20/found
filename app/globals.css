@@ -74,6 +74,29 @@ html[data-found-save] [data-envelope] {
   visibility: hidden;
 }
 
+/* The first tap: the phone picked up off the desk morphs into the envelope,
+   or into your phone (`<ViewTransition name="found-phone" share="morph">`).
+   A touch of blur mid-flight hides the scaling. */
+::view-transition-group(.morph) {
+  animation-duration: 460ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+
+@keyframes via-blur {
+  30% {
+    filter: blur(2px);
+  }
+}
+
+/* Taps during the transition reach the page underneath. */
+::view-transition {
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -81,5 +104,12 @@ html[data-found-save] [data-envelope] {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }

@@ -10,6 +10,7 @@ import * as play from "../FoundPhone/actions";
 import AppBar from "./AppBar";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
+import so from "./CaseSoFar.module.css";
 import styles from "./Notes.module.css";
 
 const SOURCE: Record<AppId, string> = {
@@ -40,6 +41,11 @@ const WORDS = ["none", "one", "two", "three"];
 /** How many pieces of evidence a question wants shown together. */
 const needed = (d: Deduction) => (d.answer.kind === "evidence" ? Math.min(...d.answer.accepts.map((c) => c.length)) : 1);
 
+function hintCount(hints: Readonly<Record<string, number>>): string {
+  const n = Object.values(hints).reduce((a, b) => a + b, 0);
+  return n === 0 ? "no hints" : n === 1 ? "1 hint" : `${n} hints`;
+}
+
 /** "Choose two", then "1 of 2 chosen": the count is part of the question. */
 function chooseLabel(n: number, need: number): string {
   const word = WORDS[need] ?? String(need);
@@ -59,8 +65,11 @@ function chooseLabel(n: number, need: number): string {
  * how many. Ticking everything and pressing Show used to solve every
  * question; now Show waits for the right count, and the engine refuses
  * extras anyway.
+ *
+ * Opened from "While you were away" (`arg` "so-far"), it starts with the case
+ * so far: what's been worked out, what's still open, how much has been found.
  */
-export default function Notes({ state, nav }: AppProps) {
+export default function Notes({ state, nav, arg }: AppProps) {
   const ep = useStory();
   const vars = sessionVars(ep, state);
   const t = (x: string) => say(x, state.cast, vars);
@@ -112,6 +121,39 @@ export default function Notes({ state, nav }: AppProps) {
         <p className={styles.who}>
           {state.cast.name} {ep.surname}, 19. Missing since Friday night.
         </p>
+
+        {arg === "so-far" && (
+          <article className={so.card} aria-labelledby="so-far">
+            <p className={so.eyebrow} id="so-far">
+              Case so far · Episode {has(state, "ep:2") ? 2 : 1}
+            </p>
+            {solved.length > 0 ? (
+              <>
+                <p className={so.label}>What you&apos;ve worked out</p>
+                <ul className={so.list}>
+                  {solved.slice(0, 3).map((d) => (
+                    <li key={d.id}>{t(d.right)}</li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className={so.text}>Nothing worked out yet. Start with what&apos;s on the lock screen.</p>
+            )}
+            {open.length > 0 && (
+              <>
+                <p className={so.label}>Still open</p>
+                <ul className={so.list}>
+                  {open.map((d) => (
+                    <li key={d.id}>{t(d.question)}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            <p className={so.meta}>
+              {found.length} {found.length === 1 ? "thing" : "things"} found · {hintCount(state.hints)}
+            </p>
+          </article>
+        )}
 
         {reacting && (
           <article className={styles.react}>
