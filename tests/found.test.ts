@@ -426,7 +426,10 @@ describe("playing it", () => {
 
   it("delivers read receipts because you opened the thread", () => {
     let s = tryUnlock(ep, start(), "passcode", "140306").state;
-    expect(dueEvents(ep, s).map((e) => e.id)).toEqual(["mum-delivered"]);
+    // The case file introduces itself first — that banner is the whole
+    // tutorial — and Mum's "It says delivered." lands behind it.
+    expect(dueEvents(ep, s).map((e) => e.id)).toEqual(["case-open", "mum-delivered"]);
+    s = fire(s, "case-open");
     s = fire(s, "mum-delivered");
     expect(dueEvents(ep, s)).toEqual([]);
     s = perform(ep, s, "open:mum");

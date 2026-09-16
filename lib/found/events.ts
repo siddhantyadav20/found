@@ -11,7 +11,7 @@ import type { Flag, Story } from "@/content/found/types";
        e2-alive → e2-trust → e2-delivered → ep2-end               Episode 2
      e2-saw:yes|maybe|no                                          did the turn land
      mum:lie|truth|silence, k:threat                              what they chose
-     wrong:<id>, hint:<id>:<tier>                                 where it's too hard
+     wrong:<id>, hint:<id>:<tier>, nudge:<id>:<tier>              where it's too hard
      resume                                                       whether they come back
      ep2:yes|no, ep3:yes|no, email                                whether they want more
      share:open|whatsapp|native|copy, drop:create                 whether they pass it on
@@ -98,7 +98,16 @@ export function eventsFor(ep: Story): readonly string[] {
     list = [
       ...MILESTONES,
       ...CHOICES,
-      ...puzzles.flatMap((id) => [`wrong:${id}`, `hint:${id}:1`, `hint:${id}:2`, `hint:${id}:3`]),
+      ...puzzles.flatMap((id) => [
+        `wrong:${id}`,
+        `hint:${id}:1`,
+        `hint:${id}:2`,
+        `hint:${id}:3`,
+        // Offered rather than asked for: where the game noticed a player was stuck.
+        `nudge:${id}:1`,
+        `nudge:${id}:2`,
+        `nudge:${id}:3`,
+      ]),
       ...VERDICTS,
       ...SHARING,
       ...POWER,

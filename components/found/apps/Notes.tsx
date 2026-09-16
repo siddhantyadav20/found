@@ -4,7 +4,8 @@ import { useState } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
 import type { AppId, Deduction } from "@/content/found/types";
-import { caseFile, deductionOpen, has, lockAvailable, sessionVars } from "@/lib/found/engine";
+import { caseFile, has, lockAvailable, sessionVars } from "@/lib/found/engine";
+import { lookIn, openQuestion } from "@/lib/found/guide";
 import { say } from "@/lib/found/voice";
 import * as play from "../FoundPhone/actions";
 import AppBar from "./AppBar";
@@ -80,7 +81,11 @@ export default function Notes({ state, nav, arg }: AppProps) {
   const [hints, setHints] = useState<Record<string, string>>({});
 
   const found = caseFile(ep, state);
-  const open = ep.deductions.filter((d) => deductionOpen(state, d)).reverse();
+  // One question at a time. Several can be technically open; asking them all
+  // at once is the difference between a case file and a homework sheet.
+  const question = openQuestion(ep, state);
+  const open = question ? [question] : [];
+  const look = lookIn(ep, state);
   const solved = ep.deductions.filter((d) => has(state, `solved:${d.id}`)).reverse();
   const vault = ep.locks.find((l) => l.id === "vault");
   const vaultCard =
@@ -182,6 +187,14 @@ export default function Notes({ state, nav, arg }: AppProps) {
             <p className={styles.eyebrow}>Open question</p>
             <h3 className={styles.question}>{t(d.question)}</h3>
             <p className={styles.ask}>{t(d.ask)}</p>
+            {look.length > 0 && (
+              <p className={styles.look}>
+                <span>Where to look:</span>
+                {look.map((app) => (
+                  <b key={app}>{SOURCE[app]}</b>
+                ))}
+              </p>
+            )}
             {replies[d.id] && !replies[d.id].ok && <p className={styles.nudge}>{replies[d.id].text}</p>}
             {hints[d.id] && <p className={styles.hint}>{hints[d.id]}</p>}
 

@@ -203,6 +203,8 @@ export type Lock = {
   readonly clues: readonly string[];
   readonly hints: Hints;
   readonly requires?: readonly Flag[];
+  /** Which apps hold the answer. Shown for free, always: apps, never answers. */
+  readonly look?: readonly AppId[];
 };
 
 export type Deduction = {
@@ -226,6 +228,8 @@ export type Deduction = {
   /** Said for any other wrong pick. */
   readonly otherwise: string;
   readonly hints: Hints;
+  /** Which apps hold the answer. Shown for free, always: apps, never answers. */
+  readonly look?: readonly AppId[];
 };
 
 /**
@@ -242,6 +246,8 @@ export type LiveEvent = {
   readonly messages: readonly Message[];
   /** A system banner with no thread behind it. */
   readonly banner?: string;
+  /** Which app that banner belongs to, and opens. */
+  readonly bannerApp?: AppId;
   readonly effect?: "show-you" | "power-off" | "episode-end" | "open-notes";
 };
 

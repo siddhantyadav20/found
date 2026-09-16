@@ -373,6 +373,7 @@ export const episode1: Story = {
       app: "lock",
       answer: "140306",
       clues: ["medical-id"],
+      look: ["lock"],
       hints: [
         "A locked phone still shows a few things to whoever is holding it.",
         "Look for Emergency on the lock screen. People pick numbers they already know.",
@@ -385,6 +386,7 @@ export const episode1: Story = {
       answer: "2719",
       clues: ["tara-code", "locker"],
       requires: ["lock:passcode"],
+      look: ["messages", "photos", "calculator"],
       hints: [
         "Why is a calculator on the home screen of someone who never does maths?",
         "{name} told Tara on Wednesday night which code {they} used to lock things away.",
@@ -407,6 +409,7 @@ export const episode1: Story = {
         "medical-id": "That's who {name} is. Not where {they} went.",
       },
       otherwise: "That doesn't say anything about after ten o'clock.",
+      look: ["health", "settings", "photos"],
       hints: [
         "A phone keeps records of more than messages. Where else would Friday night leave a trace?",
         "Try Health, or the list of Wi-Fi networks in Settings.",
@@ -425,6 +428,7 @@ export const episode1: Story = {
         "health-walk": "That's {name}'s walk. Where was Dev while {they} walked?",
       },
       otherwise: "That doesn't say where Dev was after 22:20.",
+      look: ["messages", "settings"],
       hints: [
         "Someone who was at the party would know when Dev came back in.",
         "Keep an eye on Messages. Tara has something she wants whoever has this phone to see.",
@@ -446,6 +450,7 @@ export const episode1: Story = {
         station: "The train was close. Close enough to hear, not to board.",
       },
       otherwise: "Nothing on this phone puts {them} there.",
+      look: ["maps", "settings", "memos"],
       hints: [
         "Three things on this phone point at the same place. One is a network name.",
         "SRM-GATE3-GUEST, a search in Maps, and a train in the memo. Find where they meet on the map.",
@@ -457,6 +462,17 @@ export const episode1: Story = {
   /* --- What happens because you got somewhere ------------------------------ */
 
   events: [
+    {
+      /* The first thing that happens after the passcode: the case file says
+         it exists, and taps through to one question and where to look. This
+         is the whole tutorial, and it is a notification. */
+      id: "case-open",
+      when: ["lock:passcode"],
+      thread: null,
+      messages: [],
+      banner: "You started a note.",
+      bannerApp: "notes",
+    },
     {
       id: "mum-delivered",
       when: ["lock:passcode"],

@@ -56,6 +56,25 @@
   font-size: 15px;
 }
 
+/* Where to look: apps, never answers. Free, always visible, and the line that
+   does most of the work against "what am I supposed to do now". */
+.look {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ios-grey);
+}
+
+.look b {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 138, 61, 0.14);
+  color: var(--os-accent);
+  font-weight: 600;
+}
+
 /* A hint: the game speaking, so it keeps Found's colour. */
 .hint {
   margin: 0;

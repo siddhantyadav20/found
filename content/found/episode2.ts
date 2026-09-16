@@ -193,6 +193,7 @@ export const episode2: Part = {
         mum: "Mum is the one reading the report.",
       },
       otherwise: "Who has had this phone since 08:10?",
+      look: ["guardian", "messages"],
       hints: [
         "When did the phone reach you? When was it first picked up?",
         "It came in your post at 08:10. Someone unlocked it at {firstPickup}.",
@@ -211,6 +212,7 @@ export const episode2: Part = {
         "burner-close": "That's the second time. What was the first?",
       },
       otherwise: "That's not how anyone got you to open it.",
+      look: ["messages"],
       hints: [
         "Two messages on this phone told you not to do something.",
         "Both came from +91 •• ••5520.",
@@ -229,6 +231,7 @@ export const episode2: Part = {
         "k-guardian": "That's who knew. What did it produce?",
       },
       otherwise: "That doesn't explain why a stranger, or why this phone.",
+      look: ["guardian", "calculator"],
       hints: [
         "Who else can see what this phone does?",
         "Mum's app sends her a report. And someone was told about that app on Friday.",
@@ -247,6 +250,7 @@ export const episode2: Part = {
         "dev-story": "That's Friday. You need something from after.",
       },
       otherwise: "That's from before Friday night, or it's you.",
+      look: ["settings", "messages"],
       hints: [
         "Signing in leaves a trail too.",
         "Settings, then the devices signed in. The list refreshes once there's Wi-Fi.",
@@ -265,6 +269,7 @@ export const episode2: Part = {
         "burner-dont": "That's what he said. Show what he wrote.",
       },
       otherwise: "Compare the handwriting.",
+      look: ["envelope", "calculator"],
       hints: [
         "Someone wrote TO YOU / BY HAND on your envelope, by hand.",
         "Something in the vault is in the same writing. It syncs once there's Wi-Fi.",

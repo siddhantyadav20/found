@@ -156,6 +156,21 @@ export function hint(id: string): string | null {
   return h.text;
 }
 
+/**
+ * The same ladder, offered rather than asked for: the phone buzzes after a
+ * while stuck. Counted separately, so the funnel can tell "I asked for help"
+ * from "the game noticed I was lost".
+ */
+export function nudge(id: string): string | null {
+  const s = readProgress();
+  if (!s) return null;
+  const h = engine.hint(ep, s, id);
+  if (!h) return null;
+  save(h.state);
+  beat(`nudge:${id}:${h.tier}`);
+  return h.text;
+}
+
 export function fire(eventId: string): void {
   const s = readProgress();
   if (s) save(engine.fire(s, eventId));

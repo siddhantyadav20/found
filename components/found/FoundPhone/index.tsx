@@ -8,6 +8,7 @@ import { useMounted } from "@/lib/clientValue";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
 import { dropLabel } from "@/lib/found/dropName";
 import { battery, clockNow, dueEvents, has, sessionVars, stage, stamp, type CaseState } from "@/lib/found/engine";
+import { badgesOf, nextNudge } from "@/lib/found/guide";
 import { wasAway } from "@/lib/found/keeping";
 import { enterFullscreen } from "@/lib/found/platform";
 import { useLargerText } from "@/lib/found/prefs";
@@ -37,6 +38,7 @@ import Home from "./Home";
 import { AppGlyph } from "./icons";
 import LockScreen from "./LockScreen";
 import styles from "./FoundPhone.module.css";
+import toastStyles from "./Toast.module.css";
 
 type Route = { app: AppId | "home"; arg?: string };
 type Notice = { from: string; text: string; app: AppId; arg?: string };
@@ -101,8 +103,8 @@ function noticeOf(ep: Story, s: CaseState, e: LiveEvent): Notice | null {
     };
   }
   if (e.banner) {
-    const app: AppId = e.id === "e2-nightcam" ? "nightcam" : e.id === "e2-vault" ? "calculator" : "maps";
-    return { from: app === "maps" ? "Maps" : app === "nightcam" ? "NightCam" : "Calculator", text: say(e.banner, s.cast, vars), app };
+    const app: AppId = e.bannerApp ?? (e.id === "e2-nightcam" ? "nightcam" : e.id === "e2-vault" ? "calculator" : "maps");
+    return { from: BANNER_FROM[app] ?? "Maps", text: say(e.banner, s.cast, vars), app };
   }
   return null;
 }
@@ -136,6 +138,22 @@ function noticesOf(ep: Story, s: CaseState): (Notice & { key: string; time: stri
 const backlogOf = (ep: Story): number =>
   ep.threads.reduce((n, t) => n + t.messages.filter((m) => m.requires?.length === 1 && m.requires[0] === "ep:2").length, 0) +
   ep.headlines.filter((h) => h.requires?.length === 1 && h.requires[0] === "ep:2").length;
+
+/** Who a system banner is from, when it belongs to an app rather than a person. */
+const BANNER_FROM: Partial<Record<AppId, string>> = {
+  maps: "Maps",
+  nightcam: "NightCam",
+  calculator: "Calculator",
+  notes: "Case file",
+  guardian: "Guardian",
+  news: "City Desk",
+  settings: "Settings",
+};
+
+/** Stuck this long with something open, and the phone offers the next hint unasked. */
+const NUDGE_AFTER = 45_000;
+/** How long "Added to case file" stays up. Matches Toast.module.css. */
+const TOAST_MS = 2200;
 
 /** Whether this page load has already reported a returning player, and an arrival. */
 let resumeCounted = false;
@@ -432,6 +450,15 @@ export default function FoundPhone() {
 
   const notices = useMemo(() => (s ? noticesOf(ep, s) : []), [ep, s]);
 
+  // What each app is carrying that hasn't been looked at, plus whatever
+  // arrived in Messages while the player was elsewhere. Ten identical icons
+  // become a lit path, which is most of the answer to "what do I do now".
+  const badges = useMemo(() => {
+    if (!s) return {};
+    const b = badgesOf(ep, s);
+    return unread.size ? { ...b, messages: (b.messages ?? 0) + unread.size } : b;
+  }, [ep, s, unread]);
+
   /* Live events, one at a time, each after a beat. Whatever is due fires in
      script order; the next one is scheduled when the state changes again. */
   // Nothing arrives on a phone that's dead, charging from dead, or dying:
@@ -491,6 +518,41 @@ export default function FoundPhone() {
     }, AWAY_BANNER_AFTER);
     return () => window.clearTimeout(timer);
   }, [screenNow, showBanner, due]);
+
+  /* Everything found is worth saying out loud: opening things is progress,
+     and until now nothing on screen said so. */
+  const found = s ? s.flags.filter((f) => f.startsWith("seen:")).length : 0;
+  const [toast, setToast] = useState<{ n: number; key: number } | null>(null);
+  const lastFound = useRef(found);
+  useEffect(() => {
+    if (found <= lastFound.current) {
+      lastFound.current = found;
+      return;
+    }
+    lastFound.current = found;
+    const show = window.setTimeout(() => setToast({ n: found, key: Date.now() }), 0);
+    const hide = window.setTimeout(() => setToast(null), TOAST_MS);
+    return () => {
+      window.clearTimeout(show);
+      window.clearTimeout(hide);
+    };
+  }, [found]);
+
+  /* Stuck: rather than hiding help behind a button in an app they haven't
+     found, the phone buzzes and offers the next rung of the ladder. The timer
+     restarts whenever the player gets anywhere. */
+  useEffect(() => {
+    if (!s || screenNow !== "phone" || banner) return;
+    const timer = window.setTimeout(() => {
+      const cur = readProgress();
+      const next = cur && nextNudge(ep, cur);
+      if (!cur || !next) return;
+      play.nudge(next.id);
+      buzz();
+      showBanner({ from: "Case file", text: say(next.text, cur.cast, sessionVars(ep, cur)), app: "notes" });
+    }, NUDGE_AFTER);
+    return () => window.clearTimeout(timer);
+  }, [ep, s, screenNow, banner, showBanner]);
 
   // The screen stays on while there's a case in hand: not on the envelope,
   // and not on an end card.
@@ -579,7 +641,7 @@ export default function FoundPhone() {
                 <>
                   {/* Home stays underneath an open app, the way it does on a
                       phone: pulling the app away shows it. */}
-                  <Home state={s} nav={nav} unread={unread.size} covered={route.app !== "home"} />
+                  <Home state={s} nav={nav} badges={badges} covered={route.app !== "home"} />
                   {route.app !== "home" && (
                     <div
                       ref={appRef}
@@ -676,6 +738,11 @@ export default function FoundPhone() {
               </span>
               <span className={styles.bannerNow}>now</span>
             </button>
+          )}
+          {toast && (
+            <div key={toast.key} className={toastStyles.toast} role="status">
+              Added to case file · <span className={toastStyles.count}>{toast.n} found</span>
+            </div>
           )}
           {dying && (
             <div className={styles.powerOff} role="status">

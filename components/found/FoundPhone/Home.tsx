@@ -45,12 +45,13 @@ const DOCK: { app: AppId; label: string }[] = [
 export default function Home({
   state,
   nav,
-  unread,
+  badges,
   covered = false,
 }: {
   state: CaseState;
   nav: Nav;
-  unread: number;
+  /** What each app is carrying that hasn't been looked at. A real phone's badges. */
+  badges: Partial<Record<AppId, number>>;
   covered?: boolean;
 }) {
   const ep = useStory();
@@ -77,7 +78,7 @@ export default function Home({
           <div key={i} className={styles.page}>
             <div className={styles.grid}>
               {icons.map(({ app, label }) => (
-                <Icon key={app} app={app} label={label} onOpen={(from) => nav.go(app, undefined, from)} />
+                <Icon key={app} app={app} label={label} badge={badges[app] ?? 0} onOpen={(from) => nav.go(app, undefined, from)} />
               ))}
             </div>
           </div>
@@ -91,7 +92,7 @@ export default function Home({
 
       <div className={styles.dock}>
         {DOCK.map(({ app, label }) => (
-          <Icon key={app} app={app} label={label} badge={app === "messages" ? unread : 0} onOpen={(from) => nav.go(app, undefined, from)} />
+          <Icon key={app} app={app} label={label} badge={badges[app] ?? 0} onOpen={(from) => nav.go(app, undefined, from)} />
         ))}
       </div>
     </div>
@@ -115,7 +116,7 @@ function Icon({
       className={styles.icon}
       // The tile's box, so the app can zoom out of it.
       onClick={(e) => onOpen(e.currentTarget.querySelector("span")?.getBoundingClientRect())}
-      aria-label={badge > 0 ? `${label}, ${badge} unread` : label}
+      aria-label={badge > 0 ? `${label}, ${badge} new` : label}
     >
       <span className={styles.tile}>
         <AppGlyph app={app} />
