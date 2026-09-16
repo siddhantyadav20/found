@@ -1,431 +1,416 @@
-# FOUND — Chapter 1: "The Phone" · LOCKED
+# FOUND — Chapter 1: "The Phone" · LOCKED (v2, anthology)
 
-Supersedes `CHAPTER1-REDESIGN.md` and `EPISODE3.md`. This is the build document:
-story, script structure, the fix for "I didn't know what to do", and the
-product, game, motion and sound design needed to ship it.
+**Correction that drove this rewrite:** chapters do not connect. Each chapter is
+a different city, a different story, three episodes, done. That makes v1's
+ending — a photograph of your building timestamped before the crime, pointing
+at a Chapter 2 that will never arrive — a cheque that never clears. It's cut.
 
-Three episodes. About 30 minutes each. Complete in itself, and it ends with one
-question so specific that not knowing the answer is uncomfortable.
+The anthology contract is different: nobody returns to find out *what happens
+next*. They return because the last one did something to them and they want it
+done again. So Chapter 1 has to **close completely** and its final act has to
+land in the body, not the brain. v1's climax was a legal technicality resolved
+by a scrolling document. This one is a phone call, a man on the stairs, and a
+nineteen-year-old about to walk into a police station.
 
 ---
 
-# PART 1 — What changed in this final pass
+# PART 1 — What changed from v1
 
-I challenged my own redesign and cut or reversed seven things.
-
-| Change | Why |
+| Cut | Why |
 |---|---|
-| **3107 is not confirmed as {name} until Episode 3** | My earlier draft confirmed it in Ep2. Holding the ambiguity is worth more than the payoff — every message from them is then read twice. |
-| **Episode 2 drops from five deductions to three** | Five is homework. "Who wanted it unlocked" and "why a stranger" are one idea. |
-| **"Who put the phone in your letterbox?" is no longer a solved question in Ep2** | Answering "K." in Episode 2 kills Chapter 1's real question. Episode 3 asks it, and the answer isn't Kiran. |
-| **Frame 12 is a document, not a face** | Our rules forbid a real face; a matching survey reference across two frames is fairer, cheaper, and colder. |
-| **"I don't know" is an accepted case-file answer** | The game replies *"Good."* A mystery that punishes uncertainty teaches players to guess. |
-| **Cut: the number `3107` scratched on a wall** | A burner number physically present at the scene before it exists is a coincidence dressed as a clue. |
-| **Dev loses his deduction** | Five minutes spent eliminating a suspect nobody suspected. Two messages and a photograph do it. |
+| The Friday 20:55 photograph of the player's building | A Chapter 2 hook in a game with no Chapter 2. |
+| "Someone chose your letterbox before the crime" | Same. Replaced with an answer that lands inside this chapter. |
+| The chain-of-strangers series engine | Belongs to a connected series. |
+| The custody-log document as the climax | Intellectually satisfying, dramatically inert. Demoted to a mechanic inside one ending. |
+| "Safe, not cleared" as the default fate | Too small for a finale. |
 
-**The one line the whole chapter hangs on**, unchanged and now fully load-bearing:
-
-> Kiran can't reach the cloud, so he poisons the container. A phone a stranger
-> has been inside for three days is evidence nobody can use — and Mum's app is
-> what proves a stranger was inside it.
-
-Every hour the player keeps it charged, they are both destroying the case and
-holding the only key to it.
+| Added | Why |
+|---|---|
+| **A death.** The mill's night watchman, Shinde, was killed on Friday when he found the crew. The Sunday fire exists to explain the body. | Turns a property crime into culpable homicide. It is the scale the chapter was missing, and it re-weights every existing beat. |
+| **The phone rings.** The climax breaks the format: a live call, the only one in the chapter. | Three episodes of asynchronous text make one voice devastating. |
+| **Two converging clocks:** Kiran coming for the phone, and Mira walking into a police station. | A climax needs a countdown that isn't a battery bar. |
+| **The answer to "why me": you were the nearest letterbox.** | Deducible, complete, and colder than being chosen. |
+| **The anthology promise as the final beat:** a new object, a new city, next Friday. | Retention without continuation. |
 
 ---
 
-# PART 2 — The confusion fix (read this first)
+# PART 2 — The story, locked
 
-**The feedback was: people didn't know what to do.** That is the highest-priority
-problem in this document, above any story beat. Here is the diagnosis and the
-design.
+## The truth
 
-## Diagnosis
+Shree Ram Mills, Lower Parel, shut since 2009, is held up by one heritage
+listing on its 1923 engine house. A listed building can't be demolished; one
+damaged beyond repair can be delisted and cleared. Anand Realty wants it gone,
+and their fixer, **Kiran Shetty**, is paid to arrange an electrical fire for
+Sunday night.
 
-The lock screen is fine — it teaches itself. The failure is the ten seconds
-**after** the phone unlocks:
+He hires **{name} Sethi, 19**, who photographs shut buildings at night, to
+shoot the interior first — telling her the client likes to know what they're
+buying. What the client actually needs is where the engine sits and where the
+original wiring runs, so the fire looks like it started by itself. **She wasn't
+documenting a crime. She was drawing the plan**, and a student's night
+photographs of that interior, taken two days before a fire, are a scapegoat you
+can buy for ₹15,000.
 
-- The objective exists only as a widget reading *"Look around. What you open,
-  you keep."* which is atmosphere, not instruction.
-- The case file — the thing that *is* the game — is one icon among ten, named
-  "Case file", with no reason to tap it before you're already lost.
-- Hints live behind a "Think" button inside that app, so a stuck player has to
-  find the help before they can be helped.
-- Nothing tells you an app has something in it, so ten identical icons all look
-  equally likely, and most are dead ends at any given moment.
-- Nothing happens when you go quiet. A stuck player stays stuck in silence.
+**Friday.** She leaves Tara's party at 22:02, argues with Dev outside, searches
+Maps for Gate 3 at 22:24, walks 4.1 km. No signal inside, so at 23:36 the phone
+joins the crew's own router, SRM-GATE3-GUEST. At 23:38 she photographs a white
+van that shouldn't be there. Then she switches to NightCam — cloud only,
+nothing kept on the phone — and shoots **twelve frames, 23:39 to 23:50**.
 
-## The design: five mechanisms, all diegetic, no tutorial pop-ups
+**What she doesn't understand she has photographed:** petrol already stacked
+inside; a sprinkler head taped over; the wiring above the engine bay; and at
+23:47, at the edge of a torch beam, two men carrying something wrapped out of
+the engine house. **Ramesh Shinde, the night watchman, sixty-one.** He found
+them setting up. The site was supposed to be empty; so was he.
 
-**1. Badges. The single biggest fix.**
-An app icon carries a red badge when it holds something the player hasn't seen
-yet — exactly as a real phone does. Ten identical icons become a lit path. The
-badge count is *unseen evidence*, not unread messages, so Health and Settings
-can carry them too. When an episode's content is exhausted, the badges are gone
-and the player knows to look at the case file.
+23:52, a voice memo: footsteps, a train horn very close, a held breath —
+*"someone's here."*
 
-**2. One open question at a time.**
-The case file shows exactly one. The home widget shows the same sentence. The
-question is never "solve the crime"; it's always a single, concrete, answerable
-thing: *Did {name} go home after the party?*
+**00:05 Saturday.** Kiran takes the phone, makes her unlock it, finds the van
+photo in Recents and deletes it at 00:07. There is nothing else on the phone to
+find. He turns location sharing on to himself, switches it off, and locks her in
+the pump room — because she is no longer a photographer who saw a van. She is a
+witness to a body. She gets out through the drain culvert on Saturday night,
+walks the tracks to Currey Road, and reaches Tara's.
 
-**3. "Where to look" — a free hint that costs nothing and never spoils.**
-Under every open question, always visible:
-> *Where to look: Health · Settings · Photos*
+**Sunday 23:48, the mill burns.** Shinde is inside. The fire is not only to
+delist a building; it is to explain a death as an accident.
 
-It names apps, never answers. This alone removes most of the reported
-confusion: the player always knows where the next ten minutes are.
+**Monday 07:40.** Kiran, driving out of the city, drops the phone at 4% into a
+letterbox 14 km away — **the first building past the toll** — photographs the
+letterboxes so he knows which one, and texts it from a burner: *"Don't unlock
+it."*
 
-**4. The Found counter.**
-Every first look at anything meaningful adds it to the case file, with a small
-toast: **Added to case file · 7 found**. Opening things is *visibly* progress,
-so curiosity is rewarded even when the player isn't solving anything.
+## Why a stranger got it
 
-**5. The idle nudge.**
-Forty-five seconds with nothing found and nothing answered, the phone buzzes —
-a banner from the case file, in the game's own voice, escalating one tier each
-time: a direction, then a connection, then nearly the answer. It is the
-existing three-tier hint ladder, delivered instead of hidden. It never blocks
-and it never scolds.
+Not to frame the stranger, and not because he picked them. **Evidence that an
+unidentified person has had in their hands for three days is evidence no
+prosecutor will touch.** He cannot delete the cloud, so he ruins the container —
+and Mum's Guardian app, a mother's own account, produces the timestamped proof
+that a stranger was inside it.
 
-**First run, the first sixty seconds, exactly:**
-
-1. Envelope. One line: *"Someone left this for you."* Button: **Take it out.**
-2. Lock screen. Notifications. "Don't unlock it." Swipe up. (Already works.)
-3. Passcode via Medical ID. (Already works, already has hints.)
-4. **On unlock:** one buzz. A banner: **Case file · You started a note.** Tap
-   it — the case file opens with Q1 and *Where to look*. That is the tutorial,
-   and it is in fiction.
-5. Home screen: Messages badged 3, Photos badged 2, everything else quiet.
-
-Nobody is confused after that, and nothing on screen admits a game is being
-taught.
-
----
-
-# PART 3 — The story, locked
-
-## The truth (unchanged from canon; motive sharpened)
-
-A listed structure can't be demolished. One damaged beyond repair can be
-delisted and cleared. Anand Realty needs the 1923 engine house at Shree Ram
-Mills to be unsalvageable, and needs the fire to look like the old wiring above
-the engine bay.
-
-Kiran Shetty hires {name} Sethi, 19, who photographs shut buildings at night,
-to shoot the interior first — because the client needs to know exactly where
-the engine sits and where the original wiring runs. **{name} was not
-documenting a crime. {name} was drawing the plan.** And a student's night
-photographs of that interior, taken 48 hours before a fire, on a traceable
-phone, is a scapegoat you can buy for ₹15,000.
-
-Friday night runs exactly as built: the party, Dev's hotspot, the walk, the
-crew's router, the van at 23:38, twelve NightCam frames 23:39–23:50 uploaded
-over the arsonists' own Wi-Fi, the memo at 23:52, caught. Kiran unlocks the
-phone at 00:05, finds the van photo, deletes it at 00:07, and finds nothing
-else, because NightCam keeps nothing on the phone. {name} escapes Saturday
-night and reaches Tara's. The mill burns Sunday 23:48.
-
-**Monday 07:40: Kiran posts the phone into a stranger's letterbox** — and the
-reason is not that a curious stranger makes a convenient trail. It's that
-evidence handled by an unidentified person for three days is evidence no
-prosecutor will touch. He can't delete the cloud. So he ruins the chain of
-custody, and Guardian — a mother's own app, her own account — produces the
-proof that a stranger was inside it.
-
-**And the thing Kiran doesn't know:** he didn't choose the letterbox. He was
-given the address. The final photograph in Chapter 1 is of the player's
-building, timestamped **Friday 20:55** — an hour before {name} even left the
-party. Somebody picked this player before there was a crime to clean up.
+**And the answer to "why me" is: no reason.** You were the nearest letterbox to
+the road out. The player can prove it — his route, the toll, the time, the row
+of letterboxes photographed so he'd know which flat. Being chosen would be
+flattering. Being *available* is worse, and it's the chapter's last cold joke:
+curiosity did the rest, and curiosity is not rare.
 
 ## Who is lying
 
-- **Tara** is hiding {name} and lies to the player from Friday night onward.
-  True *and* misleading: she is genuinely terrified, and she is a person making
+- **Tara** is hiding her and lies from Friday night on. Terrified, and making
   believable bad decisions.
-- **Mum** saw Friday's Guardian entries on Saturday morning — the mill, the
-  network, the silence after 23:52 — and told nobody, because she suspected her
-  own daughter. Two days lost.
-- **Dev** won't say what the argument was about: he'd found out about K. and
-  threatened to tell her mother. He thinks that's why she went.
-- **Kiran** is a subcontractor who believes he is running this.
-- **3107** is {name} — but the player can't confirm it until Episode 3.
+- **Mum** saw Friday's Guardian entries on Saturday morning and told nobody,
+  because she suspected her own daughter. Two days lost.
+- **Dev** won't say the argument was about K. He thinks it's why she went.
+- **Kiran** believes he is running this. He isn't.
+- **3107** is her — unconfirmed until Episode 3.
+- **The news** says *no casualties*. That is the biggest lie in the chapter, and
+  the player breaks it.
 
 ---
 
-# PART 4 — Episode structure
+# PART 3 — The three episodes
 
 ## Episode 1 — "Low Battery" · ~30 min
 
-**Question the player is given:** whose phone is this, and where did they go?
+Whose phone is this, and where did they go?
 
-| Beat | App | What happens |
-|---|---|---|
-| 1 | Envelope | 4%. One buzz. *"Don't unlock it."* |
-| 2 | Lock screen | Medical ID → **140306** |
-| 3 | — | **Case file opens itself.** Q1 + where to look |
-| 4 | Messages, Dabba, Photos | Ten minutes of liking a stranger: the cake order, chai in Lalbaug, a 2am chemist search, "i leave it on so she can sleep" |
-| 5 | Health / Settings / Messages | **Q1: Did {name} go home?** No — 4.1 km at 22:30, home Wi-Fi last seen 17:06 |
-| 6 | Messages | Dev, compressed: two messages and Tara's story photo |
-| 7 | **Guardian** | **THE MIDPOINT TURN — new.** A session logged **Sat 00:05**, four minutes before the van photo was deleted at 00:07. She was already gone. *Someone else has been inside this phone, and edited what you're reading.* |
-| 8 | Calculator | The vault (code findable three ways). Inside: Kiran's job — and his side of it is already scrubbed |
-| 9 | Maps | **Q2: Where was {name} at 23:52?** Three things point at Gate 3 |
-| 10 | — | Banner: *K. can see where this phone is.* 3107's first message. **"Keep it charged."** |
-| 11 | **Guardian** | The last thing the dying screen shows: *Today's activity report sent to Anjali Sethi.* You watch your own snooping leave the phone |
-| 12 | — | 1%. Dark. **SESSION SAVED.** |
+Envelope, 4%, one buzz, *"Don't unlock it."* → Medical ID → **140306** → the
+case file opens itself with one question.
 
-**What the player believes:** she's missing and the phone is the record.
-**What's true:** the phone is what somebody chose to leave behind.
-**Hook:** someone is watching this phone, and it just told on you.
+Ten minutes of liking a stranger: the cake order, chai in Lalbaug, a 2am
+chemist search, *"i leave it on so she can sleep."*
+
+**Q1 — Did {name} go home after the party?** No: 4.1 km at 22:30, home Wi-Fi
+last seen 17:06.
+
+**The midpoint turn:** Guardian logs a session at **Sat 00:05** — four minutes
+before the van photo was deleted, hours after she stopped moving. *Somebody else
+has been inside this phone and edited what you're reading.*
+
+The vault (three ways in). Kiran's side already scrubbed.
+
+**Q2 — Where was {name} at 23:52?** Gate 3, from three independent directions.
+
+Then: *K. can see where this phone is.* 3107's first message. **"Keep it
+charged."** And the last thing the dying screen shows — *Today's activity report
+sent to Anjali Sethi.* 1%. Dark.
 
 ## Episode 2 — "Read Receipts" · ~30 min
 
-**Gate:** the player's own device must really be charging. Keep it.
+*(Gate: the player's own device must really be charging.)*
 
-| Beat | App | What happens |
-|---|---|---|
-| 1 | — | Plug in. The phone wakes at 7%. Three days land |
-| 2 | News | The fire · petrol traces · **police seek missing student**, quoting *this phone's* Monday morning — including what the player did |
-| 3 | Messages | Mum: the police showed her the Guardian report. Then her confession: *"I saw it on Saturday. I thought you had done something. I am your mother and I thought that."* |
-| 4 | Case file | **Q3: Who unlocked {name}'s phone at 08:14?** The player **types "me"** |
-| 5 | Case file | **Q4: Who wanted it unlocked, and why a stranger?** Both times 5520 said don't, you did — and he was told on Friday that this phone is watched. *"I don't know"* is accepted |
-| 6 | Settings → NightCam → Calculator | Wi-Fi restores the cloud: **1 of 12** (petrol cans, **Friday 23:39**), K.'s receipt, and a device session: **Tara's MacBook, Sunday 22:14** |
-| 7 | Case file | **Q5: Did {name} start the fire?** No. The petrol was there two days early |
-| 8 | Messages | 3107's trust test — extended. They ask for something only a friend would know. The player answers from the phone. *"okay."* Not proof |
-| 9 | Messages | Three replies that matter: to Mum (lie / truth / silence), to Kiran (threaten / ask / silence) |
-| 10 | Messages | The burner sends a photo of **your letterbox**, 07:40 Monday. *"You kept it. Good. Keep it charged."* |
-| 11 | **Settings** | **The episode's last beat — new.** Your own home Wi-Fi is in the phone's known networks. Joined **08:11 Monday** — three minutes *before* you picked it up. It has been logging you since before you touched it |
+What did I accidentally become part of?
 
-**What the player believes:** my curiosity built a false trail.
-**What's true:** the trail was the point, and it's worse than false.
-**Hook:** the phone has been recording *me*.
+Three days land: the fire, petrol traces, **police seek missing student** —
+quoting this phone's Monday morning, including what the player did. Mum's
+confession: *"I saw it on Saturday. I thought you had done something. I am your
+mother and I thought that."*
+
+**Q3 — Who unlocked this phone at 08:14?** The player types **me**.
+
+**Q4 — Who wanted it unlocked, and why a stranger?** *"I don't know"* is
+accepted; the game replies *"Good."*
+
+Wi-Fi restores the cloud: **1 of 12** — petrol cans, **Friday 23:39** — K.'s
+receipt, and a session from **Tara's MacBook, Sunday 22:14**.
+
+**Q5 — Did {name} start the fire?** No. The petrol was there two days early.
+
+3107's trust test. Then the letterbox photograph: *"You kept it. Good. Keep it
+charged."*
+
+**Last beat:** your own home Wi-Fi is in the phone's known networks, joined
+**08:11 Monday** — three minutes before you picked it up.
 
 ## Episode 3 — "Delivered" · ~35 min
 
-A message status. And what the player turns out to be.
+The eleven remaining frames, against the battery. And two clocks.
 
-| Beat | App | What happens |
-|---|---|---|
-| 1 | NightCam | Eleven frames download one at a time, **against the battery**. Progress is interaction-based, never a real clock |
-| 2 | Frame 3 | A sprinkler head, taped. 23:41 |
-| 3 | Frame 4 | The original wiring above the engine bay, lit and centred. *Why photograph a ceiling?* Because that is where the fire had to start |
-| 4 | Frame 5 | A clipboard: **ENGINE HOUSE · HERITAGE CONDITION · …1923…**. The target was never random |
-| 5 | Notes | A draft {name} never sent: *"ask K what clearance means"* / *"if this is just photos why does he care what survives"* |
-| 6 | Dabba | A food order Saturday night near Currey Road. She got out. Nobody says so |
-| 7 | Frames 6–9 | Gate 3, the van's plate, a man unloading, wet tracks following her in |
-| 8 | Voice Memos | Replay 23:52. Under the train, a metal knock. **Q: Was {name} alone?** |
-| 9 | Messages | 3107 finally proves it — one detail only she could know, and it's the one the player found in Episode 1 |
-| 10 | Frames 10–11 | Behind a hand over the lens: the van, the engine-house door, and **a flat archive box being carried out**. Something was removed before it burned |
-| 11 | Frame 12 | No face. A reflection, a wrist, a site document — whose reference **matches the survey number in Frame 5** |
-| 12 | News / Messages | **THE TURN.** A line about the investigation: an unidentified person had the device for three days, so none of it is reliable. *That's me. I did that* |
-| 13 | Guardian | **THE FIX.** The report that damns her is the only complete custody record. It can be repaired — by a person with a name |
-| 14 | Messages | Kiran, for the third and last time, uses the player's name |
-| 15 | — | **The choice** (below) |
-| 16 | Desk | Whatever they chose: a photograph of **the player's building**, timestamped **Friday 20:55** |
+**Act 1 — what she photographed.** Frames 3–9: the taped sprinkler; the wiring
+above the engine bay (*why photograph a ceiling?*); a clipboard reading ENGINE
+HOUSE · HERITAGE CONDITION · 1923; the van's plate; wet tracks following her in.
+Her unsent note: *"ask K what clearance means"* / *"if this is just photos why
+does he care what survives."*
 
-## The three endings
+**Act 2 — the body.** **Frame 11, 23:47:** behind a hand over the lens, two men
+carrying something wrapped out of the engine house. Nothing graphic — a shape at
+the edge of a torch beam. Then the player finds, in News, a small item from
+Saturday: a watchman's family has reported him missing. And Sunday's fire report:
+*no casualties*.
 
-All cost something. None is the "correct" one.
+**Q6 — Who was carried out of the engine house on Friday night?** Answer from
+the phone: the missing watchman, **Ramesh Shinde**. The fire wasn't only to
+clear a listing. It was to put a body somewhere a fire explains it.
 
-**A — Erase.** Factory reset, back in a letterbox, walk away. He lets you go
-instantly: you were a consumable. Two days later, an envelope with no stamp —
-addressed to someone else in your building.
+Everything re-reads. She wasn't locked in a pump room for photographing a van.
+3107 wasn't hiding from an arson charge. Kiran isn't tidying up — he is a man
+who needs a death to stay an accident.
 
-**B — Publish.** Send the twelve to City Desk with the Guardian report as
-custody. The heritage delisting halts. 3107: *"they're asking me who you are.
-what do i say."*
+**Act 3 — two clocks.**
 
-**C — Step into it.** Walk it in: your name, your address, your three days.
-The custody log — *the player's real playthrough, every app, every timestamp* —
-scrolls with their name at the top. The thing you broke, you fix, with the only
-currency you have.
+1. **Kiran is coming.** Third and final message, using the player's name:
+   *"I'm outside. Bring it down."* The letterbox photograph was reconnaissance.
+2. **She is walking.** 3107: *"the police want me. i'm going to tell them what
+   i saw."* She is outside Byculla station. If she walks in while the evidence is
+   contaminated — a stranger has had her phone for three days — she has no proof
+   of anything, and she is the only person the police can charge for a fire and
+   a body.
 
-**Then, in all three:** the desk, and the photograph of your building from
-Friday 20:55 — before {name} left the party, before the mill, before the fire.
-
-> **Whoever chose your letterbox chose it before there was anything to clean up.**
+**Then the phone rings.** The first and only call in the chapter. It's her. The
+player can't type; they can listen, and choose one of three things to say. A
+train goes past behind her. She says: *"I'm going in. Tell me not to."*
 
 ---
 
-# PART 5 — Artefacts required
+# PART 4 — The ending
 
-## Photographs (the real constraint)
+Three endings. All final, all resolved in this chapter, none clean.
 
-**Existing, keep:** locker (dials 2719), cake, shoes, street, cinema, balcony,
-wallpaper, story (vertical), letterbox, van (Gate 3).
+## A — Give it to him
 
-**New for Episode 3 — eleven NightCam frames.** Most are one torchlit interior
-re-framed; shoot in a single session:
+He's at the door. Hand it over. He wipes the device; the account dies with it.
 
-| # | Shows | Note |
-|---|---|---|
-| 2 | Interior brick wall, van through an opening | |
-| 3 | Sprinkler head with tape | Puzzle-critical |
-| 4 | Ceiling wiring above the engine bay | Puzzle-critical |
-| 5 | Clipboard: ENGINE HOUSE / HERITAGE CONDITION / 1923 | Puzzle-critical, prop |
-| 6 | Gate 3, van, plate legible | Live Text |
-| 7 | Reflective jacket, site folder: ENGINE HOUSE CLEARANCE | Prop |
-| 8 | Torch in a hand, wet tracks | No face |
-| 9 | Pump-room door | |
-| 10 | Router, cable, crew kit | |
-| 11 | Hand over lens; behind it, an archive box being carried out | The image of the chapter |
-| 12 | Reflection in van glass: wrist, watch, a document reference | **No face.** Reference matches #5 |
+The fire is ruled accidental. Shinde's family receive a compensation payment
+from a contractor's insurer. {name} is charged over the mill fire — she has no
+photographs, only a story about a night she was paid to be there.
 
-**Plus one:** the player's building from the street, at night — the last image
-in the chapter. Shoot any Mumbai society entrance, no signage, no faces.
+**Final screen:** a news item, four months later: the engine house delisted,
+the site cleared. And the single frame the player screenshotted in Episode 2,
+still in their own photo roll, proving something no one will ever ask them for.
+*You were never in danger. That was the deal.*
 
-**Props to make (cheap, and they carry puzzles):** a clipboard sheet, a site
-folder cover, a cash receipt in block capitals, an archive box label.
+## B — Send everything
 
-## Audio
+From her phone, to City Desk and the police, with Mum's Guardian report attached
+as chain of custody — which names the player.
 
-Existing: the buzz (signature), key taps, the refusal, two voice memos.
-New: a charger-connect chime for Episode 2's wake; a soft per-frame download
-tick; the Guardian "report sent" tone (the most sinister sound in the game and
-it should be the most ordinary); one remastered pass on the 23:52 memo so the
-metal knock is audible on a phone speaker but never obvious.
+The delisting halts. Shinde's death is reopened as culpable homicide. Kiran and
+two others are arrested on the strength of twelve timestamped photographs and
+the router they were uploaded through. {name} is cleared.
 
-## Documents rendered in-app
+**Cost:** the player is a witness in a homicide case, and every private thing
+they opened is in the file. The last message is a journalist asking for their
+name.
 
-Guardian's report · the custody log (generated from the player's own save) ·
-K.'s receipt · the clipboard · the archive-box label · three news articles per
-episode · the NightCam account screen.
+## C — Tell her to run, and destroy the phone
 
----
+No phone, no custody, no case — and the police case *against her*, built almost
+entirely from a stranger's activity, collapses with it.
 
-# PART 6 — Product design
+She vanishes. Nobody is charged. The fire stays an accident. Anjali Sethi keeps
+calling a number that doesn't ring, and Shinde's family are told he was sleeping
+somewhere he shouldn't have been.
 
-- **Free, all three episodes.** Chapter 1 is the trailer and the share loop.
-  Charge from Chapter 2 (₹49 a chapter, ₹149/month), Episode 1 of every later
-  chapter free. Never charge to remove an interruption.
-- **Never lose a case** (built): saves per case, a case number that restores on
-  any device, and a QR on laptops.
-- **The desk** (built): your phone as you left it — mid-case with your battery,
-  charging between episodes, bagged and tagged when solved.
-- **Pass it on, reframed.** The share mechanic *is* the villain's method, and
-  the end card says so: **"Someone passed this to you. Pass it on."** Spoiler-safe
-  card, WhatsApp first, the friend gets their own envelope with their name on it.
-- **Result card**: minutes, hints used, marks per puzzle, which ending — the
-  thing people post to compare.
-- **Episode 2's charger gate** stays. It is the most-described mechanic you have.
+**Cost:** the truth dies, and two families never get an answer.
+
+**Design note:** the "safe" ending is the monstrous one, and most players will
+reach for it first. That is the chapter's argument.
+
+## The last twenty seconds (all three endings)
+
+The desk comes back. The envelope is empty. And in the lamp's edge, where the
+dim shapes have been since the first screen, **one object is lit that wasn't
+before** — not a phone: a camcorder, a locket, a dashcam.
+
+One line, in the site's voice:
+
+> **Someone in Delhi is about to lose something.**
+> **Next Friday.**
+
+No cliffhanger, no withheld answer, no purchase prompt. The promise isn't
+*what happens next* — it's *this will happen to you again*.
 
 ---
 
-# PART 7 — Game design
+# PART 5 — Why players come back (anthology retention)
 
-**State is flags, as built.** `seen:*`, `solved:*`, `lock:*`, `did:*`, `said:*`,
-`fired:*`, plus timestamps per flag. Everything below is derived from them —
-no new engine.
+Continuation is not available to us. These five are.
 
-**Puzzle types, one of each per episode, never repeated twice in a row:**
-cross-app deduction (Q1) · temporal contradiction (the 00:05 session) ·
-visual forensic (Live Text, frame 5 ↔ frame 12) · typed answer (the "me")
-· social deduction (Tara's timeline) · interpretation (what "clearance" means).
-
-**Hint ladder, unchanged and now surfaced:** direction → connection → nearly
-the answer. Delivered by the idle nudge as well as on request.
-
-**Difficulty floor:** every question has at least two independent routes to the
-answer. Nobody is gated on noticing one line.
-
-**Consequence:** four irreversible acts — opening Mum's thread (she sees
-"Read"), turning receipts off, recovering the deleted photo (restoration is
-logged), threatening Kiran. Each changes a later line, a headline, or who will
-speak for the player at the end. None branches the content.
+1. **The format is the hook.** "You get a missing person's phone and everything
+   you open becomes evidence" is a premise people can describe in one sentence
+   and want to experience again with different contents.
+2. **Endings are a conversation.** Three finals, and the result card says *"1 in
+   4 players did what you did."* Comparison replaces continuation.
+3. **A scheduled object.** A new city every Friday, shown on the desk the moment
+   the chapter ends. Appointment viewing, not a cliffhanger.
+4. **Pass it on, which is the villain's own method.** The share loop is the
+   crime: someone put a case in your hands, and the end card says *"Someone
+   passed this to you. Pass it on."*
+5. **The solved case stays on your desk,** bagged and tagged, with your ending
+   and your time on it. The desk becomes a shelf of things you've closed.
 
 ---
 
-# PART 8 — Motion design
+# PART 6 — The confusion fix (unchanged from v1, still the top priority)
 
-The rule: **the phone never animates to impress. It animates to be believed.**
+The one piece of real player feedback we have is that people didn't know what to
+do. The lock screen is fine — it teaches itself. The failure is the ten seconds
+after the phone unlocks. Five mechanisms, all in-fiction, no tutorial pop-ups:
 
-Built and kept: the desk phone morphing into the envelope; apps zooming out of
-their icon and shrinking back; banners that can be flicked away or held open;
-Notification Centre dragging down; the lock screen lifting.
+1. **Badges on app icons** — a badge means *unseen evidence*, not unread
+   messages, so Health and Settings carry them too. Ten identical icons become a
+   lit path; no badges left means look at the case file.
+2. **One open question at a time**, in the case file and on the home widget.
+3. **"Where to look: Health · Settings · Photos"** under every question. Names
+   apps, never answers, costs nothing.
+4. **The Found counter** — *Added to case file · 7 found* — so opening things is
+   visible progress.
+5. **The idle nudge** — 45 seconds with nothing found, the phone buzzes with a
+   hint from the case file, escalating one tier at a time.
 
-New, four moments:
-
-1. **The report leaving (Ep1's last frame).** Guardian's notification slides in
-   as the battery hits 1%, holds one beat longer than comfortable, then the
-   screen dies — not a fade: the phone's real power-off collapse, a white line
-   shrinking to nothing.
-2. **The download (Ep3).** Each frame arrives at its own pace, thumbnail first,
-   sharpening as it lands. The battery percentage ticks down in the same status
-   bar. Nothing is on a clock; it advances when the player does.
-3. **The custody log (Ending C).** The player's own session scrolls as a
-   document — app names and timestamps, their real playthrough — slowly enough
-   to read, with their name at the top.
-4. **The last photograph.** It loads the way a photo loads on bad signal: a
-   grey block, then a band of pixels, then the building. The timestamp appears
-   last. Then nothing happens for three seconds. That silence is the beat.
-
-`prefers-reduced-motion` removes every one of these without removing meaning.
+**First sixty seconds:** envelope → *"Don't unlock it."* → Medical ID → unlock →
+one buzz → **Case file · You started a note** → Q1 with where-to-look → home
+screen with Messages badged 3, Photos badged 2, everything else quiet.
 
 ---
 
-# PART 9 — Sound design
+# PART 7 — Artefacts
 
-- **The buzz is the franchise.** A motor against wood, not a chime. It is the
-  only sound that ever startles.
-- **Silence is the instrument.** The typing indicator that stops. The sync that
-  halts at 11 of 12. The memo's held breath. No score under discovery.
-- **Ordinary sounds for terrible moments.** Guardian's "report sent" is a
-  pleasant two-note system tone. That's the point.
-- **Voices:** real voices for everyone except {name}, who stays a whisper,
-  because their gender is dealt at random.
-- **Everything is optional.** The sound toggle is on the desk and in the
-  envelope's small print; the game is fully playable silent, with captions on
-  every memo.
+**Photographs.** Existing eleven slots stay. **Episode 3 needs eleven NightCam
+frames**, shootable in one torchlit session: interior with the van through an
+opening · taped sprinkler *(puzzle)* · ceiling wiring above the engine bay
+*(puzzle)* · clipboard with HERITAGE CONDITION / 1923 *(puzzle, prop)* · Gate 3
+with a legible plate *(Live Text)* · site folder marked ENGINE HOUSE CLEARANCE
+*(prop)* · torch and wet tracks · pump-room door · the crew's router · **frame
+11: a hand over the lens, and behind it two men carrying a wrapped shape** ·
+frame 12: a reflection in van glass, a wrist, a document reference matching the
+clipboard.
 
----
+**Frame 11 is the image of the chapter.** It must be almost nothing: torch
+flare, a shoulder, a shape. The horror is that the player has to lean in.
 
-# PART 10 — Build plan
+**Props:** clipboard sheet, site folder, cash receipt in block capitals.
 
-**Cheap — content in existing apps (days each)**
-Guardian's Sat 00:05 session · Mum's confession · Tara's lie made legible ·
-Dev compressed · the vault's third route in · your own Wi-Fi in Settings ·
-{name}'s unsent Note · Dabba's Saturday order · Episode 3's messages ·
-all three endings' text · News variants.
+**Audio.** Existing: the buzz, key taps, the refusal, two memos. New: a
+charger-connect chime; a per-frame download tick; Guardian's "report sent" tone
+(pleasant, two notes, the most sinister sound in the game); **the call** — room
+tone, a train passing, and a voice that is not a whisper. She is the only
+character the player ever hears speak clearly, and only for ninety seconds.
 
-**Medium — new screens in existing apps (1–2 weeks each)**
-Badges on icons · the case file's "where to look" + Found toast · the idle
-nudge · NightCam's eleven-frame download against battery · the custody log
-document · the Erase All Content flow · photo zoom for frames 5 and 12.
-
-**Expensive — do not build for Chapter 1**
-Any new app · multiplayer · voice calls · procedural anything.
-
-**Sessions, in order:**
-1. **S7a — Never be lost.** Badges, one-question case file, where-to-look,
-   Found toast, idle nudge. *Ship this before any new story.* It is the fix for
-   the only piece of player feedback we have.
-2. **S7b — Episode 1 tightening.** The 00:05 session, Dev compressed, the
-   report leaving.
-3. **S7c — Episode 2 tightening.** Mum's confession, three deductions, the
-   Wi-Fi ending, 3107 left unconfirmed.
-4. **S7d — Episode 3 as data.** `content/found/episode3.ts`: frames, Notes
-   draft, Kiran's three messages, the turn, the fix.
-5. **S7e — The endings**, the custody log, the last photograph, the desk return.
-6. **S7f — Tests** walk all three episodes and every ending; the content linter
-   checks every question has two routes and three hints.
+**Documents:** Guardian's report · the custody log (built from the player's own
+save) · K.'s receipt · the clipboard · three news items per episode, including
+the watchman's missing report and *no casualties*.
 
 ---
 
-# PART 11 — North star
+# PART 8 — Product, game, motion, sound
 
-**FOUND should make the player feel:** that looking is never free.
+**Product.** Chapter 1 free, all three episodes; from Chapter 2, ₹49 a chapter
+or ₹149 a month, with each chapter's Episode 1 free. Case numbers restore saves
+on any device (built). The desk shows your phone as you left it (built). Result
+card with your ending and the comparison line. Pass-it-on, spoiler-safe, on
+WhatsApp.
 
-**They should tell their friend:** *"Don't Google anything. And plug your phone
-in before Episode 2."*
+**Game.** State is flags, as built. One puzzle type per beat, never the same
+twice running: cross-app deduction, temporal contradiction, visual forensic,
+typed answer, social deduction, interpretation. Every question has two
+independent routes and a three-tier hint ladder. Four irreversible acts — open
+Mum's thread, turn receipts off, recover the deleted photo, threaten Kiran —
+each changes later lines, headlines, and who speaks for the player at the end.
+No branching content; state changes what existing content says.
 
-**They should fear:** that the record of what they did is more complete than
-their memory of doing it.
+**Motion.** Kept: the desk phone morphing into the envelope, apps zooming from
+their icons, flickable banners, the lock screen lifting. New: **the report
+leaving** (Guardian's notification holds one beat too long, then the phone's
+real power-off collapse); **the download** (thumbnail first, sharpening, battery
+ticking in the same status bar); **frame 11's zoom** (the only pinch-zoom in the
+game, so the player's own hand is what finds the body); **the call** (the screen
+the player has never seen — full-bleed, no apps, one name, ninety seconds);
+**the desk return** (the lamp finds the next object). All of it respects
+`prefers-reduced-motion`.
 
-**They should wonder:** who took a photograph of their building on Friday at
-20:55 — an hour before any of this started.
+**Sound.** The buzz is the franchise. Silence is the instrument: the typing
+indicator that stops, the sync that halts at 11 of 12, the held breath in the
+memo. Ordinary sounds for terrible moments. Real voices everywhere except
+{name}, who stays a whisper — **until the call**, which is the first and last
+time you hear her properly, and which is why it lands. Fully playable silent,
+captions on every memo and on the call.
 
-**They should pay for Chapter 2 because:** Chapter 1 gave them something whole,
-and then made them part of it.
+---
 
-**We must never lose:** the moment the player realises the crime scene has a
+# PART 9 — Build plan
+
+**S7a — Never be lost.** Badges, one-question case file, where-to-look, Found
+toast, idle nudge. *Ship before any new story.*
+
+**S7b — Episode 1 tightening.** The Sat 00:05 session, Dev compressed to two
+messages, the report leaving.
+
+**S7c — Episode 2 tightening.** Mum's confession, five deductions down to
+three, the Wi-Fi last beat, 3107 left unconfirmed.
+
+**S7d — Episode 3 as data.** `content/found/episode3.ts`: the eleven frames, the
+watchman thread, the unsent note, Kiran's three messages, Q6.
+
+**S7e — The climax.** The call screen (new component, the only one), the two
+clocks, the three endings, the desk return with the next object.
+
+**S7f — Tests and the linter.** Walk all three episodes and every ending; check
+every question has two routes and three hints.
+
+Cheap: everything in S7b–S7d — content inside apps that exist. Medium: S7a's
+five mechanisms, the download screen, the call screen. Expensive and excluded:
+new apps, multiplayer, procedural anything.
+
+---
+
+# PART 10 — North star
+
+**Feel:** that looking is never free.
+
+**Tell a friend:** *"Don't Google anything. And plug your phone in before
+Episode 2."*
+
+**Fear:** that the record of what you did is more complete than your memory of
+doing it.
+
+**Realise:** a man died on Friday, and the only proof is on a phone that a
+stranger was handed so it would stop counting.
+
+**Come back because:** next Friday there's a different object, in a different
+city, and you know exactly how good this felt.
+
+**Never lose:** the moment the player understands that the crime scene has a
 record of *them*.
