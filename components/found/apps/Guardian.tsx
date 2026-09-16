@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useStory } from "@/components/found/StoryContext";
 import { has, morning } from "@/lib/found/engine";
+import * as play from "../FoundPhone/actions";
 import GuardianCard from "./GuardianCard";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
@@ -34,6 +37,13 @@ export default function Guardian({ state }: AppProps) {
     .sort((a, b) => b[1] - a[1])[0]?.[0]
     .slice(2);
   const unlocked = state.at["lock:passcode"];
+  const earlier = ep.guardian.earlier;
+
+  // The app never stopped counting, so it counted him too. Looking at that is
+  // finding it: it goes to the case file like anything else on this phone.
+  useEffect(() => {
+    if (!ep2 && earlier) play.see(earlier.evidence);
+  }, [ep2, earlier]);
 
   return (
     <section className={`${app.view} ${styles.light}`} data-light-app>
@@ -74,6 +84,21 @@ export default function Guardian({ state }: AppProps) {
                 <b>{top ? top[0].toUpperCase() + top.slice(1) : "—"}</b>
               </li>
             </ul>
+
+            {earlier && (
+              <>
+                <p className={styles.section}>{earlier.day}</p>
+                <ul className={styles.list}>
+                  {earlier.rows.map((r) => (
+                    <li key={r.at} className={`${styles.row} ${styles.log}`}>
+                      <span className={styles.when}>{r.at}</span>
+                      <span>{r.label}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className={styles.small}>Reported to {ep.guardian.owner} · Sat 11:00</p>
+              </>
+            )}
           </>
         )}
 

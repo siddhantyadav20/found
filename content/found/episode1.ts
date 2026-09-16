@@ -365,6 +365,13 @@ export const episode1: Story = {
     { id: "k-brief", app: "calculator", label: "“Gate 3. 11:30.”", detail: "K. told {name} where and when. The guard would be off till midnight.", requires: ["lock:vault"] },
     { id: "k-guardian", app: "calculator", label: "“mum has an app on it”", detail: "{name} told K. on Friday that if the phone went dark, Mum would panic.", requires: ["lock:vault"] },
     { id: "k-van", app: "calculator", label: "“There's a van here”", detail: "{name}'s last message to K., at 23:41. No reply.", requires: ["lock:vault"] },
+    {
+      id: "guardian-saturday",
+      app: "guardian",
+      label: "A session at 00:05 on Saturday",
+      detail: "Someone unlocked this phone at 00:05 and went straight to Photos. {name} stopped moving at 23:52.",
+      requires: ["lock:passcode"],
+    },
   ],
 
   locks: [
@@ -416,30 +423,14 @@ export const episode1: Story = {
         "Health shows 4.1 km walked from 22:30 to 23:40. Show that.",
       ],
     },
-    {
-      id: "dev",
-      question: "Was Dev with {name} when {they} vanished?",
-      ask: "Dev was with {them} at 22:20. Show where Dev was after that.",
-      requires: ["seen:wifi-dev"],
-      answer: { kind: "evidence", accepts: [["dev-story"]] },
-      right: "At 23:40 Dev was at the party, holding up the cake, kilometres away. Whatever happened to {name}, Dev wasn't there.",
-      nudges: {
-        "wifi-dev": "That puts Dev beside {them} at 22:20. {name} kept walking for another hour.",
-        "health-walk": "That's {name}'s walk. Where was Dev while {they} walked?",
-      },
-      otherwise: "That doesn't say where Dev was after 22:20.",
-      look: ["messages", "settings"],
-      hints: [
-        "Someone who was at the party would know when Dev came back in.",
-        "Keep an eye on Messages. Tara has something she wants whoever has this phone to see.",
-        "Open Tara's thread and show her story from 23:40.",
-      ],
-    },
+    /* Dev used to be a question here. Clearing a suspect nobody suspected cost
+       five minutes of a thirty-minute episode, so he's two messages and Tara's
+       photograph now, and the time goes to the Saturday session instead. */
     {
       id: "last-seen",
       question: "Where was {name} at 23:52?",
       ask: "Put a pin where {they} recorded that last memo.",
-      requires: ["solved:dev", "lock:vault"],
+      requires: ["seen:dev-story", "lock:vault"],
       answer: { kind: "place", place: "srm" },
       right: "Shree Ram Mills, Gate 3. Shut since 2009. {name} walked there, went inside, and at 23:52 {they} stopped moving.",
       nudges: {
@@ -578,8 +569,8 @@ export const episode1: Story = {
     { id: "locked", episode: 1, when: [], battery: 4, screen: "lock" },
     { id: "act1", episode: 1, when: ["lock:passcode"], battery: 4, screen: "phone" },
     { id: "act2", episode: 1, when: ["lock:passcode", "solved:went-home"], battery: 3, screen: "phone" },
-    { id: "act3", episode: 1, when: ["lock:passcode", "solved:went-home", "solved:dev", "lock:vault"], battery: 2, screen: "phone" },
-    { id: "cliff", episode: 1, when: ["lock:passcode", "solved:went-home", "solved:dev", "lock:vault", "solved:last-seen"], battery: 1, screen: "phone" },
+    { id: "act3", episode: 1, when: ["lock:passcode", "solved:went-home", "seen:dev-story", "lock:vault"], battery: 2, screen: "phone" },
+    { id: "cliff", episode: 1, when: ["lock:passcode", "solved:went-home", "seen:dev-story", "lock:vault", "solved:last-seen"], battery: 1, screen: "phone" },
     { id: "dead", episode: 1, when: ["dead"], battery: 0, screen: "end" },
   ],
 
@@ -594,7 +585,23 @@ export const episode1: Story = {
   guardian: {
     owner: "Anjali Sethi (Mum)",
     since: "June 2021",
-    sting: "Guardian · Mum viewed today's activity report.",
+    sting: "Guardian · Today's activity report sent to Anjali Sethi.",
+    /* The midpoint turn. Mum's app never stopped counting, so it counted the
+       man who took the phone at the mill: a session four minutes before the
+       van photo was deleted, hours after {name} stopped moving. Everything
+       the player has read so far is what he chose to leave. */
+    earlier: {
+      day: "Saturday",
+      at: "00:05",
+      rows: [
+        { at: "00:05", label: "Unlocked" },
+        { at: "00:06", label: "Photos" },
+        { at: "00:07", label: "Photos · Recently Deleted" },
+        { at: "00:09", label: "Settings · Share My Location" },
+        { at: "00:11", label: "Locked" },
+      ],
+      evidence: "guardian-saturday",
+    },
     timeline: [
       { flag: "lock:passcode", label: "Unlocked" },
       { flag: "did:open:mum", label: "Messages · Mum" },

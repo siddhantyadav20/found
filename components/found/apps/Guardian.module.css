@@ -123,3 +123,16 @@
   font-size: 12px;
   color: #6b7280;
 }
+
+/* A session the app logged that was nobody's business but its own: times on
+   the left, what was opened beside them, as a monitoring app would print it. */
+.log {
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.when {
+  min-width: 48px;
+  color: #6b7280;
+  font-variant-numeric: tabular-nums;
+}

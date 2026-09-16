@@ -201,6 +201,8 @@ describe("the story's references", () => {
       ...ep.memos.map((m) => m.evidence),
       ...ep.devices.map((d) => d.evidence),
       ...ep.vault.notes.map((n) => n.evidence),
+      // The session Mum's app logged that was nobody's: Guardian shows it.
+      ep.guardian.earlier?.evidence,
     ].filter((id): id is string => Boolean(id));
     expect([...shown].sort()).toEqual([...evidence].sort());
   });

@@ -129,14 +129,44 @@ Built: `scripts/prep-photos.mjs` (`npm run photos`, `npm run photos:check`) — 
 - **Siddhant's shots** (locker, van, cake, story, shoes, letterbox, fuel): still to come. `npm run photos` does the rest.
 - **Still open:** cinema and balcony, revisited at launch; and the pilot photographs' provenance, which didn't come across with them (S15).
 
-### S7 — Finish Low Battery
-Cases ship whole, so Episode 3 and an ending are required before launch.
-- **Episode 3's story,** decided with Siddhant; the script's truth was written for three episodes.
-- **Choices that echo:** Mum's reply and K.'s threat visibly change later scenes, leading to two or three endings.
-- **The case report card:** evidence found out of the total, hints, time, and the clues you never saw.
-- **The final beat,** "Something else arrived.", which returns to the desk.
-- **Retire the "Would you play Episode 3?" vote.**
-- **Tests** walk all three episodes and every ending.
+### S7 — Finish Chapter One
+The story is locked in `CHAPTER1-FINAL.md`: Mumbai, three episodes, an
+anthology chapter that closes. Chapters do not connect — each is a different
+city and a different story — so Chapter One answers everything it asks.
+
+**S7a — Never be lost · *done 2026-09-16*.** The fix for the only real player
+feedback: badges on every icon counting reachable-but-unseen evidence; the case
+file asking one question at a time with a free "where to look" naming apps; a
+toast saying what was added and how much is found; the case file introducing
+itself on the first unlock; and an idle nudge that offers the next hint after
+45 seconds, counted apart from hints the player asked for.
+
+**S7b — Episode 1 tightening.** The midpoint turn: a Guardian session logged
+**Sat 00:05**, four minutes before the van photo was deleted — someone else was
+inside this phone first. Dev compressed from a deduction to two messages and a
+photograph. The activity report leaving the phone as it dies.
+
+**S7c — Episode 2 tightening.** Mum's confession (she saw Friday's log on
+Saturday and said nothing). Five deductions down to three. "I don't know"
+accepted as an answer. 3107 left unconfirmed. The last beat: the player's own
+home Wi-Fi in the phone's known networks, joined three minutes before they
+picked it up.
+
+**S7d — Episode 3 as data.** `content/found/episode3.ts`: eleven NightCam
+frames, the watchman, {name}'s unsent note, Kiran's three messages, and the
+question that turns the chapter — who was carried out of the engine house on
+Friday night. All three episode titles land together here ("Don't Unlock It.",
+"Read Receipts", "Delivered"), since an episode name is a new field the
+envelope and the end cards both read.
+
+**S7e — The climax and the endings.** The call screen (the only full-bleed
+screen in the game), the two converging clocks, three endings that each cost
+something, and the desk return that lights the next object.
+
+**S7f — Tests and the linter.** Walk all three episodes and every ending; check
+every question has two routes in and three hints.
+
+Retired along the way: the "Would you play Episode 3?" vote and its email box.
 
 ### S8 — Voices
 - **A casting brief, and a script of every voiced line:** Mum's voicemails, K.'s voice note, Tara, Dev. Hinglish where they'd naturally speak it.

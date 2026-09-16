@@ -364,6 +364,16 @@ export type Story = {
     readonly sting: string;
     /** Moments of the player's session the report lists, in the player's own time. */
     readonly timeline: readonly { readonly flag: Flag; readonly label: string }[];
+    /**
+     * A session that wasn't the player's and wasn't the owner's. The app has
+     * been counting since before the phone arrived, and it counted him too.
+     */
+    readonly earlier?: {
+      readonly day: string;
+      readonly at: string;
+      readonly rows: readonly { readonly at: string; readonly label: string }[];
+      readonly evidence: string;
+    };
   };
   readonly nightcam: { readonly items: number; readonly firstFrame: string };
   readonly food: readonly { readonly at: string; readonly item: string; readonly to: string; readonly price: string }[];

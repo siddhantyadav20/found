@@ -126,7 +126,8 @@ type Tracked = (typeof MILESTONES)[number] | (typeof CHOICES)[number];
 export const MILESTONE_OF: Partial<Record<Flag, Tracked>> = {
   "lock:passcode": "unlock",
   "solved:went-home": "d1",
-  "solved:dev": "d2",
+  // Dev is no longer a question; seeing Tara's story is what clears him.
+  "seen:dev-story": "d2",
   "lock:vault": "vault",
   "solved:last-seen": "d3",
   dead: "end",
