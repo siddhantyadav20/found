@@ -124,11 +124,10 @@ Built: the desk phone as you left it — new (buzzing), mid-case (your battery, 
   - the idle hint pulsing at 20 seconds
 - **The envelope's small print:** "Sound on · headphones better · about N min · saves as you play", and a content note (16+).
 
-### S6 — Real photographs
-- **Siddhant's shots** (locker, van, cake, story, shoes, letterbox, fuel): strip location data, size them, blur any names, and give the story shot its vertical crop.
-- **Source openly licensed candidates** for cinema, street, balcony (and the wallpaper, if needed). Siddhant approves each before it's downloaded; credits go where the licence asks.
-- **Grade the fuel shot as NightCam** night vision.
-- **Wire them in,** and re-check the size budget.
+### S6 — Real photographs · *the pipeline is done; waiting on Siddhant's shots*
+Built: `scripts/prep-photos.mjs` (`npm run photos`, `npm run photos:check`) — strips every photo's metadata, sizes it for a phone screen, blurs per-slot rectangles, gives the story shot its vertical crop, and refuses to let anything ship carrying EXIF or over 130KB. NightCam grades its frame as night vision in CSS, so the photograph stays a photograph. Sourcing found nothing usable: the one CC0 `street` candidate was approved on its description and rejected on sight (defocus bokeh at dusk, a red double-decker bus in it), and `cinema` and `balcony` have no CC0 match at all — the near misses are named cinemas under CC BY-SA. All three keep the pilot's placeholders by decision, and the wallpaper stays: it's already Marine Drive. Provenance, and what was rejected, is in PHOTO-SOURCES.md.
+- **Siddhant's shots** (locker, van, cake, story, shoes, letterbox, fuel): still to come. `npm run photos` does the rest.
+- **Still open:** cinema and balcony, revisited at launch; and the pilot photographs' provenance, which didn't come across with them (S15).
 
 ### S7 — Finish Low Battery
 Cases ship whole, so Episode 3 and an ending are required before launch.

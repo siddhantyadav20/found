@@ -45,10 +45,38 @@ them.
 | **shoes** | The missing person's own sneakers on a building's front step, shot looking straight down on the way out. | Fri 21:58, Parel | Top-down, feet in frame, a Mumbai step (stone, tiles, a chappal nearby) | You |
 | **letterbox** | Your building's letterboxes, close, early morning. Rows of them, flat numbers in marker or paint: a Mumbai society's, not a hotel's. One of them is yours. | Mon 07:40, Andheri West | Close enough that the rows fill the frame | You |
 | **fuel** | Plastic jerrycans lined up against a brick wall, lit only by a phone torch. It's shown in NightCam, which I'll grade as night vision. Today it's a placeholder. | Fri 23:39, inside the mill | Torchlit, grainy, low | You |
-| **cinema** | A single-screen cinema's facade at night, its sign lit, a taxi sliding past in a blur. | Tue 23:52, Lalbaug | Across the road, the car moving | Claude sources |
-| **street** | Street lights and traffic smeared into streaks, **taken while walking fast**: handheld blur, not a tripod long exposure. | Fri 22:41, a flyover, Lalbaug | Whatever the walk gives | Claude sources, or you |
-| **balcony** | Fairy lights strung over a terrace, the party somewhere underneath them (silhouettes, no faces). | Fri 21:40, Parel | Looking up at the lights | Claude sources |
-| **wallpaper** | The lock-screen wallpaper: the city across the water at dusk. The current one may already be Mumbai. Replace it only if it isn't. | Dusk, Marine Drive | **Vertical**, phone-screen shaped | Optional |
+| **cinema** | A single-screen cinema's facade at night, its sign lit, a taxi sliding past in a blur. | Tue 23:52, Lalbaug | Across the road, the car moving | **Placeholder** (2026-09-16) |
+| **street** | Street lights and traffic smeared into streaks, **taken while walking fast**: handheld blur, not a tripod long exposure. | Fri 22:41, a flyover, Lalbaug | Whatever the walk gives | **Placeholder**: yours, if you want it |
+| **balcony** | Fairy lights strung over a terrace, the party somewhere underneath them (silhouettes, no faces). | Fri 21:40, Parel | **Placeholder** (2026-09-16) | **Placeholder** |
+| **wallpaper** | The lock-screen wallpaper: the city across the water at dusk. | Dusk, Marine Drive | **Vertical**, phone-screen shaped | **Kept**: it's already Marine Drive |
+
+## Where the sourced ones stand
+
+Sourcing found nothing usable, and all three keep the pilot's placeholders
+until launch (decided 2026-09-16). Each is a five-minute shot in Mumbai if you
+want them sooner:
+
+- **street**: the one CC0 candidate was approved on its description and
+  rejected on sight — defocus bokeh at dusk with a red double-decker bus in
+  it, not handheld streaks in Lalbaug. **Taken while walking fast** is the
+  whole shot; a phone does it by itself.
+- **cinema**: a single-screen facade at night from across the road. No CC0
+  photograph fits, and Commons' Indian cinemas are named businesses under
+  CC BY-SA — which our own rules refuse twice over, since the story has an
+  arson in it.
+- **balcony**: fairy lights over a terrace, shot from below. The CC0 pool is
+  Glasgow, Paris and New York.
+
+## Preparing them
+
+```bash
+npm run photos          # ~/Desktop/Found photos → public/found/photos
+npm run photos:check    # what's shipped: sized, and carrying no metadata
+```
+
+It strips every photo's metadata (a phone photo says where it was taken),
+sizes it for a phone screen, and can blur a rectangle — a flat number, a name
+on a door — which is written per slot in `scripts/prep-photos.mjs`.
 
 ## Why these are yours to shoot
 

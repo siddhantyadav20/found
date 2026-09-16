@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "budget": "node scripts/check-budget.mjs",
+    "photos": "node scripts/prep-photos.mjs",
+    "photos:check": "node scripts/prep-photos.mjs --check",
     "sfx": "node scripts/build-samples.mjs",
     "audio": "node scripts/build-found-audio.mjs"
   },

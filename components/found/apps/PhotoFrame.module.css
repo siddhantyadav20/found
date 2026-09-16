@@ -41,6 +41,32 @@
   object-fit: cover;
 }
 
+/* --- NightCam's night vision -------------------------------------------------
+   The fuel photograph is a torchlit phone picture; what the trespass camera
+   saved is an infrared frame. Graded here rather than baked into the file, so
+   the photograph stays a photograph and only NightCam sees it this way. */
+
+.frame[data-grade="night"] .image {
+  filter: grayscale(1) brightness(1.1) contrast(1.4) sepia(1) hue-rotate(65deg) saturate(3.4);
+}
+
+.frame[data-grade="night"]::after {
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+/* Scan lines, and the lens falling off at the edges. */
+.frame[data-grade="night"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.35) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 80% at 50% 45%, transparent 40%, rgba(0, 10, 0, 0.75) 100%);
+  pointer-events: none;
+}
+
 /* A story's timestamp, set on the photo the way the app stamps it. */
 .overlay {
   position: absolute;

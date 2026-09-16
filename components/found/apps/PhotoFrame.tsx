@@ -29,7 +29,9 @@ export default function PhotoFrame({ id, cast, size }: { id: string; cast: Cast;
   if (!photo) return null;
   const alt = say(photo.alt, cast);
   return (
-    <span className={styles.frame} data-size={size} style={{ "--hue": hueOf(id) } as CSSProperties}>
+    // A NightCam frame is graded as the trespass camera saved it, not as the
+    // photograph was taken: green night vision, over its own grain.
+    <span className={styles.frame} data-size={size} data-grade={photo.album === "nightcam" ? "night" : undefined} style={{ "--hue": hueOf(id) } as CSSProperties}>
       {photo.src ? (
         <Image src={photo.src} alt={alt} fill sizes={size === "thumb" ? "140px" : "400px"} className={styles.image} />
       ) : (
