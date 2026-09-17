@@ -1,0 +1,697 @@
+/* ===========================================================================
+   Found: the room, the phone, and the phone's own OS.
+
+   One committed look, whatever the site's theme: it's night, and a phone is
+   lit in front of you. The phone's OS has its own palette (`--os-*`, set on
+   `.screen`) because a phone's OS never follows the page it's lying next to.
+
+   On a phone the device frame disappears and the screen *is* the viewport:
+   the player's phone becomes the missing person's. That switch is a container
+   query on the room, not a media query (tests/breakpoints.test.ts).
+   =========================================================================== */
+
+.surface {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  container: found / size;
+  background-color: #0a0908;
+  background-image:
+    radial-gradient(70% 55% at 50% 12%, rgba(255, 150, 80, 0.1) 0%, transparent 70%),
+    radial-gradient(90% 70% at 50% 8%, #2b221c 0%, #120f0d 55%, #070606 100%);
+  color: #f2ede6;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- The device ------------------------------------------------------------ */
+
+.device {
+  position: relative;
+  height: min(860px, calc(100cqh - 48px));
+  aspect-ratio: 390 / 844;
+  padding: 11px;
+  border-radius: 60px;
+  background: linear-gradient(150deg, #2c2c2e 0%, #0d0d0e 38%, #1b1b1c 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    inset 0 0 0 3px #050505,
+    0 50px 120px rgba(0, 0, 0, 0.75),
+    0 0 120px rgba(255, 140, 60, 0.07);
+  animation: lift 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes lift {
+  from {
+    opacity: 0;
+    translate: 0 40px;
+    scale: 0.96;
+  }
+}
+
+.screen {
+  --os-bg: #050505;
+  --os-panel: #1c1c1e;
+  --os-panel-2: #2c2c2e;
+  --os-line: rgba(255, 255, 255, 0.09);
+  --os-text: #f5f5f7;
+  --os-dim: rgba(235, 235, 245, 0.62);
+  --os-faint: rgba(235, 235, 245, 0.34);
+  --os-accent: #ff8a3d;
+  --os-owner: #c2410c;
+  --os-warn: #ffd60a;
+  --os-danger: #ff453a;
+  --os-good: #32d74b;
+  --os-top: 50px;
+
+  /* The phone's own controls speak iOS: system blue for back buttons, links,
+     sent bubbles and switches. Found's orange (--os-accent) is kept for the
+     game's layer: hints, the open question, what the story is pointing at. */
+  --ios-blue: #0a84ff;
+  --ios-green: #30d158;
+  --ios-grey: #8e8e93;
+  --ios-separator: rgba(84, 84, 88, 0.55);
+  --ios-incoming: #262629;
+
+  /* Liquid Glass, as current iOS draws its controls: a thin tinted fill over
+     a strong blur, and a rim of light along the top edge. One recipe, used by
+     the widget, the dock, the page dots, notifications, banners and keys. */
+  --glass-fill: rgba(255, 255, 255, 0.14);
+  --glass-fill-dark: rgba(42, 42, 48, 0.42);
+  --glass-blur: blur(28px) saturate(1.8);
+  --glass-edge:
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16),
+    inset 0 -0.5px 0 rgba(255, 255, 255, 0.06);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 49px;
+  background: var(--os-bg);
+  color: var(--os-text);
+  /* Found's own type on the phone too: Outfit for the system, Canela where
+     iOS lets a person choose a face (the lock-screen clock, widgets). */
+  font-family: var(--font-ui), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Anything reached by keyboard says so, in the phone's own blue. */
+.screen :focus-visible {
+  outline: 2px solid var(--ios-blue);
+  outline-offset: 2px;
+}
+
+/* The island, on the drawn phone only: on a real phone, the real one is there. */
+.osIsland {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  z-index: 45;
+  width: 122px;
+  height: 35px;
+  translate: -50% 0;
+  border-radius: 20px;
+  background: #000;
+  pointer-events: none;
+}
+
+@container found (width < 560px) {
+  .device {
+    width: 100cqw;
+    height: 100cqh;
+    aspect-ratio: auto;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    animation: none;
+  }
+
+  .screen {
+    --os-top: calc(env(safe-area-inset-top, 0px) + 44px);
+    border-radius: 0;
+  }
+
+  .osIsland {
+    display: none;
+  }
+}
+
+/* --- Status bar ------------------------------------------------------------ */
+
+.status {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 30;
+  height: var(--os-top);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 10px 36px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  pointer-events: none;
+}
+
+.statusIcons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signal {
+  width: 17px;
+  height: 11px;
+  fill: currentColor;
+}
+
+.wifi {
+  width: 15px;
+  height: 11px;
+  fill: currentColor;
+}
+
+/* The battery the way the phone draws it now: the level inside the cell,
+   the number on top of it. Yellow in Low Power Mode, red when nearly gone,
+   green on the charger. */
+.battery {
+  display: flex;
+  color: var(--os-warn);
+}
+
+.battery[data-low] {
+  color: var(--os-danger);
+}
+
+.battery[data-charging] {
+  color: var(--os-good);
+}
+
+.cell {
+  position: relative;
+  width: 27px;
+  height: 13px;
+  overflow: hidden;
+  border-radius: 4.2px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: currentColor;
+}
+
+.cellNum {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.cellNum[data-dark] {
+  color: #000;
+}
+
+/* The nub, outside the cell's clip. */
+.battery::after {
+  content: "";
+  align-self: center;
+  width: 2px;
+  height: 4.5px;
+  margin-left: 1.5px;
+  border-radius: 0 1.5px 1.5px 0;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Over a light app (Guardian, Dabba), the status bar and the home bar turn
+   dark, as iOS turns them. */
+.screen:has([data-light-app]) .status {
+  color: #000;
+}
+
+.screen:has([data-light-app]) .cell {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.screen:has([data-light-app]) .cellNum {
+  color: #000;
+}
+
+.screen:has([data-light-app]) .battery::after {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.screen:has([data-light-app]) .homeBar::before {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+/* --- An open app ----------------------------------------------------------- */
+
+/* On its own layer, over the home screen, so it can shrink back into it. */
+.appLayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform-origin: 50% 70%;
+}
+
+/* An app opening out of the icon (or widget) it was tapped from. --zt, --zs
+   and --zr lay the layer over that box; they're worked out in index.tsx
+   (`zoomOver`) about this layer's own 50% 70% origin. */
+.appLayer[data-zoom] {
+  animation: zoom 0.44s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+@keyframes zoom {
+  from {
+    translate: var(--zt);
+    scale: var(--zs);
+    border-radius: var(--zr);
+    opacity: 0.5;
+  }
+}
+
+/* --- Notification Centre --------------------------------------------------- */
+
+/* The top edge, over the status bar: pull it down, or tap it. */
+.pullZone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 31;
+  height: var(--os-top);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* Below the status bar, over everything else: the lock screen's wallpaper,
+   blurred, with the history on it. */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 29;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--os-top) + 14px) 14px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  translate: 0 -100%;
+  transition: translate 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+  touch-action: none;
+}
+
+.shade::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  background: var(--wallpaper, linear-gradient(180deg, #0a0c1c 0%, #2a1a1c 100%)) center / cover no-repeat;
+  filter: blur(22px) brightness(0.55) saturate(1.3);
+}
+
+.shade[data-state="open"] {
+  translate: 0 0;
+}
+
+.shadeHead {
+  display: grid;
+  justify-items: center;
+}
+
+.shadeDay {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shadeClock {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.shadeLabel {
+  margin: 22px 4px 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.shadeList {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.shadeList::-webkit-scrollbar {
+  display: none;
+}
+
+.notice {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  width: 100%;
+  padding: 11px 14px 11px 11px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--glass-fill-dark);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge);
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.noticeIcon {
+  width: 38px;
+  height: 38px;
+}
+
+.noticeBody {
+  display: grid;
+  min-width: 0;
+}
+
+.noticeTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.noticeTop span {
+  flex: none;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.noticeText {
+  overflow: hidden;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The grabber at the bottom: tap it, or push the whole thing back up. */
+.shadeClose {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 26px;
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.shadeClose span {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* --- Home indicator ------------------------------------------------------- */
+
+/* Tap it, or swipe up from it: either goes home. */
+.homeBar {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  z-index: 40;
+  width: 180px;
+  height: 28px;
+  translate: -50% 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.homeBar::before {
+  content: "";
+  position: absolute;
+  inset: 12px 23px 11px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.72);
+  transition: background-color 0.2s;
+}
+
+.homeBar:hover::before {
+  background: #fff;
+}
+
+/* --- Notification banner --------------------------------------------------- */
+
+.banner {
+  position: absolute;
+  z-index: 50;
+  /* Just under the status bar, not over it: over it, the battery reading
+     showed through the glass and collided with "now". */
+  top: calc(var(--os-top) + 2px);
+  left: 9px;
+  right: 9px;
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  padding: 11px 14px 11px 11px;
+  border: 0;
+  border-radius: 26px;
+  background: rgba(40, 40, 46, 0.62);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    var(--glass-edge),
+    0 14px 40px rgba(0, 0, 0, 0.45);
+  color: var(--os-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* Flicked up to dismiss: the drag is the banner's, not the page's. */
+  touch-action: none;
+  animation: drop 0.5s cubic-bezier(0.2, 1.1, 0.3, 1) both;
+}
+
+@keyframes drop {
+  from {
+    translate: 0 -130%;
+    opacity: 0;
+  }
+}
+
+.bannerIcon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+}
+
+.bannerText {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+
+.bannerFrom {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.bannerBody {
+  overflow: hidden;
+  font-size: 14px;
+  color: var(--os-dim);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Held: the whole message, and the banner stays until it's tapped or flicked. */
+.banner[data-expanded] {
+  align-items: flex-start;
+}
+
+.banner[data-expanded] .bannerBody {
+  overflow: visible;
+  white-space: normal;
+}
+
+.bannerHint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--os-faint);
+}
+
+.bannerNow {
+  align-self: flex-start;
+  font-size: 12px;
+  color: var(--os-faint);
+}
+
+/* --- The battery going ----------------------------------------------------- */
+
+.powerOff {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: #000;
+  animation: dark 2.6s ease-in both;
+}
+
+@keyframes dark {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+}
+
+.dying {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  color: var(--os-danger);
+  font-size: 14px;
+  font-weight: 600;
+  animation: last 2.6s ease-in both;
+}
+
+@keyframes last {
+  0%,
+  22% {
+    opacity: 0;
+  }
+  35%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Guardian's last word, flickering up under the empty battery. */
+.sting {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 64px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: rgba(38, 38, 40, 0.9);
+  color: var(--os-dim);
+  font-size: 13px;
+  text-align: center;
+  animation: flicker 3.4s ease-in both;
+}
+
+@keyframes flicker {
+  0%,
+  30% {
+    opacity: 0;
+  }
+  36% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.3;
+  }
+  46%,
+  82% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.bigCell {
+  position: relative;
+  width: 72px;
+  height: 32px;
+  border: 3px solid #5a5a5e;
+  border-radius: 9px;
+}
+
+.bigCell::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  bottom: 3px;
+  width: 6px;
+  border-radius: 3px;
+  background: var(--os-danger);
+}
+
+.bigCell::after {
+  content: "";
+  position: absolute;
+  right: -9px;
+  top: 9px;
+  width: 4px;
+  height: 8px;
+  border-radius: 0 3px 3px 0;
+  background: #5a5a5e;
+}
+
+/* The pill iOS draws around the clock while something is recording or
+   sharing the screen. It has been there since Thursday, and it is the one
+   thing on this phone that explains everything, hours before anyone asks
+   what it is (CHAPTER1.md, twist 5). */
+.recording {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #0a84ff;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}

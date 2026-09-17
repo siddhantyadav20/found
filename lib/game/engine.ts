@@ -68,6 +68,13 @@ export const unseenIn = (story: Story, s: CaseState, app: AppId): number =>
 export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
   story.evidence.filter((e) => e.app === app && !e.manual).reduce((acc, e) => see(story, acc, e.id), s);
 
+/** Every icon on her home screen, pages and dock together. */
+export const homeIcons = (story: Story) => [...story.hersHome.pages.flat(), ...story.hersHome.dock];
+
+/** What she calls an app. The dock and the pages are the only source. */
+export const appLabel = (story: Story, app: AppId): string =>
+  homeIcons(story).find((i) => i.app === app)?.label ?? app;
+
 /* --- questions ---------------------------------------------------------- */
 
 export const answered = (s: CaseState, id: string): boolean => has(s, `ask:${id}`);

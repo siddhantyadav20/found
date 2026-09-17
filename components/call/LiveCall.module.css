@@ -4,10 +4,12 @@
 
 .call {
   position: fixed;
-  right: max(0.75rem, env(safe-area-inset-right));
-  bottom: max(0.9rem, calc(env(safe-area-inset-bottom) + 0.4rem));
+  /* Where iOS parks a call you have stepped away from: top right, under the
+     island, out of the dock's way. */
+  right: max(0.9rem, env(safe-area-inset-right));
+  top: max(5rem, calc(env(safe-area-inset-top) + 4.2rem));
   z-index: 40;
-  width: 8.5rem;
+  width: 7rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -16,6 +18,7 @@
 
 .call[data-expanded] {
   inset: 0;
+  top: 0;
   width: auto;
   padding: max(1rem, env(safe-area-inset-top)) 1rem calc(1.2rem + env(safe-area-inset-bottom));
   background: #07080a;

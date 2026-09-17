@@ -18,13 +18,13 @@ export type AppId =
   // Her phone
   | "whatsapp"
   | "phone"
-  | "gallery"
+  | "photos"
   | "settings"
   | "pikdrop"
   | "instagram"
   | "messages"
   | "notes"
-  | "chrome"
+  | "safari"
   | "news"
   | "casefile"
   // Your phone
@@ -206,6 +206,83 @@ export type Clock = {
   readonly battery: number;
 };
 
+export type HomeIcon = { readonly app: AppId; readonly label: string };
+
+/* --- what is on her phone -------------------------------------------------
+   Everything below is content, not mechanism: a chat is a list of messages, a
+   call is a row in Recents, a setting is a line in a grouped list. Anything
+   that can be *found* names an `evidence` id, and the engine does the rest. */
+
+export type Attachment =
+  | { readonly kind: "document"; readonly label: string; readonly meta?: string }
+  | { readonly kind: "photo"; readonly label: string; readonly src?: string }
+  | { readonly kind: "voice"; readonly seconds: number; readonly transcript: string; readonly english?: string }
+  | { readonly kind: "video"; readonly label: string; readonly seconds: number };
+
+export type Message = {
+  readonly id: string;
+  /** Her, the other side, or the app itself ("Messages and calls are encrypted"). */
+  readonly from: "her" | "them" | "system";
+  readonly text?: string;
+  /** The English under the Hinglish or Marathi. Never optional where it matters. */
+  readonly english?: string;
+  readonly at: string;
+  readonly day?: string;
+  readonly attachment?: Attachment;
+  /** WhatsApp leaves the hole behind: "This message was deleted." */
+  readonly deleted?: boolean;
+  readonly forwarded?: boolean;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+export type Thread = {
+  readonly id: string;
+  readonly app: Extract<AppId, "whatsapp" | "messages" | "instagram">;
+  readonly name: string;
+  /** What the list shows under the name when it isn't the last message. */
+  readonly sub?: string;
+  readonly group?: boolean;
+  readonly pinned?: boolean;
+  /** Unsaved numbers show as numbers, which is how two of them get confused. */
+  readonly number?: string;
+  readonly messages: readonly Message[];
+  readonly requires?: readonly Flag[];
+};
+
+export type Recording = {
+  readonly seconds: number;
+  readonly lines: readonly { readonly who: string; readonly line: string; readonly english?: string }[];
+};
+
+export type CallEntry = {
+  readonly id: string;
+  readonly name: string;
+  readonly number?: string;
+  readonly kind: "in" | "out" | "missed";
+  readonly at: string;
+  readonly day: string;
+  readonly seconds?: number;
+  /** iOS records calls now, and she had it on. */
+  readonly recording?: Recording;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+export type SettingsRow = {
+  readonly title: string;
+  readonly sub?: string;
+  readonly value?: string;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+export type SettingsGroup = {
+  readonly label?: string;
+  readonly footer?: string;
+  readonly rows: readonly SettingsRow[];
+};
+
 /** The call that is already running when the player opens the pouch. */
 export type CallSpec = {
   readonly caller: string;
@@ -221,9 +298,15 @@ export type Story = {
   readonly call: CallSpec;
   readonly episodes: readonly [string, string, string];
   readonly clocks: readonly [Clock, Clock, Clock];
-  /** Her home screen, in the order she left it. */
-  readonly hersHome: readonly { readonly app: AppId; readonly label: string }[];
+  /** Her home screen, as she left it: pages, and what she kept in the dock. */
+  readonly hersHome: {
+    readonly pages: readonly (readonly HomeIcon[])[];
+    readonly dock: readonly HomeIcon[];
+  };
   readonly evidence: readonly Evidence[];
+  readonly threads: readonly Thread[];
+  readonly calls: readonly CallEntry[];
+  readonly settings: readonly SettingsGroup[];
   readonly questions: readonly Question[];
   readonly cues: readonly CallCue[];
   readonly events: readonly LiveEvent[];

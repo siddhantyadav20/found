@@ -1,0 +1,39 @@
+/* An iOS app tile. The corner is the platform's (about 22.5% of the side),
+   and the edge light is current iOS: every icon catches light along its top
+   rim and holds a faint glass sheen, which is what keeps a flat gradient from
+   reading as a sticker. */
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 22.5%;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 42%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+}
+
+.glyph {
+  width: 68%;
+  height: 68%;
+}
+
+.glyph[data-full] {
+  width: 100%;
+  height: 100%;
+}

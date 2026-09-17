@@ -1,0 +1,326 @@
+/* The case file, drawn as an iOS note: black paper, Notes' yellow for its
+   buttons and checklist circles, and picking evidence as ticking a
+   checklist. Found's orange stays for what the game says: the open question
+   and the hints. */
+
+.who {
+  margin: -8px 4px 18px;
+  font-size: 15px;
+  color: var(--ios-grey);
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 16px 16px 14px;
+  border-radius: 22px;
+  background: var(--os-panel);
+  animation: in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--os-accent);
+}
+
+.question {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ask {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ios-grey);
+}
+
+.nudge {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--os-panel-2);
+  font-size: 15px;
+}
+
+/* Where to look: apps, never answers. Free, always visible, and the line that
+   does most of the work against "what am I supposed to do now". */
+.look {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ios-grey);
+}
+
+.look b {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 138, 61, 0.14);
+  color: var(--os-accent);
+  font-weight: 600;
+}
+
+/* A hint: the game speaking, so it keeps Found's colour. */
+.hint {
+  margin: 0;
+  padding: 8px 12px;
+  border-left: 2px solid var(--os-accent);
+  font-size: 15px;
+  color: var(--os-text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.primary,
+.secondary {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Notes' own tint. */
+.primary {
+  background: #ffd60a;
+  color: #1c1c1e;
+}
+
+.primary:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.secondary {
+  background: rgba(120, 120, 128, 0.24);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge);
+  color: var(--os-text);
+}
+
+/* --- Showing evidence: a checklist ----------------------------------------- */
+
+.pick {
+  display: grid;
+  gap: 8px;
+}
+
+.pickList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pickRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.check {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid rgba(142, 142, 147, 0.75);
+  border-radius: 50%;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.pickRow[data-on] .check {
+  border-color: #ffd60a;
+  background: #ffd60a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m5.5 10.5 3 3 6-7' fill='none' stroke='%231c1c1e' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+
+/* How many to show, and how many are ticked. */
+.choose {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ios-grey);
+}
+
+.choose[data-over] {
+  color: var(--os-danger);
+}
+
+/* "Did you see that coming?": asked of the player, not the case. */
+.react {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 16px;
+  border-radius: 22px;
+  background: var(--os-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  animation: in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+.reactEyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ios-grey);
+}
+
+/* --- Typing the answer yourself ------------------------------------------- */
+
+.typed {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* The keyboard's suggestion bar: what this phone's owner types most. */
+.suggest {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-radius: 12px;
+  background: rgba(118, 118, 128, 0.24);
+}
+
+.suggestion {
+  padding: 9px 4px;
+  border: 0;
+  background: none;
+  color: var(--os-text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.suggestion + .suggestion {
+  box-shadow: inset 0.5px 0 0 var(--ios-separator);
+}
+
+.typeRow {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(118, 118, 128, 0.24);
+  color: var(--os-text);
+  font: inherit;
+  font-size: 17px;
+}
+
+.input::placeholder {
+  color: var(--ios-grey);
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 1.5px #ffd60a;
+}
+
+/* --- Solved: a ticked checklist item --------------------------------------- */
+
+.solved {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 4px 12px;
+  margin: 0 0 10px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: var(--os-panel);
+}
+
+.solved::before {
+  content: "";
+  grid-row: span 2;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffd60a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m5.5 10.5 3 3 6-7' fill='none' stroke='%231c1c1e' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+
+.solvedQ {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ios-grey);
+  text-decoration: line-through;
+  text-decoration-color: rgba(142, 142, 147, 0.7);
+}
+
+.solvedA {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* --- Everything found ------------------------------------------------------ */
+
+.emptyNote {
+  margin: 0 4px;
+  font-size: 15px;
+  color: var(--ios-grey);
+}
+
+.item {
+  display: grid;
+  gap: 2px;
+  padding: 12px 16px;
+}
+
+.itemLabel {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.itemDetail {
+  font-size: 14px;
+  color: var(--ios-grey);
+}
+
+/* Where it came from, as a Notes tag. */
+.itemSource {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffd60a;
+}
+
+.itemSource::before {
+  content: "#";
+}

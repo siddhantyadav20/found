@@ -26,15 +26,18 @@ of the scam's own two commands — *don't cut the call, don't tell anyone*.
 ## Decisions this pivot reversed
 
 - **The found phone no longer matches the player's platform.** It belongs to
-  its owner: Vasu is 64, so her phone is a mid-range Android with huge system
-  font and an accessibility permission the plot needs. **iOS moves to the
-  player's own phone**, the second device on stage.
+  its owner. **Decided 2026-09-18:** Vasu's is the iPhone her son handed down,
+  drawn in current iOS with the look and feel built for the pilot, with the
+  text size on Largest. Her surveillance is what an iPhone really carries: a
+  configuration profile she was talked into installing, her Apple Account on a
+  device she never owned, and the blue recording pill around her clock. The
+  player's own phone still matches the player's platform.
 - **No random cast.** Every person in the chapter is a specific person with a
   face and a voice, and actors play them under signed releases. The old rule
   against identifiable faces now applies only to *real* people.
 - **The share result is not hint squares.** It is the ledger: *"They had 4
   things on me."*
-- **The irreversible act is not a location toggle.** It's uninstalling the app
+- **The irreversible act is not a location toggle.** It's removing the profile
   that's watching.
 
 ## Decisions that survive the pivot

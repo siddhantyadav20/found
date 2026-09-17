@@ -4,13 +4,18 @@ import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 
 
 import { useCase } from "@/components/found/StoryContext";
 import LiveCall from "@/components/call/LiveCall";
-import Phone from "@/components/her/Phone";
+import AppView from "@/components/her/AppView";
+import Home from "@/components/her/Home";
+import Screen from "@/components/her/Screen";
 import YourPhone from "@/components/yours/Phone";
 import type { AppId, CallCue, Flag } from "@/content/types";
 import { nextCue } from "@/lib/game/call";
-import { add, battery, clockNow, expose, has, newCase, openApp as findIn, type CaseState } from "@/lib/game/engine";
+import { add, appLabel, battery, clockNow, expose, has, newCase, openApp as findIn, see, type CaseState } from "@/lib/game/engine";
 import { bindProgress, commit, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { track } from "@/lib/found/track";
+import Chat from "@/components/her/apps/Chat";
+import Recents from "@/components/her/apps/Recents";
+import HerSettings from "@/components/her/apps/Settings";
 import CaseFile from "./CaseFile";
 import InAppGuard from "./InAppGuard";
 import Note from "./Note";
@@ -44,7 +49,7 @@ export default function Stage() {
   const [expanded, setExpanded] = useState(true);
   const [muted, setMuted] = useState(true);
   const [idleTurn, setIdleTurn] = useState(0);
-  const [banner, setBanner] = useState<{ app: AppId; text: string } | null>(null);
+  const [banner, setBanner] = useState<{ app: AppId; from: string; text: string } | null>(null);
 
   /* Resume lands on the screen the player left, so the save decides where they
      are, never component state (PLAYER-JOURNEY Stage 5). */
@@ -120,7 +125,7 @@ export default function Stage() {
       if (!s) return;
       const ev = story.events.find((e) => e.id === "alert");
       save(add(s, "fired:alert", ...((ev?.sets ?? []) as Flag[])));
-      setBanner({ app: "news", text: ev?.banner ?? "" });
+      setBanner({ app: "news", from: "City Desk", text: ev?.banner ?? "" });
       setExpanded(false);
     }, ALERT_MS);
     return () => window.clearTimeout(t);
@@ -155,19 +160,25 @@ export default function Stage() {
     <div className={styles.stage} data-playing>
       <div className={styles.table}>
         <div className={styles.hers}>
-          <Phone
-            story={story}
-            state={state}
+          <Screen
             time={mumbai}
             battery={battery(story, state)}
-            open={openApp}
-            onOpen={onOpenApp}
-            onBack={() => setOpenApp(null)}
+            wallpaper={meta.wallpaper}
+            recording
             banner={expanded ? null : banner}
             onBanner={() => banner && onOpenApp(banner.app)}
           >
-            {openApp && <AppBody app={openApp} story={story} state={state} save={save} />}
-          </Phone>
+            <Home story={story} state={state} onOpen={onOpenApp} covered={Boolean(openApp)} />
+            {openApp && (
+              <AppView
+                title={appLabel(story, openApp)}
+                onBack={() => setOpenApp(null)}
+                bare={openApp === "whatsapp" || openApp === "messages" || openApp === "instagram"}
+              >
+                <AppBody app={openApp} story={story} state={state} save={save} />
+              </AppView>
+            )}
+          </Screen>
         </div>
         <div className={styles.yours}>
           <YourPhone time={mumbai} />
@@ -235,7 +246,16 @@ function AppBody({
   state: CaseState;
   save: (next: CaseState) => void;
 }) {
+  const read = (ids: readonly string[]) => {
+    const now = readProgress();
+    if (now) save(ids.reduce((acc, id) => see(story, acc, id), now));
+  };
+
   if (app === "casefile") return <CaseFile story={story} state={state} save={save} />;
+  if (app === "whatsapp" || app === "messages" || app === "instagram")
+    return <Chat story={story} state={state} app={app} onRead={read} />;
+  if (app === "phone") return <Recents story={story} state={state} onRead={read} />;
+  if (app === "settings") return <HerSettings story={story} state={state} />;
 
   if (app === "news")
     return (
@@ -253,31 +273,9 @@ function AppBody({
       </article>
     );
 
-  if (app === "settings")
-    return (
-      <ul className={styles.rows}>
-        <li>
-          <b>Vasundhara Kulkarni</b>
-          <span>vasu.kulkarni1962@gmail.com</span>
-        </li>
-        <li>
-          <b>Screen lock</b>
-          <span>Off · turned off Thursday 8:10 PM</span>
-        </li>
-        <li>
-          <b>Font size</b>
-          <span>Largest</span>
-        </li>
-        <li>
-          <b>Battery</b>
-          <span>{battery(story, state)}% · power saving off</span>
-        </li>
-      </ul>
-    );
-
   return (
     <p className={styles.soon}>
-      {story.hersHome.find((a) => a.app === app)?.label} is built in P4. Everything she kept
+      {appLabel(story, app)} is built in P4. Everything she kept
       in here — the chats, the diary, the courier, the spyware — arrives with it.
     </p>
   );

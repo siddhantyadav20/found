@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { Story } from "@/content/types";
-import { answer, caseFile, hint, openQuestion, whereToLook, type CaseState } from "@/lib/game/engine";
+import { answer, appLabel, caseFile, hint, openQuestion, whereToLook, type CaseState } from "@/lib/game/engine";
 import styles from "./CaseFile.module.css";
 
 /* ===========================================================================
@@ -74,7 +74,7 @@ export default function CaseFile({
       <h3 className={styles.ask}>{q.ask}</h3>
 
       <p className={styles.where}>
-        Where to look: {whereToLook(story, q.id).map((a) => story.hersHome.find((h) => h.app === a)?.label ?? a).join(", ")}
+        Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
       </p>
 
       {found.length === 0 ? (

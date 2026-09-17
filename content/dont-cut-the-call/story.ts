@@ -1,6 +1,7 @@
 import type { Story } from "../types";
 
 import { episode1 } from "./episode1";
+import { calls, settings, threads } from "./phone";
 
 /* ===========================================================================
    Chapter One — "Don't Cut the Call" · Mumbai.
@@ -23,18 +24,32 @@ export const story: Story = {
     { base: "01:40", day: "Saturday", battery: 4 },
     { base: "10:29", day: "Saturday", battery: 61 },
   ],
-  hersHome: [
-    { app: "whatsapp", label: "WhatsApp" },
-    { app: "phone", label: "Phone" },
-    { app: "gallery", label: "Gallery" },
-    { app: "instagram", label: "Instagram" },
-    { app: "messages", label: "Messages" },
-    { app: "notes", label: "Notes" },
-    { app: "pikdrop", label: "PikDrop" },
-    { app: "chrome", label: "Chrome" },
-    { app: "news", label: "City Desk" },
-    { app: "settings", label: "Settings" },
-    { app: "casefile", label: "Case file" },
-  ],
+  /* What a 64-year-old keeps on the first page, and what she keeps in the
+     dock: the four she actually uses. Page two is everything a son installed
+     for her once and she never opened again. */
+  hersHome: {
+    pages: [
+      [
+        { app: "messages", label: "Messages" },
+        { app: "notes", label: "Notes" },
+        { app: "settings", label: "Settings" },
+        { app: "news", label: "City Desk" },
+        { app: "instagram", label: "Instagram" },
+      ],
+      [
+        { app: "pikdrop", label: "PikDrop" },
+        { app: "safari", label: "Safari" },
+      ],
+    ],
+    dock: [
+      { app: "whatsapp", label: "WhatsApp" },
+      { app: "photos", label: "Photos" },
+      { app: "phone", label: "Phone" },
+      { app: "casefile", label: "Case file" },
+    ],
+  },
+  threads,
+  calls,
+  settings,
   ...episode1,
 };

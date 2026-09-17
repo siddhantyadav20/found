@@ -15,6 +15,19 @@ const evidence: Evidence[] = [
   { id: "clock", device: "hers", app: "casefile", label: "His wall clock is an hour ahead", manual: true },
   { id: "alert", device: "hers", app: "news", label: "A woman in Dadar is dead" },
   { id: "wallpaper", device: "hers", app: "settings", label: "Whose phone this is" },
+
+  // Her life, and the scam sitting in it like an appointment.
+  { id: "warrant", device: "hers", app: "whatsapp", label: "An arrest warrant with an FIR number" },
+  { id: "stalling", device: "hers", app: "whatsapp", label: "\"PIN bhool gayi\" — she stalled them for 31 hours" },
+  { id: "watchman", device: "hers", app: "whatsapp", label: "A Crime Branch officer came to her building at 12:21" },
+  { id: "secretary", device: "hers", app: "whatsapp", label: "The society asked nobody to forward anything" },
+  { id: "her-voice", device: "hers", app: "whatsapp", label: "Her voice note to Shaila, 11:48 PM" },
+  { id: "deleted-photo", device: "hers", app: "whatsapp", label: "A photo she sent Shaila, deleted" },
+  { id: "last-call-son", device: "hers", app: "phone", label: "Her last call was to her son, unanswered" },
+  { id: "helpline", device: "hers", app: "phone", label: "She called 1930 and held for 24 minutes" },
+  { id: "passcode-off", device: "hers", app: "settings", label: "The passcode was turned off on Thursday" },
+  { id: "profile", device: "hers", app: "settings", label: "A device management profile she didn't install", requires: ["ask:whose"] },
+  { id: "apple-account", device: "hers", app: "settings", label: "Her Apple Account is on a device she doesn't own", requires: ["ask:whose"] },
 ];
 
 const questions: Question[] = [

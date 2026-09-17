@@ -1,0 +1,73 @@
+/* Settings' own pieces: the coloured tiles, and the account card on top. */
+
+.tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.tile svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tile svg .solid {
+  fill: #fff;
+  stroke: none;
+}
+
+/* An app's own icon, at a settings tile's size. */
+.appTile {
+  flex: none;
+  width: 30px;
+  height: 30px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile:active {
+  background: var(--os-panel-2);
+}
+
+.profileName {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profileSub {
+  font-size: 13px;
+  color: var(--ios-grey);
+}
+
+.card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: 8px 0 26px;
+}
+
+.cardName {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}

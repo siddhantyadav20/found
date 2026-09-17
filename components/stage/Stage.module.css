@@ -148,6 +148,8 @@
 .hers {
   flex: 0 1 24rem;
   display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 0;
 }
 

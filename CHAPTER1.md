@@ -6,6 +6,19 @@ kept because it existed.*
 
 ---
 
+## Changed on 2026-09-18: her phone is an iPhone
+
+Siddhant asked for the iOS look and feel back, so Vasu's phone is the iPhone
+her son handed down, and the surveillance is what an iPhone can really carry:
+**a configuration profile they talked her into installing** ("RBI Secure KYC",
+8:14 PM Thursday, four minutes after the passcode went off) and **her Apple
+Account signed in on a device she has never owned**. The always-visible tell
+is no longer an icon nobody can name: it is **the blue recording pill around
+her clock**, which iOS shows whenever the screen is being shared, and which
+everybody has learned to ignore. The Secure Folder becomes **a locked note**
+and the Recycle Bin becomes **Recently Deleted**. Nothing else about the plot
+moves.
+
 ## Why the MIRROR draft was replaced (short)
 
 - **Its central idea is abstract.** "A company that fabricates evidence" is a
@@ -44,8 +57,8 @@ which is also India in 2026. **Young men from Kurla and Kottayam are
 trafficked** to scam compounds on the Myanmar border by "overseas job"
 agents, and forced to play police officers. **College students rent out their
 bank accounts** for ₹8,000 a month as mule accounts. **Leaked courier data**
-becomes tomorrow's target list. **Fake APKs** passed around on WhatsApp let
-someone watch your screen. And when a victim dies, **"she died of shame
+becomes tomorrow's target list. **"Verification profiles"** that victims are talked
+into installing let someone watch the screen. And when a victim dies, **"she died of shame
 after a cyber fraud"** is the one story nobody investigates.
 
 The dead woman, **Vasundhara "Vasu" Kulkarni**, was not a victim. She spent 32
@@ -93,9 +106,10 @@ call with a warrant PDF. The victim is under "digital arrest": camera on,
 tell no one, and move your savings to an "RBI verification account" for
 clearance. That account is a rented mule account (Tanvi's). The money goes
 from there to crypto, and PK's people cash it out. When a victim is slow,
-the call asks them to install **"RBI KYC Assist"**, an APK that gets
-Android's accessibility permission: it sees the screen, reads SMS, and
-can tap and delete. When a victim is dangerous, a "field officer" visits.
+the call talks them through installing a **configuration profile**, **"RBI
+Secure KYC"**, and signing in to a second device "for the audit". Between
+them, the profile and her own Apple Account let the compound watch the
+screen, read what arrives, and reach into iCloud. When a victim is dangerous, a "field officer" visits.
 
 ## B3. The truth, minute by minute
 
@@ -103,7 +117,7 @@ can tap and delete. When a victim is dangerous, a "field officer" visits.
 |---|---|---|
 | **Thu 5:38 PM** | "SkyEx Courier" call → video call with "Inspector Rathore". The arrest begins. | Call log; WhatsApp video call |
 | Thu 5:52 PM | Vasu's note: *"Taiwan parcel — FAKE. Police don't video call. Keep him talking. Don't let him know."* | Notes |
-| Thu 8:10 PM | On the call's orders she installs RBI KYC Assist and turns off her screen lock "for verification". She thinks the screen-share app she was told to install is the only thing watching. **It isn't.** | Settings › Passcode off 8:10 PM; Accessibility |
+| Thu 8:10 PM | On the call's orders she turns off her screen lock "for verification" (8:10 PM) and installs their profile four minutes later. She believes the screen sharing she was walked through is the only thing watching. **It isn't.** | Settings › Face ID & Passcode, off 8:10 PM; VPN & Device Management |
 | Thu 11:30 PM | "Rathore" reads out her **"FIR no. 9820457713"** and the **parcel tracking number MW7-LP-0412.** They're Sahil's codes: his mother's mobile number, and Myawaddy / Lotus Park / Building 7 / Room 0412. | Warrant PDF; diary photos |
 | Fri 11:20 AM | To stall and trace, Vasu goes to her old branch, with the call running in her earphones, and transfers **₹49,000**, not the ₹38 lakh they're demanding: *"FD todne mein do din lagte hain, beta."* The payee: **TANVI R DESHMUKH.** | Bank SMS; diary |
 | Fri 1:10 PM | Vasu decodes the "FIR" and messages the number. It's Rukhsana. Voice notes: Sahil, Thailand, "Kothari saab, Andheri," seven months of silence. | WhatsApp › Rukhsana |
@@ -120,12 +134,12 @@ can tap and delete. When a victim is dangerous, a "field officer" visits.
 | 11:58 PM | Calls Nikhil. Unanswered: he's on DND. | Call log |
 | 12:08 AM | The rider picks up. The watchman hands it over. Vasu keeps the call running inside the pouch, on mute with the camera off. Sahil is punished if the call drops, and it keeps the compound believing she's at home. | PikDrop; call timer |
 | **12:21 AM** | A man with a Crime Branch ID reaches the gate. Watchman in the society group: *"Crime Branch se sir aaye hai Kulkarni madam ke liye."* | Society WhatsApp group |
-| 12:24 AM | The compound has watched the PikDrop booking through RBI KYC Assist, and PK's people call the rider: *"Madam ka bhai bol raha hoon. Saaman pehle Andheri East dena hai."* ₹2,000 by UPI. | PikDrop rider chat |
+| 12:24 AM | The compound has watched the PikDrop booking on her shared screen, and PK's people call the rider: *"Madam ka bhai bol raha hoon. Saaman pehle Andheri East dena hai."* ₹2,000 by UPI. | PikDrop rider chat |
 | **12:31–12:45 AM** | The pouch sits at Skyline Overseas Placements, Andheri East. They take the diary, replace her letter with **"CALL MAT KATNA. SAB DEKHO. — V"**, and work the phone remotely: **12:36** schedule a reminder, **12:37** delete diary page 6, **12:38** delete Shaila's photo "for everyone", **12:39** edit her note to add a PIN hint. | PikDrop route map; the timestamps |
 | **12:37 AM** | Terrace, Dadar. Ruchi's cat story catches voices above: *"Madam, diary kahan hai?"* … *"Aap police nahi ho."* | Instagram story (expires in 24 hours) |
 | **12:40 AM** | Vasu falls from the terrace. | Society group, 12:58: *"Ambulance aayi hai"* |
 | 1:04 AM | The secretary: *"Please don't forward anything. Society ka naam."* | Society group |
-| **1:11 AM** | Delivered to you. **The "news alert" that lands on the call is posted by RBI KYC Assist.** No outlet has the story yet. | Notification (its icon) |
+| **1:11 AM** | Delivered to you. **The "news alert" that lands on the call is pushed by their profile.** No outlet has the story yet. | Notification (its icon) |
 | 1:34 AM | Nikhil, told by the police that her phone is missing, calls it. | Phone |
 | 6:42 AM | City Desk publishes the real story, and quotes "a nephew": *"She lost ₹38 lakh and couldn't face the family."* Vasu has no nephew. | News app |
 | 9:10 AM | D'Souza gets the SkyEx call and cuts it. At 10:12 he writes to Vasu's phone: *"Aunty, aapne bachaya. Thank you 🙏"* | WhatsApp |
@@ -174,14 +188,14 @@ minutes. A guilty woman doesn't do that.
 
 You find Tanvi: the DM, the "please call", the 38-second recording of a man
 who is not a twenty-year-old girl. *"The girl gave me to them. Not her
-fault."* In the gallery's Recycle Bin is the diary page someone deleted:
+fault."* In Photos' Recently Deleted is the diary page someone deleted:
 **tomorrow's nine names.** Eight have numbers, and her call log shows what
 happened when she rang them. The ninth has only an address, and it matches the
 PikDrop booking. **It's your address. You're number nine.**
 
 A neighbour's cat story, 11 hours from expiring, holds voices on the terrace at
 12:37. Then a note titled *"For whoever gets this phone,"* with a PIN hint for
-her Secure Folder. Maybe you type it and find nothing but FD receipts.
+her locked note. Maybe you type it and find nothing but FD receipts.
 Maybe you notice Shaila's message first: *"Vasu, note mein Madhav ka janamdin
 kyun likha? Tu theek hai?"* Win Shaila's trust and she sends back the photo
 Vasu sent her at 11:48. **Her real note, in English cursive: "CUT THE CALL.
@@ -191,14 +205,14 @@ You line up everything that happened to this phone after midnight: a reminder,
 a deleted page, a message deleted for everyone and a note edited, all between
 12:36 and 12:39. Vasu was on a terrace in Dadar, and the courier's route map
 has the pouch stopped for fourteen minutes in Andheri East. Settings ›
-Accessibility: **RBI KYC Assist — ON. Can see and control your screen.** You
+General › VPN & Device Management: **RBI Secure KYC — this iPhone is supervised.** You
 open it. One line types itself: **"Good morning, #9."**
 
 ### Episode 3 — "10:30" · ~14 min · 10:29 AM · your phone
 
 You fell asleep with it on your chest. The found phone: D'Souza's thank-you to
 a dead woman. The real City Desk article, **published 6:42 AM**, hours after
-the "alert" you saw at 1:11. You decide whether to kill RBI KYC Assist.
+the "alert" you saw at 1:11. You decide whether to remove their profile.
 
 **10:30. Your phone rings.** A video call from "Mumbai Crime Branch", with Sahil
 in the uniform and the supervisor in the frame. It's the digital arrest, done to
@@ -226,7 +240,7 @@ anyone.*
 | **4** | Ep 2, middle | You're an outsider investigating someone else's tragedy. | **You're name #9 on tomorrow's list.** She sent you the phone because you were the only one she couldn't call. | The envelope wasn't random. The case is about you. |
 | **5** | Ep 2 end | You've been following Vasu's instructions from a dead woman's note. | **The note is theirs.** Her real note said *CUT THE CALL.* The pouch stopped in Andheri East, and they've watched every tap. | The first instruction you ever obeyed was the villains'. Keeping the call alive, and even plugging in your real charger for it, served them. The "PIN hint" was bait. |
 | **6** | Ep 3 | The call accusing you is a scam, so the evidence is fake. | **The scam is fake, but the evidence is real, because you made it.** | Your curiosity, the PIN, the lines you chose and the people you contacted were collected. "Curiosity is part of the crime," made literal. |
-| **7** | End card | The chapter started when you opened the envelope. | **The 1:11 "news alert" came from RBI KYC Assist, five and a half hours before any outlet had the story.** | The first thing you ever saw was the killers telling you she was dead, and framing it as suicide before anyone else could. |
+| **7** | End card | The chapter started when you opened the envelope. | **The 1:11 "news alert" came from their profile, five and a half hours before any outlet had the story.** | The first thing you ever saw was the killers telling you she was dead, and framing it as suicide before anyone else could. |
 
 
 ---
@@ -256,7 +270,7 @@ anyone.*
 | 1 | **The pouch.** A PikDrop courier pouch with a delivery sticker (your name if a friend sent the case; otherwise "Flat —"). Tear it open. A Samsung taped to a power bank with 1 LED lit. A note: **"CALL MAT KATNA. SAB DEKHO. — V"** | Envelope | Physical: tear, lift, read |
 | 2 | **The call.** 31:33:07 and counting. "Inspector Rathore" in front of a Crime Branch board, flag, emblem. *"Madam? Camera on kijiye."* Mic muted, camera off. | Call (full screen) | — |
 | 3 | **The red button.** Pressing End brings up *"Call end karein?"* Before you confirm, Sahil leans in and whispers: *"Mat kaatna… please."* Then, loud: *"CALL MAT KAATNA. Aapke naam pe non-bailable warrant hai."* You can still end it (see F, replay). | Call | Choice (the first secret branch) |
-| 4 | **The alert** slides over the call: *City Desk · Dadar: retired bank manager, 64, found dead below building; family says she was under 'digital arrest' for 31 hours.* (Its tiny app icon is RBI KYC Assist's grey shield. Nobody looks at it the first time.) | Notification | — |
+| 4 | **The alert** slides over the call: *City Desk · Dadar: retired bank manager, 64, found dead below building; family says she was under 'digital arrest' for 31 hours.* (It arrives while the blue recording pill sits around her clock, as it has since Thursday. Nobody looks at it the first time.) | Notification | — |
 | 5 | Minimise the call. Home screen: huge font, a grandson on the wallpaper, Samsung account **Vasundhara Kulkarni**. **Q1 — Whose phone is this, and is she the woman in the news?** Match the wallpaper to the news photo, and the society name in the chat to the building. | Home, News, WhatsApp | Cross-app match (easy onboarding) |
 | 6 | **Her life.** Kulkarni Parivar (3,412 unread). Nikhil: *"Aai, call later. Meeting 🙏"* (Thu 6:02 PM). Her last call: **Nikhil, 11:58 PM, unanswered.** Shanti Kunj CHS group: 12:21 *"Crime Branch se sir aaye hai…"*, 12:58 ambulance, 1:04 *"Please don't forward anything. Society ka naam."* | WhatsApp, Phone | Reading (dread) |
 | 7 | **The scam, from its own mouth.** Chat with "Mumbai Crime Branch ✔": the warrant PDF (**FIR No. 9820457713**, **Parcel MW7-LP-0412**), *"Do not inform family. Camera ON 24 hrs. Transfer to RBI verification account."* Her replies: *"Haan sir." "PIN bhool gayi, beta." "FD todne mein do din lagte hain."* | WhatsApp, Files (PDF) | Reading; the player learns what digital arrest is |
@@ -278,14 +292,14 @@ anyone.*
 | 3 | **Q5 — How did she die? Three versions on three cards.** **City Desk:** lost ₹38 lakh, died of shame. **The society:** police came to arrest her, so she was involved. **Her phone:** ? Break the first with the bank SMS (**only ₹49,000 debited**, Fri 11:20 AM, at a branch counter). Break the second with the call log (**1930, 9:48 PM, 24 min**: a guilty woman doesn't phone the cyber helpline). | News, WhatsApp, Messages, Phone | Contradiction matching, two at once |
 | 4 | **Following her money.** The ₹49,000 went to **TANVI R DESHMUKH.** Instagram search finds @tanvi.d_, a Vile Parle college. Vasu's DM (8:47 PM), *"Aunty please call karo"* (9:40 PM), and the **9:42 PM call recording**: a man's voice, *"Aunty, aap bahut samajhdaar ho. Ghar pe raho."* Diary, page 7: *"The girl gave me to them. Not her fault. They will come."* | Messages, Instagram, Recorder, Gallery | Chain-following |
 | 5 | **Q6 — Who told them she knew?** Tanvi, by forwarding the DM, because the "Tanvi" who wrote back was a man. | — | Deduction. **Twist 3.** |
-| 6 | **The missing page.** Gallery › Recycle Bin: diary page 6, **deleted 12:37 AM**. Restore it. *"Sahil read 'co-accused' — TOMORROW'S LIST."* Nine rows: name, area, number, time slot. Eight numbers match her calls from 10:02 to 10:31 PM, and each call's recording shows how people treat a warning that sounds like a scam. **Row 9: no number. An address. 10:30 AM.** | Gallery, Phone, Recorder | Restore; cross-reference |
+| 6 | **The missing page.** Photos › Recently Deleted: diary page 6, **deleted 12:37 AM**. Restore it. *"Sahil read 'co-accused' — TOMORROW'S LIST."* Nine rows: name, area, number, time slot. Eight numbers match her calls from 10:02 to 10:31 PM, and each call's recording shows how people treat a warning that sounds like a scam. **Row 9: no number. An address. 10:30 AM.** | Gallery, Phone, Recorder | Restore; cross-reference |
 | 7 | **Q7 — Why did this phone come to you?** PikDrop: booked **11:52 PM**, Dadar → the address in row 9. **It's your door.** She couldn't call you, so she sent you the phone. | PikDrop | Deduction. **Twist 4: you're #9.** |
 | 8 | **The terrace.** Ruchi's Instagram story (*expires in 11h*), a cat on a balcony at 12:37 AM. Turn the audio up: above her, *"Madam, diary kahan hai?"* … *"Aap police nahi ho."* The clip ends. **Q8 — Did she jump?** No: a man was on the terrace at 12:37, asking for the diary. | Instagram (audio boost) | Audio forensics (nothing graphic, ever) |
-| 9 | **The lure.** Notes: *"For whoever gets this phone"* (last edited **12:39 AM**): *"Sab saboot Secure Folder mein hai. PIN: Madhav ka janamdin."* Madhav's birthday is easy to find: a WhatsApp status, *"Happy birthday in heaven, 03/09."* **If the player types 0309:** the Secure Folder holds FD receipts and an Aadhaar scan, and nothing else. No alert, no SMS. (In the story, the malware used the PIN at that moment: ₹1,00,000 by UPI to TANVI R DESHMUKH. The debit SMS went straight to Spam.) | Notes, WhatsApp, Secure Folder | **The trap.** Optional, and not required for any question. **Ledger: the PIN, the transfer, and the time you typed it.** |
+| 9 | **The lure.** Notes: *"For whoever gets this phone"* (last edited **12:39 AM**): *"Sab saboot locked note mein hai. Password: Madhav ka janamdin."* Madhav's birthday is easy to find: a WhatsApp status, *"Happy birthday in heaven, 03/09."* **If the player types 0309:** the locked note holds FD receipts and an Aadhaar scan, and nothing else. No alert, no SMS. (In the story, the malware used the PIN at that moment: ₹1,00,000 by UPI to TANVI R DESHMUKH. The debit SMS went straight to Spam.) | Notes, WhatsApp | **The trap.** Optional, and not required for any question. **Ledger: the PIN, the transfer, and the time you typed it.** |
 | 10 | **Shaila.** Unread, 2:14 AM: *"Vasu, tune jo photo bheja woh delete kyun kiya? Aur note mein Madhav ka janamdin kyun likha?? Tu theek hai?"* (She shares the note, so she saw the edit.) The chat shows **"You deleted this message · 12:38 AM"** and Vasu's 11:48 PM voice note. Message Shaila. She doesn't trust you: *"Vasu ka laughter club kitne baje hota hai?"* (6:15, from the Shivaji Park group). Pass, and she sends the photo back. | WhatsApp | Trust test from a reply list. **Ledger: you led them to Shaila.** |
 | 11 | **Q9 — Did Vasu write the note that came with this phone?** No. The real note (from Shaila) is English cursive signed *Vasundhara*, with a Marathi blessing: ***"CUT THE CALL. They can see this phone. Don't type anything into it. Take it to the Cyber Police at BKC, not the local station. Don't trust anything that looks like me."*** Second route, for players who skipped Shaila: her handwriting in the diary against the block capitals; her Marathi against the Roman Hinglish; **"KATNA"** misspelled; PikDrop's item list (*mobile + power bank + diary + letter*) against what you got (no diary); and the rider's chat, *"Madam ka bhai bola Andheri pehle dena hai"*, when her family group shows **she has no brother.** | Gallery, WhatsApp, PikDrop | Handwriting, language and logistics. **Twist 5, part 1.** |
 | 12 | **Q10 — Who used this phone after midnight?** A two-lane timeline board: **Dadar** (Vasu) and **the phone**. Place the society messages, the terrace story, and the phone's own 12:36 reminder, 12:37 deleted page, 12:38 message deleted for everyone and 12:39 edited note. The PikDrop route map shows the pouch **stopped in Andheri East 12:31–12:45**. Vasu couldn't have done any of it. | Case file (timeline board) | Timeline reconciliation |
-| 13 | **Last beat.** Settings › Accessibility › **RBI KYC Assist — ON. "Can see and control your screen. Read SMS."** Its icon is the grey shield from the status bar. Open it. A blank white screen, then one line typed out slowly: ***"Good morning, #9."*** The screen goes dark. The clock jumps. | Settings | **Twist 5, part 2: they've watched every tap.** |
+| 13 | **Last beat.** Settings › General › VPN & Device Management › **RBI Secure KYC**, installed Thursday 8:14 PM — four minutes after she turned the lock off. It is why the blue pill has been around her clock since the first second. Open it. A blank white screen, then one line typed out slowly: ***"Good morning, #9."*** The screen goes dark. The clock jumps. | Settings | **Twist 5, part 2: they've watched every tap.** |
 
 ## Episode 3 — "10:30"
 
@@ -293,7 +307,7 @@ anyone.*
 |---|---|---|---|
 | 1 | **10:29 AM.** Sunlight. You fell asleep. The found phone is warm beside you, and the call timer reads **40:51:12**. | — | Time cut |
 | 2 | **What arrived while you slept.** The real City Desk article, **published 6:42 AM**, quoting *"a nephew"* (Vasu has no nephew: her family group). **Cyril D'Souza, 10:12 AM**: *"Aunty, subah SkyEx ka call aaya. Maine kaat diya. Aapne bachaya. Thank you 🙏"* Rukhsana's Friday voice note to Sahil. | News, WhatsApp | Reading (the perceptive player notices that 6:42 ≠ 1:11) |
-| 3 | **Kill the app?** Settings › RBI KYC Assist › **Force stop and uninstall.** Irreversible. If done, the grey shield leaves the status bar, and a minute later **they** end the call (*"Call ended · 40:52:03"*): without eyes on the phone, they pull Sahil off it. The syndicate is blind for the rest of the chapter. If not, they see everything you check on the found phone during the call that follows. | Settings | The one irreversible act. **Ledger: stops growing** |
+| 3 | **Remove the profile?** Settings › General › VPN & Device Management › **Remove Management**. Irreversible. If done, the blue pill leaves her clock, and a minute later **they** end the call (*"Call ended · 40:52:03"*): without eyes on the phone, they pull Sahil off it. The syndicate is blind for the rest of the chapter. If not, they see everything you check on the found phone during the call that follows. | Settings | The one irreversible act. **Ledger: stops growing** |
 | 4 | **Your phone rings.** A second device: yours, in your platform's own look. **"Mumbai Crime Branch ✔ · WhatsApp video."** It can't be declined, only answered or left ringing, and it rings again. | Your phone | — |
 | 5 | **Your digital arrest.** Sahil in uniform, the supervisor seated in frame. The charges are **generated from the ledger**: the delivery at 1:11 AM (*"CCTV hai"*), possessing a dead woman's phone, *[if PIN]* **₹1,00,000 transferred at [the time you typed it]**, *[if Nikhil]* lying to the deceased's son, *[if Shaila]* contacting a witness, *[if unmuted]* **your voice**: a transcript spliced from the lines you chose, with the cuts visible (*"main… unki… beti… nahi… hoon… maine… liya"*). *[If the app was killed]* *"Aapne saboot mitaya."* | Your phone (call) | Listen |
 | 6 | **Q11 — Which charges are true?** Stay on the call and check each one on the found phone: the Spam folder (the ₹1,00,000 SMS, or nothing), call logs, WhatsApp. Mark each **Bluff** or **True**. The true ones are the ones you created. | Both phones | Live verification under pressure. **Twist 6.** |
@@ -459,7 +473,7 @@ until the player knows what they know at the end.
 
 | On screen from the start | Why nobody sees it | What it means on a second play |
 |---|---|---|
-| A grey shield icon in the status bar | Phones are full of icons | Someone was watching from second one |
+| The blue pill around her clock | Everyone has seen one and nobody reads it | The screen was being shared from second one |
 | The 1:11 news alert's app icon | You're reading the headline | The killers announced the death before anyone else knew |
 | The wall clock on the call | You're looking at the officer | He was never in Mumbai |
 | **"CALL MAT KATNA"**, Roman capitals, misspelled | It reads like a frightened woman's note | Vasu writes English and Marathi, and spells properly |
@@ -525,9 +539,9 @@ happens to fit, G5 says so, but nothing is kept because it exists.
 
 **1. The found phone belongs to its owner, not to the player.**
 Reverse "the phone matches the player's platform". Vasu is a 64-year-old in
-Dadar, so her phone is a mid-range Samsung with Android's accessibility
-permissions (the whole malware plot needs it), huge system font, Truecaller,
-and 3,412 unread forwards. **The phone is characterisation.** Every future
+Dadar with a son in Bengaluru, so her phone is **the iPhone Nikhil handed
+down two handsets ago**: his Apple Account still half on it, the text size on
+Largest, and 3,412 unread forwards. **The phone is characterisation.** Every future
 chapter's phone gets art-directed to its owner: a Redmi, an iPhone 13 with a
 cracked corner, a work BlackBerry-era relic. The iOS-perfect work moves to
 where it belongs: **the player's own phone** (G1.2), which *should* match
@@ -598,7 +612,7 @@ chapter's turns depend on:
 
 | Add | What it needs to do |
 |---|---|
-| **Android found-phone OS** | Samsung-like home screen, notification shade, **Settings › Accessibility** (with the malware entry), a large-font mode, and the **Recycle Bin** and **Secure Folder** (a PIN lock that pretends to matter). |
+| **Her iOS** | Current iOS, drawn by us: home screen and dock, **the blue recording pill around the clock**, Settings' grouped lists (Apple Account, Face ID & Passcode, **VPN & Device Management**), Photos' **Recently Deleted**, and Notes' **locked note** (a password that pretends to matter). |
 | **PikDrop** (a fictional courier app) | Booking details, item list, a route map with a **timed stop**, and rider chat. |
 | **Instagram** | DMs with Seen, profile search, and **an expiring story with an audio boost** (a countdown in real hours). |
 | **Messages with a Spam folder** | The hidden ₹1,00,000 SMS, shown only if the PIN was typed. |
@@ -687,7 +701,7 @@ Decide its future after this chapter ships.
 ## G8. Decisions for Siddhant
 
 1. **The story itself:** this, instead of The Blue Room and MIRROR?
-2. **The found phone becomes Android and owner-specific**, and iOS moves to
+2. **The found phone is owner-specific**, and your own phone matches
    "your phone". This reverses a decision from 2026-09-15.
 3. **Two phones on stage.**
 4. **The live-video shoot** (G4), which is the chapter's largest real-world
@@ -700,7 +714,7 @@ Decide its future after this chapter ships.
 
 | Session | What |
 |---|---|
-| D1 | Android found-phone shell (home, shade, Settings › Accessibility, large font) and your-phone shell, both on stage |
+| D1 | Her iOS shell (home, dock, status bar with the recording pill) and your-phone shell, both on stage |
 | D2 | The live call: picture-in-picture, cue engine, zoom on video, supervisor crossings |
 | D3 | The exposure ledger in the engine, plus the timeline-board and claim-check question types |
 | D4 | Apps: PikDrop, Instagram (DMs, stories, audio boost), Spam, Notes edits, Chrome history, Recycle Bin, Secure Folder |
