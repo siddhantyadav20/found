@@ -99,7 +99,7 @@ expect the photographer to notice.
 | **23:19** | An unsaved number: ***"You missed something upstairs." "The blue room."*** It's Prakash's personal phone. He's seen the intruder and wants his stash in the hands of an outsider before the intruder finds it. | WhatsApp |
 | 23:19 | Raghav opens the floor plan. There's no blue room, but one room is marked with a code instead of a name: **B-2**. | Files |
 | 23:20–23:23 | The same number sends `duty_roster_oct.xlsx` (the seven properties, on a hidden sheet), the 21:41 screenshot, the claim file, the CCTV clip, and *"Isko maine andar nahi aane diya."* | WhatsApp |
-| 23:21 | Raghav in B-2: an office with seven property files, fake inspection reports and estimates, fake photographs, and dozens of identity documents, some belonging to dead people. Prakash's copies. | Hidden album "B-2" (Episode 3) |
+| 23:21 | Raghav in B-2: an office with seven property files, fake inspection reports and estimates, fake photographs, and dozens of identity documents, some belonging to dead people. Prakash's copies. | Files › B-2.zip (Episode 3) |
 | **23:24** | Voice memo: *"Okay. I think mujhe samajh aa gaya… Ye insurance wala scene nahi hai… Ye log pehle cheezein nikal rahe hain… Phir damage karenge… Aur insurance se paise lenge."* A door closes. *"Fuck."* | Recorder |
 | **23:31** | Raghav calls Kamat, using the number on the screenshot, and the call is recorded. *"Aapne mujhe hire nahi kiya tha, right?"* … *"Raghav, ghar ja."* … *"Maine tumhare parents ka naam nahi liya."* **The call is what brings Mahesh.** | Phone › Recent · Recorder › Calls (Episode 3) |
 | **23:38** | Mahesh, Prakash and Naveen come into the hall. Naveen is badly hurt (someone got to him on the road). Recorded on the phone, upstairs. | Recorder, 23:38 |
@@ -162,9 +162,9 @@ It matches the player's platform (iOS first), as before. Home screen:
 | **Phone** | Recents (RAGHAV, the 23:31 call to Kamat), contacts. Where the opening call rings. **Calls never go through:** the prepaid SIM has no balance, and the network says so, so nobody is called from Raghav's phone. | Premise, Ep 3 |
 | **WhatsApp** | Maa ❤️, Rohan, Ishita, the school group, 23:19's unsaved number, and live texts through the night. | Ep 1–3 |
 | **Telegram** | @AVM_Property: the deleted brief, *"Who referred you to me?"*, the live location still sharing. | Ep 1, 3 |
-| **Photos** | The walkthrough video clips, the study and bedroom photos, the camera's imported frames, the Telegram album, and the hidden "B-2" album. | All |
+| **Photos** | The walkthrough video clips, the study and bedroom photos, the camera's imported frames, and the Telegram album. | All |
 | **Recorder** | 23:24 memo, 23:38 recording, call recordings. | Ep 2, 3 |
-| **Files** | Floor plan (with B-2), the claim file, the estimate, the spreadsheet, and the **FOUND** folder. | All |
+| **Files** | Floor plan (with B-2), the claim file, the estimate, the spreadsheet, **B-2.zip** (encrypted), and the **FOUND** folder. | All |
 | **Maps** | Friday's timeline: Goregaon → Juhu → last seen inside the house. | Ep 1, 3 |
 | **Settings** | Passcode off 03:58. SIM 2 removed 03:58. Camera connection log. | Premise, Ep 3 |
 | **Case file** | One question at a time, where to look, hints. | — |
@@ -234,7 +234,7 @@ can tell; elsewhere, the on-screen cable.
 | 1 | The phone boots. Recents has an outgoing call, **23:31, 4 min, to the number on the screenshot**. | Phone | — |
 | 2 | The call recording, the one the player "finally finds": *"Aapne mujhe hire nahi kiya tha, right?"* … *"Naam kya hai?" "Mujhe nahi pata." "Good."* … *"Maine tumhare parents ka naam nahi liya."* Seven minutes later, 23:38. | Recorder › Calls | — |
 | 3 | **Q7 — Whose account is @AVM_Property?** The account's number is the property's registered security line, saved in the brief as *"Guard (Malhotra)"*: **Prakash**. But Prakash writes lowercase Hinglish, and the client writes crisp English. **His number. Not his words.** Someone created it for him. | Telegram (contact info), WhatsApp (Prakash's messages) | Style + number deduction |
-| 4 | **The blue room.** Photos › Hidden › "B-2" is locked. Raghav left the code where only someone who read everything would find it: **the time the blue room was named, 2319**. | Photos (lock) | Lock |
+| 4 | **The blue room.** Files › **B-2.zip** is encrypted. Raghav zipped his B-2 photos and left the password where only someone who read everything would find it: **the time the blue room was named, 2319**. *(Not Photos' Hidden album: with the passcode off, iOS would open that for anyone.)* | Files (lock) | Lock |
 | 5 | Inside B-2: seven property files, fake reports and estimates, fake photographs, and identity documents, some of dead people. Prakash's notebook: what he copied, and why (his daughter's fees, and what Mahesh would do to him). **Why Prakash died.** | Photos (B-2) | — |
 | 6 | **Q8 — Did Raghav ever leave the house?** Yes. The camera's sync log shows the camera still in the house after 23:46, while the phone was moving at 03:58. He left the camera to make it look like he stayed. | Settings (camera log), Maps | Cross-app deduction |
 | 7 | The Telegram live location: *sharing with @AVM_Property · 1h left*, pinned at the player's building. **Stop Sharing** is the chapter's one irreversible act, and the endings say whether the player did it. | Telegram | Irreversible act |
@@ -360,7 +360,7 @@ I'm building on the recommended answer to each of these, and any of them can cha
 |---|---|
 | **N1 — Foundations and the opening** | The new case alongside Low Battery; a fixed character; a story-defined home screen; a phone with no passcode; the story clock from 04:17; the opening sequence through the call and 4%. |
 | **N2 — The chat apps and Phone** | WhatsApp, Telegram (deleted history, live location, contact info), Phone (recents, contacts), Settings (SIM, passcode, camera log). |
-| **N3 — Photos, Recorder, Files** | Video clips with captions, camera imports, the Telegram album, the hidden album with its lock; the Recorder with waveform and captions; Files with a PDF view, a floor plan you can tap, and a spreadsheet with a hidden sheet. |
+| **N3 — Photos, Recorder, Files** | Video clips with captions, camera imports, the Telegram album; the Recorder with waveform and captions; Files with a PDF view, a floor plan you can tap, a spreadsheet with a hidden sheet, and B-2.zip with its lock. |
 | **N4 — Episode 1 as data** | Part 5, played through. |
 | **N5 — Episode 2 as data** | Part 6, including three-at-once matching and dying at 1%. |
 | **N6 — Episode 3 as data** | Part 7, including the charger gate. |

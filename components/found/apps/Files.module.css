@@ -1,0 +1,444 @@
+/* Files: lists of documents, and what each kind opens onto. */
+
+.list {
+  margin: 0 0 18px;
+  padding: 0;
+  border-radius: 14px;
+  background: var(--os-panel);
+  list-style: none;
+  overflow: hidden;
+}
+
+.file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-bottom: 0.5px solid var(--ios-separator);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.list li:last-child .file {
+  border-bottom: 0;
+}
+
+.icon {
+  flex: none;
+  display: grid;
+  place-items: end center;
+  width: 34px;
+  height: 42px;
+  padding-bottom: 5px;
+  border-radius: 4px 12px 4px 4px;
+  background: #f2f2f7;
+  color: #636366;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.icon[data-kind="sheet"] {
+  background: #1f7a45;
+  color: #fff;
+}
+
+.icon[data-kind="pdf"],
+.icon[data-kind="plan"] {
+  background: #d93838;
+  color: #fff;
+}
+
+.icon[data-kind="archive"] {
+  background: #8e8e93;
+  color: #fff;
+}
+
+.icon[data-kind="video"] {
+  background: #5e5ce6;
+  color: #fff;
+}
+
+.folder {
+  flex: none;
+  width: 30px;
+  height: 22px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #43a5ff 30%, #1e8cf0 30%);
+}
+
+.segments {
+  display: flex;
+  gap: 2px;
+  margin: 4px 4px 12px;
+  padding: 2px;
+  border-radius: 9px;
+  background: rgba(118, 118, 128, 0.24);
+}
+
+.segments button {
+  flex: 1;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--os-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segments button[data-on] {
+  background: #636366;
+}
+
+/* --- A floor plan: blueprint paper, rooms that can be tapped ----------------- */
+
+.paper {
+  padding: 10px;
+  border-radius: 12px;
+  background: #f4f1e8;
+}
+
+.plan {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.outline {
+  fill: none;
+  stroke: #1d2b4f;
+  stroke-width: 1;
+}
+
+.room rect {
+  fill: transparent;
+  stroke: #1d2b4f;
+  stroke-width: 0.45;
+}
+
+.room text {
+  fill: #1d2b4f;
+  font-size: 2.6px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.room {
+  cursor: pointer;
+}
+
+.room[data-code] text {
+  font-size: 3.4px;
+  font-weight: 800;
+}
+
+.room[data-on] rect {
+  fill: rgba(10, 132, 255, 0.18);
+  stroke: #0a84ff;
+  stroke-width: 0.8;
+}
+
+.room:focus-visible {
+  outline: none;
+}
+
+.room:focus-visible rect {
+  stroke: #0a84ff;
+  stroke-width: 0.8;
+}
+
+.planCaption {
+  margin: 6px 0 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1d2b4f;
+  text-align: right;
+}
+
+/* --- A PDF: white pages ---------------------------------------------------------- */
+
+.page {
+  position: relative;
+  margin: 0 0 14px;
+  padding: 18px 16px 28px;
+  border-radius: 4px;
+  background: #fff;
+  color: #1c1c1e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.pageTitle {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d1d1d6;
+  font-family: Georgia, serif;
+  font-size: 17px;
+}
+
+.pageLine {
+  margin: 0 0 8px;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.pageLine[data-strong] {
+  font-weight: 700;
+}
+
+.pageNo {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-size: 10px;
+  color: #8e8e93;
+}
+
+/* --- A spreadsheet ---------------------------------------------------------------- */
+
+.sheetWrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #fff;
+  touch-action: pan-x pan-y;
+}
+
+.table {
+  border-collapse: collapse;
+  color: #1c1c1e;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-width: 28px;
+  padding: 3px 6px;
+  border: 1px solid #d1d1d6;
+  background: #f2f2f7;
+  color: #636366;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.table tbody th {
+  position: sticky;
+  left: 0;
+}
+
+.table td {
+  padding: 5px 8px;
+  border: 1px solid #e5e5ea;
+}
+
+.table td[data-head] {
+  background: #eef6f0;
+  font-weight: 700;
+}
+
+.table td[data-loud] {
+  font-weight: 700;
+  color: #b3261e;
+}
+
+.tabs {
+  position: relative;
+  flex: none;
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px 36px;
+  background: #1c1c1e;
+}
+
+.tabs > button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 6px 6px 0 0;
+  background: #2c2c2e;
+  color: var(--os-dim);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs > button[data-on] {
+  background: #fff;
+  color: #1f7a45;
+  font-weight: 700;
+}
+
+.tabs > .more {
+  margin-left: auto;
+  background: none;
+  color: var(--os-text);
+  font-size: 18px;
+}
+
+.menu {
+  position: absolute;
+  right: 8px;
+  bottom: 70px;
+  display: grid;
+  min-width: 200px;
+  border-radius: 12px;
+  background: rgba(44, 44, 46, 0.96);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.menu button {
+  padding: 12px 16px;
+  border: 0;
+  background: none;
+  color: var(--os-text);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuEmpty {
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--os-dim);
+}
+
+/* --- An encrypted archive ----------------------------------------------------------- */
+
+.locked {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding-top: 18px;
+  text-align: center;
+}
+
+.zip {
+  display: grid;
+  place-items: end center;
+  width: 58px;
+  height: 72px;
+  padding-bottom: 10px;
+  border-radius: 6px 18px 6px 6px;
+  background: repeating-linear-gradient(180deg, #8e8e93 0 6px, #aeaeb2 6px 12px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.lockedTitle {
+  margin: 8px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.lockedSub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--os-dim);
+}
+
+.dots {
+  display: flex;
+  gap: 16px;
+  margin: 14px 0 4px;
+}
+
+.dots span {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--os-text);
+  border-radius: 50%;
+}
+
+.dots span[data-on] {
+  background: var(--os-text);
+}
+
+.dots[data-shake] {
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  20%,
+  60% {
+    translate: -8px 0;
+  }
+  40%,
+  80% {
+    translate: 8px 0;
+  }
+}
+
+.hint {
+  max-width: 260px;
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--os-accent);
+}
+
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  gap: 12px 22px;
+  margin-top: 14px;
+}
+
+.pad button {
+  height: 64px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(118, 118, 128, 0.28);
+  color: var(--os-text);
+  font: inherit;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.forgot {
+  margin-top: 10px;
+  border: 0;
+  background: none;
+  color: var(--ios-blue);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.thumb {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dots[data-shake] {
+    animation: none;
+  }
+}

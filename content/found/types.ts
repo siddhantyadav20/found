@@ -152,8 +152,14 @@ export type Thread = {
 
 export type Photo = {
   readonly id: string;
-  /** `received` photos arrive inside messages; `nightcam` ones live in NightCam. */
-  readonly album: "recents" | "deleted" | "received" | "nightcam";
+  /**
+   * `received` photos arrive inside messages; `nightcam` ones live in NightCam.
+   * `camera` came from a connected camera; `telegram` was saved from a chat;
+   * `archive` is only inside a file (Files).
+   */
+  readonly album: "recents" | "deleted" | "received" | "nightcam" | "camera" | "telegram" | "archive";
+  /** A video: how long, and what's said and heard in it, as captions. The photo is its frame. */
+  readonly video?: { readonly seconds: number; readonly captions: readonly CallLine[] };
   /** Under /public. Absent until the real photograph exists. */
   readonly src?: string;
   /** What the photograph shows. It is also the placeholder until `src` exists. */
@@ -175,7 +181,12 @@ export type Photo = {
    * double size, `reveal` is what's at the edge of the frame, and seeing it
    * is its own evidence.
    */
-  readonly zoom?: { readonly reveal: string; readonly evidence: string };
+  readonly zoom?: {
+    readonly reveal: string;
+    readonly evidence: string;
+    /** Where in the frame it is, in percent from the top left. It only counts once it's on screen. */
+    readonly at?: { readonly x: number; readonly y: number };
+  };
 };
 
 export type HealthDay = {
@@ -388,7 +399,13 @@ export type Ending = {
 };
 
 /** A caption on the call, `at` seconds in, with the English under it when the line isn't in English. */
-export type CallLine = { readonly at: number; readonly text: string; readonly en?: string };
+export type CallLine = {
+  readonly at: number;
+  readonly text: string;
+  readonly en?: string;
+  /** Who's speaking, when there's more than one voice. */
+  readonly who?: string;
+};
 
 /**
  * A call that plays to its end and hangs up by itself: something the player
@@ -443,6 +460,8 @@ export type Story = {
   readonly calls?: readonly ScriptedCall[];
   readonly contacts?: readonly Contact[];
   readonly callLog?: readonly CallEntry[];
+  readonly recordings?: readonly Recording[];
+  readonly files?: readonly FileItem[];
   /** Settings as data: what this phone knows about itself. */
   readonly settings?: readonly SettingsSection[];
   /** What the phone says when the player tries to call anyone from it. */
@@ -549,6 +568,67 @@ export type CallEntry = {
   readonly requires?: readonly Flag[];
 };
 
+/** A recording in the Recorder: something said out loud, as captions until it's recorded. */
+export type Recording = {
+  readonly id: string;
+  readonly title: string;
+  readonly at: string;
+  readonly seconds: number;
+  /** A voice memo, or a phone call the phone recorded. */
+  readonly folder: "memos" | "calls";
+  readonly transcript: readonly CallLine[];
+  /** Seen when it's opened. */
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** A room on a floor plan, on its floor's 100 × 64 sheet. */
+export type Room = {
+  readonly id: string;
+  readonly label: string;
+  readonly x: number;
+  readonly y: number;
+  readonly w: number;
+  readonly h: number;
+  /** Seen when it's tapped. */
+  readonly evidence?: string;
+};
+
+/** A spreadsheet's sheet. A hidden one has to be unhidden to be read. */
+export type Sheet = {
+  readonly name: string;
+  readonly hidden?: boolean;
+  /** Seen when it's shown. */
+  readonly evidence?: string;
+  readonly columns: readonly string[];
+  readonly rows: readonly (readonly string[])[];
+};
+
+/** A file in Files, and what opening it shows. */
+export type FileItem = {
+  readonly id: string;
+  readonly name: string;
+  readonly folder: string;
+  readonly at: string;
+  readonly size: string;
+  /** Seen when it's opened. */
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+  readonly content:
+    | { readonly kind: "plan"; readonly floors: readonly { readonly name: string; readonly rooms: readonly Room[] }[] }
+    | {
+        readonly kind: "pdf";
+        readonly pages: readonly {
+          readonly title?: string;
+          readonly lines: readonly { readonly text: string; readonly strong?: boolean; readonly evidence?: string }[];
+        }[];
+      }
+    | { readonly kind: "sheet"; readonly sheets: readonly Sheet[] }
+    /** Encrypted: a lock (Story.locks) to open, then the photos inside. */
+    | { readonly kind: "archive"; readonly lock: string; readonly photos: readonly string[] }
+    | { readonly kind: "video"; readonly photo: string };
+};
+
 /** A group of rows in Settings, each one a fact about the phone. */
 export type SettingsSection = {
   readonly title?: string;
@@ -578,6 +658,11 @@ export type Order = {
 /** The pieces a later episode adds. Threads with an existing id add messages. */
 export type Part = {
   readonly [K in
+    | "contacts"
+    | "callLog"
+    | "recordings"
+    | "files"
+    | "settings"
     | "threads"
     | "photos"
     | "wifi"

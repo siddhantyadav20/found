@@ -24,10 +24,13 @@ import Maps from "../apps/Maps";
 import Memos from "../apps/Memos";
 import Messages from "../apps/Messages";
 import Chats from "../apps/Chats";
+import Files from "../apps/Files";
+import Gallery from "../apps/Gallery";
 import News from "../apps/News";
 import NightCam from "../apps/NightCam";
 import Notes from "../apps/Notes";
 import PhoneApp from "../apps/PhoneApp";
+import Recorder from "../apps/Recorder";
 import Photos from "../apps/Photos";
 import Settings from "../apps/Settings";
 import SettingsList from "../apps/SettingsList";
@@ -877,7 +880,11 @@ function App({
     case "messages":
       return <Messages {...props} unread={unread} onRead={markRead} />;
     case "photos":
-      return <Photos {...props} />;
+      return <PhotosFor {...props} />;
+    case "recorder":
+      return <Recorder {...props} />;
+    case "files":
+      return <Files {...props} />;
     case "calculator":
       return <Calculator {...props} />;
     case "health":
@@ -906,6 +913,12 @@ function App({
     default:
       return null;
   }
+}
+
+/** Low Battery keeps its own Photos (Recently Deleted, Face ID) until it's retired in N8. */
+function PhotosFor(props: React.ComponentProps<typeof Photos>) {
+  const { id } = useCase();
+  return id === "low-battery" ? <Photos {...props} /> : <Gallery {...props} />;
 }
 
 /** A story that writes its settings as data gets them as rows; Low Battery keeps its own Settings. */

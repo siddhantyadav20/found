@@ -57,9 +57,47 @@ describe("The Blue Room's shape", () => {
       ...(ep.contacts ?? []).map((c) => c.evidence),
       ...(ep.callLog ?? []).map((c) => c.evidence),
       ...(ep.settings ?? []).flatMap((sec) => sec.rows.map((r) => r.evidence)),
-      ...ep.photos.map((p) => p.evidence),
+      ...ep.photos.flatMap((p) => [p.evidence, p.zoom?.evidence]),
+      ...(ep.recordings ?? []).map((r) => r.evidence),
+      ...(ep.files ?? []).flatMap((f) => {
+        const c = f.content;
+        return [
+          f.evidence,
+          ...(c.kind === "plan" ? c.floors.flatMap((fl) => fl.rooms.map((r) => r.evidence)) : []),
+          ...(c.kind === "pdf" ? c.pages.flatMap((pg) => pg.lines.map((l) => l.evidence)) : []),
+          ...(c.kind === "sheet" ? c.sheets.map((sh) => sh.evidence) : []),
+        ];
+      }),
     ].filter((id): id is string => Boolean(id));
     expect([...shown].sort()).toEqual(ep.evidence.map((e) => e.id).sort());
+  });
+
+  it("opens every file onto something real", () => {
+    const photos = new Set(ep.photos.map((p) => p.id));
+    const locks = new Set(ep.locks.map((l) => l.id));
+    const files = new Set((ep.files ?? []).map((f) => f.id));
+    for (const f of ep.files ?? []) {
+      const c = f.content;
+      if (c.kind === "archive") {
+        expect(locks.has(c.lock), f.id).toBe(true);
+        for (const id of c.photos) expect(photos.has(id), `${f.id} → ${id}`).toBe(true);
+      }
+      if (c.kind === "video") expect(ep.photos.find((p) => p.id === c.photo)?.video, f.id).toBeTruthy();
+      if (c.kind === "sheet") for (const sh of c.sheets) for (const row of sh.rows) expect(row.length, `${f.id} ${sh.name}`).toBe(sh.columns.length);
+    }
+    for (const t of ep.threads)
+      for (const m of t.messages) if (m.attachment?.kind === "document") expect(files.has(m.attachment.file), m.attachment.name).toBe(true);
+    // Every lock's code is findable before the lock itself.
+    for (const l of ep.locks) for (const c of l.clues) expect(ep.evidence.find((e) => e.id === c)?.requires ?? [], `${l.id} → ${c}`).not.toContain(`lock:${l.id}`);
+  });
+
+  it("puts the English under everything said in Hinglish, in videos and recordings too", () => {
+    const lines = [
+      ...ep.photos.flatMap((p) => p.video?.captions ?? []),
+      ...(ep.recordings ?? []).flatMap((r) => r.transcript),
+    ];
+    const english = /^“(Because|Good|I don't|Fuck|Kamat|Mahesh)/;
+    for (const l of lines) if (l.text.startsWith("“") && !english.test(l.text)) expect(l.en, l.text).toBeTruthy();
   });
 
   it("gives every chat attachment something real to open", () => {

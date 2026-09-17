@@ -1,9 +1,12 @@
+import { layer } from "@/content/found/layer";
 import type { Story } from "@/content/found/types";
 import { episode1 } from "./episode1";
+import { episode2 } from "./episode2";
+import { episode3 } from "./episode3";
 
 /* ===========================================================================
-   The Blue Room, whole. Episodes 2 and 3 are laid over Episode 1 the way Low
-   Battery's are (content/found/story.ts) once they exist (N5, N6).
+   The Blue Room, whole: Episode 1 with Episodes 2 and 3 laid over it. Each
+   later part only adds, gated on its episode's flag (content/found/layer.ts).
    =========================================================================== */
 
-export const story: Story = episode1;
+export const story: Story = layer(layer(episode1, episode2), episode3);

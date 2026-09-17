@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
-import type { Cast } from "@/content/found/types";
+import type { Cast, CallLine } from "@/content/found/types";
 import { refuse } from "@/lib/found/buzz";
 import { say } from "@/lib/found/voice";
 import * as play from "../FoundPhone/actions";
@@ -61,6 +61,20 @@ const LIVE_TEXT = "M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V
 
 /** Past this, what's at the edge of a zoomable photo is visible. */
 const REVEAL_AT = 2.2;
+/** Where a zoomable detail sits when the story doesn't say: high on the right. */
+const DEFAULT_SPOT = { x: 81, y: 30 };
+
+/** Is a point of the photo (percent) inside the visible frame at this zoom? */
+function onScreen(spot: { x: number; y: number }, z: { scale: number; x: number; y: number; w: number; h: number }): boolean {
+  const { w, h } = z;
+  if (!w || !h) return false;
+  // Transforms scale about the centre, then translate.
+  const px = (spot.x / 100 - 0.5) * w * z.scale + z.x;
+  const py = (spot.y / 100 - 0.5) * h * z.scale + z.y;
+  // Near enough the middle that the words are readable, not just on the edge.
+  const margin = 0.3;
+  return Math.abs(px) <= w * margin && Math.abs(py) <= h * margin;
+}
 const MAX_ZOOM = 4;
 const TAP_ZOOM = 3;
 
@@ -105,10 +119,14 @@ export function PhotoViewer({
      double-tap (or double-click), or scroll. Past double size, what's there
      is there, and seeing it counts. */
   const zoomable = !!photo?.zoom;
-  const [zoom, setZoom] = useState({ scale: 1, x: 0, y: 0 });
+  // The frame's size is kept with the zoom, measured when a gesture sets it.
+  const [zoom, setZoom] = useState({ scale: 1, x: 0, y: 0, w: 0, h: 0 });
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; scale: number } | null>(null);
-  const revealed = zoomable && zoom.scale >= REVEAL_AT;
+  // Close enough, and the detail itself on screen: double-tapping the wrong
+  // corner of the photo finds nothing.
+  const spot = photo?.zoom?.at ?? DEFAULT_SPOT;
+  const revealed = zoomable && zoom.scale >= REVEAL_AT && onScreen(spot, zoom);
 
   useEffect(() => {
     if (revealed) play.see(photo?.zoom?.evidence);
@@ -118,9 +136,11 @@ export function PhotoViewer({
     const s = Math.min(MAX_ZOOM, Math.max(1, scale));
     // Keep the photo covering its box: it can slide as far as it has grown.
     const el = frame.current;
-    const w = el ? (el.clientWidth * (s - 1)) / 2 : 0;
-    const h = el ? (el.clientHeight * (s - 1)) / 2 : 0;
-    return { scale: s, x: Math.min(w, Math.max(-w, x)), y: Math.min(h, Math.max(-h, y)) };
+    const fw = el?.clientWidth ?? 0;
+    const fh = el?.clientHeight ?? 0;
+    const w = (fw * (s - 1)) / 2;
+    const h = (fh * (s - 1)) / 2;
+    return { scale: s, x: Math.min(w, Math.max(-w, x)), y: Math.min(h, Math.max(-h, y)), w: fw, h: fh };
   };
 
   const zoomDown = (e: React.PointerEvent) => {
@@ -151,14 +171,14 @@ export function PhotoViewer({
   };
   const zoomToggle = (e: React.MouseEvent) => {
     if (zoom.scale > 1) {
-      setZoom({ scale: 1, x: 0, y: 0 });
+      setZoom({ scale: 1, x: 0, y: 0, w: zoom.w, h: zoom.h });
       return;
     }
-    // Zoom toward where the tap was.
+    // Bring what was tapped to the middle, as far as the photo's edges allow.
     const box = e.currentTarget.getBoundingClientRect();
     const ox = e.clientX - (box.left + box.width / 2);
     const oy = e.clientY - (box.top + box.height / 2);
-    setZoom(clampZoom(TAP_ZOOM, -ox * (TAP_ZOOM - 1), -oy * (TAP_ZOOM - 1)));
+    setZoom(clampZoom(TAP_ZOOM, -ox * TAP_ZOOM, -oy * TAP_ZOOM));
   };
   const zoomWheel = (e: React.WheelEvent) => {
     const scale = zoom.scale * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002));
@@ -212,6 +232,7 @@ export function PhotoViewer({
       <div
         ref={frame}
         className={styles.viewerImage}
+        data-video={photo.video ? "" : undefined}
         onPointerDown={zoomable ? zoomDown : pullDown}
         onPointerMove={zoomable ? zoomMove : undefined}
         onPointerUp={zoomable ? zoomUp : undefined}
@@ -227,7 +248,12 @@ export function PhotoViewer({
           >
             <PhotoFrame id={id} cast={cast} size="full" />
             {/* Small, at the edge of the frame: nothing anyone would see without leaning in. */}
-            <span className={styles.zoomReveal} data-on={revealed || undefined} aria-hidden={!revealed}>
+            <span
+              className={styles.zoomReveal}
+              style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
+              data-on={revealed || undefined}
+              aria-hidden={!revealed}
+            >
               {say(photo.zoom?.reveal ?? "", cast)}
             </span>
           </div>
@@ -252,12 +278,16 @@ export function PhotoViewer({
         )}
       </div>
 
+      {photo.video && <VideoControls key={photo.id} seconds={photo.video.seconds} captions={photo.video.captions} />}
+
       {info && (
         <div className={styles.info}>
           <p className={styles.infoDay}>
             {day} · {time}
           </p>
-          <p className={styles.infoCam}>Main Camera — 26 mm ƒ1.6</p>
+          <p className={styles.infoCam}>
+            {photo.album === "camera" ? "Canon EOS R50 · via CamLink" : photo.album === "telegram" ? "Saved from Telegram" : "Main Camera — 26 mm ƒ1.6"}
+          </p>
           <dl className={styles.infoList}>
             <div>
               <dt>Location</dt>
@@ -314,6 +344,84 @@ export function PhotoViewer({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+/**
+ * A video's transport and its words. Play, a scrubber, the time, and the
+ * captions underneath as they're said, with who said them and the English
+ * under anything that isn't. Until the footage exists, the frame is the
+ * photo's placeholder and the captions are the video.
+ */
+function VideoControls({ seconds, captions }: { seconds: number; captions: readonly CallLine[] }) {
+  const [elapsed, setElapsed] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const words = useRef<HTMLOListElement>(null);
+  const shown = captions.filter((l) => l.at <= elapsed && (playing || elapsed > 0));
+
+  useEffect(() => {
+    if (!playing) return;
+    const began = performance.now() - elapsed * 1000;
+    const timer = window.setInterval(() => {
+      const e = Math.min(seconds, (performance.now() - began) / 1000);
+      setElapsed(e);
+      if (e >= seconds) setPlaying(false);
+    }, 150);
+    return () => window.clearInterval(timer);
+    // Restarted by play and by a scrub, not by its own ticks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playing, seconds]);
+
+  // The newest line stays in view.
+  useEffect(() => {
+    words.current?.scrollTo({ top: words.current.scrollHeight, behavior: "smooth" });
+  }, [shown.length]);
+
+  return (
+    <div className={styles.video} onPointerDown={(e) => e.stopPropagation()}>
+      <div className={styles.transport}>
+        <button
+          type="button"
+          className={styles.videoPlay}
+          onClick={() => {
+            if (elapsed >= seconds) setElapsed(0);
+            setPlaying((p) => !p);
+          }}
+          aria-label={playing ? "Pause" : "Play"}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            {playing ? <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /> : <path d="M8 5.5v13l10.5-6.5Z" />}
+          </svg>
+        </button>
+        <span className={styles.videoTime}>{mmss(elapsed)}</span>
+        <input
+          type="range"
+          className={styles.scrub}
+          min={0}
+          max={seconds}
+          step={0.5}
+          value={elapsed}
+          onChange={(e) => setElapsed(Number(e.target.value))}
+          aria-label="Position"
+        />
+        <span className={styles.videoTime}>{mmss(seconds)}</span>
+      </div>
+      <ol ref={words} className={styles.words} aria-live="polite">
+        {shown.length === 0 ? (
+          <li className={styles.wordsIdle}>Press play. Captions on.</li>
+        ) : (
+          shown.map((l) => (
+            <li key={l.at} data-sound={l.text.startsWith("[") || undefined}>
+              {l.who && <b>{l.who}</b>}
+              {l.text}
+              {l.en && <small>{l.en}</small>}
+            </li>
+          ))
+        )}
+      </ol>
     </div>
   );
 }
