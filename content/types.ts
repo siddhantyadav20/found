@@ -102,6 +102,12 @@ export type Question =
       readonly hints: Hints;
       /** Evidence ids that prove it. Picking anything else is wrong, not fatal. */
       readonly proof: readonly string[];
+      /**
+       * The other ways to prove the same thing. Every question in this
+       * chapter has at least two routes in, and a player who found the second
+       * one is not wrong (PLAYER-JOURNEY law 3).
+       */
+      readonly orProof?: readonly (readonly string[])[];
       readonly reply: string;
       readonly sets?: readonly Flag[];
     }

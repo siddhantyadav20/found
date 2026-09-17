@@ -112,9 +112,10 @@ export function answer(story: Story, s: CaseState, id: string, given: readonly s
 
   switch (q.kind) {
     case "pick": {
-      const want = new Set(q.proof);
-      ok = picked.length === want.size && picked.every((p) => want.has(p));
-      if (!ok && picked.some((p) => want.has(p))) reply = TOO_MUCH;
+      const routes = [q.proof, ...(q.orProof ?? [])];
+      ok = routes.some((route) => picked.length === route.length && picked.every((p) => route.includes(p)));
+      // Something in there proves it, and something else doesn't.
+      if (!ok && routes.some((route) => picked.some((p) => route.includes(p)))) reply = TOO_MUCH;
       break;
     }
     case "type":

@@ -70,7 +70,9 @@ export default function CallFeed({
         </g>
 
         {/* The clock. An hour ahead of her phone, from the first second. */}
-        <g className={styles.clock}>
+        <g className={styles.clock} data-zone="clock">
+          {/* A hit area a fingertip can actually find, at any zoom. */}
+          <circle cx="262" cy="56" r="30" fill="transparent" />
           <circle cx="262" cy="56" r="21" fill="#1b1f1a" stroke="#8e9686" strokeWidth="1.5" />
           {Array.from({ length: 12 }, (_, i) => (
             <line
@@ -115,7 +117,8 @@ export default function CallFeed({
 
         {/* The desk edge, and the extinguisher nobody looks at. */}
         <rect x="0" y="214" width="320" height="26" fill="#22251f" />
-        <g className={styles.extinguisher}>
+        <g className={styles.extinguisher} data-zone="label">
+          <rect x="286" y="144" width="30" height="66" fill="transparent" />
           <rect x="292" y="150" width="18" height="54" rx="5" fill="#8a3a2e" />
           <rect x="294" y="168" width="14" height="16" rx="1" fill="#e2ddd2" />
           <text x="301" y="179" textAnchor="middle" className={styles.burmese}>

@@ -151,6 +151,62 @@ export const threads: Thread[] = [
     ],
   },
   {
+    /* The number she decoded out of his "FIR number". She rang it on Friday
+       afternoon, and a woman in Kurla answered who has not heard her son's
+       voice since March. */
+    id: "rukhsana",
+    app: "whatsapp",
+    name: "+91 98204 57713",
+    sub: "Unsaved number",
+    messages: [
+      {
+        id: "r-1",
+        from: "her",
+        text: "Namaste. Main Vasundhara Kulkarni. Aapka number ek ajeeb tareeke se mila hai. Kya aapka koi beta hai jo bahar gaya hai kaam ke liye?",
+        english: "Hello. I'm Vasundhara Kulkarni. I got your number in a strange way. Do you have a son who went abroad for work?",
+        at: "13:10",
+        day: "Friday",
+        evidence: "rukhsana",
+      },
+      {
+        id: "r-2",
+        from: "them",
+        at: "13:26",
+        day: "Friday",
+        attachment: {
+          kind: "voice",
+          seconds: 31,
+          transcript: "Haan madam. Sahil. Mera beta. Instagram pe ad tha — Thailand, data entry, assi hazaar mahina. Kothari saab ne dedh lakh liya, Andheri East mein office hai unka. Maine apne kangan girvi rakhe the.",
+          english: "Yes madam. Sahil. My son. There was an ad on Instagram — Thailand, data entry, eighty thousand a month. Kothari sahib took one and a half lakh, his office is in Andheri East. I pawned my bangles.",
+        },
+        evidence: "rukhsana-voice",
+      },
+      {
+        id: "r-3",
+        from: "them",
+        at: "13:29",
+        day: "Friday",
+        attachment: { kind: "voice", seconds: 18, transcript: "March se awaaz nahi aayi madam. Sirf paise maangne ke message aate hain, aur woh uski likhaai nahi hai.", english: "No voice since March, madam. Only messages asking for money, and they aren't the way he writes." },
+      },
+      {
+        id: "r-4",
+        from: "them",
+        at: "13:31",
+        day: "Friday",
+        attachment: { kind: "photo", label: "Sahil, at his cousin's wedding" },
+        evidence: "sahil-photo",
+      },
+      {
+        id: "r-5",
+        from: "her",
+        text: "Main dekhungi kya kar sakti hoon. Aap uska number mat badalna.",
+        english: "I'll see what I can do. Don't change his number.",
+        at: "13:44",
+        day: "Friday",
+      },
+    ],
+  },
+  {
     id: "parivar",
     app: "whatsapp",
     name: "Kulkarni Parivar",

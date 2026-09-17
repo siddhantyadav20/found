@@ -82,6 +82,16 @@ export const photos: Photo[] = [
     requires: ["ep:2"],
   },
   {
+    id: "sahil-photo",
+    album: "screenshots",
+    at: "13:31",
+    day: "Friday",
+    kind: "scene",
+    title: "Sahil, at his cousin's wedding",
+    caption: "Sent by his mother on Friday afternoon. Twenty-three, in a borrowed sherwani, laughing at whoever is holding the camera.",
+    evidence: "sahil-photo",
+  },
+  {
     id: "grandson",
     album: "family",
     at: "17:20",

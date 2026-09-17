@@ -42,6 +42,10 @@ const evidence: Evidence[] = [
   { id: "booking", device: "hers", app: "pikdrop", label: "She sent this phone here herself, at 11:52 PM" },
   { id: "tanvi-dm", device: "hers", app: "instagram", label: "She found the girl whose account took the money", requires: ["ep:2"] },
   { id: "tanvi-number", device: "hers", app: "instagram", label: "\"Tanvi\" sent back a number to call", requires: ["ep:2"] },
+  { id: "rukhsana", device: "hers", app: "whatsapp", label: "She messaged the number on Friday afternoon" },
+  { id: "rukhsana-voice", device: "hers", app: "whatsapp", label: "A mother in Kurla whose son went to Thailand" },
+  { id: "sahil-photo", device: "hers", app: "photos", label: "A photograph of the son who went" },
+  { id: "burmese", device: "hers", app: "casefile", label: "The label on his fire extinguisher isn't in any Indian script", manual: true },
 ];
 
 const questions: Question[] = [
@@ -57,8 +61,72 @@ const questions: Question[] = [
       "The woman on the wallpaper is the woman in the news: Vasundhara Kulkarni.",
     ],
     proof: ["alert", "wallpaper"],
+    orProof: [["alert", "watchman"]],
     reply: "Vasundhara Kulkarni. Sixty-four. Dead for about half an hour.",
     sets: ["did:named-her"],
+  },
+  {
+    kind: "pick",
+    id: "knew",
+    ask: "Did she believe them?",
+    episode: 1,
+    whereToLook: ["notes", "photos", "whatsapp", "safari"],
+    hints: [
+      "She was a bank manager for thirty-two years. What would she have done in the first ten minutes?",
+      "Notes, Thursday evening. And her diary, photographed the night she died.",
+      "At 5:52 PM on Thursday, fourteen minutes in, she wrote that it was fake — and then stayed on the call anyway.",
+    ],
+    proof: ["she-knew"],
+    orProof: [["diary-1"], ["she-searched"], ["stalling"]],
+    reply:
+      "No. She knew in fourteen minutes, and stayed on the call for thirty-one hours. Nothing she did after that was panic. It was work.",
+    sets: ["did:she-knew"],
+  },
+  {
+    kind: "type",
+    id: "number",
+    ask: "His \"FIR number\" is ten digits. Whose number is it?",
+    episode: 1,
+    whereToLook: ["photos", "whatsapp"],
+    hints: [
+      "No FIR in India is written as ten digits with no year and no station.",
+      "Her diary works it out on page 3. Then look for that number in her chats.",
+      "98204 57713 is a mobile number. She messaged it on Friday afternoon, and the woman who answered is Sahil's mother.",
+    ],
+    accepts: [
+      "his mother",
+      "sahil's mother",
+      "sahils mother",
+      "rukhsana",
+      "rukhsana ansari",
+      "the mother",
+      "sahil ki maa",
+      "his mothers",
+    ],
+    reply:
+      "His mother's. He read his mother's phone number into a fake warrant, twice, slowly, hoping the woman he was robbing would write it down. She did.",
+    sets: ["did:decoded"],
+  },
+  {
+    kind: "pick",
+    id: "where",
+    ask: "Where is the officer really?",
+    episode: 1,
+    whereToLook: ["phone", "safari", "photos", "whatsapp"],
+    hints: [
+      "He is on screen the whole time. Look past him, at the room.",
+      "Zoom into the wall behind him — the clock, and the extinguisher. Then look at what she searched for on Friday.",
+      "The clock reads an hour ahead of Mumbai and the label isn't in any Indian script. He is in a compound near Myawaddy, and he is the boy in his mother's photograph.",
+    ],
+    proof: ["clock", "sahil-photo"],
+    orProof: [
+      ["clock", "burmese"],
+      ["clock", "she-searched-mw"],
+      ["burmese", "she-searched-mw"],
+    ],
+    reply:
+      "Not Mumbai. His clock is an hour ahead and the writing on his wall is Burmese. He is twenty-three, he is from Kurla, and he is not a policeman. He is a prisoner.",
+    sets: ["did:placed-him"],
   },
 ];
 
@@ -92,6 +160,55 @@ const cues: CallCue[] = [
     speaker: "rathore",
     line: "Madam, aap sun rahi hain na?",
     english: "Madam, you're listening, aren't you?",
+  },
+  {
+    id: "idle-2",
+    when: "idle",
+    speaker: "rathore",
+    line: "Case file khula hua hai, madam. Aaj raat close karna hai.",
+    english: "The case file is open, madam. It has to be closed tonight.",
+  },
+  {
+    id: "idle-3",
+    when: "idle",
+    speaker: "rathore",
+    line: "Paani pi lijiye. Main yahin hoon.",
+    english: "Have some water. I'm right here.",
+  },
+  {
+    // She has been dead for half an hour, and he is still reading the script
+    // at her camera. He says this while nobody is standing behind him.
+    id: "after-knew",
+    when: "did:she-knew",
+    speaker: "rathore",
+    line: "Madam… aap kal se bahut kam bol rahi hain.",
+    english: "Madam… you've been saying very little since yesterday.",
+  },
+  {
+    id: "after-decoded",
+    when: "did:decoded",
+    speaker: "rathore",
+    line: "FIR number note kiya na? Dobara padh doon?",
+    english: "You noted the FIR number? Shall I read it again?",
+  },
+  {
+    id: "supervisor",
+    when: "did:placed-him",
+    speaker: "supervisor",
+    line: "Quota. Kitna hua?",
+    english: "Quota. How much have you got?",
+    supervisorPresent: true,
+  },
+  {
+    /* The last line of Episode 1. He does not know she is dead, and he is
+       asking the dark whether the only person who ever tried to help him is
+       still there. */
+    id: "still-there",
+    when: "did:bank-dead",
+    speaker: "rathore",
+    line: "Aunty? Aunty, aap ho na?",
+    english: "Aunty? Aunty, you're there, aren't you?",
+    whisper: true,
   },
 ];
 

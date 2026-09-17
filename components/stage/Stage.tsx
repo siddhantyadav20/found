@@ -22,6 +22,7 @@ import Safari from "@/components/her/apps/Safari";
 import Recents from "@/components/her/apps/Recents";
 import HerSettings from "@/components/her/apps/Settings";
 import CaseFile from "./CaseFile";
+import Charge from "./Charge";
 import InAppGuard from "./InAppGuard";
 import Note from "./Note";
 import Pouch from "./Pouch";
@@ -94,6 +95,12 @@ export default function Stage() {
     track({ case: id, event: "unlock", via });
   };
 
+  /* Her battery, falling with the beats rather than with a timer: 7% while
+     the power bank still has something in it, 5% once the player knows she
+     knew, 4% when it dies. The number is a clock the player can feel. */
+  const percent = (s: CaseState): number =>
+    has(s, "did:bank-dead") ? 4 : has(s, "did:she-knew") ? 5 : battery(story, s);
+
   const elapsed = state ? now - state.started : 0;
   const mumbai = state ? clockNow(story, state, now) : story.clocks[0].base;
 
@@ -122,6 +129,19 @@ export default function Stage() {
 
   /* The one live event the opening has: the alert that tells the player she
      is dead, five and a half hours before any newsroom knows it. */
+  /* The last beat of Episode 1: the power bank's light goes out a few seconds
+     after the player works out where he really is. */
+  const placed = Boolean(state && has(state, "did:placed-him"));
+  const bankDead = Boolean(state && has(state, "did:bank-dead"));
+  useEffect(() => {
+    if (!placed || bankDead) return undefined;
+    const t = window.setTimeout(() => {
+      flag("did:bank-dead");
+      setExpanded(true);
+    }, 6000);
+    return () => window.clearTimeout(t);
+  }, [placed, bankDead, flag]);
+
   const alerted = Boolean(state && state.flags.includes("fired:alert"));
   useEffect(() => {
     if (!turned || alerted) return undefined;
@@ -152,6 +172,29 @@ export default function Stage() {
 
   if (!turned) return <Note onTurn={turnOver} />;
 
+  /* The power bank is out, he has asked the dark whether she is still there,
+     and only then is the player given one thing to do with their hands. The
+     gate waits for that line: it is the last thing in the episode, and it is
+     the reason anybody goes looking for a cable. */
+  if (has(state, "fired:cue-still-there") && !has(state, "did:charged"))
+    return <Charge onPlugged={() => flag("did:charged")} />;
+
+  if (has(state, "did:charged"))
+    return (
+      <div className={styles.building}>
+        <p className={styles.eyebrow}>Episode 1 · Call Mat Kaatna</p>
+        <p>
+          Her phone is charging. The call is still running, and the man on it still does not
+          know she is dead.
+        </p>
+        <p className={styles.minutes}>
+          Episode 2, &ldquo;Delete for Everyone&rdquo;, is written in CHAPTER1.md and arrives
+          with P6: how she died, the girl whose account took the money, the list with your
+          address on it, and the note you have been obeying since 1:11 AM.
+        </p>
+      </div>
+    );
+
   const onOpenApp = (app: AppId) => {
     setOpenApp(app);
     setBanner(null);
@@ -167,7 +210,7 @@ export default function Stage() {
         <div className={styles.hers}>
           <Screen
             time={mumbai}
-            battery={battery(story, state)}
+            battery={percent(state)}
             wallpaper={meta.wallpaper}
             recording
             banner={expanded ? null : banner}
@@ -215,6 +258,7 @@ export default function Stage() {
             track({ case: id, event: "voice:on", via });
           }}
           onReadClock={() => flag("saw:clock", "did:read-clock")}
+          onReadLabel={() => flag("saw:burmese")}
         />
       ) : (
         <p className={styles.cutLine}>

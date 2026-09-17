@@ -1,0 +1,54 @@
+/* A dark room, a dying phone, and one thing to do. */
+
+.charge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 100dvh;
+  padding: 2rem 1.4rem calc(2rem + env(safe-area-inset-bottom));
+  text-align: center;
+  background: #060607;
+  color: #efeae4;
+}
+
+.level {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  color: #e2705f;
+}
+
+.line {
+  max-width: 24rem;
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #a7a099;
+}
+
+.ask {
+  margin-top: 0.8rem;
+  max-width: 22rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.35;
+}
+
+.waiting {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: #6d6862;
+}
+
+.cable {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  padding: 0.7rem 1.3rem;
+  border: 0;
+  border-radius: 999px;
+  background: #e8843c;
+  color: #14100c;
+  cursor: pointer;
+}

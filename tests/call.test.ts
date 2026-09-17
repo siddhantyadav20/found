@@ -44,11 +44,11 @@ describe("what he says next", () => {
 
   it("idles in a fixed order, so two players see one performance", () => {
     const s = start();
-    const a = nextCue(ep, s, ["open"], 0);
-    const b = nextCue(ep, s, ["open"], 1);
-    expect(a?.when).toBe("idle");
-    expect(nextCue(ep, s, ["open"], 2)?.id).toBe(a?.id);
-    expect(b).toBeTruthy();
+    const idles = ep.cues.filter((c) => c.when === "idle");
+    const turns = idles.map((_, i) => nextCue(ep, s, ["open"], i)?.id);
+    // Every idle line, in the script's order, then round again from the top.
+    expect(turns).toEqual(idles.map((c) => c.id));
+    expect(nextCue(ep, s, ["open"], idles.length)?.id).toBe(idles[0].id);
   });
 
   it("captions everything it says", () => {

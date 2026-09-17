@@ -22,7 +22,10 @@ import CallFeed from "./CallFeed";
    Where the clock sits in the frame, so a zoom into it can count. The feed is
    320x240, and the clock's face is centred at (262, 56) with a radius of 21.
    =========================================================================== */
-const CLOCK_BOX = { x: [0.75, 0.885], y: [0.145, 0.32] } as const;
+/* The two things in his room that are evidence carry `data-zone` in the feed
+   itself, so a zoom counts by hitting the drawing rather than by landing in a
+   rectangle worked out from the frame. The frame letterboxes; the drawing
+   doesn't move. */
 
 const ZOOM_MAX = 3.5;
 /** Below this the hands are a smudge; above it, the hour is unarguable. */
@@ -41,6 +44,7 @@ export default function LiveCall({
   onCut,
   onUnmute,
   onReadClock,
+  onReadLabel,
 }: {
   story: Story;
   mumbaiTime: string;
@@ -54,6 +58,7 @@ export default function LiveCall({
   onCut: () => void;
   onUnmute: () => void;
   onReadClock: () => void;
+  onReadLabel: () => void;
 }) {
   const [asking, setAsking] = useState(false);
   const [zoom, setZoom] = useState({ scale: 1, x: 0.5, y: 0.5 });
@@ -67,13 +72,20 @@ export default function LiveCall({
 
   /** A zoom counts only once what it's aimed at is readable on screen. */
   const settle = useCallback(
-    (scale: number, x: number, y: number) => {
+    (scale: number, x: number, y: number, zone?: string | null) => {
       setZoom({ scale, x, y });
-      const onClock = x >= CLOCK_BOX.x[0] && x <= CLOCK_BOX.x[1] && y >= CLOCK_BOX.y[0] && y <= CLOCK_BOX.y[1];
-      if (scale >= ZOOM_READS && onClock) onReadClock();
+      if (scale < ZOOM_READS) return;
+      if (zone === "clock") onReadClock();
+      if (zone === "label") onReadLabel();
     },
-    [onReadClock],
+    [onReadClock, onReadLabel],
   );
+
+  /** What was under the finger: the clock, the extinguisher, or the room. */
+  const zoneAt = (e: React.PointerEvent | React.WheelEvent): string | null => {
+    const el = e.target as Element | null;
+    return el?.closest?.("[data-zone]")?.getAttribute("data-zone") ?? null;
+  };
 
   const double = useRef(0);
   const onPointerUp = (e: React.PointerEvent) => {
@@ -83,14 +95,14 @@ export default function LiveCall({
     double.current = now;
     if (!quick) return;
     const { x, y } = at(e);
-    settle(zoom.scale > 1.2 ? 1 : 2.8, x, y);
+    settle(zoom.scale > 1.2 ? 1 : 2.8, x, y, zoneAt(e));
   };
 
   const onWheel = (e: React.WheelEvent) => {
     if (!expanded) return;
     const { x, y } = at(e);
     const next = Math.min(ZOOM_MAX, Math.max(1, zoom.scale - e.deltaY / 400));
-    settle(next, zoom.scale === 1 ? x : zoom.x, zoom.scale === 1 ? y : zoom.y);
+    settle(next, zoom.scale === 1 ? x : zoom.x, zoom.scale === 1 ? y : zoom.y, zoneAt(e));
   };
 
   const ask = () => {
