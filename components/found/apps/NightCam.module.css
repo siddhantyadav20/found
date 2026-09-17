@@ -137,3 +137,37 @@
     rotate: 360deg;
   }
 }
+
+.tile {
+  position: relative;
+}
+
+/* The frame number, stamped the way the camera counts them. */
+.number {
+  position: absolute;
+  right: 5px;
+  bottom: 4px;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--nv);
+  text-shadow: 0 0 6px #000;
+}
+
+/* The download: it lands as a soft thumbnail and sharpens. */
+.tile[data-new] {
+  animation: land 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  box-shadow: inset 0 0 0 2px var(--nv);
+}
+
+@keyframes land {
+  from {
+    filter: blur(10px) brightness(0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile[data-new] {
+    animation: none;
+  }
+}

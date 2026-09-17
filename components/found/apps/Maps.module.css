@@ -416,3 +416,56 @@
   color: var(--ios-grey);
   text-align: center;
 }
+
+/* --- K., coming ---------------------------------------------------------------
+   Episode 3's first clock. His dot leaves the mill and closes on yours over a
+   few minutes, and stops just short: he's outside. */
+
+.kRoute {
+  fill: none;
+  stroke: rgba(255, 69, 58, 0.45);
+  stroke-width: 0.7;
+  stroke-dasharray: 1.6 1.4;
+}
+
+.kDot {
+  animation: kCloses 240s cubic-bezier(0.3, 0, 0.2, 1) both;
+}
+
+@keyframes kCloses {
+  from {
+    transform: translate(28px, 112px);
+  }
+  to {
+    transform: translate(57px, 19px);
+  }
+}
+
+.kPulse {
+  fill: rgba(255, 69, 58, 0.3);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: youPulse 1.4s ease-out infinite;
+}
+
+.kCore {
+  fill: #ff453a;
+  stroke: #fff;
+  stroke-width: 0.8;
+}
+
+.sharing[data-alarm] {
+  background: rgba(255, 69, 58, 0.16);
+  color: #ffb3ad;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kDot {
+    animation: none;
+    transform: translate(57px, 19px);
+  }
+
+  .kPulse {
+    animation: none;
+  }
+}

@@ -80,7 +80,8 @@ describe("two devices, one case", () => {
     expect(betterSolved(two, one)).toBe(two);
     expect(betterSolved(null, one)).toBe(one);
     expect(isSolved(one)).toBe(true);
-    expect(isSolved({ ...one, episode: 3 })).toBe(false);
+    expect(isSolved({ ...one, episode: 3 })).toBe(true);
+    expect(isSolved({ ...one, episode: 4 })).toBe(false);
     expect(isSolved({ ...one, marks: "x".repeat(65) })).toBe(false);
     expect(isSolved(null)).toBe(false);
   });
@@ -95,7 +96,10 @@ describe("your cases, in a line", () => {
     expect(describeCase(s, null, hours(3))).toEqual({ status: "Episode 1 · Kabir is missing · 3 h ago", result: null, cta: "Carry on" });
     expect(describeCase(add(s, "dead"), null, 0).cta).toBe("Charge it");
     expect(summarise(add(s, "dead", "ep:2")).episode).toBe(2);
-    expect(summarise(add(s, "dead", "ep:2", "ep:2-done")).phase).toBe("done");
+    // Episode 2's end card leads straight into Episode 3.
+    expect(summarise(add(s, "dead", "ep:2", "ep:2-done"))).toMatchObject({ episode: 3, phase: "playing" });
+    expect(summarise(add(s, "dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done")).phase).toBe("done");
+    expect(describeCase(add(s, "dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), null, 0).status).toBe("Case closed");
   });
 
   it("keeps a finish on the desk after the save is gone", () => {
@@ -121,7 +125,8 @@ describe("the desk remembers", () => {
     expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1, name: "Kabir" });
     expect(deskState(add(s, "dead"), one)).toEqual({ kind: "between", name: "Kabir" });
     expect(deskState(add(s, "dead", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
-    expect(deskState(add(s, "dead", "ep:2", "ep:2-done"), one)).toEqual({ kind: "solved", solved: one, again: false });
+    expect(deskState(add(s, "dead", "ep:2", "ep:2-done"), one)).toMatchObject({ kind: "playing", episode: 3 });
+    expect(deskState(add(s, "dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), one)).toEqual({ kind: "solved", solved: one, again: false });
     expect(deskState(null, one)).toEqual({ kind: "solved", solved: one, again: true });
   });
 

@@ -1,5 +1,5 @@
 import { FEATURED, type CaseId } from "@/content/cases";
-import type { AppId, Cast, Gender, Story } from "@/content/found/types";
+import type { AppId, Cast, EpisodeNo, Gender, Story } from "@/content/found/types";
 import { STORIES } from "@/content/stories";
 import * as engine from "@/lib/found/engine";
 import { MILESTONE_OF } from "@/lib/found/events";
@@ -44,7 +44,7 @@ function beat(event: string, seconds?: number, via = readProgress()?.via): void 
 }
 
 /** An episode finished: its result is kept apart from the save, so it stays on the desk. */
-function solve(episode: 1 | 2, s: engine.CaseState): void {
+function solve(episode: EpisodeNo, s: engine.CaseState): void {
   const r = resultOf(ep, s, episode);
   markSolved(caseId, { episode, minutes: r.minutes, marks: r.marks.map((m) => MARK_EMOJI[m]).join(""), at: Date.now() });
 }
@@ -53,7 +53,7 @@ function save(next: engine.CaseState): void {
   const prev = readProgress();
   if (!prev || next === prev) return;
   const fresh = next.flags.filter((f) => !prev.flags.includes(f));
-  const ended: (1 | 2)[] = [];
+  const ended: EpisodeNo[] = [];
   if (fresh.length) {
     const now = Date.now();
     const at: Record<string, number> = { ...next.at };
@@ -63,6 +63,7 @@ function save(next: engine.CaseState): void {
       if (milestone) beat(milestone, milestone === "end" ? (now - next.started) / 1000 : undefined, next.via);
       if (milestone === "end") ended.push(1);
       if (milestone === "ep2-end") ended.push(2);
+      if (milestone === "ep3-end") ended.push(3);
     }
     next = { ...next, at };
   }
@@ -95,7 +96,8 @@ function runId(): string {
 /** The envelope is opened: deal the cast and start the case. Runs in a click. */
 export function start(): void {
   wakeAudio();
-  const s = engine.see(ep, engine.newCase(devCast() ?? pickCast(ep.names), runId(), Date.now(), arrivedVia), ep.envelope.evidence);
+  const cast = ep.character ?? devCast() ?? pickCast(ep.names);
+  const s = engine.see(ep, engine.newCase(cast, runId(), Date.now(), arrivedVia), ep.envelope.evidence);
   commit(s);
   noteBattery(caseId, engine.battery(ep, s));
   beat("open", undefined, arrivedVia);
@@ -221,6 +223,7 @@ export function reset(): void {
   const s = readProgress();
   if (s && engine.has(s, "dead")) solve(1, s);
   if (s && engine.has(s, "ep:2-done")) solve(2, s);
+  if (s && engine.has(s, "ep:3-done")) solve(3, s);
   commit(null);
 }
 

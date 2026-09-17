@@ -2,7 +2,7 @@ import { teaser } from "./index";
 import type { Story } from "./types";
 
 /* ===========================================================================
-   Low Battery — Episode 1: the pledge.
+   Low Battery — Episode 1: "Don't Unlock It." The pledge.
 
    THE TRUTH (never shown whole; the player assembles it over three episodes):
    Shree Ram Mills, shut since 2009, is held up by one heritage listing on its
@@ -40,6 +40,7 @@ import type { Story } from "./types";
 export const episode1: Story = {
   id: "low-battery",
   title: "Low Battery",
+  titles: ["Don't Unlock It.", "Read Receipts", "Delivered"],
   names: { girl: ["Noor", "Mira", "Ishita"], boy: ["Kabir", "Arjun", "Neel"] },
   surname: "Sethi",
 
@@ -614,7 +615,7 @@ export const episode1: Story = {
     ],
   },
 
-  nightcam: { items: 12, firstFrame: "fuel" },
+  nightcam: { items: 12 },
 
   food: [
     { at: "Fri 19:10", item: "Chocolate truffle cake, 1 kg", to: "Tara · Parel", price: "₹1,240" },
@@ -635,6 +636,8 @@ export const episode1: Story = {
     cta: "Charge it",
   },
 
-  // Episode 2 supplies the real one (episode2.ts).
+  // Later episodes supply the real ones (episode2.ts, episode3.ts).
   end2: { title: "", questions: [], ask: "" },
+  end3: { title: "", questions: [], ask: "" },
+  call: null,
 };

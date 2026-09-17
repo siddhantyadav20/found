@@ -22,21 +22,26 @@ export default function Envelope({ onOpen, label }: { onOpen: () => void; label?
   const { id, story: ep, meta, minutes } = useCase();
   return (
     <div className={styles.stage} data-envelope>
-      <p className={styles.eyebrow}>Episode 1 · {ep.title}</p>
+      <p className={styles.eyebrow}>
+        {ep.title} · Episode 1 · {ep.titles[0]}
+      </p>
       <div className={styles.envelope} aria-hidden="true">
         {/* The phone picked up off the desk lands here. */}
         <ViewTransition name="found-phone" share="morph" default="none">
           <span className={styles.phone} />
         </ViewTransition>
         <span className={styles.front} />
-        <span className={styles.label}>
-          {(label ?? ep.envelope.label).map((line, i) => (
-            <span key={line}>
-              {i > 0 && <br />}
-              {line}
-            </span>
-          ))}
-        </span>
+        {/* No label at all when nobody wrote one: "No name on it." */}
+        {(label ?? ep.envelope.label).length > 0 && (
+          <span className={styles.label}>
+            {(label ?? ep.envelope.label).map((line, i) => (
+              <span key={line}>
+                {i > 0 && <br />}
+                {line}
+              </span>
+            ))}
+          </span>
+        )}
       </div>
       <div className={styles.lines}>
         {ep.envelope.lines.map((line) => (

@@ -165,7 +165,9 @@ export default function Settings({ state }: AppProps) {
               <Row
                 key={n.ssid}
                 title={n.ssid}
-                sub={n.lastJoined === "Connected" ? "Connected" : `Last joined ${n.lastJoined}`}
+                // Where the phone joined without being asked, that's the line that matters.
+                sub={n.joinedFirst ? `Auto-joined ${n.joinedFirst}` : n.lastJoined === "Connected" ? "Connected" : `Last joined ${n.lastJoined}`}
+                meta={n.joinedFirst && n.lastJoined === "Connected" ? "Connected" : undefined}
               />
             ))}
           </ul>

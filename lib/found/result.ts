@@ -1,4 +1,4 @@
-import type { Story } from "@/content/found/types";
+import type { EpisodeNo, Flag, Story } from "@/content/found/types";
 import { has, type CaseState } from "./engine";
 
 /* ===========================================================================
@@ -11,13 +11,13 @@ import { has, type CaseState } from "./engine";
    else has played.
 
    Pure, and read off the save alone: the order of `flags` is the order
-   things happened, and `ep:2` splits the episodes.
+   things happened, and `ep:2` and `ep:3` split the episodes.
    =========================================================================== */
 
 export type Mark = "clean" | "hinted" | "wrong";
 
 export type Result = {
-  readonly episode: 1 | 2;
+  readonly episode: EpisodeNo;
   readonly marks: readonly Mark[];
   readonly hints: number;
   /** Wall-clock minutes for the episode, breaks included. Null until it has ended. */
@@ -27,10 +27,15 @@ export type Result = {
 
 export const MARK_EMOJI: Record<Mark, string> = { clean: "🟩", hinted: "🟨", wrong: "🟥" };
 
-export function resultOf(ep: Story, s: CaseState, episode: 1 | 2): Result {
+/** Where each episode starts and stops, in the order flags were set. */
+const START: Record<EpisodeNo, Flag | null> = { 1: null, 2: "ep:2", 3: "ep:3" };
+
+export function resultOf(ep: Story, s: CaseState, episode: EpisodeNo): Result {
   const puzzles = new Set([...ep.locks.map((l) => l.id), ...ep.deductions.map((d) => d.id)]);
-  const split = s.flags.indexOf("ep:2");
-  const inEpisode = (i: number) => (episode === 1 ? split < 0 || i < split : split >= 0 && i > split);
+  const startAt = (n: EpisodeNo) => (START[n] ? s.flags.indexOf(START[n]) : 0);
+  const from = startAt(episode);
+  const next = episode < 3 ? startAt((episode + 1) as EpisodeNo) : -1;
+  const inEpisode = (i: number) => from >= 0 && i >= from && (next < 0 || i < next);
 
   const solved: string[] = [];
   s.flags.forEach((f, i) => {
@@ -44,8 +49,13 @@ export function resultOf(ep: Story, s: CaseState, episode: 1 | 2): Result {
   );
   const hints = solved.reduce((n, id) => n + (s.hints[id] ?? 0), 0);
 
-  const [from, to] = episode === 1 ? [s.started, s.at["dead"]] : [s.at["did:plugged"] ?? s.at["ep:2"], s.at["ep:2-done"]];
-  const minutes = from !== undefined && to !== undefined && to > from ? Math.max(1, Math.round((to - from) / 60_000)) : null;
+  const [began, ended] =
+    episode === 1
+      ? [s.started, s.at["dead"]]
+      : episode === 2
+        ? [s.at["did:plugged"] ?? s.at["ep:2"], s.at["ep:2-done"]]
+        : [s.at["ep:3"], s.at["ep:3-done"]];
+  const minutes = began !== undefined && ended !== undefined && ended > began ? Math.max(1, Math.round((ended - began) / 60_000)) : null;
 
   return { episode, marks, hints, minutes, name: s.cast.name };
 }

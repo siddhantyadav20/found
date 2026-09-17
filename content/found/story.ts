@@ -1,5 +1,6 @@
 import { episode1 } from "./episode1";
 import { episode2 } from "./episode2";
+import { episode3 } from "./episode3";
 import type { Part, Story, Thread } from "./types";
 
 /* ===========================================================================
@@ -28,6 +29,7 @@ function layer(story: Story, part: Part): Story {
     photos: [...story.photos, ...(part.photos ?? [])],
     wifi: [...(part.wifi ?? []), ...story.wifi],
     searches: [...story.searches, ...(part.searches ?? [])],
+    food: [...(part.food ?? []), ...story.food],
     memos: [...story.memos, ...(part.memos ?? [])],
     devices: [...story.devices, ...(part.devices ?? [])],
     evidence: [...story.evidence, ...(part.evidence ?? [])],
@@ -43,7 +45,9 @@ function layer(story: Story, part: Part): Story {
       notes: [...story.vault.notes, ...(part.vaultNotes ?? [])],
     },
     end2: part.end2 ?? story.end2,
+    end3: part.end3 ?? story.end3,
+    call: part.call ?? story.call,
   };
 }
 
-export const story: Story = layer(episode1, episode2);
+export const story: Story = layer(layer(episode1, episode2), episode3);

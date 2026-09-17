@@ -7,7 +7,7 @@ import type { AppId, LiveEvent, Story } from "@/content/found/types";
 import { useMounted } from "@/lib/clientValue";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
 import { dropLabel } from "@/lib/found/dropName";
-import { battery, clockNow, dueEvents, has, sessionVars, stage, stamp, type CaseState } from "@/lib/found/engine";
+import { battery, clockNow, dayNow, dueEvents, has, sessionVars, stage, stamp, type CaseState } from "@/lib/found/engine";
 import { badgesOf, nextNudge } from "@/lib/found/guide";
 import { wasAway } from "@/lib/found/keeping";
 import { enterFullscreen } from "@/lib/found/platform";
@@ -30,9 +30,11 @@ import Photos from "../apps/Photos";
 import Settings from "../apps/Settings";
 import type { Nav } from "../apps/types";
 import * as play from "./actions";
+import Call from "./Call";
 import Charge from "./Charge";
 import { drag } from "./drag";
 import EndCard from "./EndCard";
+import Ending from "./Ending";
 import Envelope from "./Envelope";
 import Home from "./Home";
 import { AppGlyph } from "./icons";
@@ -57,14 +59,24 @@ const EVENT_DELAY: Record<string, number> = {
   "e2-open-notes": 2200,
   "e2-3107-sorry": 3400,
   "e2-letterbox": 3600,
-  "e2-thanks": 2800,
+  "e2-known": 3200,
+  "e2-last": 2600,
+  "e3-sync": 1800,
+  "e3-stop": 3000,
+  "e3-3107-guard": 3400,
+  "e3-k-coming": 3200,
+  "e3-k-stairs": 3200,
+  "e3-3107-police": 4200,
+  "e3-k-outside": 4600,
+  // The phone rings a long beat after "Bring it down", time enough to read it.
+  "e3-ring": 7000,
 };
 const DEFAULT_DELAY = 2400;
 const BANNER_MS = 5200;
 /** From the last text to the screen going dark, then the dark itself. */
 const POWER_OFF_AFTER = 7500;
 const DYING_MS = 3400;
-/** From "Thank you." to Episode 2's end card. */
+/** From the player finding their own Wi-Fi to Episode 2's end card. */
 const EPISODE_END_AFTER = 6000;
 /** An app shrinking back into the home screen; a page sliding away after a swipe back. */
 const CLOSE_MS = 300;
@@ -96,15 +108,15 @@ function noticeOf(ep: Story, s: CaseState, e: LiveEvent): Notice | null {
   if (thread) {
     const first = e.messages.find((m) => m.text) ?? e.messages[0];
     return {
-      from: s.names[thread.id] ?? thread.contact,
+      from: s.names[thread.id] ?? thread.notifyAs ?? thread.contact,
       text: first?.text ? say(first.text, s.cast, vars) : "Photo",
-      app: "messages",
+      app: thread.app ?? "messages",
       arg: thread.id,
     };
   }
   if (e.banner) {
     const app: AppId = e.bannerApp ?? (e.id === "e2-nightcam" ? "nightcam" : e.id === "e2-vault" ? "calculator" : "maps");
-    return { from: BANNER_FROM[app] ?? "Maps", text: say(e.banner, s.cast, vars), app };
+    return { from: e.bannerFrom ?? BANNER_FROM[app] ?? "Maps", text: say(e.banner, s.cast, vars), app };
   }
   return null;
 }
@@ -122,7 +134,7 @@ function noticesOf(ep: Story, s: CaseState): (Notice & { key: string; time: stri
     const n = e && noticeOf(ep, s, e);
     if (!n) continue;
     const at = s.at[f];
-    arrived.push({ ...n, key: f, time: at === undefined ? "" : (stamp(s, at).split(" ")[1] ?? "") });
+    arrived.push({ ...n, key: f, time: at === undefined ? "" : (stamp(s, at, ep.clocks).split(" ")[1] ?? "") });
   }
   const waiting = ep.lockscreen.notifications.map((n) => ({
     from: n.from,
@@ -145,6 +157,11 @@ const BANNER_FROM: Partial<Record<AppId, string>> = {
   nightcam: "NightCam",
   calculator: "Calculator",
   notes: "Case file",
+  phone: "Phone",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  recorder: "Recorder",
+  files: "Files",
   guardian: "Guardian",
   news: "City Desk",
   settings: "Settings",
@@ -464,7 +481,7 @@ export default function FoundPhone() {
   // Nothing arrives on a phone that's dead, charging from dead, or dying:
   // events wait until the screen is on again.
   const screenNow = s ? stage(ep, s).screen : null;
-  const quiet = dying || screenNow === "charge" || screenNow === "end";
+  const quiet = dying || screenNow === "charge" || screenNow === "end" || screenNow === "call" || screenNow === "ending";
   const due = s && !quiet ? dueEvents(ep, s)[0] : undefined;
   useEffect(() => {
     if (!due) return;
@@ -482,7 +499,7 @@ export default function FoundPhone() {
       const thread = n.app === "messages" ? n.arg : undefined;
       if (thread) setUnread((u) => new Set(u).add(thread));
       showBanner(n);
-    }, EVENT_DELAY[due.id] ?? DEFAULT_DELAY);
+    }, due.delay ?? EVENT_DELAY[due.id] ?? DEFAULT_DELAY);
     return () => window.clearTimeout(timer);
   }, [due, showBanner, ep]);
 
@@ -558,6 +575,8 @@ export default function FoundPhone() {
   // and not on an end card.
   useWakeLock(!!s && screenNow !== "end");
 
+  const clocks = ep.clocks;
+
   /* The end of Episode 1: the last text lands, the phone holds, then the
      battery goes. Re-armed on a reload that lands in between. */
   const lastWords = !!s && (has(s, "fired:cliff-voice-photo") || has(s, "fired:cliff-voice-read")) && !has(s, "dead");
@@ -576,8 +595,8 @@ export default function FoundPhone() {
     return () => window.clearTimeout(timer);
   }, [dying]);
 
-  /* The end of Episode 2: "Thank you.", a beat, then the end card. */
-  const thanked = !!s && has(s, "fired:e2-thanks") && !has(s, "ep:2-done");
+  /* The end of Episode 2: their own network, a long beat, then the end card. */
+  const thanked = !!s && has(s, "fired:e2-last") && !has(s, "ep:2-done");
   useEffect(() => {
     if (!thanked) return;
     const timer = window.setTimeout(() => play.perform("finish-ep2"), EPISODE_END_AFTER);
@@ -611,7 +630,7 @@ export default function FoundPhone() {
   }
   else if (mounted && s && st?.screen === "end") body = <EndCard state={s} episode={st.episode} onReplay={play.reset} />;
   else if (mounted && s && st) {
-    const charging = st.episode === 2;
+    const charging = st.episode >= 2;
     body = (
       // The phone on the desk, picked up: it morphs into this one.
       <ViewTransition name="found-phone" share="morph" default="none">
@@ -626,17 +645,28 @@ export default function FoundPhone() {
           <span className={styles.osIsland} aria-hidden="true" />
           {st.screen === "charge" ? (
             <Charge onPlug={() => play.perform("plug")} />
+          ) : st.screen === "call" ? (
+            <Call key={st.call ?? "call"} state={s} scripted={st.call ? ep.calls?.find((c) => c.id === st.call) : undefined} />
+          ) : st.screen === "ending" ? (
+            <Ending state={s} />
           ) : (
             <>
               <StatusBar
                 percent={battery(ep, s)}
-                clock={clockNow(s, now)}
+                clock={clockNow(s, now, clocks)}
                 charging={charging}
                 wifi={has(s, "did:wifi-on")}
                 bars={charging ? 3 : 2}
               />
               {st.screen === "lock" || st.screen === "relock" ? (
-                <LockScreen state={s} mode={st.screen === "relock" ? "restart" : "first"} clock={clockNow(s, now)} />
+                <LockScreen
+                  state={s}
+                  mode={st.screen === "relock" ? "restart" : ep.opensWith === "swipe" ? "open" : "first"}
+                  clock={clockNow(s, now, clocks)}
+                  day={dayNow(s, clocks)}
+                  // Only what has arrived: a phone nobody locked has nothing waiting on it but that.
+                  arrived={notices.filter((n) => n.key.startsWith("fired:"))}
+                />
               ) : (
                 <>
                   {/* Home stays underneath an open app, the way it does on a
@@ -681,8 +711,8 @@ export default function FoundPhone() {
                     data-no-swipe
                   >
                     <div className={styles.shadeHead}>
-                      <span className={styles.shadeDay}>Monday</span>
-                      <span className={styles.shadeClock}>{clockNow(s, now)}</span>
+                      <span className={styles.shadeDay}>{dayNow(s, clocks)}</span>
+                      <span className={styles.shadeClock}>{clockNow(s, now, clocks)}</span>
                     </div>
                     <p className={styles.shadeLabel}>Notification Centre</p>
                     <ul className={styles.shadeList}>
@@ -762,7 +792,9 @@ export default function FoundPhone() {
 
   return (
     <div className={styles.surface} data-cursor="native">
-      <h1 className={styles.hidden}>{ep.title}: someone is missing, and their phone has arrived in your post.</h1>
+      <h1 className={styles.hidden}>
+        {meta.title}: {meta.hint}
+      </h1>
       {body}
     </div>
   );

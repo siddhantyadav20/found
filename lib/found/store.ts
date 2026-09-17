@@ -110,11 +110,14 @@ export async function estimatedMinutes(caseId: CaseId): Promise<number | undefin
 export type Choices = {
   /** What everyone who answered Mum sent her, in percent. */
   mum: { lie: number; truth: number; silence: number } | null;
+  /** What everyone said on the call that ends the chapter, in percent. */
+  call: { send: number; run: number; fix: number } | null;
   /** The share of recent Episode 1 finishes slower than `seconds`. */
   fasterThan: number | null;
 };
 
 const MUM = ["lie", "truth", "silence"] as const;
+const CALL = ["send", "run", "fix"] as const;
 
 /** Whole percentages of `counts`, or null under `MIN_ANSWERS`. */
 export function percentages<K extends string>(counts: Record<K, number>): Record<K, number> | null {
@@ -130,8 +133,12 @@ export function fasterThan(times: readonly number[], seconds: number | undefined
 }
 
 export async function readChoices(caseId: CaseId, seconds: unknown): Promise<Choices> {
-  if (!redisReady()) return { mum: null, fasterThan: null };
-  const results = await redis(...MUM.map((m) => ["GET", `${prefix(caseId)}:mum:${m}`]));
-  const counts = Object.fromEntries(MUM.map((m, i) => [m, asCount(results[i])])) as Record<(typeof MUM)[number], number>;
-  return { mum: percentages(counts), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)) };
+  if (!redisReady()) return { mum: null, call: null, fasterThan: null };
+  const results = await redis(
+    ...MUM.map((m) => ["GET", `${prefix(caseId)}:mum:${m}`]),
+    ...CALL.map((c) => ["GET", `${prefix(caseId)}:call:${c}`]),
+  );
+  const mum = Object.fromEntries(MUM.map((m, i) => [m, asCount(results[i])])) as Record<(typeof MUM)[number], number>;
+  const call = Object.fromEntries(CALL.map((c, i) => [c, asCount(results[MUM.length + i])])) as Record<(typeof CALL)[number], number>;
+  return { mum: percentages(mum), call: percentages(call), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)) };
 }

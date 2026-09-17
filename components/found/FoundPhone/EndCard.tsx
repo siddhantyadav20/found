@@ -3,20 +3,20 @@
 import { useState } from "react";
 
 import { useCase } from "@/components/found/StoryContext";
-import type { CaseState } from "@/lib/found/engine";
+import type { EpisodeNo } from "@/content/found/types";
+import { callAnswer, type CaseState } from "@/lib/found/engine";
 import { resultOf } from "@/lib/found/result";
 import { say } from "@/lib/found/voice";
 import KeepCase from "../KeepCase";
 import * as play from "./actions";
 import PassItOn from "./PassItOn";
-import { joinNextEpisode } from "./submit";
 import WhatOthersDid from "./WhatOthersDid";
 import styles from "./EndCard.module.css";
 
 /**
- * Between episodes, in the site's voice: the questions left open, and then
- * either the way on (Episode 1: charge it) or the one question the pilot
- * exists to ask (Episode 2: would you play Episode 3?).
+ * Between episodes, in the site's voice: the questions left open and the way
+ * on. After Episode 3 there are no questions left — the chapter closes — so
+ * it says what the player said on the call, and how many others said it too.
  */
 export default function EndCard({
   state,
@@ -24,88 +24,41 @@ export default function EndCard({
   onReplay,
 }: {
   state: CaseState;
-  episode: 1 | 2;
+  episode: EpisodeNo;
   onReplay: () => void;
 }) {
   const { id, story: ep } = useCase();
-  const end = episode === 1 ? ep.end : ep.end2;
+  const end = episode === 1 ? ep.end : episode === 2 ? ep.end2 : ep.end3;
   const result = resultOf(ep, state, episode);
-  const next = episode + 1;
   const [confirming, setConfirming] = useState(false);
-  const [vote, setVote] = useState<"yes" | "no" | null>(null);
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState<"idle" | "sending" | "done" | "error">("idle");
-
-  const choose = (v: "yes" | "no") => {
-    if (vote) return;
-    setVote(v);
-    play.verdict(`ep${next}:${v}`);
-  };
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim() || sent === "sending") return;
-    setSent("sending");
-    const r = await joinNextEpisode(email, next);
-    setSent(r.ok ? "done" : "error");
-    if (r.ok) play.verdict("email");
-  };
+  const said = episode === 3 ? ep.replies.find((r) => r.call)?.options.find((o) => o.id === callAnswer(ep, state))?.text : null;
 
   return (
     <div className={styles.card}>
       <p className={styles.eyebrow}>{end.title}</p>
-      <h2 className={styles.title}>{episode === 1 ? ep.title : "Read Receipts"}</h2>
-      <ul className={styles.questions}>
-        {end.questions.map((q) => (
-          <li key={q}>{say(q, state.cast)}</li>
-        ))}
-      </ul>
+      <h2 className={styles.title}>{ep.titles[episode - 1]}</h2>
+      {said ? (
+        <p className={styles.said}>
+          You said: <q>{say(said, state.cast)}</q>
+        </p>
+      ) : (
+        <ul className={styles.questions}>
+          {end.questions.map((q) => (
+            <li key={q}>{say(q, state.cast)}</li>
+          ))}
+        </ul>
+      )}
 
       <WhatOthersDid state={state} episode={episode} />
 
       <div className={styles.ask}>
         <p className={styles.askText}>{end.ask}</p>
-        {episode === 1 ? (
+        {episode < 3 && (
           <div className={styles.choices}>
-            <button type="button" className={styles.primary} onClick={() => play.perform("start-ep2")}>
+            <button type="button" className={styles.primary} onClick={() => play.perform(`start-ep${episode + 1}`)}>
               {end.cta ?? "Continue"}
             </button>
           </div>
-        ) : vote === null ? (
-          <div className={styles.choices}>
-            <button type="button" className={styles.primary} onClick={() => choose("yes")}>
-              Yes
-            </button>
-            <button type="button" className={styles.secondary} onClick={() => choose("no")}>
-              Not really
-            </button>
-          </div>
-        ) : vote === "no" ? (
-          <p className={styles.thanks}>Thank you for telling me. That&apos;s the most useful answer there is.</p>
-        ) : sent === "done" ? (
-          <p className={styles.thanks}>Done. You&apos;ll hear when Episode {next} is out.</p>
-        ) : (
-          <form className={styles.form} onSubmit={submit}>
-            <label className={styles.formLabel} htmlFor="found-email">
-              Want to know when it&apos;s out? (optional)
-            </label>
-            <div className={styles.row}>
-              <input
-                id="found-email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
-              />
-              <button type="submit" className={styles.primary} disabled={sent === "sending"}>
-                {sent === "sending" ? "Sending…" : "Tell me"}
-              </button>
-            </div>
-            {sent === "error" && <p className={styles.error}>That didn&apos;t go through. Check the address?</p>}
-          </form>
         )}
       </div>
 

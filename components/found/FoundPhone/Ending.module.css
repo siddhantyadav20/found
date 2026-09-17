@@ -1,0 +1,355 @@
+/* The endings. Quiet, dark, and in the site's own voice once the phone has
+   done its last thing: the act, what happened, one line from Tara, the desk. */
+
+.ending {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--os-top) + 24px) 24px 40px;
+  background: #050505;
+  color: var(--os-text);
+  animation: fade 0.8s ease-out both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* --- The act ------------------------------------------------------------- */
+
+.act {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.knock {
+  min-height: 20px;
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--os-faint);
+  animation: knock 4.2s ease-in-out infinite;
+}
+
+@keyframes knock {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+  }
+  8%,
+  20%,
+  32% {
+    opacity: 1;
+  }
+}
+
+.actTitle {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.actDetail {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--os-dim);
+}
+
+.actButton {
+  margin-top: 12px;
+  padding: 15px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--ios-blue);
+  color: #fff;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ending[data-outcome="run"] .actButton {
+  background: var(--os-danger);
+}
+
+.ending[data-outcome="fix"] .actButton {
+  background: var(--os-panel-2);
+}
+
+.progress {
+  height: 6px;
+  margin-top: 16px;
+  border-radius: 99px;
+  background: var(--os-panel-2);
+  overflow: hidden;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #fff;
+  transition: width 0.1s linear;
+}
+
+/* A door isn't a download. */
+.ending[data-outcome="fix"] .progress {
+  visibility: hidden;
+}
+
+.actState {
+  min-height: 20px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--os-dim);
+}
+
+/* Erased: a phone that has forgotten everything says hello. */
+.hello {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  margin: -60px -24px 0;
+  background: #fff;
+  color: #111;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 64px;
+  animation: fade 2.4s ease-out both;
+}
+
+/* --- What happened ------------------------------------------------------- */
+
+/* Settles at the bottom while it's short, and scrolls once it isn't. (Not
+   justify-content: flex-end, which puts the first lines out of reach.) */
+.story {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.story > :first-child {
+  margin-top: auto;
+}
+
+.line {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 20px;
+  line-height: 1.35;
+  animation: arrive 0.9s ease-out both;
+}
+
+.line[data-last] {
+  color: #fff;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+.headline {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #fff;
+  color: #111;
+  animation: arrive 0.9s ease-out both;
+}
+
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #d7263d;
+}
+
+.masthead span {
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #666;
+}
+
+.headlineTitle {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.text {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(38, 38, 40, 0.95);
+  font-size: 15px;
+  line-height: 1.35;
+  animation: arrive 0.9s ease-out both;
+}
+
+.textFrom {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.text[data-coda] {
+  margin: auto 0;
+}
+
+.next {
+  align-self: center;
+  margin-top: 18px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* --- The desk ------------------------------------------------------------- */
+
+.ending[data-phase="desk"] {
+  padding: 40px 24px;
+  background: #0b0907;
+  justify-content: flex-end;
+}
+
+.desk {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 60% at 50% 110%, #1a130c 0%, transparent 70%),
+    #0b0907;
+}
+
+/* The lamp: starts where the phone lay, and slides off it to the shape. */
+.lamp {
+  position: absolute;
+  top: 34%;
+  left: 42%;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 150, 0.22) 0%, rgba(255, 190, 110, 0.08) 40%, transparent 70%);
+  translate: -50% -50%;
+  animation: lamp 3.2s cubic-bezier(0.5, 0, 0.2, 1) 0.4s both;
+}
+
+@keyframes lamp {
+  to {
+    left: 68%;
+    top: 46%;
+  }
+}
+
+/* It isn't a phone. Nobody says what it is. */
+.shape {
+  position: absolute;
+  top: 46%;
+  left: 68%;
+  width: 26%;
+  height: 11%;
+  border-radius: 10px 10px 6px 6px;
+  background: linear-gradient(180deg, #2a241d, #120f0b);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 230, 190, 0.15);
+  translate: -50% -50%;
+  opacity: 0.15;
+  animation: found 2s ease-out 2.4s both;
+}
+
+.shape::after {
+  content: "";
+  position: absolute;
+  top: 28%;
+  right: 12%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #3b4a52 0%, #0d1215 70%);
+}
+
+@keyframes found {
+  to {
+    opacity: 1;
+  }
+}
+
+.deskLines {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.deskLine {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 24px;
+  line-height: 1.25;
+  color: #f3e6d0;
+  animation: arrive 1.2s ease-out both;
+}
+
+.close {
+  position: relative;
+  align-self: flex-start;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 99px;
+  background: #f3e6d0;
+  color: #1a130c;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  animation: arrive 1s ease-out 5.2s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ending,
+  .line,
+  .headline,
+  .text,
+  .hello,
+  .deskLine,
+  .close,
+  .shape,
+  .lamp,
+  .knock {
+    animation: none;
+  }
+
+  .lamp {
+    left: 68%;
+    top: 46%;
+  }
+
+  .shape {
+    opacity: 1;
+  }
+}

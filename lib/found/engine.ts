@@ -1,7 +1,9 @@
 import type {
   AppId,
   Cast,
+  Clock,
   Deduction,
+  EpisodeNo,
   Evidence,
   Flag,
   LiveEvent,
@@ -40,9 +42,19 @@ export const HEADLINE_MAX = 80;
 export const VISIT_CAP_MS = 5 * 60_000;
 
 /** Monday morning, from the moment the envelope is opened. */
-const EP1_CLOCK = { base: "08:10", cap: 100 };
+const EP1_CLOCK: Clock = { base: "08:10", day: "Monday", cap: 100 };
 /** Monday evening, from the moment the phone is plugged in. */
-const EP2_CLOCK = { base: "19:40", cap: 150 };
+const EP2_CLOCK: Clock = { base: "19:40", day: "Monday", cap: 150 };
+/** Monday night, from the moment the rest of NightCam starts coming down. */
+const EP3_CLOCK: Clock = { base: "22:15", day: "Monday night", cap: 100 };
+
+/** A story's clocks, with Low Battery's where it doesn't give its own. */
+export type Clocks = Story["clocks"];
+const clockFor = (clocks: Clocks, n: EpisodeNo): Clock =>
+  clocks?.[n] ?? (n === 1 ? EP1_CLOCK : n === 2 ? EP2_CLOCK : EP3_CLOCK);
+
+/** What day the phone says it is right now. */
+export const dayNow = (s: CaseState, clocks?: Clocks): string => clockFor(clocks, episodeOf(s)).day;
 
 export type Report = {
   readonly firstPickup: string;
@@ -92,22 +104,25 @@ function add(s: CaseState, flag: Flag): CaseState {
   return has(s, flag) ? s : { ...s, flags: [...s.flags, flag] };
 }
 
-export const episodeOf = (s: CaseState): 1 | 2 => (has(s, "ep:2") ? 2 : 1);
+export const episodeOf = (s: CaseState): EpisodeNo => (has(s, "ep:3") ? 3 : has(s, "ep:2") ? 2 : 1);
 
 /* --- Evidence ---------------------------------------------------------------- */
 
-/** Readable before the passcode: the lock screen's own, and the envelope. */
+/** Readable before the phone is open: the lock screen's own, and the envelope. */
 const BEFORE_UNLOCK: ReadonlySet<AppId> = new Set<AppId>(["lock", "envelope"]);
 
-export function evidenceAvailable(s: CaseState, e: Evidence): boolean {
-  if (!BEFORE_UNLOCK.has(e.app) && !has(s, "lock:passcode")) return false;
+/** The flag that means the phone is open: a passcode typed, or a swipe on a phone nobody locked. */
+export const unlockFlag = (ep: Pick<Story, "opensWith">): Flag => (ep.opensWith === "swipe" ? "did:unlock" : "lock:passcode");
+
+export function evidenceAvailable(s: CaseState, e: Evidence, unlocked: Flag = "lock:passcode"): boolean {
+  if (!BEFORE_UNLOCK.has(e.app) && !has(s, unlocked)) return false;
   return all(s, e.requires);
 }
 
 /** The player has looked at it. Unknown or not-yet-reachable ids change nothing. */
 export function see(ep: Story, s: CaseState, evidenceId: string): CaseState {
   const e = ep.evidence.find((x) => x.id === evidenceId);
-  if (!e || !evidenceAvailable(s, e)) return s;
+  if (!e || !evidenceAvailable(s, e, unlockFlag(ep))) return s;
   return add(s, `seen:${e.id}`);
 }
 
@@ -191,7 +206,7 @@ export function answer(ep: Story, s: CaseState, deductionId: string, pick: reado
     }
   }
 
-  if (ok) return { state: add(s, `solved:${d.id}`), ok, reply: d.right };
+  if (ok) return { state: add(s, `solved:${d.id}`), ok, reply: d.rightFor?.[keys[0]] ?? d.right };
   const nudge = keys.map((k) => d.nudges[k]).find(Boolean);
   return { state: add(s, `did:wrong:${d.id}`), ok, reply: nudge ?? d.otherwise };
 }
@@ -213,16 +228,29 @@ export function hint(ep: Story, s: CaseState, id: string): { state: CaseState; t
 
 /** Events whose moment has come and which haven't happened yet, in script order. */
 export function dueEvents(ep: Story, s: CaseState): LiveEvent[] {
-  return ep.events.filter((e) => !has(s, `fired:${e.id}`) && all(s, e.when) && !anyOf(s, e.unless));
+  return ep.events.filter(
+    (e) => !has(s, `fired:${e.id}`) && all(s, e.when) && (!e.whenAny || anyOf(s, e.whenAny)) && !anyOf(s, e.unless),
+  );
 }
 
 export const fire = (s: CaseState, eventId: string): CaseState => add(s, `fired:${eventId}`);
 
 /* --- Replies ------------------------------------------------------------------ */
 
-/** The exchange waiting on the player in a thread, if there is one. */
+/** The exchange waiting on the player in a thread, if there is one. A call's answer isn't typed there. */
 export function openReply(ep: Story, s: CaseState, threadId: string): Reply | undefined {
-  return ep.replies.find((r) => r.thread === threadId && all(s, r.when) && !has(s, `said:${r.id}`));
+  return ep.replies.find((r) => !r.call && r.thread === threadId && all(s, r.when) && !has(s, `said:${r.id}`));
+}
+
+/** What can be said on the call, once it's ringing. */
+export function callReply(ep: Story, s: CaseState): Reply | undefined {
+  return ep.replies.find((r) => r.call && all(s, r.when) && !has(s, `said:${r.id}`));
+}
+
+/** What the player said on the call, if they have. */
+export function callAnswer(ep: Story, s: CaseState): string | null {
+  const r = ep.replies.find((x) => x.call);
+  return r?.options.find((o) => has(s, `said:${r.id}:${o.id}`))?.id ?? null;
 }
 
 /** What the player can say right now: unlocked, and not already said. */
@@ -277,7 +305,7 @@ export function nameContact(s: CaseState, threadId: string, name: string): CaseS
 export function stage(ep: Story, s: CaseState): Stage {
   const list = ep.stages.filter((x) => x.episode === episodeOf(s));
   let current = list[0];
-  for (const st of list) if (all(s, st.when)) current = st;
+  for (const st of list) if (all(s, st.when) && !anyOf(s, st.unless)) current = st;
   return current;
 }
 
@@ -300,23 +328,35 @@ function hhmm(base: string, minutes: number): string {
 const minutesSince = (from: number, at: number, cap: number) =>
   Math.min(cap, Math.max(0, Math.floor((at - from) / 60_000)));
 
-/** Monday morning's clock: 08:10 when the envelope opens, one story minute
- *  per real one, stopping short of the police arriving at 11:52. */
-export const morning = (s: CaseState, at: number): string =>
-  hhmm(EP1_CLOCK.base, minutesSince(s.started, at, EP1_CLOCK.cap));
+/** Episode 1's clock: from when the envelope opens (08:10 on Low Battery's
+ *  Monday), one story minute per real one, stopping at the episode's cap. */
+export const morning = (s: CaseState, at: number, clocks?: Clocks): string => {
+  const c = clockFor(clocks, 1);
+  return hhmm(c.base, minutesSince(s.started, at, c.cap));
+};
 
 /** What the status bar reads right now. */
-export function clockNow(s: CaseState, now: number): string {
-  if (episodeOf(s) === 1) return morning(s, now);
-  const plugged = s.at["did:plugged"];
-  return plugged ? hhmm(EP2_CLOCK.base, minutesSince(plugged, now, EP2_CLOCK.cap)) : EP2_CLOCK.base;
+export function clockNow(s: CaseState, now: number, clocks?: Clocks): string {
+  const episode = episodeOf(s);
+  if (episode === 1) return morning(s, now, clocks);
+  const c = clockFor(clocks, episode);
+  // Episode 2 runs from the phone coming back on; Episode 3 from its start.
+  const from = episode === 3 ? s.at["ep:3"] : s.at["did:plugged"];
+  return from !== undefined ? hhmm(c.base, minutesSince(from, now, c.cap)) : c.base;
 }
 
+/** The short day a message is stamped with: "Mon", "Sat". */
+const shortDay = (clocks: Clocks, n: EpisodeNo) => clockFor(clocks, n).day.slice(0, 3);
+
 /** When something happened, as the phone would print it ("Mon 08:14"). */
-export function stamp(s: CaseState, at: number | undefined): string {
+export function stamp(s: CaseState, at: number | undefined, clocks?: Clocks): string {
   if (at === undefined) return "now";
   const ep2 = s.at["ep:2"];
-  return `Mon ${ep2 !== undefined && at >= ep2 ? clockNow({ ...s, flags: [...s.flags, "ep:2"] }, at) : morning(s, at)}`;
+  const ep3 = s.at["ep:3"];
+  if (ep3 !== undefined && at >= ep3) return `${shortDay(clocks, 3)} ${clockNow({ ...s, flags: [...s.flags, "ep:3"] }, at, clocks)}`;
+  if (ep2 !== undefined && at >= ep2)
+    return `${shortDay(clocks, 2)} ${clockNow({ ...s, flags: [...s.flags.filter((f) => f !== "ep:3"), "ep:2"] }, at, clocks)}`;
+  return `${shortDay(clocks, 1)} ${morning(s, at, clocks)}`;
 }
 
 /* --- Mum's report --------------------------------------------------------------- */
@@ -337,7 +377,9 @@ export function buildReport(ep: Story, s: CaseState): Report {
     .filter((a) => a.minutes > 0)
     .sort((a, b) => b.minutes - a.minutes);
   const apps = measured.length ? measured.slice(0, 5) : FALLBACK_APPS;
-  const unlocked = s.at["lock:passcode"] ?? s.started + 4 * 60_000;
+  // Never before 08:12: the phone joined the player's Wi-Fi at 08:11, before
+  // anyone unlocked it, and Episode 2's last beat says so.
+  const unlocked = Math.max(s.at["lock:passcode"] ?? s.started + 4 * 60_000, s.started + 2 * 60_000);
   const timeline = ep.guardian.timeline
     .filter((t) => s.at[t.flag] !== undefined)
     .map((t) => ({ at: s.at[t.flag], label: t.label }))
@@ -393,15 +435,15 @@ export function threadMessages(ep: Story, s: CaseState, threadId: string): Messa
     if (f.startsWith("fired:")) {
       const e = ep.events.find((x) => `fired:${x.id}` === f);
       if (e?.thread !== threadId) return;
-      const when = stamp(s, s.at[f]);
+      const when = stamp(s, s.at[f], ep.clocks);
       for (const m of e.messages) if (all(s, m.requires)) rows.push({ pos: i, seq: seq++, m: m.at === "now" ? { ...m, at: when } : m });
     } else if (f.startsWith("said:")) {
       const [, rid, oid] = f.split(":");
       if (!oid) return;
       const r = ep.replies.find((x) => x.id === rid);
-      if (r?.thread !== threadId) return;
+      if (r?.thread !== threadId || r.call) return;
       const o = r.options.find((x) => x.id === oid);
-      if (o?.text) rows.push({ pos: i, seq: seq++, m: { from: "owner", at: stamp(s, s.at[f]), text: o.text } });
+      if (o?.text) rows.push({ pos: i, seq: seq++, m: { from: "owner", at: stamp(s, s.at[f], ep.clocks), text: o.text } });
     }
   });
 

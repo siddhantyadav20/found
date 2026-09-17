@@ -41,6 +41,10 @@ export default function Maps({ state, nav, arg }: AppProps) {
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
   const [query, setQuery] = useState("");
   const exposed = has(state, "fired:cliff-you");
+  // Episode 3: K. turned his own sharing on, and his dot is coming to yours.
+  const coming = has(state, "fired:e3-k-coming");
+  // However long ago he set off: reopening Maps doesn't send him back to the mill.
+  const [kSince] = useState(() => Math.max(0, Date.now() - (state.at["fired:e3-k-coming"] ?? Date.now())));
   const sharing = !has(state, "did:sharing-off");
   const canStop = actionAvailable(ep, state, "sharing-off");
   const vars = sessionVars(ep, state);
@@ -50,8 +54,8 @@ export default function Maps({ state, nav, arg }: AppProps) {
   const shown = q ? searches.filter((s) => s.query.toLowerCase().includes(q)) : searches;
 
   useEffect(() => {
-    play.seeAll(ep.searches.map((s) => s.evidence));
-  }, [ep]);
+    play.seeAll([...ep.searches.map((s) => s.evidence), coming ? "map-k" : undefined]);
+  }, [ep, coming]);
 
   const tap = (id: string) => {
     setSelected(id);
@@ -101,9 +105,24 @@ export default function Maps({ state, nav, arg }: AppProps) {
           </g>
         ))}
 
-        {/* This phone, 14 km north. The one K. has been watching. */}
-        {exposed && (
-          <g transform="translate(90 7)">
+        {/* K., on his way. He sets off from the mill and closes on the blue dot. */}
+        {coming && (
+          <g className={styles.k}>
+            <path d="M28 112 C36 90 60 60 57 18" className={styles.kRoute} />
+            <g className={styles.kDot} style={{ animationDelay: `-${kSince}ms` }}>
+              <circle r="4.2" className={styles.kPulse} />
+              <circle r="2.3" className={styles.kCore} />
+              <text x="-4" y="1.2" className={styles.youLabel}>
+                K.
+              </text>
+            </g>
+          </g>
+        )}
+
+        {/* This phone, 14 km north. The one K. has been watching. Drawn inside
+            the strip of map a phone's width shows: the sheet is cropped to fit. */}
+        {(exposed || coming) && (
+          <g transform="translate(58 12)">
             <g className={styles.you}>
               <circle r="4.6" className={styles.youPulse} />
               <circle r="2.3" className={styles.youDot} />
@@ -145,7 +164,11 @@ export default function Maps({ state, nav, arg }: AppProps) {
                 autoComplete="off"
               />
             </label>
-            {exposed ? (
+            {coming ? (
+              <p className={styles.sharing} data-alarm>
+                K. started sharing his location with you. He is moving toward the blue dot.
+              </p>
+            ) : exposed ? (
               <p className={styles.sharing}>
                 {sharing
                   ? "This phone is sharing its location with K. The blue dot is you."

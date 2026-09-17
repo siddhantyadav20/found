@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useStory } from "@/components/found/StoryContext";
 import { refuse } from "@/lib/found/buzz";
+import { all } from "@/lib/found/engine";
+import * as play from "../FoundPhone/actions";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
 import styles from "./Food.module.css";
@@ -14,6 +18,12 @@ import styles from "./Food.module.css";
  */
 export default function Food({ state }: AppProps) {
   const ep = useStory();
+  const orders = ep.food.filter((o) => all(state, o.requires));
+
+  useEffect(() => {
+    play.seeAll(orders.map((o) => o.evidence));
+  }, [orders]);
+
   return (
     <section className={`${app.view} ${styles.light}`} data-light-app>
       <header className={styles.top}>
@@ -23,14 +33,14 @@ export default function Food({ state }: AppProps) {
       <div className={app.body}>
         <p className={styles.section}>Past orders</p>
         <ul className={styles.list}>
-          {ep.food.map((o) => (
+          {orders.map((o) => (
             <li key={o.at} className={styles.order}>
               <span className={styles.main}>
                 <span className={styles.item}>{o.item}</span>
                 <span className={styles.meta}>
                   {o.to} · {o.at}
                 </span>
-                <span className={styles.meta}>Paid by {state.cast.name}</span>
+                <span className={styles.meta}>{o.note ? `${o.note} · ` : ""}Paid by {state.cast.name}</span>
               </span>
               <span className={styles.side}>
                 <span className={styles.price}>{o.price}</span>

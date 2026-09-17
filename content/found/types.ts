@@ -19,6 +19,9 @@
 
 export type Gender = "girl" | "boy";
 
+/** A case is three episodes long. */
+export type EpisodeNo = 1 | 2 | 3;
+
 /** Who went missing this time. Dealt once, when the envelope is opened. */
 export type Cast = { readonly gender: Gender; readonly name: string };
 
@@ -36,7 +39,12 @@ export type AppId =
   | "guardian"
   | "nightcam"
   | "news"
-  | "food";
+  | "food"
+  | "phone"
+  | "whatsapp"
+  | "telegram"
+  | "recorder"
+  | "files";
 
 /**
  * A fact about a playthrough. Everything that gates anything is one of these:
@@ -49,6 +57,7 @@ export type AppId =
  *                          turned Wi-Fi on, got the passcode wrong …)
  *   said:<reply>:<option>  they sent that; `said:<reply>` once it's settled
  *   ep:<n>                 an episode began (`ep:2`) or ended (`ep:2-done`)
+ *   said:call:<option>     what the player said on the phone call that ends it
  *   dead                   the battery gave out at the end of Episode 1
  */
 export type Flag =
@@ -100,6 +109,10 @@ export type Thread = {
   readonly moved?: boolean;
   /** An unknown number the player can give a name to. */
   readonly nameable?: boolean;
+  /** What its notifications say it's from, when that isn't the contact ("Unknown Number"). */
+  readonly notifyAs?: string;
+  /** Which chat app it lives in. Messages, otherwise. */
+  readonly app?: "whatsapp" | "telegram";
   readonly messages: readonly Message[];
   /** A thread that only exists once something writes into it. */
   readonly requires?: readonly Flag[];
@@ -125,6 +138,12 @@ export type Photo = {
   readonly overlay?: string;
   /** Recently Deleted offers "Recover" for it (a player action). */
   readonly recoverable?: boolean;
+  /**
+   * Only there if you lean in. The one photograph that can be pinched: past
+   * double size, `reveal` is what's at the edge of the frame, and seeing it
+   * is its own evidence.
+   */
+  readonly zoom?: { readonly reveal: string; readonly evidence: string };
 };
 
 export type HealthDay = {
@@ -138,6 +157,8 @@ export type HealthDay = {
 export type Network = {
   readonly ssid: string;
   readonly lastJoined: string;
+  /** When the phone first knew this network, where that's the point. */
+  readonly joinedFirst?: string;
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
@@ -222,6 +243,8 @@ export type Deduction = {
     | { readonly kind: "text"; readonly accepts: readonly string[] };
   /** Said when it is solved. */
   readonly right: string;
+  /** Typed answers only: said instead of `right` for a specific accepted answer. */
+  readonly rightFor?: Readonly<Record<string, string>>;
   /** Said for a specific wrong pick: evidence id, place id, typed answer,
    *  or `{name}` for the missing person's own name typed in. */
   readonly nudges: Readonly<Record<string, string>>;
@@ -239,6 +262,8 @@ export type Deduction = {
 export type LiveEvent = {
   readonly id: string;
   readonly when: readonly Flag[];
+  /** …and at least one of these. */
+  readonly whenAny?: readonly Flag[];
   /** …and none of these. */
   readonly unless?: readonly Flag[];
   /** Where the messages land. Null for an event that is only an effect. */
@@ -248,7 +273,11 @@ export type LiveEvent = {
   readonly banner?: string;
   /** Which app that banner belongs to, and opens. */
   readonly bannerApp?: AppId;
-  readonly effect?: "show-you" | "power-off" | "episode-end" | "open-notes";
+  /** Who the banner says it's from, when that isn't the app's own name ("RAGHAV"). */
+  readonly bannerFrom?: string;
+  /** How long after its moment it arrives (ms). The phone's own default otherwise. */
+  readonly delay?: number;
+  readonly effect?: "show-you" | "power-off" | "episode-end" | "open-notes" | "ring";
 };
 
 export type ReplyOption = {
@@ -268,6 +297,8 @@ export type ReplyOption = {
 export type Reply = {
   readonly id: string;
   readonly thread: string;
+  /** Said out loud on a call from that thread's number, not typed into it. */
+  readonly call?: boolean;
   readonly when: readonly Flag[];
   /** Picks stay open until a `final` one is chosen (a test that can be failed). */
   readonly repeat?: boolean;
@@ -286,6 +317,8 @@ export type Headline = {
     readonly unless?: readonly Flag[];
   }[];
   readonly requires?: readonly Flag[];
+  /** Seen when the story is opened. */
+  readonly evidence?: string;
 };
 
 /**
@@ -295,10 +328,15 @@ export type Headline = {
  */
 export type Stage = {
   readonly id: string;
-  readonly episode: 1 | 2;
+  readonly episode: EpisodeNo;
   readonly when: readonly Flag[];
+  /** …and none of these. */
+  readonly unless?: readonly Flag[];
+  /** Which of the story's calls is on screen, when `screen` is `call`. */
+  readonly call?: string;
   readonly battery: number;
-  readonly screen: "lock" | "phone" | "end" | "charge" | "relock";
+  /** `call`: a full-bleed incoming call. `ending`: what the call's answer did. */
+  readonly screen: "lock" | "phone" | "end" | "charge" | "relock" | "call" | "ending";
 };
 
 /** Something the player can do to the phone itself, and what it needs first. */
@@ -317,9 +355,60 @@ export type Ending = {
   readonly cta?: string;
 };
 
+/** A caption on the call, `at` seconds in, with the English under it when the line isn't in English. */
+export type CallLine = { readonly at: number; readonly text: string; readonly en?: string };
+
+/**
+ * A call that plays to its end and hangs up by itself: something the player
+ * listens to and can't answer. `ends` is the action that marks it heard.
+ */
+export type ScriptedCall = {
+  readonly id: string;
+  /** What the caller ID says. */
+  readonly from: string;
+  readonly lines: readonly CallLine[];
+  readonly ends: string;
+};
+
+/** Where a story's clock starts in an episode, what day the phone says it is, and how far it runs (minutes). */
+export type Clock = { readonly base: string; readonly day: string; readonly cap: number };
+
+/** An icon on the home screen. */
+export type HomeIcon = { readonly app: AppId; readonly label: string };
+
+/** What one answer on the call does, start to finish. */
+export type Outcome = {
+  /** The option on the call that leads here. */
+  readonly id: string;
+  /** The thing the player does in the minute after, while someone knocks. */
+  readonly act: { readonly title: string; readonly detail: string; readonly button: string; readonly doing: string; readonly done: string };
+  /** What happened, a line at a time. Some lines are only true for this player. */
+  readonly lines: readonly { readonly text: string; readonly requires?: readonly Flag[]; readonly unless?: readonly Flag[] }[];
+  /** The one news item it ends on. */
+  readonly headline: { readonly at: string; readonly title: string };
+  /** Said after the news item, as the last lines. */
+  readonly after?: readonly string[];
+  /** The last word, from someone, as a text. */
+  readonly last?: { readonly from: string; readonly text: string };
+};
+
 export type Story = {
   readonly id: string;
   readonly title: string;
+  /** Each episode's own name, in order. The envelope and the end cards read these. */
+  readonly titles: readonly [string, string, string];
+  /** The one person this story is about, when it isn't dealt at random. */
+  readonly character?: Cast;
+  /** How the phone opens: a passcode to find (the default), or a swipe, because nobody locked it. */
+  readonly opensWith?: "passcode" | "swipe";
+  /** The case file's line under its title. */
+  readonly who?: string;
+  /** Each episode's clock. Monday morning, evening and night otherwise. */
+  readonly clocks?: Partial<Record<EpisodeNo, Clock>>;
+  /** The home screen: pages of icons, and the dock. */
+  readonly home?: { readonly pages: readonly (readonly HomeIcon[])[]; readonly dock: readonly HomeIcon[] };
+  /** Calls that play out and hang up by themselves. */
+  readonly calls?: readonly ScriptedCall[];
   readonly names: Readonly<Record<Gender, readonly string[]>>;
   readonly surname: string;
   readonly envelope: {
@@ -330,7 +419,7 @@ export type Story = {
     readonly evidence: string;
   };
   readonly lockscreen: {
-    readonly medical: {
+    readonly medical?: {
       readonly name: string;
       readonly born: string;
       readonly blood: string;
@@ -375,12 +464,33 @@ export type Story = {
       readonly evidence: string;
     };
   };
-  readonly nightcam: { readonly items: number; readonly firstFrame: string };
-  readonly food: readonly { readonly at: string; readonly item: string; readonly to: string; readonly price: string }[];
+  /** How many items NightCam holds in the cloud. The frames are photos in its album. */
+  readonly nightcam: { readonly items: number };
+  readonly food: readonly Order[];
   /** What the keyboard suggests: the words this phone's owner types most. */
   readonly keyboard: readonly string[];
   readonly end: Ending;
   readonly end2: Ending;
+  readonly end3: Ending;
+  /** The call that ends the chapter: who rings, what they say, and what each answer does. */
+  readonly call: {
+    readonly thread: string;
+    readonly lines: readonly CallLine[];
+    readonly outcomes: readonly Outcome[];
+    /** After every ending: one line from a friend, then the desk. */
+    readonly coda: { readonly from: string; readonly text: string; readonly next: readonly string[] };
+  } | null;
+};
+
+export type Order = {
+  readonly at: string;
+  readonly item: string;
+  readonly to: string;
+  readonly price: string;
+  /** A line under the order, like "Ordered on another device". */
+  readonly note?: string;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
 };
 
 /** The pieces a later episode adds. Threads with an existing id add messages. */
@@ -390,6 +500,7 @@ export type Part = {
     | "photos"
     | "wifi"
     | "searches"
+    | "food"
     | "memos"
     | "devices"
     | "evidence"
@@ -404,6 +515,8 @@ export type Part = {
   readonly vaultNotes?: readonly Note[];
   readonly vaultMessages?: readonly Message[];
   readonly end2?: Ending;
+  readonly end3?: Ending;
+  readonly call?: Story["call"];
 };
 
 /** Kept so older imports read the same. */

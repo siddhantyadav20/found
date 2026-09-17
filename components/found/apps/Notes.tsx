@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
 import type { AppId, Deduction } from "@/content/found/types";
-import { caseFile, has, lockAvailable, sessionVars } from "@/lib/found/engine";
+import { caseFile, episodeOf, has, lockAvailable, sessionVars } from "@/lib/found/engine";
 import { lookIn, openQuestion } from "@/lib/found/guide";
 import { say } from "@/lib/found/voice";
 import * as play from "../FoundPhone/actions";
@@ -29,6 +29,11 @@ const SOURCE: Record<AppId, string> = {
   nightcam: "NightCam",
   news: "News",
   food: "Dabba",
+  phone: "Phone",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  recorder: "Recorder",
+  files: "Files",
 };
 
 const REACTIONS: readonly [string, string][] = [
@@ -123,14 +128,12 @@ export default function Notes({ state, nav, arg }: AppProps) {
       <AppBar />
       <div className={app.body}>
         <h2 className={app.big}>Case file</h2>
-        <p className={styles.who}>
-          {state.cast.name} {ep.surname}, 19. Missing since Friday night.
-        </p>
+        <p className={styles.who}>{ep.who ?? `${state.cast.name} ${ep.surname}, 19. Missing since Friday night.`}</p>
 
         {arg === "so-far" && (
           <article className={so.card} aria-labelledby="so-far">
             <p className={so.eyebrow} id="so-far">
-              Case so far · Episode {has(state, "ep:2") ? 2 : 1}
+              Case so far · Episode {episodeOf(state)}
             </p>
             {solved.length > 0 ? (
               <>

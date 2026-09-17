@@ -20,7 +20,7 @@ export const found = {
   /** The missing person's lock screen: the game's, and the canvas phone's. */
   wallpaper: "/found/wallpaper.jpg",
   /** For the desk's luggage tag. */
-  episodes: 2,
+  episodes: 3,
   tone: "Grounded thriller",
   /** Said on the envelope, before anyone opens it. */
   note: "16+ · A missing person, stalking and threats.",

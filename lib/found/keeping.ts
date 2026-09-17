@@ -1,3 +1,4 @@
+import type { EpisodeNo } from "@/content/found/types";
 import type { CaseState } from "./engine";
 
 /* ===========================================================================
@@ -40,7 +41,7 @@ export const restorePath = (n: string): string => `/r/${n}`;
 /* --- Finishes, which outlive "Start over" ----------------------------------- */
 
 export type Solved = {
-  readonly episode: 1 | 2;
+  readonly episode: EpisodeNo;
   /** Wall-clock minutes for the episode, if it could be told. */
   readonly minutes: number | null;
   /** The result's marks, as the share shows them: 🟩🟩🟨. */
@@ -52,7 +53,7 @@ export function isSolved(x: unknown): x is Solved {
   if (!x || typeof x !== "object") return false;
   const s = x as Record<string, unknown>;
   return (
-    (s.episode === 1 || s.episode === 2) &&
+    (s.episode === 1 || s.episode === 2 || s.episode === 3) &&
     (s.minutes === null || (typeof s.minutes === "number" && Number.isFinite(s.minutes) && s.minutes >= 0)) &&
     typeof s.marks === "string" &&
     s.marks.length <= 64 &&
@@ -81,7 +82,7 @@ export function pickSave(local: CaseState | null, incoming: CaseState | null): C
 /* --- A save, in a line ---------------------------------------------------- */
 
 export type Progress = {
-  readonly episode: 1 | 2;
+  readonly episode: EpisodeNo;
   /** Mid-episode; between episodes (the phone died); or every episode done. */
   readonly phase: "playing" | "between" | "done";
   readonly name: string;
@@ -91,8 +92,9 @@ export type Progress = {
 
 export function summarise(s: CaseState): Progress {
   const flags = s.flags as readonly string[];
-  const episode = flags.includes("ep:2") ? 2 : 1;
-  const phase = flags.includes("ep:2-done") ? "done" : episode === 1 && flags.includes("dead") ? "between" : "playing";
+  // Episode 2's end card leads straight on, so a finished Episode 2 is Episode 3 waiting.
+  const episode = flags.includes("ep:3") || flags.includes("ep:2-done") ? 3 : flags.includes("ep:2") ? 2 : 1;
+  const phase = flags.includes("ep:3-done") ? "done" : episode === 1 && flags.includes("dead") ? "between" : "playing";
   return { episode, phase, name: s.cast.name, last: Math.max(s.started, ...Object.values(s.at)) };
 }
 
@@ -114,7 +116,7 @@ export const wasAway = (s: CaseState, now: number): boolean => now - summarise(s
 /** How the desk draws a case's object: new, mid-case, charging between episodes, or bagged. */
 export type DeskState =
   | { readonly kind: "new" }
-  | { readonly kind: "playing"; readonly episode: 1 | 2; readonly name: string; readonly last: number }
+  | { readonly kind: "playing"; readonly episode: EpisodeNo; readonly name: string; readonly last: number }
   | { readonly kind: "between"; readonly name: string }
   /** `again`: the save is gone (started over), so opening it deals a new case. */
   | { readonly kind: "solved"; readonly solved: Solved | null; readonly again: boolean };
@@ -146,6 +148,6 @@ export function describeCase(save: CaseState | null, solved: Solved | null, now:
   if (!save) return { status: "Back in its envelope", result, cta: "Play again" };
   const p = summarise(save);
   if (p.phase === "between") return { status: "Episode 1 done · the phone is dead", result, cta: "Charge it" };
-  if (p.phase === "done") return { status: "Episode 2 done", result, cta: "Open it" };
+  if (p.phase === "done") return { status: "Case closed", result, cta: "Open it" };
   return { status: `Episode ${p.episode} · ${p.name} is missing · ${ago(p.last, now)}`, result, cta: "Carry on" };
 }

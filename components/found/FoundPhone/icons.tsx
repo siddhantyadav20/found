@@ -5,7 +5,9 @@ import styles from "./icons.module.css";
    can: the platform's squircle tile, each app's own colour and mark, and the
    glassy edge light iOS now puts on every icon (icons.module.css). All drawn
    here as SVG; no artwork is copied from anywhere. The three apps that are
-   the story's own (Guardian, NightCam, Dabba) are ours outright. */
+   the story's own (Guardian, NightCam, Dabba) are ours outright, and the
+   chat apps a phone in Mumbai would really have are our own drawings of the
+   idea (a bubble, a paper plane), not their logos. */
 
 const TILE: Record<AppId, string> = {
   envelope: "linear-gradient(180deg, #c9a06a, #9c7543)",
@@ -22,6 +24,11 @@ const TILE: Record<AppId, string> = {
   nightcam: "linear-gradient(180deg, #2a2f5c 0%, #080a18 100%)",
   news: "linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%)",
   food: "linear-gradient(180deg, #ffb347 0%, #ff7a1a 100%)",
+  phone: "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
+  whatsapp: "linear-gradient(180deg, #5ee07f 0%, #1faa4f 100%)",
+  telegram: "linear-gradient(180deg, #4fb8f0 0%, #1f8fd6 100%)",
+  recorder: "linear-gradient(180deg, #2c2c2e 0%, #000 100%)",
+  files: "linear-gradient(180deg, #ffffff 0%, #f2f2f5 100%)",
 };
 
 /** Glyphs that are the whole picture (a map, a page, a mark) rather than a mark on a tile. */
@@ -142,6 +149,46 @@ function Glyph({ app }: { app: AppId }) {
           <rect x="6" y="7" width="12" height="3.6" rx="1.2" />
           <rect x="6" y="11.4" width="12" height="3.6" rx="1.2" opacity="0.9" />
           <rect x="6" y="15.8" width="12" height="3.6" rx="1.2" opacity="0.8" />
+        </g>
+      );
+    case "phone":
+      return (
+        <path
+          d="M7.6 4.6c.5-.2 1.1 0 1.4.4l1.8 2.8c.3.5.2 1.1-.2 1.5L9.4 10.5c.8 1.9 2.2 3.4 4.1 4.3l1.2-1.2c.4-.4 1-.5 1.5-.2l2.8 1.8c.5.3.6.9.4 1.4l-.8 1.9c-.3.6-.9 1-1.6.9C10.4 18.8 5.4 13.9 4.8 7.3c-.1-.7.3-1.3.9-1.6Z"
+          fill="#fff"
+        />
+      );
+    case "whatsapp":
+      return (
+        <g>
+          {/* A round speech bubble with its tail low on the left, and a handset inside. */}
+          <path d="M12 4.2a7.8 7.8 0 0 0-6.7 11.8L4.4 19.6l3.7-.9A7.8 7.8 0 1 0 12 4.2Z" fill="none" stroke="#fff" strokeWidth="1.7" strokeLinejoin="round" />
+          <path d="M9.7 8.6c.3-.1.6 0 .7.2l.8 1.4c.1.3.1.6-.1.8l-.5.5c.4.9 1.1 1.6 2 2l.5-.5c.2-.2.5-.3.8-.1l1.4.8c.3.2.4.5.2.8l-.4.8c-.2.3-.5.5-.9.4-2.8-.3-5-2.5-5.3-5.3 0-.4.2-.7.5-.9Z" fill="#fff" />
+        </g>
+      );
+    case "telegram":
+      return (
+        <g>
+          {/* A paper plane, folded, mid-flight. */}
+          <path d="m4.6 11.6 13.6-5.5c.6-.2 1.2.3 1 1l-2.3 10.6c-.1.6-.9.9-1.4.5l-3.4-2.5-1.8 1.7c-.3.3-.8.1-.8-.3v-2.6l6.1-5.6-7.6 4.6-3.3-1c-.7-.2-.7-1.1-.1-1.4Z" fill="#fff" />
+        </g>
+      );
+    case "recorder":
+      return (
+        <g>
+          {/* A waveform and the red record dot. */}
+          {[4.6, 7.4, 10.2, 13, 15.8].map((x, i) => (
+            <rect key={x} x={x - 0.7} y={12 - [2.2, 4.8, 3.2, 5.6, 2.8][i]} width="1.4" height={[2.2, 4.8, 3.2, 5.6, 2.8][i] * 2} rx="0.7" fill="#fff" />
+          ))}
+          <circle cx="19.4" cy="12" r="1.9" fill="#ff453a" />
+        </g>
+      );
+    case "files":
+      return (
+        <g>
+          {/* A blue folder, its tab on the left. */}
+          <path d="M3.6 7.2c0-.9.7-1.6 1.6-1.6h4.1l1.7 1.8h7.8c.9 0 1.6.7 1.6 1.6V17c0 .9-.7 1.6-1.6 1.6H5.2c-.9 0-1.6-.7-1.6-1.6Z" fill="#1e8cf0" />
+          <path d="M3.6 9.6h16.8V17c0 .9-.7 1.6-1.6 1.6H5.2c-.9 0-1.6-.7-1.6-1.6Z" fill="#43a5ff" />
         </g>
       );
     case "envelope":

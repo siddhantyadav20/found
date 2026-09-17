@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
-import type { Story } from "@/content/found/types";
+import type { AppId, Story } from "@/content/found/types";
 import type { CaseState } from "@/lib/found/engine";
 import { keyTap, refuse } from "@/lib/found/buzz";
 import { say } from "@/lib/found/voice";
@@ -69,15 +69,25 @@ function backlogOf(ep: Story): { from: string; text: string }[] {
  *
  * After Episode 2's restart it asks again, as a phone does, over three days
  * of backlog. By then the player knows the code by heart.
+ *
+ * On a phone nobody locked (`open`), there's no pad at all: the swipe opens
+ * it, and what's stacked on it is whatever has arrived since the envelope
+ * was opened, newest on top, as it lands.
  */
 export default function LockScreen({
   state,
   mode,
   clock,
+  day = "Monday",
+  arrived = [],
 }: {
   state: CaseState;
-  mode: "first" | "restart";
+  mode: "first" | "restart" | "open";
   clock: string;
+  /** What the lock screen says the day is. */
+  day?: string;
+  /** On an open phone: the notifications that have landed so far, newest first. */
+  arrived?: readonly { readonly from: string; readonly text: string; readonly app: AppId; readonly key: string }[];
 }) {
   const ep = useStory();
   const LOCK = ep.locks.find((l) => l.id === "passcode");
@@ -91,7 +101,14 @@ export default function LockScreen({
   const [dragging, setDragging] = useState(false);
   const t = (x: string) => say(x, state.cast);
   const med = ep.lockscreen.medical;
-  const notes = mode === "restart" ? BACKLOG : ep.lockscreen.notifications;
+  const notes =
+    mode === "open"
+      ? arrived
+      : (mode === "restart" ? BACKLOG : ep.lockscreen.notifications).map((n) => ({
+          ...n,
+          app: (n.from === "City Desk" ? "news" : "messages") as AppId,
+          key: `${n.from}:${n.text}`,
+        }));
   const tier = state.hints.passcode ?? 0;
   const hint = asked && tier > 0 ? LOCK?.hints?.[tier - 1] : undefined;
 
@@ -120,9 +137,13 @@ export default function LockScreen({
   const erase = () => setCode((c) => c.slice(0, -1));
 
   const openMedical = () => {
+    if (!med) return;
     setScreen("medical");
     play.see(med.evidence);
   };
+
+  // Past the lock: the passcode pad, or on a phone nobody locked, the phone.
+  const pastLock = () => (mode === "open" ? play.perform("unlock") : setScreen("pad"));
 
   const liftUp = (e: React.PointerEvent) =>
     drag(e, {
@@ -139,7 +160,7 @@ export default function LockScreen({
         }
         setLift(480);
         window.setTimeout(() => {
-          setScreen("pad");
+          pastLock();
           setLift(0);
         }, 200);
       },
@@ -156,7 +177,7 @@ export default function LockScreen({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  if (screen === "medical") {
+  if (screen === "medical" && med) {
     return (
       <div className={styles.medical}>
         <div className={styles.medHead}>
@@ -240,19 +261,19 @@ export default function LockScreen({
       className={styles.lock}
       data-dragging={dragging || undefined}
       style={{ "--lift": `${lift}px`, "--fade": String(Math.max(0, 1 - lift / 240)) } as CSSProperties}
-      onClick={() => setScreen("pad")}
+      onClick={pastLock}
       onPointerDown={liftUp}
     >
       <span className={styles.slide}>
         <span className={styles.top}>
-          <span className={styles.day}>Monday</span>
+          <span className={styles.day}>{day}</span>
           <span className={styles.clock}>{clock}</span>
         </span>
         <span className={styles.notes}>
           {notes.map((n) => (
-            <span key={`${n.from}:${n.text}`} className={styles.note}>
+            <span key={n.key} className={styles.note}>
               <span className={styles.noteIcon}>
-                <AppGlyph app={n.from === "City Desk" ? "news" : "messages"} />
+                <AppGlyph app={n.app} />
               </span>
               <span className={styles.noteBody}>
                 <span className={styles.noteFrom}>{n.from}</span>
@@ -263,7 +284,7 @@ export default function LockScreen({
         </span>
         <span className={styles.bottom} aria-hidden="true">
           <Corner kind="torch" />
-          <span className={styles.swipe}>Swipe up to unlock</span>
+          <span className={styles.swipe}>{mode === "open" ? "Swipe up to open" : "Swipe up to unlock"}</span>
           <Corner kind="camera" />
         </span>
       </span>

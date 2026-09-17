@@ -1,5 +1,5 @@
 import type { AppId, Deduction, Lock, Story } from "@/content/found/types";
-import { deductionOpen, evidenceAvailable, has, lockAvailable, type CaseState } from "./engine";
+import { deductionOpen, evidenceAvailable, has, lockAvailable, unlockFlag, type CaseState } from "./engine";
 
 /* ===========================================================================
    Never being lost.
@@ -25,7 +25,7 @@ import { deductionOpen, evidenceAvailable, has, lockAvailable, type CaseState } 
 export function badgesOf(ep: Story, s: CaseState): Partial<Record<AppId, number>> {
   const out: Partial<Record<AppId, number>> = {};
   for (const e of ep.evidence) {
-    if (has(s, `seen:${e.id}`) || !evidenceAvailable(s, e)) continue;
+    if (has(s, `seen:${e.id}`) || !evidenceAvailable(s, e, unlockFlag(ep))) continue;
     out[e.app] = (out[e.app] ?? 0) + 1;
   }
   return out;

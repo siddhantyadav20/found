@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
 import { all, has, sessionVars } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
+import * as play from "../FoundPhone/actions";
 import AppBar from "./AppBar";
 import type { AppProps } from "./types";
 import app from "./App.module.css";
 import styles from "./News.module.css";
+
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+/** "Sat 16:20" as a number that sorts: Friday before Saturday before Monday. */
+function ranOn(at: string): number {
+  const [day, time = "00:00"] = at.split(" ");
+  // The week this story happens in runs Friday to Monday.
+  const d = (DAYS.indexOf(day) + 3) % 7;
+  const [h, m] = time.split(":").map(Number);
+  return d * 1440 + (h || 0) * 60 + (m || 0);
+}
 
 /**
  * The city, reporting on what the player did. Laid out as a news app lays
@@ -23,9 +35,19 @@ export default function News({ state }: AppProps) {
   const ep = useStory();
   const vars = sessionVars(ep, state);
   const t = (x: string) => say(x, state.cast, vars);
-  const list = ep.headlines.filter((h) => all(state, h.requires)).reverse();
+  // Newest first, by when each story ran, so Saturday's four lines sink to
+  // the bottom where nobody reads them.
+  const list = ep.headlines
+    .filter((h) => all(state, h.requires))
+    .map((h, i) => ({ h, i }))
+    .sort((a, b) => ranOn(b.h.at) - ranOn(a.h.at) || b.i - a.i)
+    .map(({ h }) => h);
   const [open, setOpen] = useState<string | null>(null);
   const story = list.find((h) => h.id === open);
+
+  useEffect(() => {
+    play.see(story?.evidence);
+  }, [story]);
 
   return (
     <section className={app.view}>

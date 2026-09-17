@@ -3,15 +3,15 @@
 import { useState } from "react";
 
 import { useStory } from "@/components/found/StoryContext";
-import type { AppId } from "@/content/found/types";
+import type { AppId, HomeIcon } from "@/content/found/types";
 import { deductionOpen, sessionVars, type CaseState } from "@/lib/found/engine";
 import { say } from "@/lib/found/voice";
 import type { Nav } from "../apps/types";
 import { AppGlyph } from "./icons";
 import styles from "./Home.module.css";
 
-/** Two pages, like any phone: what gets used, and what got installed once and forgotten. */
-const PAGES: { app: AppId; label: string }[][] = [
+/** Low Battery's two pages, like any phone: what gets used, and what got installed once and forgotten. */
+const PAGES: HomeIcon[][] = [
   [
     { app: "health", label: "Health" },
     { app: "memos", label: "Voice Memos" },
@@ -26,7 +26,7 @@ const PAGES: { app: AppId; label: string }[][] = [
   ],
 ];
 
-const DOCK: { app: AppId; label: string }[] = [
+const DOCK: HomeIcon[] = [
   { app: "messages", label: "Messages" },
   { app: "photos", label: "Photos" },
   { app: "maps", label: "Maps" },
@@ -57,6 +57,9 @@ export default function Home({
   const ep = useStory();
   const [page, setPage] = useState(0);
   const open = [...ep.deductions].reverse().find((d) => deductionOpen(state, d));
+  // A story lays out its own phone; Low Battery's is the default.
+  const pages = ep.home?.pages ?? PAGES;
+  const dock = ep.home?.dock ?? DOCK;
 
   return (
     <div className={styles.home} data-covered={covered || undefined} inert={covered} aria-hidden={covered || undefined}>
@@ -74,7 +77,7 @@ export default function Home({
           setPage(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)));
         }}
       >
-        {PAGES.map((icons, i) => (
+        {pages.map((icons, i) => (
           <div key={i} className={styles.page}>
             <div className={styles.grid}>
               {icons.map(({ app, label }) => (
@@ -85,13 +88,13 @@ export default function Home({
         ))}
       </div>
       <div className={styles.dots} aria-hidden="true">
-        {PAGES.map((_, i) => (
+        {pages.map((_, i) => (
           <span key={i} className={styles.pageDot} data-on={i === page || undefined} />
         ))}
       </div>
 
       <div className={styles.dock}>
-        {DOCK.map(({ app, label }) => (
+        {dock.map(({ app, label }) => (
           <Icon key={app} app={app} label={label} badge={badges[app] ?? 0} onOpen={(from) => nav.go(app, undefined, from)} />
         ))}
       </div>

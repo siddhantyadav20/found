@@ -10,9 +10,16 @@ import type { Part } from "./types";
    looking for {name} over the fire, and every line of their evidence is
    something the player did.
 
-   The player proves that to themselves (the case file asks who unlocked the
-   phone at {firstPickup}, and they type the answer), then that 5520 wanted
-   it, then why. After that, what they send from this phone is evidence too.
+   Three questions, no more. The player proves it to themselves (who unlocked
+   the phone at {firstPickup}: they type the answer), then says who wanted it
+   unlocked — and "I don't know" is an answer the case file respects — then,
+   once Wi-Fi brings the first NightCam frame down, clears {name} of the fire.
+   After that, what they send from this phone is evidence too.
+
+   Mum confesses she saw Friday night on Saturday morning and told nobody.
+   3107 is tested, and answers "okay", which proves nothing. And the last
+   beat is the player's own: their home Wi-Fi was already a known network on
+   this phone, joined before they'd unlocked it.
 
    Everything here is gated on `ep:2`, so it sits on the same story as
    Episode 1 and a finished Episode 1 save carries straight on.
@@ -37,6 +44,11 @@ export const episode2: Part = {
         { from: "them", at: "Mon 11:56", text: "The one that burned.", requires: [EP2] },
         { from: "them", at: "Mon 14:20", text: "They asked me if you knew anyone called K.", requires: [EP2] },
         { from: "them", at: "Mon 19:12", text: "Beta I don't care what happened. Just come home.", requires: [EP2] },
+        // What she didn't tell the police: she'd seen Friday night on Saturday morning.
+        { from: "them", at: "Mon 19:31", text: "I have to tell you something.", requires: [EP2] },
+        { from: "them", at: "Mon 19:31", text: "I saw the Guardian on Saturday morning. Friday night. The mill.", requires: [EP2] },
+        { from: "them", at: "Mon 19:32", text: "I didn't tell Papa. I didn't tell the police.", requires: [EP2] },
+        { from: "them", at: "Mon 19:33", text: "I thought you had done something. I am your mother and I thought that.", requires: [EP2] },
       ],
     },
     {
@@ -123,7 +135,9 @@ export const episode2: Part = {
 
   /* --- What the phone can now reach ---------------------------------------- */
 
-  wifi: [{ ssid: "Home-4B", lastJoined: "Connected", requires: ["did:wifi-on"] }],
+  // The network the phone joins when the player turns Wi-Fi on is theirs, and
+  // it joins without asking for a password. The last beat says why.
+  wifi: [{ ssid: "Home-4B", lastJoined: "Connected", joinedFirst: "Mon 08:11", evidence: "wifi-yours", requires: ["did:wifi-on"] }],
 
   devices: [
     {
@@ -175,6 +189,7 @@ export const episode2: Part = {
     { id: "device-tara", app: "settings", label: "Signed in: Tara's MacBook Air", detail: "{name}'s mail was opened on Tara's laptop on Sunday at 22:14.", requires: ["did:wifi-on"] },
     { id: "nightcam-first", app: "nightcam", label: "NightCam, 1 of 12", detail: "Petrol cans in the dark, 23:39 on Friday. The first of twelve.", requires: ["did:wifi-on"] },
     { id: "letterbox", app: "messages", label: "A photo of your letterbox", detail: "Taken at 07:40 on Monday, before the phone reached you.", requires: ["fired:e2-letterbox"] },
+    { id: "wifi-yours", app: "settings", label: "Your Wi-Fi, joined Mon 08:11", detail: "This phone joined your home network before you unlocked it. Nobody here typed the password.", requires: ["fired:e2-known"] },
   ],
 
   deductions: [
@@ -201,79 +216,66 @@ export const episode2: Part = {
       ],
     },
     {
-      id: "e2-wanted",
-      question: "Who wanted it unlocked?",
-      ask: "Someone knew you would. Show how they made sure.",
-      requires: ["solved:e2-who"],
-      answer: { kind: "evidence", accepts: [["burner-dont", "burner-close"]] },
-      right: "Every time 5520 told you not to, you did.",
-      nudges: {
-        "burner-dont": "That's once. What did the same number say later?",
-        "burner-close": "That's the second time. What was the first?",
-      },
-      otherwise: "That's not how anyone got you to open it.",
-      look: ["messages"],
-      hints: [
-        "Two messages on this phone told you not to do something.",
-        "Both came from +91 •• ••5520.",
-        "Show “Don't unlock it.” and “Close the calculator.”",
-      ],
-    },
-    {
+      /* Who is answerable; why a stranger isn't, yet. A player who types "I
+         don't know" is told "Good." — the police already filled that gap with
+         a story, and this question is where the player refuses to. */
       id: "e2-why",
-      question: "Why give a stranger this phone?",
-      ask: "Show what the phone does when someone uses it, and who knew it would.",
-      requires: ["solved:e2-wanted"],
-      answer: { kind: "evidence", accepts: [["guardian-report", "k-guardian"]] },
-      right: "Everything on that report is you.",
-      nudges: {
-        "guardian-report": "That's what it did. Who knew it would?",
-        "k-guardian": "That's who knew. What did it produce?",
+      question: "Who wanted it unlocked, and why a stranger?",
+      ask: "Say only what this phone can prove.",
+      requires: ["solved:e2-who"],
+      answer: {
+        kind: "text",
+        accepts: [
+          "5520", "k", "kiran", "the burner", "him", "he did", "k did", "the man who posted it", "whoever posted it",
+          "i don't know", "i dont know", "i don t know", "don't know", "dont know", "no idea", "idk", "not sure",
+        ],
       },
-      otherwise: "That doesn't explain why a stranger, or why this phone.",
-      look: ["guardian", "calculator"],
+      right: "The number that told you not to, twice. You did, both times. Why you, nothing on this phone says. Not yet.",
+      rightFor: {
+        "i don't know": "Good. Nothing here says why yet, and the police have already made something up.",
+        "i dont know": "Good. Nothing here says why yet, and the police have already made something up.",
+        "i don t know": "Good. Nothing here says why yet, and the police have already made something up.",
+        "don't know": "Good. Nothing here says why yet, and the police have already made something up.",
+        "dont know": "Good. Nothing here says why yet, and the police have already made something up.",
+        "no idea": "Good. Nothing here says why yet, and the police have already made something up.",
+        idk: "Good. Nothing here says why yet, and the police have already made something up.",
+        "not sure": "Good. Nothing here says why yet, and the police have already made something up.",
+      },
+      nudges: {
+        "{name}": "{name} hasn't had this phone since Friday night.",
+        me: "You unlocked it. Someone wanted you to.",
+        i: "You unlocked it. Someone wanted you to.",
+        mum: "Mum wanted it answered, not opened.",
+        tara: "Tara told you to be careful what you open.",
+        dev: "Dev has been at a police station all afternoon.",
+        police: "The police are reading what you did. They didn't ask you to.",
+      },
+      otherwise: "Nothing on this phone says that. Who told you not to open things?",
+      look: ["messages", "calculator"],
       hints: [
-        "Who else can see what this phone does?",
-        "Mum's app sends her a report. And someone was told about that app on Friday.",
-        "Show the Guardian report and “mum has an app on it”.",
+        "Who told you not to do something, and did you do it anyway?",
+        "+91 •• ••5520 said “Don't unlock it.” and “Close the calculator.” Why you is harder, and it's allowed not to know.",
+        "Type: 5520. Or, if it's true: I don't know.",
       ],
     },
     {
-      id: "e2-alive",
-      question: "Is {name} alive?",
-      ask: "Show something from after Friday that only {name} could have done.",
-      requires: ["solved:e2-why"],
-      answer: { kind: "evidence", accepts: [["device-tara"]] },
-      right: "Someone opened {name}'s mail on Tara's laptop on Sunday night. {They're} alive, and {they're} at Tara's.",
+      id: "e2-fire",
+      question: "Did {name} start the fire?",
+      ask: "The police think so. Show what this phone says.",
+      requires: ["seen:nightcam-first"],
+      answer: { kind: "evidence", accepts: [["nightcam-first"]] },
+      right: "No. The petrol was already stacked in the engine house at 23:39 on Friday, two days before the fire. {name} photographed it.",
       nudges: {
-        "guardian-report": "That's you, not {them}.",
-        "dev-story": "That's Friday. You need something from after.",
+        "k-receipt": "That says {name} was paid for Gate 3. Not what was waiting there.",
+        "k-van": "Someone else was there first. Show what they'd brought.",
+        "guardian-report": "That's what you did on Monday, not what happened on Friday.",
       },
-      otherwise: "That's from before Friday night, or it's you.",
-      look: ["settings", "messages"],
+      otherwise: "That doesn't say who brought the petrol, or when.",
+      look: ["nightcam", "news"],
       hints: [
-        "Signing in leaves a trail too.",
-        "Settings, then the devices signed in. The list refreshes once there's Wi-Fi.",
-        "Show “Signed in: Tara's MacBook Air”.",
-      ],
-    },
-    {
-      id: "e2-delivered",
-      question: "Who put the phone in your letterbox?",
-      ask: "Match the hand that wrote on your envelope.",
-      requires: ["solved:e2-why"],
-      answer: { kind: "evidence", accepts: [["envelope", "k-receipt"]] },
-      right: "The same capitals. K. wrote TO YOU.",
-      nudges: {
-        envelope: "That's the envelope. Where else have you seen those capitals?",
-        "burner-dont": "That's what he said. Show what he wrote.",
-      },
-      otherwise: "Compare the handwriting.",
-      look: ["envelope", "calculator"],
-      hints: [
-        "Someone wrote TO YOU / BY HAND on your envelope, by hand.",
-        "Something in the vault is in the same writing. It syncs once there's Wi-Fi.",
-        "Show the envelope and K.'s receipt.",
+        "The fire was on Sunday night. What did {name} see on Friday?",
+        "The first NightCam frame came down with the Wi-Fi. Check its time.",
+        "Show “NightCam, 1 of 12”.",
       ],
     },
   ],
@@ -311,13 +313,13 @@ export const episode2: Part = {
         { id: "b1", text: "The envelope said TO YOU, BY HAND." },
         { id: "b2", text: "Your locker code is 2719." },
         { id: "b3", text: "Your mum can see everything this phone does." },
-        { id: "b4", text: "You're at Tara's.", requires: ["solved:e2-alive"], final: true },
+        { id: "b4", text: "You're at Tara's.", requires: ["seen:device-tara"], final: true },
       ],
     },
     {
       id: "r5520",
       thread: "burner",
-      when: ["solved:e2-wanted"],
+      when: ["solved:e2-why"],
       options: [
         { id: "threat", text: "I know what you did." },
         { id: "who", text: "Who is this?" },
@@ -380,10 +382,10 @@ export const episode2: Part = {
     { id: "e2-3107-b3", when: ["said:r3107-b:b3"], thread: "unknown", messages: [
       { from: "them", at: "now", text: "so could he. that's the whole point." },
     ] },
+    // Not a confirmation. 3107 could be {name}; 3107 could be anyone who
+    // wants the player to think so. Episode 3 doesn't settle it either.
     { id: "e2-3107-b4", when: ["said:r3107-b:b4"], thread: "unknown", messages: [
-      { from: "them", at: "now", text: "…how." },
-      { from: "them", at: "now", text: "the laptop. okay." },
-      { from: "them", at: "now", text: "he'd never have looked there. okay. i believe you." },
+      { from: "them", at: "now", text: "okay." },
     ] },
     { id: "e2-3107-keep", when: ["said:r3107-b"], thread: "unknown", messages: [
       { from: "them", at: "now", text: "keep it charged. whatever he says." },
@@ -402,7 +404,7 @@ export const episode2: Part = {
 
     {
       id: "e2-letterbox",
-      when: ["said:r3107-b", "solved:e2-delivered"],
+      when: ["said:r3107-b", "solved:e2-fire"],
       thread: "burner",
       messages: [
         { from: "them", at: "now", text: "", photo: "letterbox", evidence: "letterbox" },
@@ -411,12 +413,20 @@ export const episode2: Part = {
       ],
     },
     {
-      id: "e2-thanks",
-      // Not on arrival: the photo of your own letterbox is the episode's last
-      // turn, and the phone doesn't end until you've opened it and looked.
+      // Not on arrival: the photo of your own letterbox has to be opened first.
+      id: "e2-known",
       when: ["fired:e2-letterbox", "seen:letterbox"],
-      thread: "burner",
-      messages: [{ from: "them", at: "now", text: "Thank you." }],
+      thread: null,
+      messages: [],
+      banner: "Home-4B is a known network. First joined Mon 08:11.",
+      bannerApp: "settings",
+    },
+    {
+      // The last beat is the player's, and nobody says anything about it.
+      id: "e2-last",
+      when: ["seen:wifi-yours"],
+      thread: null,
+      messages: [],
       effect: "episode-end",
     },
   ],
@@ -432,7 +442,7 @@ export const episode2: Part = {
     { id: "e2-talk", episode: 2, when: [EP2, "did:unlock-2", "solved:e2-why", "said:r3107-a"], battery: 50, screen: "phone" },
     { id: "e2-online", episode: 2, when: [EP2, "did:unlock-2", "solved:e2-why", "said:r3107-a", "did:wifi-on"], battery: 60, screen: "phone" },
     { id: "e2-trust", episode: 2, when: [EP2, "did:unlock-2", "solved:e2-why", "did:wifi-on", "said:r3107-b"], battery: 72, screen: "phone" },
-    { id: "e2-cliff", episode: 2, when: [EP2, "did:unlock-2", "did:wifi-on", "said:r3107-b", "solved:e2-delivered"], battery: 80, screen: "phone" },
+    { id: "e2-cliff", episode: 2, when: [EP2, "did:unlock-2", "did:wifi-on", "said:r3107-b", "solved:e2-fire"], battery: 80, screen: "phone" },
     { id: "e2-end", episode: 2, when: [EP2, "ep:2-done"], battery: 80, screen: "end" },
   ],
 
@@ -441,7 +451,7 @@ export const episode2: Part = {
     { id: "unlock-2", sets: "did:unlock-2", requires: ["did:plugged"] },
     // Wi-Fi comes back once there's charge to spare: half-full.
     { id: "wifi-on", sets: "did:wifi-on", requires: ["said:r3107-a"] },
-    { id: "finish-ep2", sets: "ep:2-done", requires: ["fired:e2-thanks"] },
+    { id: "finish-ep2", sets: "ep:2-done", requires: ["fired:e2-last"] },
     { id: "react", sets: "did:reacted", requires: ["solved:e2-who"], optional: true },
   ],
 
@@ -449,10 +459,11 @@ export const episode2: Part = {
     title: "End of Episode 2",
     questions: [
       "What's on the other eleven?",
+      "How did it know your Wi-Fi?",
       "Why does he still want it charged?",
-      "When is 3107 going to explain?",
-      "What happens when he wants it back?",
+      "Is 3107 really {name}?",
     ],
-    ask: "Would you play Episode 3?",
+    ask: "It's charged. The rest is downloading.",
+    cta: "Continue · Episode 3",
   },
 };

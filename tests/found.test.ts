@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { found, teaser } from "@/content/found";
 import { story as ep } from "@/content/found/story";
-import type { Cast, Flag, Message, Reply, ReplyOption } from "@/content/found/types";
+import type { Cast, EpisodeNo, Flag, Message, Reply, ReplyOption } from "@/content/found/types";
 import { calc } from "@/lib/found/calc";
 import {
   BUBBLE_MAX,
@@ -17,6 +17,8 @@ import {
   answer,
   battery,
   buildReport,
+  callAnswer,
+  callReply,
   caseFile,
   choose,
   clockNow,
@@ -27,6 +29,7 @@ import {
   fire,
   has,
   hint,
+  all,
   lockAvailable,
   morning,
   newCase,
@@ -45,18 +48,21 @@ import {
   type CaseState,
 } from "@/lib/found/engine";
 import { MILESTONE_OF, eventsFor, isFoundEvent } from "@/lib/found/events";
+import { lookIn } from "@/lib/found/guide";
+import { resultOf } from "@/lib/found/result";
 import { upgrade } from "@/lib/found/progress";
 import { VARS, pickCast, say } from "@/lib/found/voice";
 
 /**
- * Low Battery, Episodes 1 and 2: the script and the rules that play it.
+ * Low Battery, all three episodes: the script and the rules that play it.
  *
  * The one that matters most is "can be finished": a lock whose clue sits
  * behind the lock, a question whose proof arrives in an event that waits on
  * that question, a reply that can never be sent — any of them is a game
  * nobody can complete, and nobody finds out until a stranger gets stuck
- * forty minutes in. So a perfect player walks both episodes here, and a few
- * curious ones make sure every line in the script can actually happen.
+ * forty minutes in. So a perfect player walks all three episodes here, and
+ * says each of the three things on the call; a few curious ones make sure
+ * every line in the script can actually happen.
  */
 
 const ROOT = join(__dirname, "..");
@@ -84,6 +90,7 @@ const allMessages: Message[] = [
   ...ep.vault.thread.messages,
   ...ep.events.flatMap((e) => e.messages),
 ];
+const CALL_OPTIONS = ep.replies.find((r) => r.call)?.options.map((o) => o.id) ?? [];
 const replyTexts = ep.replies.flatMap((r) => r.options.flatMap((o) => (o.text ? [o.text] : [])));
 
 /** The longest a line gets across every name in the pool. */
@@ -192,7 +199,7 @@ describe("the story's references", () => {
   it("shows every piece of evidence in exactly one place", () => {
     const shown = [
       ep.envelope.evidence,
-      ep.lockscreen.medical.evidence,
+      ep.lockscreen.medical?.evidence,
       ...allMessages.map((m) => m.evidence),
       ...ep.photos.map((p) => p.evidence),
       ...ep.health.map((h) => h.evidence),
@@ -203,6 +210,11 @@ describe("the story's references", () => {
       ...ep.vault.notes.map((n) => n.evidence),
       // The session Mum's app logged that was nobody's: Guardian shows it.
       ep.guardian.earlier?.evidence,
+      ...ep.headlines.map((h) => h.evidence),
+      ...ep.food.map((o) => o.evidence),
+      ...ep.photos.map((p) => p.zoom?.evidence),
+      // K.'s dot on the map in Episode 3: Maps draws it from the event.
+      "map-k",
     ].filter((id): id is string => Boolean(id));
     expect([...shown].sort()).toEqual([...evidence].sort());
   });
@@ -233,7 +245,8 @@ describe("the story's references", () => {
       ...ep.devices.flatMap((d) => d.requires ?? []),
       ...ep.locks.flatMap((l) => l.requires ?? []),
       ...ep.deductions.flatMap((d) => d.requires),
-      ...ep.events.flatMap((e) => [...e.when, ...(e.unless ?? []), ...e.messages.flatMap((m) => m.requires ?? [])]),
+      ...ep.events.flatMap((e) => [...e.when, ...(e.whenAny ?? []), ...(e.unless ?? []), ...e.messages.flatMap((m) => m.requires ?? [])]),
+      ...ep.food.flatMap((o) => o.requires ?? []),
       ...ep.replies.flatMap((r) => [...r.when, ...r.options.flatMap((o) => o.requires ?? [])]),
       ...ep.headlines.flatMap((h) => [...(h.requires ?? []), ...h.lines.flatMap((l) => [...(l.requires ?? []), ...(l.unless ?? [])])]),
       ...ep.stages.flatMap((s) => s.when),
@@ -248,7 +261,9 @@ describe("the story's references", () => {
     for (const l of ep.locks) for (const c of l.clues) expect(evidence.has(c), `${l.id} → ${c}`).toBe(true);
     for (const e of ep.events) if (e.thread) expect(threads.has(e.thread), e.id).toBe(true);
     for (const r of ep.replies) expect(threads.has(r.thread), r.id).toBe(true);
-    expect(photos.has(ep.nightcam.firstFrame)).toBe(true);
+    expect(ep.photos.filter((p) => p.album === "nightcam").length).toBe(ep.nightcam.items);
+    expect(ep.call && threads.has(ep.call.thread)).toBe(true);
+    expect([...(ep.call?.outcomes ?? [])].map((o) => o.id).sort()).toEqual([...CALL_OPTIONS].sort());
     for (const d of ep.deductions) {
       if (d.answer.kind === "place") expect(places.has(d.answer.place), d.id).toBe(true);
       if (d.answer.kind === "evidence") {
@@ -269,6 +284,7 @@ describe("the story's references", () => {
   it("starts each episode on a stage that needs nothing more than the episode", () => {
     expect(ep.stages.filter((s) => s.episode === 1)[0].when).toEqual([]);
     expect(ep.stages.filter((s) => s.episode === 2)[0].when).toEqual(["ep:2"]);
+    expect(ep.stages.filter((s) => s.episode === 3)[0].when).toEqual(["ep:3"]);
   });
 });
 
@@ -281,6 +297,8 @@ type Style = {
   optional?: boolean;
   /** Which option to take in a one-shot reply. */
   pickIndex?: number;
+  /** What to say on the call. */
+  call?: string;
 };
 
 /**
@@ -291,7 +309,7 @@ type Style = {
 function playThrough(style: Style = {}) {
   let s = start();
   const stages: string[] = [stage(ep, s).id];
-  const batteries: Record<1 | 2, number[]> = { 1: [battery(ep, s)], 2: [] };
+  const batteries: Record<EpisodeNo, number[]> = { 1: [battery(ep, s)], 2: [], 3: [] };
   const step = (next: CaseState) => {
     s = next;
     const st = stage(ep, s);
@@ -324,6 +342,8 @@ function playThrough(style: Style = {}) {
         : opts[Math.min(style.pickIndex ?? 0, opts.length - 1)];
       if (pick) step(choose(ep, s, r.id, pick.id));
     }
+    const ringing = callReply(ep, s);
+    if (ringing) step(choose(ep, s, ringing.id, style.call ?? ringing.options[0].id));
     for (const e of dueEvents(ep, s)) {
       step(fire(s, e.id));
       if (e.effect === "power-off") step(die(ep, s));
@@ -348,18 +368,30 @@ const inOrder = (sub: readonly string[], list: readonly string[]) => {
 };
 
 describe("playing it", () => {
-  it("can be finished, both episodes, without guessing", () => {
+  it("can be finished, all three episodes, without guessing", () => {
     const { state } = playThrough();
     for (const d of ep.deductions) expect(has(state, `solved:${d.id}`), d.id).toBe(true);
     for (const l of ep.locks) expect(has(state, `lock:${l.id}`), l.id).toBe(true);
-    for (const f of ["dead", "ep:2", "said:r3107-b", "fired:e2-thanks", "ep:2-done"] as Flag[])
+    for (const f of ["dead", "ep:2", "said:r3107-b", "fired:e2-last", "ep:2-done", "ep:3", "fired:e3-ring", "said:call", "ep:3-done"] as Flag[])
       expect(has(state, f), f).toBe(true);
-    expect(stage(ep, state).id).toBe("e2-end");
+    expect(stage(ep, state).id).toBe("e3-end");
+  });
+
+  it("reaches every ending, and each one is what was said on the call", () => {
+    for (const id of CALL_OPTIONS) {
+      const { state, stages } = playThrough({ call: id });
+      expect(callAnswer(ep, state), id).toBe(id);
+      expect(stages, id).toContain("e3-call");
+      expect(stages, id).toContain("e3-ending");
+      expect(stage(ep, state).id, id).toBe("e3-end");
+      const outcome = ep.call!.outcomes.find((o) => o.id === id)!;
+      expect(outcome.lines.filter((l) => all(state, l.requires)).length, id).toBeGreaterThan(2);
+    }
   });
 
   it("can make every line in the script happen, across a few different players", () => {
     const fired = new Set<string>();
-    for (const style of [{}, { wrongFirst: true, optional: true }, { pickIndex: 1 }, { pickIndex: 2, optional: true }] as Style[])
+    for (const style of [{}, { wrongFirst: true, optional: true }, { pickIndex: 1 }, { pickIndex: 2, optional: true, call: "fix" }] as Style[])
       for (const f of playThrough(style).state.flags) if (f.startsWith("fired:")) fired.add(f.slice(6));
     expect(ep.events.map((e) => e.id).filter((id) => !fired.has(id))).toEqual([]);
   });
@@ -368,13 +400,17 @@ describe("playing it", () => {
     const { stages, batteries } = playThrough();
     const e1 = ep.stages.filter((s) => s.episode === 1).map((s) => s.id);
     const e2 = ep.stages.filter((s) => s.episode === 2).map((s) => s.id);
+    const e3 = ep.stages.filter((s) => s.episode === 3).map((s) => s.id);
     expect(inOrder(stages.filter((id) => e1.includes(id)), e1)).toBe(true);
     expect(inOrder(stages.filter((id) => e2.includes(id)), e2)).toBe(true);
+    expect(inOrder(stages.filter((id) => e3.includes(id)), e3)).toBe(true);
     expect(stages.slice(0, 1)).toEqual(["locked"]);
     expect(stages).toContain("dead");
-    expect(stages.at(-1)).toBe("e2-end");
+    expect(stages).toContain("e2-end");
+    expect(stages.at(-1)).toBe("e3-end");
     for (let i = 1; i < batteries[1].length; i++) expect(batteries[1][i]).toBeLessThanOrEqual(batteries[1][i - 1]);
-    for (let i = 1; i < batteries[2].length; i++) expect(batteries[2][i]).toBeGreaterThanOrEqual(batteries[2][i - 1]);
+    for (const n of [2, 3] as const)
+      for (let i = 1; i < batteries[n].length; i++) expect(batteries[n][i]).toBeGreaterThanOrEqual(batteries[n][i - 1]);
   });
 
   it("keeps everything behind the passcode until it is typed, and remembers a wrong one", () => {
@@ -463,7 +499,7 @@ describe("playing it", () => {
     expect(texts.indexOf("The envelope said TO YOU, BY HAND.")).toBeLessThan(texts.indexOf("he'd know that. he wrote it."));
 
     // The right answer only exists once they've found where {name} is.
-    s = { ...s, flags: [...s.flags.filter((f) => f !== "solved:e2-alive"), "solved:e2-alive"] };
+    s = { ...s, flags: [...s.flags.filter((f) => f !== "seen:device-tara"), "seen:device-tara"] };
     s = choose(ep, s, "r3107-b", "b4");
     expect(has(s, "said:r3107-b")).toBe(true);
     expect(openReply(ep, s, "unknown")).toBeUndefined();
@@ -472,7 +508,7 @@ describe("playing it", () => {
   it("won't let the final answer be given before it's been found", () => {
     const done = playThrough().state;
     const at = done.flags.indexOf("fired:e2-3107-test");
-    const s: CaseState = { ...done, flags: done.flags.slice(0, at + 1).filter((f) => f !== "solved:e2-alive") };
+    const s: CaseState = { ...done, flags: done.flags.slice(0, at + 1).filter((f) => f !== "seen:device-tara") };
     const r = ep.replies.find((x) => x.id === "r3107-b")!;
     expect(replyOptions(s, r).map((o) => o.id)).not.toContain("b4");
     expect(has(choose(ep, s, "r3107-b", "b4"), "said:r3107-b")).toBe(false);
@@ -577,8 +613,10 @@ describe("the funnel", () => {
 
   it("marks milestones with flags a real playthrough reaches", () => {
     const flags = new Set<string>();
-    for (const style of [{}, { pickIndex: 1 }, { pickIndex: 2 }] as Style[]) for (const f of playThrough(style).state.flags) flags.add(f);
+    for (const style of [{}, { pickIndex: 1, call: "run" }, { pickIndex: 2, call: "fix" }] as Style[]) for (const f of playThrough(style).state.flags) flags.add(f);
     for (const [flag, milestone] of Object.entries(MILESTONE_OF)) {
+      // Milestones shared across cases: a `did:` flag no action here sets belongs to another story.
+      if (flag.startsWith("did:") && !ep.actions.some((a) => a.sets === flag)) continue;
       expect(eventsFor(ep), milestone).toContain(milestone);
       expect(flags.has(flag), flag).toBe(true);
     }
@@ -640,5 +678,110 @@ describe("showing evidence", () => {
       expect(shown.reply, d.id).toBe(TOO_MUCH);
       expect(answer(ep, open, d.id, d.answer.accepts[0]).ok, d.id).toBe(true);
     }
+  });
+});
+
+/* --- Chapter One's shape (S7f) -------------------------------------------------- */
+
+describe("every question", () => {
+  it("names at least two apps to look in, and has three hints ending in the answer", () => {
+    for (const d of ep.deductions) {
+      expect(d.look?.length ?? 0, d.id).toBeGreaterThanOrEqual(2);
+      expect(d.hints.every((h) => h.trim().length > 0), d.id).toBe(true);
+      expect(new Set(d.hints).size, d.id).toBe(3);
+    }
+  });
+
+  it("is findable from where the case file sends you", () => {
+    // Walk the perfect player and, at each question, check where-to-look names
+    // the app its proof actually lives in.
+    const { state: done } = playThrough();
+    for (const d of ep.deductions) {
+      if (d.answer.kind !== "evidence") continue;
+      const apps = new Set(d.answer.accepts.flat().map((id) => ep.evidence.find((e) => e.id === id)!.app));
+      const s: CaseState = { ...done, flags: done.flags.slice(0, done.flags.indexOf(`solved:${d.id}`)) };
+      const look = lookIn(ep, s);
+      expect([...apps].some((a) => look.includes(a)), d.id).toBe(true);
+    }
+  });
+});
+
+describe("Episode 2, tightened", () => {
+  const done = playThrough().state;
+  const before = (flag: Flag): CaseState => ({ ...done, flags: done.flags.slice(0, done.flags.indexOf(flag)) });
+
+  it("asks three questions, no more", () => {
+    expect(ep.deductions.filter((d) => d.id.startsWith("e2-")).map((d) => d.id)).toEqual(["e2-who", "e2-why", "e2-fire"]);
+  });
+
+  it("takes “I don't know” as an answer, and says Good", () => {
+    const s = before("solved:e2-why");
+    const honest = answer(ep, s, "e2-why", "I don't know");
+    expect(honest.ok).toBe(true);
+    expect(honest.reply.startsWith("Good.")).toBe(true);
+    expect(answer(ep, s, "e2-why", "i dont know").ok).toBe(true);
+    const named = answer(ep, s, "e2-why", "5520");
+    expect(named.ok).toBe(true);
+    expect(named.reply.startsWith("Good.")).toBe(false);
+  });
+
+  it("lets Mum say what she saw on Saturday", () => {
+    const mum = threadMessages(ep, done, "mum").map((m) => m.text);
+    expect(mum.some((t) => t.includes("I am your mother and I thought that."))).toBe(true);
+  });
+
+  it("leaves 3107 unconfirmed: the right answer gets “okay.” and nothing more", () => {
+    const e = ep.events.find((x) => x.id === "e2-3107-b4")!;
+    expect(e.messages.map((m) => m.text)).toEqual(["okay."]);
+  });
+
+  it("ends on the player's own Wi-Fi, joined before anyone could have unlocked it", () => {
+    expect(has(done, "seen:wifi-yours")).toBe(true);
+    expect(done.flags.indexOf("seen:wifi-yours")).toBeLessThan(done.flags.indexOf("ep:2-done"));
+    // However fast the passcode was typed, the first pickup comes after 08:11.
+    const quick = { ...newCase(noor, "t", 0), flags: ["lock:passcode"] as Flag[], at: { "lock:passcode": 10_000 } };
+    expect(buildReport(ep, quick).firstPickup > "08:11").toBe(true);
+  });
+});
+
+describe("Episode 3", () => {
+  const done = playThrough().state;
+
+  it("downloads each frame only once the one before it has been opened", () => {
+    const frames = ep.photos.filter((p) => p.album === "nightcam" && p.id !== "fuel");
+    let s: CaseState = { ...done, flags: done.flags.slice(0, done.flags.indexOf("ep:3") + 1) };
+    const available = () => frames.filter((p) => all(s, p.requires)).map((p) => p.id);
+    expect(available()).toEqual(["nc-van-inside"]);
+    s = see(ep, s, "nc-van-inside");
+    expect(available()).toEqual(["nc-van-inside", "nc-sprinkler"]);
+  });
+
+  it("holds the twelfth frame until the man in the eleventh has a name", () => {
+    const at = done.flags.indexOf("solved:e3-guard");
+    const s: CaseState = { ...done, flags: done.flags.slice(0, at) };
+    expect(evidenceAvailable(s, ep.evidence.find((e) => e.id === "nc-reflection")!)).toBe(false);
+    expect(answer(ep, s, "e3-guard", "the watchman").ok).toBe(false);
+    expect(answer(ep, s, "e3-guard", "Ramesh Shinde").ok).toBe(true);
+  });
+
+  it("sends K. by the map to a player who left sharing on, and up the stairs to one who didn't", () => {
+    const on = playThrough().state;
+    const off = playThrough({ optional: true }).state;
+    expect(has(on, "fired:e3-k-coming") && !has(on, "fired:e3-k-stairs")).toBe(true);
+    expect(has(off, "fired:e3-k-stairs") && !has(off, "fired:e3-k-coming")).toBe(true);
+    for (const s of [on, off]) expect(has(s, "fired:e3-ring"), "the phone still rings").toBe(true);
+  });
+
+  it("keeps the call off the text thread it rings from", () => {
+    expect(openReply(ep, done, "unknown")).toBeUndefined();
+    const words = ep.replies.find((r) => r.call)!.options.map((o) => o.text);
+    for (const m of threadMessages(ep, done, "unknown")) expect(words).not.toContain(m.text);
+  });
+
+  it("scores each episode on its own puzzles", () => {
+    const one = resultOf(ep, done, 1);
+    const three = resultOf(ep, done, 3);
+    expect(one.marks.length).toBe(ep.locks.length + ep.deductions.filter((d) => !/^e[23]-/.test(d.id)).length);
+    expect(three.marks.length).toBe(ep.deductions.filter((d) => d.id.startsWith("e3-")).length);
   });
 });

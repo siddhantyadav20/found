@@ -59,6 +59,11 @@ const TRASH =
   "M4.5 6.5h15M9.5 6.5V4.8c0-.7.6-1.3 1.3-1.3h2.4c.7 0 1.3.6 1.3 1.3v1.7M6.5 6.5l.9 12.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-12.2";
 const LIVE_TEXT = "M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16M8.5 9.5h7M8.5 12.5h5M8.5 15.5h6";
 
+/** Past this, what's at the edge of a zoomable photo is visible. */
+const REVEAL_AT = 2.2;
+const MAX_ZOOM = 4;
+const TAP_ZOOM = 3;
+
 /**
  * Full screen, as current iOS shows a photo: a glass back button and the
  * place and time on top, the Live Text button over the picture when there's
@@ -95,6 +100,70 @@ export function PhotoViewer({
   useEffect(() => {
     play.see(photo?.evidence);
   }, [photo]);
+
+  /* Leaning in. Only a photo with something at its edge can be zoomed: pinch,
+     double-tap (or double-click), or scroll. Past double size, what's there
+     is there, and seeing it counts. */
+  const zoomable = !!photo?.zoom;
+  const [zoom, setZoom] = useState({ scale: 1, x: 0, y: 0 });
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ dist: number; scale: number } | null>(null);
+  const revealed = zoomable && zoom.scale >= REVEAL_AT;
+
+  useEffect(() => {
+    if (revealed) play.see(photo?.zoom?.evidence);
+  }, [revealed, photo]);
+
+  const clampZoom = (scale: number, x: number, y: number) => {
+    const s = Math.min(MAX_ZOOM, Math.max(1, scale));
+    // Keep the photo covering its box: it can slide as far as it has grown.
+    const el = frame.current;
+    const w = el ? (el.clientWidth * (s - 1)) / 2 : 0;
+    const h = el ? (el.clientHeight * (s - 1)) / 2 : 0;
+    return { scale: s, x: Math.min(w, Math.max(-w, x)), y: Math.min(h, Math.max(-h, y)) };
+  };
+
+  const zoomDown = (e: React.PointerEvent) => {
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    if (pointers.current.size === 2) {
+      const [a, b] = [...pointers.current.values()];
+      pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale: zoom.scale };
+    }
+  };
+  const zoomMove = (e: React.PointerEvent) => {
+    const prev = pointers.current.get(e.pointerId);
+    if (!prev) return;
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.current.size === 2 && pinch.current) {
+      const [a, b] = [...pointers.current.values()];
+      const scale = (pinch.current.scale * Math.hypot(a.x - b.x, a.y - b.y)) / Math.max(1, pinch.current.dist);
+      setZoom((z) => clampZoom(scale, z.x, z.y));
+    } else if (pointers.current.size === 1 && zoom.scale > 1) {
+      const dx = e.clientX - prev.x;
+      const dy = e.clientY - prev.y;
+      setZoom((z) => clampZoom(z.scale, z.x + dx, z.y + dy));
+    }
+  };
+  const zoomUp = (e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId);
+    if (pointers.current.size < 2) pinch.current = null;
+  };
+  const zoomToggle = (e: React.MouseEvent) => {
+    if (zoom.scale > 1) {
+      setZoom({ scale: 1, x: 0, y: 0 });
+      return;
+    }
+    // Zoom toward where the tap was.
+    const box = e.currentTarget.getBoundingClientRect();
+    const ox = e.clientX - (box.left + box.width / 2);
+    const oy = e.clientY - (box.top + box.height / 2);
+    setZoom(clampZoom(TAP_ZOOM, -ox * (TAP_ZOOM - 1), -oy * (TAP_ZOOM - 1)));
+  };
+  const zoomWheel = (e: React.WheelEvent) => {
+    const scale = zoom.scale * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002));
+    setZoom((z) => clampZoom(scale, z.x, z.y));
+  };
 
   // The photo follows the finger down and shrinks a little while the black
   // behind it thins; past a point, or on a flick, it goes.
@@ -140,8 +209,31 @@ export function PhotoViewer({
         <span />
       </div>
 
-      <div ref={frame} className={styles.viewerImage} onPointerDown={pullDown}>
-        <PhotoFrame id={id} cast={cast} size="full" />
+      <div
+        ref={frame}
+        className={styles.viewerImage}
+        onPointerDown={zoomable ? zoomDown : pullDown}
+        onPointerMove={zoomable ? zoomMove : undefined}
+        onPointerUp={zoomable ? zoomUp : undefined}
+        onPointerCancel={zoomable ? zoomUp : undefined}
+        onDoubleClick={zoomable ? zoomToggle : undefined}
+        onWheel={zoomable ? zoomWheel : undefined}
+      >
+        {zoomable ? (
+          <div
+            className={styles.zoomable}
+            data-zoomed={zoom.scale > 1 || undefined}
+            style={{ transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})` }}
+          >
+            <PhotoFrame id={id} cast={cast} size="full" />
+            {/* Small, at the edge of the frame: nothing anyone would see without leaning in. */}
+            <span className={styles.zoomReveal} data-on={revealed || undefined} aria-hidden={!revealed}>
+              {say(photo.zoom?.reveal ?? "", cast)}
+            </span>
+          </div>
+        ) : (
+          <PhotoFrame id={id} cast={cast} size="full" />
+        )}
         {/* Live Text: the phone read something in the picture. Lifted and
             outlined the way the OS does it, so it reads as found, not added. */}
         {reading && photo.liveText && <span className={styles.recognised}>{photo.liveText}</span>}

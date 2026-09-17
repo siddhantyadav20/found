@@ -18,6 +18,11 @@ const APP_NAMES: Record<AppId, string> = {
   nightcam: "NightCam",
   news: "News",
   food: "Dabba",
+  phone: "Phone",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  recorder: "Recorder",
+  files: "Files",
 };
 
 /**
