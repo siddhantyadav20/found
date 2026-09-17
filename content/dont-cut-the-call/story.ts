@@ -16,6 +16,7 @@ import { episode1 } from "./episode1";
 export const story: Story = {
   id: "dont-cut-the-call",
   title: "Don't Cut the Call",
+  call: { caller: "Mumbai Crime Branch", since: 113_587, board: "MUMBAI POLICE · CRIME BRANCH" },
   episodes: ["Call Mat Kaatna", "Delete for Everyone", "10:30"],
   clocks: [
     { base: "01:11", day: "Saturday", battery: 7 },
@@ -31,6 +32,7 @@ export const story: Story = {
     { app: "notes", label: "Notes" },
     { app: "pikdrop", label: "PikDrop" },
     { app: "chrome", label: "Chrome" },
+    { app: "news", label: "City Desk" },
     { app: "settings", label: "Settings" },
     { app: "casefile", label: "Case file" },
   ],

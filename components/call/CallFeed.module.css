@@ -1,0 +1,130 @@
+/* The video treatment. Everything here exists to stop the drawn placeholder
+   reading as a drawing: it is softened, it drifts, and it is a frame or two
+   behind itself, the way a call from a bad connection is. */
+
+.feed {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #14170f;
+}
+
+.scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: saturate(0.75) contrast(1.05) blur(0.35px);
+  animation: drift 9s ease-in-out infinite;
+}
+
+/* He breathes, and the camera doesn't quite hold still. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: scale(1.02) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.025) translate(-0.4%, 0.3%);
+  }
+}
+
+.him {
+  transform-origin: 160px 200px;
+  animation: breathe 4.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(1.1px);
+  }
+}
+
+.boardText {
+  fill: #cfd3c4;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.boardSub {
+  fill: #9aa28f;
+  font-family: var(--font-ui);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+}
+
+/* Small enough to be wallpaper at 1x, sharp enough to convict him at 3x. */
+.burmese {
+  fill: #2b2b28;
+  font-size: 5px;
+}
+
+/* Someone crossing behind him: a shadow over the room, and then gone. */
+.shadow {
+  opacity: 0;
+  animation: cross 2.6s ease-in-out;
+}
+
+@keyframes cross {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35%,
+  65% {
+    opacity: 0.42;
+  }
+}
+
+/* Compression, not film grain: blocks, faint and slow. */
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: repeating-linear-gradient(0deg, rgb(255 255 255 / 6%) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 8%) 0 8px, transparent 8px 16px);
+  animation: judder 6s steps(3) infinite;
+}
+
+@keyframes judder {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  33% {
+    transform: translateY(1px);
+  }
+  66% {
+    transform: translateY(-1px);
+  }
+}
+
+.scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 0%, rgb(0 0 0 / 22%) 100%);
+}
+
+/* Her camera has been off since she taped the phone to the power bank. */
+.dark {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .him,
+  .grain,
+  .shadow {
+    animation: none;
+  }
+}

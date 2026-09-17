@@ -1,0 +1,49 @@
+/* Her own notes app, which is where the player's thinking ends up too. */
+
+.file { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8d8781;
+}
+
+.ask { margin: 0; font-size: 1.05rem; line-height: 1.35; }
+
+.where { font-size: 0.72rem; color: #9a948c; }
+
+.empty, .done { font-size: 0.8rem; color: #9a948c; line-height: 1.5; }
+
+.list { list-style: none; margin: 0.2rem 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #26282d;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.row { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
+
+.answer, .hint {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #2d2f33;
+  background: #16181c;
+  color: #e9e5df;
+  cursor: pointer;
+}
+
+.answer { background: #e8843c; border-color: #e8843c; color: #14100c; }
+.answer:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.helped { font-size: 0.78rem; color: #cbbf9d; line-height: 1.45; }
+.said { font-size: 0.85rem; line-height: 1.5; }

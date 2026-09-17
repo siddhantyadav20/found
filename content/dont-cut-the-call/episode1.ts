@@ -10,8 +10,9 @@ import type { CallCue, Ending, Evidence, Exposure, LiveEvent, Question } from ".
    =========================================================================== */
 
 const evidence: Evidence[] = [
-  { id: "note", device: "hers", app: "gallery", label: "The note in the pouch" },
-  { id: "call", device: "hers", app: "phone", label: "A call that has run 31 hours" },
+  { id: "note", device: "hers", app: "casefile", label: "The note in the pouch", manual: true },
+  { id: "call", device: "hers", app: "casefile", label: "A call that has run 31 hours", manual: true },
+  { id: "clock", device: "hers", app: "casefile", label: "His wall clock is an hour ahead", manual: true },
   { id: "alert", device: "hers", app: "news", label: "A woman in Dadar is dead" },
   { id: "wallpaper", device: "hers", app: "settings", label: "Whose phone this is" },
 ];

@@ -61,6 +61,13 @@ export type Evidence = {
   readonly label: string;
   /** Reachable only once these are true. Badges count reachable-but-unseen. */
   readonly requires?: readonly Flag[];
+  /**
+   * Found by doing something particular — zooming into a clock, tearing open
+   * a pouch — rather than by opening the app it is filed under. Manual
+   * evidence never puts a badge on an icon, because a badge would give the
+   * doing away.
+   */
+  readonly manual?: boolean;
 };
 
 /** Three steps: a nudge, a push, and the answer. Never fewer. */
@@ -199,9 +206,19 @@ export type Clock = {
   readonly battery: number;
 };
 
+/** The call that is already running when the player opens the pouch. */
+export type CallSpec = {
+  readonly caller: string;
+  /** How many seconds it had already run. 31:33:07 is 113,587 of them. */
+  readonly since: number;
+  /** What his room is meant to be, on the board behind him. */
+  readonly board: string;
+};
+
 export type Story = {
   readonly id: string;
   readonly title: string;
+  readonly call: CallSpec;
   readonly episodes: readonly [string, string, string];
   readonly clocks: readonly [Clock, Clock, Clock];
   /** Her home screen, in the order she left it. */

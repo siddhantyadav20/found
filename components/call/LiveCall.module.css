@@ -1,0 +1,219 @@
+/* Two shapes, one component: the call as the whole screen when it arrives,
+   and the call as a window that follows the player around the phone
+   afterwards. It is never closable, only shrunk. */
+
+.call {
+  position: fixed;
+  right: max(0.75rem, env(safe-area-inset-right));
+  bottom: max(0.9rem, calc(env(safe-area-inset-bottom) + 0.4rem));
+  z-index: 40;
+  width: 8.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: width 0.28s ease, inset 0.28s ease;
+}
+
+.call[data-expanded] {
+  inset: 0;
+  width: auto;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem calc(1.2rem + env(safe-area-inset-bottom));
+  background: #07080a;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.7rem;
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+  box-shadow: 0 0.6rem 1.6rem rgb(0 0 0 / 55%);
+}
+
+/* A landscape call on a portrait phone: full width, letterboxed, centred —
+   and the whole room stays in frame, because the clue is in the room. */
+.call[data-expanded] .frame {
+  cursor: default;
+  flex: 0 0 auto;
+  width: 100%;
+  touch-action: none;
+}
+
+.zoom {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.25s ease;
+}
+
+.top {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.55rem;
+  background: linear-gradient(180deg, rgb(0 0 0 / 55%), transparent);
+  font-family: var(--font-ui);
+  color: #f0ece6;
+}
+
+.who {
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.timer {
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  color: #8fd18f;
+}
+
+.zoomed {
+  position: absolute;
+  left: 0.55rem;
+  bottom: 0.5rem;
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  color: #f0ece6;
+  background: rgb(0 0 0 / 45%);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.6rem;
+}
+
+/* Her side of the call, which is why he doesn't know who he is talking to. */
+.self {
+  display: grid;
+  place-items: center;
+  background: #0b0b0c;
+  position: absolute;
+  /* Bottom left, because the right of his room has something in it. */
+  left: 0.5rem;
+  bottom: 0.5rem;
+  width: 17%;
+  max-width: 4.2rem;
+  aspect-ratio: 3 / 4;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 12%);
+}
+
+.selfLabel {
+  position: absolute;
+  inset: auto 0 0.3rem 0;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  color: #c9c4bc;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: center;
+  font-family: var(--font-ui);
+  color: #f0ece6;
+}
+
+.call:not([data-expanded]) .caption {
+  display: none;
+}
+
+.line {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.english {
+  font-size: 0.75rem;
+  color: #948e86;
+}
+
+.caption[data-whisper] .line {
+  font-style: italic;
+  color: #cfc9c0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.control,
+.end {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #2d2f33;
+  background: #16181c;
+  color: #e9e5df;
+  cursor: pointer;
+}
+
+.end {
+  background: #a3232a;
+  border-color: #a3232a;
+  color: #fff;
+}
+
+.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.1rem 1rem calc(1.4rem + env(safe-area-inset-bottom));
+  background: #101215;
+  border-radius: 1rem 1rem 0 0;
+  text-align: center;
+  font-family: var(--font-ui);
+  color: #e9e5df;
+}
+
+.sheetAsk {
+  font-size: 1rem;
+}
+
+.sheetSub {
+  font-size: 0.72rem;
+  color: #8a857e;
+  margin-bottom: 0.4rem;
+}
+
+.sheetCut,
+.sheetStay {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  padding: 0.7rem;
+  border-radius: 0.6rem;
+  border: 0;
+  cursor: pointer;
+}
+
+.sheetCut {
+  background: #a3232a;
+  color: #fff;
+}
+
+.sheetStay {
+  background: #1c1f23;
+  color: #e9e5df;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .call,
+  .zoom {
+    transition: none;
+  }
+}

@@ -1,0 +1,222 @@
+/* Her Android. Everything is a size larger than a designer would draw it,
+   because she set it that way, and the whole screen is slightly warm from
+   four years of being in a handbag. */
+
+.phone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 24rem;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1.4rem;
+  background: linear-gradient(170deg, #2a2b31 0%, #1a1b20 45%, #16171b 100%);
+  color: #ece9e4;
+  font-family: var(--font-ui);
+  box-shadow: 0 1.6rem 3rem rgb(0 0 0 / 55%);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.85rem 0.3rem;
+  font-size: 0.72rem;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.shield {
+  display: inline-flex;
+  opacity: 0.85;
+}
+
+.signal {
+  width: 0.7rem;
+  height: 0.55rem;
+  background: linear-gradient(90deg, #8f8a83 33%, transparent 33%), #8f8a83;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+
+.battery[data-low] {
+  color: #e2705f;
+}
+
+.banner {
+  position: absolute;
+  inset: 2.1rem 0.6rem auto;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.75rem;
+  border: 0;
+  border-radius: 0.9rem;
+  background: rgb(44 46 52 / 96%);
+  color: #ece9e4;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 0.5rem 1.2rem rgb(0 0 0 / 45%);
+  animation: land 0.32s ease;
+}
+
+@keyframes land {
+  from {
+    transform: translateY(-0.6rem);
+    opacity: 0;
+  }
+}
+
+.bannerDot {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.45rem;
+}
+
+.bannerText {
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+/* --- home ---------------------------------------------------------------- */
+
+.home {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.2rem 0.9rem 0.6rem;
+  background: radial-gradient(120% 60% at 50% 0%, #3a3d46 0%, transparent 60%);
+}
+
+.homeClock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  margin-bottom: 1.4rem;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+.homeDay {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: #b3ada4;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9rem 0.5rem;
+}
+
+.icon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tile {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.95rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #f6f3ee;
+}
+
+.badge {
+  position: absolute;
+  top: -0.25rem;
+  right: 0.45rem;
+  min-width: 1.05rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  background: #d8483c;
+  font-size: 0.62rem;
+  line-height: 1.05rem;
+  text-align: center;
+  color: #fff;
+}
+
+/* Her font size, not ours: two steps up, and it wraps rather than truncates. */
+.name {
+  font-size: 0.72rem;
+  text-align: center;
+  color: #ddd8d1;
+}
+
+.navBar {
+  margin: auto auto 0;
+  width: 6rem;
+  height: 0.22rem;
+  border-radius: 999px;
+  background: #6e6b66;
+}
+
+/* --- an app -------------------------------------------------------------- */
+
+.app {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  background: #101114;
+}
+
+.appBar {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid #23252a;
+}
+
+.back {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: #ece9e4;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.appTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.appBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+  }
+}

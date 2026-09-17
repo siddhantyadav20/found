@@ -1,0 +1,58 @@
+/* Asleep, face up, next to a phone that isn't yours. */
+
+.phone {
+  width: 100%;
+  max-width: 11rem;
+  aspect-ratio: 9 / 19;
+  border-radius: 1.5rem;
+  padding: 0.5rem;
+  background: #111214;
+  border: 1px solid #26282d;
+  box-shadow: 0 1rem 2rem rgb(0 0 0 / 45%);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  height: 100%;
+  border-radius: 1.1rem;
+  background: #050506;
+  color: #55524e;
+  font-family: var(--font-ui);
+}
+
+/* iOS puts the clock high and light; Android sits it lower and heavier. */
+.phone[data-os="ios"] .time {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.phone[data-os="android"] .time {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.label {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.phone[data-ringing] {
+  animation: shiver 0.5s ease-in-out infinite;
+}
+
+@keyframes shiver {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(0.5px, -0.5px); }
+  75% { transform: translate(-0.5px, 0.5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone[data-ringing] { animation: none; }
+}

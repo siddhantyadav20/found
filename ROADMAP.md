@@ -32,6 +32,10 @@ browser at phone size; tick this file; commit when Siddhant says so.
 | **P11** | The real assets | Shoot, voices, handwriting, documents |
 | **P12** | Ship-ready | Performance, accessibility, captions, tests, QA |
 
+**P0, P1 and P2 are done** (2026-09-17/18): the opening plays, from the pouch
+to the call to her home screen and the first question. What each phase left
+for later is noted under it.
+
 P0–P8 are the game. P9–P10 are how it spreads. P11 runs in parallel from P2
 (Siddhant shoots; placeholders stand in until each asset lands). P12 is the
 gate before anyone outside sees it.
@@ -61,7 +65,7 @@ a shell in the same commit; P1 rebuilds it.
 
 ---
 
-## P1 — The stage · *two phones*
+## P1 — The stage · *two phones* · **done**
 
 **Goal:** the physical arrangement the whole chapter plays on.
 
@@ -76,12 +80,19 @@ a shell in the same commit; P1 rebuilds it.
 **Psychology check (PLAYER-JOURNEY Stage 8):** yours must feel *yours* —
 platform-correct, boring, and almost empty — or Episode 3 lands as fiction.
 
-**Done when:** both phones render at 360 px wide and on desktop, focus moves
-between them, and a placeholder call can ring on either.
+**Built:** `components/stage/Stage.tsx` owns the playthrough; `components/her`
+is her Android (status bar with the grey shield, badges, app screens, banner
+notifications, her clock and battery); `components/yours` is the player's own
+phone, asleep, matched to their platform; the pouch tears with a drag and a
+real buzz, and the note beat follows it. Resume comes off the save, so a
+reload lands where the player left.
+
+**Left for later:** her phone is one screen deep (no shade, no app switcher),
+and your phone has no apps until P7.
 
 ---
 
-## P2 — The live call · *the chapter's new core*
+## P2 — The live call · *the chapter's new core* · **done**
 
 **Goal:** a video call that never leaves the screen and behaves like a person.
 
@@ -95,8 +106,16 @@ between them, and a placeholder call can ring on either.
 | Captions | Every line captioned, English under Hinglish, always on |
 | Degradation | Short looping segments, next cue preloaded only; on failure, a still frame plus captions. **The chapter is completable with video dead.** |
 
-**Done when:** a player can browse apps for ten minutes with the call alive,
-zoom into the clock, unmute, cut it, and reload without losing the timer.
+**Built:** `lib/game/call.ts` (the timer, the cue engine and his wall clock,
+all pure and tested), `components/call/LiveCall.tsx` (full screen, then a
+window that can't be closed; captions with English under Hinglish; mute; the
+red button with the whisper before the confirm sheet; double-tap and wheel
+zoom that counts only when the clock is readable) and `CallFeed.tsx`, a drawn
+placeholder shot like a bad 4G call, carrying **the clock an hour ahead** and
+**a label in Burmese** at 3x.
+
+**Left for later:** no audio yet (captions carry it), the supervisor is a
+shadow rather than a person, and the real clips arrive in P11.
 
 ---
 

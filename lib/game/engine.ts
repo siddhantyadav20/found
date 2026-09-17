@@ -62,7 +62,11 @@ export const caseFile = (story: Story, s: CaseState): Evidence[] =>
 
 /** What an app's badge counts: reachable, unseen, and never a bait. */
 export const unseenIn = (story: Story, s: CaseState, app: AppId): number =>
-  story.evidence.filter((e) => e.app === app && reachable(s, e) && !seen(s, e.id)).length;
+  story.evidence.filter((e) => e.app === app && !e.manual && reachable(s, e) && !seen(s, e.id)).length;
+
+/** What opening one app finds on its own: everything in it but the manual. */
+export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
+  story.evidence.filter((e) => e.app === app && !e.manual).reduce((acc, e) => see(story, acc, e.id), s);
 
 /* --- questions ---------------------------------------------------------- */
 
