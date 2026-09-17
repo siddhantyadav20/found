@@ -1,0 +1,130 @@
+/* The stage, as far as the pivot has built it: a pouch, a label, and the
+   note that the rest is coming (ROADMAP.md P1). The real two-phone table,
+   her Android and the call over both, replaces everything here. */
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  min-height: 100dvh;
+  padding: 2rem 1rem calc(2rem + env(safe-area-inset-bottom));
+  text-align: center;
+  color: #efeae4;
+  background: #0b0b0c;
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8d8781;
+}
+
+.pouch {
+  position: relative;
+  width: min(20rem, 82vw);
+  aspect-ratio: 5 / 7;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 0;
+  cursor: pointer;
+  background: repeating-linear-gradient(115deg, #b9b2a6 0 6px, #b4ada1 6px 12px), #b9b2a6;
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 55%);
+}
+
+.sticker {
+  position: absolute;
+  inset: auto 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+  color: #17161a;
+  background: #f3efe7;
+  box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 25%);
+}
+
+.to {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.note {
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  color: #4b4741;
+}
+
+.hint {
+  max-width: 24rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.minutes {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: #8d8781;
+}
+
+.building {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 26rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+/* The in-app browser note: an offer, never a wall. */
+.guard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 22rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #2a2823;
+  border-radius: 0.6rem;
+  text-align: left;
+}
+
+.guardTitle {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.guardText {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #8d8781;
+}
+
+.guardCta {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #e8843c;
+}
+
+.guardStay {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: #8d8781;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}

@@ -1,99 +1,81 @@
 # Found — Brief
 
-A mystery-thriller web app in which you play on the missing person's phone.
-Grounded thriller with a psychological edge. Each case is played in one sitting.
+A mystery-thriller web app in which you play on a stranger's phone. Grounded
+thriller with a psychological edge, played in one sitting, made for India.
 
-Piloted inside the portfolio (sidbuilds.in/found) to measure interest first;
-the funnel it records decides how far the standalone app goes. **Early days:
-the direction of this app is not finalised.**
+The product is the shape: **you are handed a stranger's device, and everything
+you open to help them becomes evidence.**
 
-## Decisions already made
+- Chapter One is [CHAPTER1.md](CHAPTER1.md) — *Don't Cut the Call*.
+- How it feels, screen by screen: [PLAYER-JOURNEY.md](PLAYER-JOURNEY.md).
+- What gets built, in order: [ROADMAP.md](ROADMAP.md).
 
-These come from the pilot and aren't recoverable from the code alone.
+---
 
-- **Full episodes, not slices.**
-- **Cast:** the missing person's gender is dealt at random and never asked.
-  The script adapts through cast tokens, and a test forbids a plain pronoun in
-  any line that uses one.
-- **Replies are picked from a list, never generated.** Characters never talk
-  through free text or an LLM (`Reply` / `ReplyOption` in `content/found/types.ts`).
-- **Story spine:** "curiosity is part of the crime." Mum's Guardian
-  screen-time app records the player's own session, which is read back as the
-  missing person's. In Episode 2 the player types "me" to answer who unlocked
-  the phone.
-- **Photographs:** CC0 only, approved slot by slot before download. No
-  identifiable faces, because a real person's face must not play a suspect.
-  Puzzle details that no stock photo shows go in a Live Text chip or a story
-  overlay.
-- **Audio:** CC0 Freesound recordings. The whispers are macOS `say -v Whisper`,
-  which has no gender to give away.
-- **The funnel measures without identifying anyone.** Events are allowlisted
-  (`lib/found/events.ts`) and no identifier is sent.
+## The pivot (2026-09-17)
 
-## Decided 2026-09-15
+Chapter One is now **Don't Cut the Call**: Vasundhara Kulkarni's phone, 31
+hours into a digital arrest, in a courier pouch at your door at 1:11 AM. It
+replaces *Low Battery* (finished) and *The Blue Room* (half built). Both are
+retired to git history; nothing was kept because it existed.
 
-- **Release:** each case ships whole (every episode at once), and a new case
-  ships every week. Cases are built around Indian cities and references.
-- **Case two** is a different kind of found object from a phone, so the desk
-  never repeats itself.
-- **Money:** free. A paywall comes only once there are repeat players, and it
-  stays cheap: around ₹50 a case.
-- **Audience:** 16 and up, designed for people in India. Anyone can play.
-- **Voices:** real voices for everyone except the missing person. The missing
-  person stays a whisper, because their gender is dealt at random and a real
-  voice would give it away.
-- **Community:** no forum or comments yet. Build one once there's evidence a
-  community is forming.
-- **Photos must read as real photographs** taken on a phone, never as
-  generated or stock.
-- **Episode 2 starts only once the player's own device is really plugged in,**
-  where the browser can tell.
-- **The phone matches the player's platform:** iOS for iPhone, Android for
-  Android, and iOS everywhere else (laptops and desktops).
-  - **iOS** matches current iOS in layout, spacing, glass materials, motion
-    and gestures, with app icons matched as closely as possible. They're drawn
-    as our own SVG, never copied from Apple's files.
-  - **Android** is Google's current Material look (Pixel style), with Google's
-    icon set. Only the icons and the styling of elements change.
-  - **Both** keep Found's own type: Canela and Outfit.
-  - **iOS is built first.** Android follows.
-- **Photos:** Siddhant shoots what he can in India. Claude sources openly
-  licensed candidates for the rest, each approved before it's downloaded.
+**Why:** the crime is the one happening to Indian families right now, the
+twists land on screens the player has already seen, and the endings come out
+of the scam's own two commands — *don't cut the call, don't tell anyone*.
 
-## Decided 2026-09-16
+## Decisions this pivot reversed
 
-- **The plan is in `ROADMAP.md`,** in sessions S1–S17; the photo shot list is
-  `PHOTOS.md`.
-- **Recently Deleted asks for Face ID,** which fails on a stranger and falls
-  back to the passcode. It adds a step before a key clue, on purpose.
-- **Never losing a case needs no account.** A case number (12 characters,
-  given on request) keeps every case's save on the server for a year after
-  the last play, and a restore link brings them back on any device. The number
-  is the only key, like a drop's code: nothing ties it to a person.
-- **In-app browsers get a note, not a wall.** Inside Instagram or Facebook
-  the envelope suggests opening the case in Chrome or Safari, and lets you
-  play on anyway.
-- **"Start over" asks first,** and a finished episode stays on the desk
-  afterwards.
+- **The found phone no longer matches the player's platform.** It belongs to
+  its owner: Vasu is 64, so her phone is a mid-range Android with huge system
+  font and an accessibility permission the plot needs. **iOS moves to the
+  player's own phone**, the second device on stage.
+- **No random cast.** Every person in the chapter is a specific person with a
+  face and a voice, and actors play them under signed releases. The old rule
+  against identifiable faces now applies only to *real* people.
+- **The share result is not hint squares.** It is the ledger: *"They had 4
+  things on me."*
+- **The irreversible act is not a location toggle.** It's uninstalling the app
+  that's watching.
 
-## Decided 2026-09-17
+## Decisions that survive the pivot
 
-- **Chapter One is a new story,** from Siddhant's script *FOUND — Chapter 1*:
-  Raghav Mehra's phone, under the player's door at 4:17 AM. The playable
-  version, with every contradiction resolved, is `CHAPTER1.md`.
-- **Take a fresh pass.** Nothing is kept because it was built; everything
-  has to earn its place in the new chapter (CHAPTER1.md, Part 9).
-- **Raghav is one person, male, with a real face and voice.** The dealt cast
-  and the whisper-only rule were Low Battery's.
-- **Built alongside Low Battery** as the `blue-room` case, and Low Battery is
-  deleted once the new chapter plays end to end.
+- **Full chapters, shipped whole.** Each is one city, one object, one story.
+- **Replies are picked from a list, never generated.** No LLM ever speaks as a
+  character.
+- **The case file asks one question at a time**, with a free "where to look",
+  three hints and an idle nudge, because the only real player complaint was
+  "I didn't know what to do".
+- **Episode gating on a real charger**, now reframed: plug in to keep the call
+  alive.
+- **Never losing a case needs no account:** a 12-character case number, and a
+  restore link.
+- **In-app browsers get a note, not a wall.**
+- **The funnel measures without identifying anyone**, through the allowlist in
+  `lib/found/events.ts`.
+- **Audience 16+, India first, free for now**; a paywall only once there are
+  repeat players, and cheap (around ₹50 a case).
+- **Local only** until the product is good and has multiple storylines: no
+  GitHub remote, no Vercel project, no domain.
+
+## New decisions (2026-09-17)
+
+- **Two phones on stage:** hers and yours. Episode 3 and every ending happen
+  on yours.
+- **The call never leaves the screen**, and a cue engine keeps the man on it
+  alive between lines.
+- **The exposure ledger** records what the player hands over, and writes
+  Episode 3's accusations, the endings and the end card.
+- **The First Minute:** a 60-second standalone of the opening, built to be
+  forwarded into family WhatsApp groups.
+- **Responsibility rules, non-negotiable** (PLAYER-JOURNEY Part 3): nothing
+  real is ever asked for; no notification imitates police, a bank or a
+  messenger; every brand involved in the crime is fictional; the end card
+  carries 1930, cybercrime.gov.in and Tele-MANAS 14416.
 
 ## Still open
 
-- Episode 2's NightCam fuel-can photo is a placeholder: no CC0 photo fits.
-- Episode 3's eleven NightCam frames and the stairwell photo are placeholders
-  (decided 2026-09-16: build with placeholders, replace at launch). The call
-  is captions only until it's recorded.
-- A domain, and a Vercel project, for this app. Deliberately deferred: Found
-  stays local until it's a good product with multiple storylines.
-- Whether the portfolio's `/found` redirects here once this app is live.
+- The video shoot, the voices, the handwriting and the Mumbai photographs
+  (ROADMAP P11). Everything runs on placeholders until they land.
+- Whether Episode 3 can arrive at 10:30 AM the next day, as an opt-in.
+- A domain and a deploy, deliberately deferred.
+- Whether the portfolio's `/found` redirects here once this is live.

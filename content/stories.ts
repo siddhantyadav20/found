@@ -1,7 +1,6 @@
-import { story as blueRoom } from "./blue-room/story";
 import type { CaseId } from "./cases";
-import { story as lowBattery } from "./found/story";
-import type { Story } from "./found/types";
+import { story as dontCutTheCall } from "./dont-cut-the-call/story";
+import type { Story } from "./types";
 
 /**
  * Each case's script, by id. Heavy on purpose: only the phone and the server
@@ -9,6 +8,5 @@ import type { Story } from "./found/types";
  * case's name or route reads `content/cases.ts` instead.
  */
 export const STORIES: Record<CaseId, Story> = {
-  "low-battery": lowBattery,
-  "blue-room": blueRoom,
+  "dont-cut-the-call": dontCutTheCall,
 };

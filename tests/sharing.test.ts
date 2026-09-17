@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { CASES, CASE_IDS, isCaseId } from "@/content/cases";
 import { STORIES } from "@/content/stories";
-import { answer, hint, newCase, see, tryUnlock, type CaseState } from "@/lib/found/engine";
+import { expose, newCase, type CaseState } from "@/lib/game/engine";
 import { cleanDropName, displayName, dropLabel, NAME_MAX } from "@/lib/found/dropName";
 import { SHARING, eventsFor, isFoundEvent } from "@/lib/found/events";
 import { saveKey } from "@/lib/found/progress";
-import { MARK_EMOJI, resultOf, shareText } from "@/lib/found/result";
+import { resultLine, resultOf, shareText } from "@/lib/found/result";
 import { MIN_ANSWERS, fasterThan, percentages } from "@/lib/found/store";
 
 /**
@@ -15,52 +15,39 @@ import { MIN_ANSWERS, fasterThan, percentages } from "@/lib/found/store";
  * spoil the case, and none of it may say something about too few people.
  */
 
-const ep = STORIES["low-battery"];
-const start = () => newCase({ gender: "girl", name: "Noor" }, "test", 0);
+const ep = STORIES["dont-cut-the-call"];
+const start = () => newCase("test", 0);
 
-/** Through the passcode and the first question, the way the player chooses. */
-function firstTwo({ wrongCode = false, wrongPick = false, hinted = false } = {}): CaseState {
-  let s = start();
-  if (wrongCode) s = tryUnlock(ep, s, "passcode", "0000").state;
-  s = tryUnlock(ep, s, "passcode", "140306").state;
-  s = see(ep, s, "group-home");
-  s = see(ep, s, "health-walk");
-  if (hinted) s = hint(ep, s, "went-home")!.state;
-  if (wrongPick) s = answer(ep, s, "went-home", ["group-home"]).state;
-  return answer(ep, s, "went-home", ["health-walk"]).state;
+/** A playthrough that gave one thing away, and then chose an ending. */
+function gaveOneAway(): CaseState {
+  const s = expose(ep, start(), "voice");
+  return { ...s, flags: [...s.flags, "did:chose"], at: { whatsapp: 42 * 60_000 } };
 }
 
 describe("the shared result", () => {
-  it("marks each solved puzzle in the order it was solved", () => {
-    expect(resultOf(ep, firstTwo(), 1).marks).toEqual(["clean", "clean"]);
-    expect(resultOf(ep, firstTwo({ wrongCode: true }), 1).marks).toEqual(["wrong", "clean"]);
-    expect(resultOf(ep, firstTwo({ hinted: true }), 1).marks).toEqual(["clean", "hinted"]);
-    expect(resultOf(ep, firstTwo({ wrongPick: true }), 1).marks).toEqual(["clean", "wrong"]);
-    expect(resultOf(ep, firstTwo({ hinted: true }), 1).hints).toBe(1);
+  it("counts what they had on the player, in the order it was handed over", () => {
+    expect(resultOf(ep, start()).held).toEqual([]);
+    expect(resultOf(ep, gaveOneAway()).held).toEqual(["Your voice"]);
   });
 
-  it("keeps the episodes apart", () => {
-    const s = firstTwo();
-    const later: CaseState = { ...s, flags: [...s.flags, "ep:2", "solved:e2-who"] };
-    expect(resultOf(ep, later, 1).marks).toHaveLength(2);
-    expect(resultOf(ep, later, 2).marks).toEqual(["clean"]);
+  it("says it in a line that gives nothing away", () => {
+    expect(resultLine(resultOf(ep, start()))).toBe("They had nothing on me.");
+    expect(resultLine(resultOf(ep, gaveOneAway()))).toBe("They had 1 thing on me.");
   });
 
-  it("times an episode from the envelope to the battery dying", () => {
-    const s: CaseState = { ...firstTwo(), started: 0, at: { dead: 31 * 60_000 } };
-    expect(resultOf(ep, s, 1).minutes).toBe(31);
-    expect(resultOf(ep, firstTwo(), 1).minutes).toBeNull();
+  it("times the chapter, and only once it has ended", () => {
+    expect(resultOf(ep, gaveOneAway()).minutes).toBe(42);
+    expect(resultOf(ep, start()).minutes).toBeNull();
   });
 
-  it("names no puzzle and gives no answer away", () => {
-    const text = shareText(ep.title, resultOf(ep, firstTwo({ hinted: true }), 1), "https://found.test/d/Abcd2345");
-    const lines = text.split("\n");
-    expect(lines[0]).toBe("Someone left this for you. Don't unlock it.");
-    expect(lines[1]).toBe("https://found.test/d/Abcd2345");
-    expect(text).toContain(`${MARK_EMOJI.clean}${MARK_EMOJI.hinted}`);
-    expect(text).toContain("I got Noor");
-    for (const d of ep.deductions) expect(text).not.toContain(d.question);
-    for (const l of ep.locks) expect(text).not.toContain(l.answer);
+  it("names no question and gives no answer away", () => {
+    const text = shareText(ep.title, resultOf(ep, gaveOneAway()), "https://found.test/d/Abcd2345");
+    expect(text).toContain("They had 1 thing on me.");
+    expect(text).toContain("https://found.test/d/Abcd2345");
+    for (const q of ep.questions) {
+      expect(text).not.toContain(q.ask);
+      expect(text).not.toContain(q.reply);
+    }
   });
 });
 
@@ -78,7 +65,7 @@ describe("the name on a passed-on envelope", () => {
   it("reads back as a name, and falls back to the story's own label", () => {
     expect(displayName("ANANYA RAO")).toBe("Ananya Rao");
     expect(dropLabel("ANANYA", ["TO YOU", "BY HAND"])).toEqual(["TO ANANYA", "BY HAND"]);
-    expect(dropLabel("", ep.envelope.label)).toEqual(ep.envelope.label);
+    expect(dropLabel("", ["BY HAND"])).toEqual(["BY HAND"]);
   });
 });
 
@@ -108,7 +95,7 @@ describe("cases", () => {
   });
 
   it("only knows its own case ids", () => {
-    expect(isCaseId("low-battery")).toBe(true);
+    expect(isCaseId("dont-cut-the-call")).toBe(true);
     for (const bad of ["toString", "__proto__", "", null, 3]) expect(isCaseId(bad)).toBe(false);
   });
 });

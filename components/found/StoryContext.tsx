@@ -3,9 +3,8 @@
 import { createContext, useContext, useMemo } from "react";
 
 import { CASES, type CaseId, type CaseMeta } from "@/content/cases";
-import type { Story } from "@/content/found/types";
+import type { Story } from "@/content/types";
 import { STORIES } from "@/content/stories";
-import { bindCase } from "./FoundPhone/actions";
 
 /* ===========================================================================
    Which case this page is playing.
@@ -46,7 +45,6 @@ export function CaseProvider({
   minutes?: number;
   children: React.ReactNode;
 }) {
-  if (typeof window !== "undefined") bindCase(id, via);
   const value = useMemo(() => ({ id, story: STORIES[id], meta: CASES[id], via, to, minutes }), [id, via, to, minutes]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

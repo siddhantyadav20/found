@@ -1,4 +1,4 @@
-import type { CaseState } from "./engine";
+import { SAVE_VERSION, type CaseState } from "@/lib/game/engine";
 
 /* ===========================================================================
    The playthrough, kept.
@@ -57,29 +57,24 @@ export function reloadProgress(): void {
 
 const isRecord = (x: unknown): x is Record<string, unknown> => !!x && typeof x === "object" && !Array.isArray(x);
 
-/** A stored value, as today's shape — or null if it isn't a save at all. */
+/**
+ * A stored value, as today's shape — or null if it isn't one. Saves from the
+ * two retired chapters are dropped rather than upgraded: their cases don't
+ * exist any more, so there is nothing for them to resume into.
+ */
 export function upgrade(x: unknown): CaseState | null {
   if (!isRecord(x)) return null;
-  const cast = x.cast as Record<string, unknown> | undefined;
-  const basic =
+  const ok =
+    x.version === SAVE_VERSION &&
     typeof x.run === "string" &&
-    isRecord(cast) &&
-    (cast.gender === "girl" || cast.gender === "boy") &&
-    typeof cast.name === "string" &&
     Array.isArray(x.flags) &&
     x.flags.every((f) => typeof f === "string") &&
-    isRecord(x.hints) &&
-    typeof x.started === "number";
-  if (!basic) return null;
-  const via = typeof x.via === "string" ? x.via : undefined;
-
-  if (x.v === 1) {
-    return { ...(x as unknown as Omit<CaseState, "v" | "at" | "usage" | "opens" | "names">), v: 2, at: {}, usage: {}, opens: {}, names: {}, via };
-  }
-  if (x.v === 2 && isRecord(x.at) && isRecord(x.usage) && isRecord(x.opens) && isRecord(x.names)) {
-    return { ...(x as unknown as CaseState), via };
-  }
-  return null;
+    Array.isArray(x.ledger) &&
+    x.ledger.every((f) => typeof f === "string") &&
+    typeof x.started === "number" &&
+    isRecord(x.at);
+  if (!ok) return null;
+  return { ...(x as unknown as CaseState), via: typeof x.via === "string" ? x.via : undefined };
 }
 
 export function readProgress(): CaseState | null {

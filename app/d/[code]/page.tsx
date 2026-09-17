@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import FoundPhone from "@/components/found/FoundPhone";
+import Stage from "@/components/stage/Stage";
 import SaveScript from "@/components/found/SaveScript";
 import { CaseProvider } from "@/components/found/StoryContext";
 import { CASES, FEATURED } from "@/content/cases";
@@ -37,7 +37,7 @@ export default async function DropPage({ params }: PageProps<"/d/[code]">) {
   return (
     <CaseProvider id={id} via={drop ? code : undefined} to={drop?.to} minutes={await estimatedMinutes(id)}>
       <SaveScript caseId={id} />
-      <FoundPhone />
+      <Stage />
     </CaseProvider>
   );
 }

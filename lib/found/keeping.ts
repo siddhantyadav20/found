@@ -1,5 +1,5 @@
-import type { EpisodeNo } from "@/content/found/types";
-import type { CaseState } from "./engine";
+import type { EpisodeNo } from "@/content/types";
+import type { CaseState } from "@/lib/game/engine";
 
 /* ===========================================================================
    Never losing a case: the pure half, shared by the browser and the server.
@@ -44,8 +44,8 @@ export type Solved = {
   readonly episode: EpisodeNo;
   /** Wall-clock minutes for the episode, if it could be told. */
   readonly minutes: number | null;
-  /** The result's marks, as the share shows them: 🟩🟩🟨. */
-  readonly marks: string;
+  /** How many things they had on the player, as the share says it. */
+  readonly held: number;
   readonly at: number;
 };
 
@@ -55,8 +55,9 @@ export function isSolved(x: unknown): x is Solved {
   return (
     (s.episode === 1 || s.episode === 2 || s.episode === 3) &&
     (s.minutes === null || (typeof s.minutes === "number" && Number.isFinite(s.minutes) && s.minutes >= 0)) &&
-    typeof s.marks === "string" &&
-    s.marks.length <= 64 &&
+    typeof s.held === "number" &&
+    Number.isInteger(s.held) &&
+    s.held >= 0 &&
     typeof s.at === "number"
   );
 }
@@ -85,7 +86,6 @@ export type Progress = {
   readonly episode: EpisodeNo;
   /** Mid-episode; between episodes (the phone died); or every episode done. */
   readonly phase: "playing" | "between" | "done";
-  readonly name: string;
   /** The last time anything happened in the case (ms). */
   readonly last: number;
 };
@@ -94,8 +94,8 @@ export function summarise(s: CaseState): Progress {
   const flags = s.flags as readonly string[];
   // Episode 2's end card leads straight on, so a finished Episode 2 is Episode 3 waiting.
   const episode = flags.includes("ep:3") || flags.includes("ep:2-done") ? 3 : flags.includes("ep:2") ? 2 : 1;
-  const phase = flags.includes("ep:3-done") ? "done" : episode === 1 && flags.includes("dead") ? "between" : "playing";
-  return { episode, phase, name: s.cast.name, last: Math.max(s.started, ...Object.values(s.at)) };
+  const phase = flags.includes("ep:3-done") ? "done" : episode === 1 && flags.includes("did:dead") ? "between" : "playing";
+  return { episode, phase, last: Math.max(s.started, ...Object.values(s.at)) };
 }
 
 export function ago(then: number, now: number): string {
@@ -116,16 +116,16 @@ export const wasAway = (s: CaseState, now: number): boolean => now - summarise(s
 /** How the desk draws a case's object: new, mid-case, charging between episodes, or bagged. */
 export type DeskState =
   | { readonly kind: "new" }
-  | { readonly kind: "playing"; readonly episode: EpisodeNo; readonly name: string; readonly last: number }
-  | { readonly kind: "between"; readonly name: string }
+  | { readonly kind: "playing"; readonly episode: EpisodeNo; readonly last: number }
+  | { readonly kind: "between" }
   /** `again`: the save is gone (started over), so opening it deals a new case. */
   | { readonly kind: "solved"; readonly solved: Solved | null; readonly again: boolean };
 
 export function deskState(save: CaseState | null, solved: Solved | null): DeskState {
   if (save) {
     const p = summarise(save);
-    if (p.phase === "playing") return { kind: "playing", episode: p.episode, name: p.name, last: p.last };
-    if (p.phase === "between") return { kind: "between", name: p.name };
+    if (p.phase === "playing") return { kind: "playing", episode: p.episode, last: p.last };
+    if (p.phase === "between") return { kind: "between" };
     return { kind: "solved", solved, again: false };
   }
   return solved ? { kind: "solved", solved, again: true } : { kind: "new" };
@@ -143,11 +143,11 @@ export type CaseLine = { readonly status: string; readonly result: string | null
 /** How the desk and the restore page describe one of your cases. */
 export function describeCase(save: CaseState | null, solved: Solved | null, now: number): CaseLine {
   const result = solved
-    ? `Solved Episode ${solved.episode}${solved.minutes ? ` in ${solved.minutes} min` : ""}${solved.marks ? ` · ${solved.marks}` : ""}`
+    ? `Solved Episode ${solved.episode}${solved.minutes ? ` in ${solved.minutes} min` : ""}${solved.held ? ` · they had ${solved.held} on you` : ""}`
     : null;
   if (!save) return { status: "Back in its envelope", result, cta: "Play again" };
   const p = summarise(save);
   if (p.phase === "between") return { status: "Episode 1 done · the phone is dead", result, cta: "Charge it" };
   if (p.phase === "done") return { status: "Case closed", result, cta: "Open it" };
-  return { status: `Episode ${p.episode} · ${p.name} is missing · ${ago(p.last, now)}`, result, cta: "Carry on" };
+  return { status: `Episode ${p.episode} · the call is still running · ${ago(p.last, now)}`, result, cta: "Carry on" };
 }

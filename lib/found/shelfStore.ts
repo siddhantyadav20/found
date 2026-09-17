@@ -4,7 +4,7 @@ import { randomBytes } from "node:crypto";
 
 import { CASE_IDS, type CaseId } from "@/content/cases";
 import { redis } from "@/lib/upstash";
-import type { CaseState } from "./engine";
+import type { CaseState } from "@/lib/game/engine";
 import { betterSolved, isSolved, numberFromBytes, type Solved } from "./keeping";
 import { upgrade } from "./progress";
 

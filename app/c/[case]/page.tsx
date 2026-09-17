@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import FoundPhone from "@/components/found/FoundPhone";
+import Stage from "@/components/stage/Stage";
 import SaveScript from "@/components/found/SaveScript";
 import { CaseProvider } from "@/components/found/StoryContext";
 import { CASES, CASE_IDS, isCaseId } from "@/content/cases";
@@ -40,7 +40,7 @@ export default async function CasePage({ params }: PageProps<"/c/[case]">) {
   return (
     <CaseProvider id={id} minutes={await estimatedMinutes(id)}>
       <SaveScript caseId={id} />
-      <FoundPhone />
+      <Stage />
     </CaseProvider>
   );
 }

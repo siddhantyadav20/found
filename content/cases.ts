@@ -1,5 +1,4 @@
-import { blueRoom, blueRoomTeaser } from "./blue-room";
-import { found, teaser } from "./found";
+import { meta, teaser } from "./dont-cut-the-call";
 
 /* ===========================================================================
    Every case Found has, in the light form: names, routes, share lines, and
@@ -29,10 +28,7 @@ export type CaseMeta = {
 };
 
 export const CASES = {
-  "low-battery": { ...found, teaser },
-  // Chapter One's rewrite (CHAPTER1.md). Playable at /c/blue-room while it's
-  // built; it replaces Low Battery on the desk once it plays end to end.
-  "blue-room": { ...blueRoom, teaser: blueRoomTeaser },
+  "dont-cut-the-call": { ...meta, teaser },
 } as const satisfies Record<string, CaseMeta>;
 
 export type CaseId = keyof typeof CASES;
@@ -40,6 +36,6 @@ export type CaseId = keyof typeof CASES;
 export const CASE_IDS = Object.keys(CASES) as CaseId[];
 
 /** The case the desk puts in front of you. */
-export const FEATURED: CaseId = "low-battery";
+export const FEATURED: CaseId = "dont-cut-the-call";
 
 export const isCaseId = (x: unknown): x is CaseId => typeof x === "string" && Object.hasOwn(CASES, x);

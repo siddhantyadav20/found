@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
-import { newCase, tryUnlock, type CaseState } from "@/lib/found/engine";
+import { newCase, type CaseState } from "@/lib/game/engine";
 import { KEEPING, eventsFor } from "@/lib/found/events";
 import {
   AWAY_MS,
@@ -29,8 +29,7 @@ import { createShelf, putShelf, readShelf } from "@/lib/found/shelfStore";
  * the in-app browsers that forget everything.
  */
 
-const ep = STORIES["low-battery"];
-const fresh = () => newCase({ gender: "boy", name: "Kabir" }, "t", 0);
+const fresh = () => newCase("t", 0);
 const add = (s: CaseState, ...flags: string[]): CaseState => ({ ...s, flags: [...s.flags, ...flags] as unknown as CaseState["flags"] });
 const A = `[${NUMBER_ALPHABET}]`;
 const SHAPE = new RegExp(`^${A}{4}-${A}{4}-${A}{4}$`);
@@ -72,9 +71,9 @@ describe("two devices, one case", () => {
   });
 
   it("keeps the first finish of the furthest episode", () => {
-    const one: Solved = { episode: 1, minutes: 31, marks: "🟩🟨", at: 1 };
+    const one: Solved = { episode: 1, minutes: 31, held: 2, at: 1 };
     const again: Solved = { ...one, minutes: 20, at: 2 };
-    const two: Solved = { episode: 2, minutes: 40, marks: "🟩", at: 3 };
+    const two: Solved = { episode: 2, minutes: 40, held: 2, at: 3 };
     expect(betterSolved(one, again)).toBe(one);
     expect(betterSolved(one, two)).toBe(two);
     expect(betterSolved(two, one)).toBe(two);
@@ -82,7 +81,7 @@ describe("two devices, one case", () => {
     expect(isSolved(one)).toBe(true);
     expect(isSolved({ ...one, episode: 3 })).toBe(true);
     expect(isSolved({ ...one, episode: 4 })).toBe(false);
-    expect(isSolved({ ...one, marks: "x".repeat(65) })).toBe(false);
+    expect(isSolved({ ...one, held: -1 })).toBe(false);
     expect(isSolved(null)).toBe(false);
   });
 });
@@ -92,20 +91,20 @@ describe("your cases, in a line", () => {
 
   it("follows a case from the envelope to the end", () => {
     const s = fresh();
-    expect(summarise(s)).toMatchObject({ episode: 1, phase: "playing", name: "Kabir" });
-    expect(describeCase(s, null, hours(3))).toEqual({ status: "Episode 1 · Kabir is missing · 3 h ago", result: null, cta: "Carry on" });
-    expect(describeCase(add(s, "dead"), null, 0).cta).toBe("Charge it");
-    expect(summarise(add(s, "dead", "ep:2")).episode).toBe(2);
+    expect(summarise(s)).toMatchObject({ episode: 1, phase: "playing" });
+    expect(describeCase(s, null, hours(3))).toEqual({ status: "Episode 1 · the call is still running · 3 h ago", result: null, cta: "Carry on" });
+    expect(describeCase(add(s, "did:dead"), null, 0).cta).toBe("Charge it");
+    expect(summarise(add(s, "did:dead", "ep:2")).episode).toBe(2);
     // Episode 2's end card leads straight into Episode 3.
-    expect(summarise(add(s, "dead", "ep:2", "ep:2-done"))).toMatchObject({ episode: 3, phase: "playing" });
-    expect(summarise(add(s, "dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done")).phase).toBe("done");
-    expect(describeCase(add(s, "dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), null, 0).status).toBe("Case closed");
+    expect(summarise(add(s, "did:dead", "ep:2", "ep:2-done"))).toMatchObject({ episode: 3, phase: "playing" });
+    expect(summarise(add(s, "did:dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done")).phase).toBe("done");
+    expect(describeCase(add(s, "did:dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), null, 0).status).toBe("Case closed");
   });
 
   it("keeps a finish on the desk after the save is gone", () => {
-    const line = describeCase(null, { episode: 1, minutes: 31, marks: "🟩🟩🟨", at: 0 }, 0);
+    const line = describeCase(null, { episode: 1, minutes: 31, held: 2, at: 0 }, 0);
     expect(line.status).toBe("Back in its envelope");
-    expect(line.result).toBe("Solved Episode 1 in 31 min · 🟩🟩🟨");
+    expect(line.result).toBe("Solved Episode 1 in 31 min · they had 2 on you");
   });
 
   it("says how long ago in words a person would use", () => {
@@ -118,22 +117,22 @@ describe("your cases, in a line", () => {
 
 describe("the desk remembers", () => {
   const s = fresh();
-  const one: Solved = { episode: 1, minutes: 31, marks: "🟩", at: 0 };
+  const one: Solved = { episode: 1, minutes: 31, held: 2, at: 0 };
 
   it("draws the phone as it was left", () => {
     expect(deskState(null, null)).toEqual({ kind: "new" });
-    expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1, name: "Kabir" });
-    expect(deskState(add(s, "dead"), one)).toEqual({ kind: "between", name: "Kabir" });
-    expect(deskState(add(s, "dead", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
-    expect(deskState(add(s, "dead", "ep:2", "ep:2-done"), one)).toMatchObject({ kind: "playing", episode: 3 });
-    expect(deskState(add(s, "dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), one)).toEqual({ kind: "solved", solved: one, again: false });
+    expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1 });
+    expect(deskState(add(s, "did:dead"), one)).toEqual({ kind: "between" });
+    expect(deskState(add(s, "did:dead", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
+    expect(deskState(add(s, "did:dead", "ep:2", "ep:2-done"), one)).toMatchObject({ kind: "playing", episode: 3 });
+    expect(deskState(add(s, "did:dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), one)).toEqual({ kind: "solved", solved: one, again: false });
     expect(deskState(null, one)).toEqual({ kind: "solved", solved: one, again: true });
   });
 
   it("says something arrived only to someone who has been before", () => {
-    expect(arrivals(null, ["low-battery", "case-two"])).toEqual([]);
-    expect(arrivals(["low-battery"], ["low-battery", "case-two"])).toEqual(["case-two"]);
-    expect(arrivals(["low-battery", "case-two"], ["low-battery", "case-two"])).toEqual([]);
+    expect(arrivals(null, ["dont-cut-the-call", "case-two"])).toEqual([]);
+    expect(arrivals(["dont-cut-the-call"], ["dont-cut-the-call", "case-two"])).toEqual(["case-two"]);
+    expect(arrivals(["dont-cut-the-call", "case-two"], ["dont-cut-the-call", "case-two"])).toEqual([]);
   });
 
   it("welcomes a player back after half an hour away", () => {
@@ -148,20 +147,20 @@ describe("the shelf", () => {
   it("keeps a save under a number, and never under a number nobody made", async () => {
     const n = await createShelf();
     expect(n).toMatch(SHAPE);
-    const s = tryUnlock(ep, fresh(), "passcode", "140306").state;
-    expect(await putShelf(n, "low-battery", { save: s, solved: { episode: 1, minutes: 31, marks: "🟩", at: 1 } })).toBe(true);
+    const s = add(fresh(), "did:unlock");
+    expect(await putShelf(n, "dont-cut-the-call", { save: s, solved: { episode: 1, minutes: 31, held: 2, at: 1 } })).toBe(true);
 
     const shelf = await readShelf(n);
-    expect(shelf?.saves["low-battery"]?.flags).toEqual(s.flags);
-    expect(shelf?.solved["low-battery"]?.minutes).toBe(31);
+    expect(shelf?.saves["dont-cut-the-call"]?.flags).toEqual(s.flags);
+    expect(shelf?.solved["dont-cut-the-call"]?.minutes).toBe(31);
 
     // Start over: the save goes, the finish stays.
-    await putShelf(n, "low-battery", { save: null });
+    await putShelf(n, "dont-cut-the-call", { save: null });
     const after = await readShelf(n);
-    expect(after?.saves["low-battery"]).toBeUndefined();
-    expect(after?.solved["low-battery"]?.marks).toBe("🟩");
+    expect(after?.saves["dont-cut-the-call"]).toBeUndefined();
+    expect(after?.solved["dont-cut-the-call"]?.held).toBe(2);
 
-    expect(await putShelf("2222-2222-2222", "low-battery", { save: s })).toBe(false);
+    expect(await putShelf("2222-2222-2222", "dont-cut-the-call", { save: s })).toBe(false);
     expect(await readShelf("2222-2222-2222")).toBeNull();
   });
 });
@@ -187,6 +186,6 @@ describe("in-app browsers", () => {
   });
 
   it("and everything here is counted, by name, and nothing else", () => {
-    for (const e of KEEPING) expect(eventsFor(ep)).toContain(e);
+    for (const e of KEEPING) expect(eventsFor(STORIES["dont-cut-the-call"])).toContain(e);
   });
 });

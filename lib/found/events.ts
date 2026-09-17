@@ -1,4 +1,4 @@
-import type { Flag, Story } from "@/content/found/types";
+import type { Flag, Story } from "@/content/types";
 
 /* ===========================================================================
    What Found measures, and nothing it doesn't.
@@ -28,27 +28,24 @@ const MILESTONES = [
   "open",
   "resume",
   "unlock",
-  "d1",
-  "d2",
-  "vault",
-  "d3",
-  "end",
   "ep2-start",
-  "e2-who",
-  "e2-why",
-  "e2-wifi",
-  "e2-trust",
-  "e2-fire",
   "ep2-end",
   "ep3-start",
-  "e3-plan",
-  "e3-guard",
-  "e3-call",
-  "ep3-end",
+  "end",
 ] as const;
 
-const CHOICES = ["mum:lie", "mum:truth", "mum:silence", "k:threat", "call:send", "call:run", "call:fix"] as const;
-const VERDICTS = ["e2-saw:yes", "e2-saw:maybe", "e2-saw:no"] as const;
+/** What a player gave away, and what they finally did with the phone. */
+const CHOICES = [
+  "cut:early",
+  "voice:on",
+  "pin:typed",
+  "shaila:asked",
+  "nikhil:answered",
+  "app:killed",
+] as const;
+
+const VERDICTS = ["end:police", "end:bin", "end:friend"] as const;
+
 
 /**
  * The loop that brings new players. The browser sends `drop:arrive` when a
@@ -97,7 +94,7 @@ const cache = new WeakMap<Story, readonly string[]>();
 export function eventsFor(ep: Story): readonly string[] {
   let list = cache.get(ep);
   if (!list) {
-    const puzzles = [...ep.locks.map((l) => l.id), ...ep.deductions.map((d) => d.id)];
+    const puzzles = ep.questions.map((q) => q.id);
     list = [
       ...MILESTONES,
       ...CHOICES,
@@ -127,32 +124,8 @@ type Tracked = (typeof MILESTONES)[number] | (typeof CHOICES)[number];
 
 /** The flag that marks each milestone or choice, so it's counted where it's saved. */
 export const MILESTONE_OF: Partial<Record<Flag, Tracked>> = {
-  "lock:passcode": "unlock",
-  // A phone nobody locked opens with a swipe.
   "did:unlock": "unlock",
-  "solved:went-home": "d1",
-  // Dev is no longer a question; seeing Tara's story is what clears him.
-  "seen:dev-story": "d2",
-  "lock:vault": "vault",
-  "solved:last-seen": "d3",
-  dead: "end",
   "ep:2": "ep2-start",
-  "solved:e2-who": "e2-who",
-  "solved:e2-why": "e2-why",
-  "did:wifi-on": "e2-wifi",
-  "said:r3107-b": "e2-trust",
-  "solved:e2-fire": "e2-fire",
-  "ep:2-done": "ep2-end",
   "ep:3": "ep3-start",
-  "solved:e3-plan": "e3-plan",
-  "solved:e3-guard": "e3-guard",
-  "fired:e3-ring": "e3-call",
-  "ep:3-done": "ep3-end",
-  "said:r-mum:lie": "mum:lie",
-  "said:r-mum:truth": "mum:truth",
-  "said:r-mum:silence": "mum:silence",
-  "said:r5520:threat": "k:threat",
-  "said:call:send": "call:send",
-  "said:call:run": "call:run",
-  "said:call:fix": "call:fix",
+  "did:chose": "end",
 };

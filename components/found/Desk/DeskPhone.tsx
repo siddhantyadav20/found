@@ -22,12 +22,12 @@ const minute = () => Math.floor(Date.now() / 60_000) * 60_000;
 function captionOf(state: DeskState, meta: CaseMeta, now: number): { hint: string; cta: string; small: string } {
   switch (state.kind) {
     case "playing":
-      return { hint: `${state.name} is still missing.`, cta: `Continue · Ep ${state.episode}`, small: `You put it down ${ago(state.last, now)}.` };
+      return { hint: "The call is still running.", cta: `Continue · Ep ${state.episode}`, small: `You put it down ${ago(state.last, now)}.` };
     case "between":
-      return { hint: `The phone died. ${state.name}'s case isn't over.`, cta: "Charge it · Ep 2", small: "It's on the charger, waiting for you." };
+      return { hint: "The phone died. The call didn't.", cta: "Charge it · Ep 2", small: "It's on the charger, waiting for you." };
     case "solved":
       return {
-        hint: state.solved ? `Solved${state.solved.minutes ? ` in ${state.solved.minutes} min` : ""}. ${state.solved.marks}` : "Solved.",
+        hint: state.solved ? `Closed${state.solved.minutes ? ` in ${state.solved.minutes} min` : ""}. They had ${state.solved.held} on you.` : "Closed.",
         cta: state.again ? "Play again" : "Open it",
         small: state.again ? "Someone else goes missing next time." : "Bagged, tagged, and still on your desk.",
       };
@@ -126,7 +126,7 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
                         <span className={styles.note} style={{ "--i": 0 } as React.CSSProperties}>
                           <b>Case file</b>
                           <span>
-                            Episode {state.episode} · {state.name} is still missing
+                            Episode {state.episode} · the call is still running
                           </span>
                         </span>
                       ) : state.kind === "new" ? (
@@ -149,7 +149,7 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
               <span className={styles.bagLabel}>
                 <b>Evidence</b>
                 <span>{meta.title}</span>
-                <span>{state.solved ? `Ep ${state.solved.episode} · ${state.solved.marks}` : "Solved"}</span>
+                <span>{state.solved ? `Ep ${state.solved.episode} · ${state.solved.held} on you` : "Closed"}</span>
               </span>
             </span>
           )}
@@ -157,7 +157,7 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
           <span className={styles.tag} id="case-tag" role="note">
             <b>{meta.title}</b>
             <span>
-              {meta.episodes} episodes · about {minutes ?? 30} min each
+              {meta.episodes} episodes · about {minutes ?? 40} min in one sitting
             </span>
             <span>{meta.tone}</span>
           </span>
