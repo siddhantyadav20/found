@@ -14,6 +14,8 @@ import { add, appLabel, battery, clockNow, expose, has, newCase, openApp as find
 import { bindProgress, commit, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { track } from "@/lib/found/track";
 import Chat from "@/components/her/apps/Chat";
+import HerNotes from "@/components/her/apps/Notes";
+import HerPhotos from "@/components/her/apps/Photos";
 import Recents from "@/components/her/apps/Recents";
 import HerSettings from "@/components/her/apps/Settings";
 import CaseFile from "./CaseFile";
@@ -255,6 +257,31 @@ function AppBody({
   if (app === "whatsapp" || app === "messages" || app === "instagram")
     return <Chat story={story} state={state} app={app} onRead={read} />;
   if (app === "phone") return <Recents story={story} state={state} onRead={read} />;
+  if (app === "photos")
+    return (
+      <HerPhotos
+        story={story}
+        state={state}
+        onRead={read}
+        onRestore={(id) => {
+          const now = readProgress();
+          if (now) save(add(now, `did:restored-${id}`));
+        }}
+      />
+    );
+  if (app === "notes")
+    return (
+      <HerNotes
+        story={story}
+        state={state}
+        onRead={read}
+        onPassword={() => {
+          const now = readProgress();
+          // They watched the keypad. She kept this from them for 31 hours.
+          if (now) save(expose(story, add(now, "did:typed-password"), "pin"));
+        }}
+      />
+    );
   if (app === "settings") return <HerSettings story={story} state={state} />;
 
   if (app === "news")

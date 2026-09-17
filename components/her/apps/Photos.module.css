@@ -1,0 +1,101 @@
+/* Photos, the way iOS lays it out, and paper the way a phone camera sees it:
+   a little warm, a little crooked, lit by whatever was on in the room. */
+
+.tabs { display: flex; gap: 8px; margin: 0 0 12px; }
+
+.tabs button {
+  flex: 1;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--os-panel);
+  color: var(--os-dim);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs button[data-on] { background: var(--ios-blue); color: #fff; }
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: #17171a;
+  cursor: pointer;
+}
+
+.cellStamp {
+  position: absolute;
+  left: 4px;
+  bottom: 3px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.empty { color: var(--os-dim); font-size: 14px; padding: 18px 2px; }
+
+/* A page of her diary, photographed at 11:40 at night. */
+.paper {
+  width: 100%;
+  height: 100%;
+  padding: 10px 11px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #f3ecdc 0%, #e7dfcd 100%);
+  color: #23262c;
+  text-align: left;
+  rotate: -0.6deg;
+  box-shadow: inset 0 0 40px rgba(120, 100, 60, 0.18);
+}
+
+.paperTitle { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a7f68; margin-bottom: 4px; }
+
+.hand {
+  font-size: 11px;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(60, 70, 110, 0.14);
+  padding-bottom: 1px;
+}
+
+.scene {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(80% 60% at 40% 30%, #4b5a49, #1d241f);
+}
+
+.sceneTitle { font-size: 10px; color: rgba(255, 255, 255, 0.75); padding: 0 6px; text-align: center; }
+
+.viewer { display: flex; flex-direction: column; gap: 10px; }
+
+.viewerBar { display: flex; align-items: center; justify-content: space-between; }
+
+.link { border: 0; background: none; color: var(--ios-blue); font: inherit; font-size: 15px; cursor: pointer; padding: 0; }
+
+.stamp { color: var(--os-dim); font-size: 12px; }
+
+.viewer .paper, .viewer .scene { min-height: 300px; height: auto; rotate: -0.4deg; padding: 18px; }
+.viewer .hand { font-size: 15px; line-height: 1.7; }
+.viewer .paperTitle { font-size: 11px; margin-bottom: 10px; }
+
+.caption { color: var(--os-dim); font-size: 13px; line-height: 1.45; }
+
+.binBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--os-panel);
+  color: var(--os-dim);
+  font-size: 13px;
+}
+
+.recover { border: 0; background: none; color: var(--ios-blue); font: inherit; font-size: 15px; cursor: pointer; }

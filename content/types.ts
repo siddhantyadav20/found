@@ -239,6 +239,8 @@ export type Message = {
 export type Thread = {
   readonly id: string;
   readonly app: Extract<AppId, "whatsapp" | "messages" | "instagram">;
+  /** Messages keeps what it doesn't trust in another folder, out of sight. */
+  readonly folder?: "inbox" | "junk";
   readonly name: string;
   /** What the list shows under the name when it isn't the last message. */
   readonly sub?: string;
@@ -247,6 +249,47 @@ export type Thread = {
   /** Unsaved numbers show as numbers, which is how two of them get confused. */
   readonly number?: string;
   readonly messages: readonly Message[];
+  readonly requires?: readonly Flag[];
+};
+
+/**
+ * A photograph on her phone. Until the shoot (ROADMAP P11) these are drawn,
+ * and the ones that matter most are drawn anyway: her diary, photographed
+ * page by page at 11:40 PM, is paper with her handwriting on it.
+ */
+export type Photo = {
+  readonly id: string;
+  readonly album?: "diary" | "family" | "screenshots";
+  readonly at: string;
+  readonly day: string;
+  readonly place?: string;
+  /** `paper` draws a page; `scene` draws a photograph. */
+  readonly kind: "paper" | "scene";
+  readonly title: string;
+  /** What is written on the page, in her hand. */
+  readonly lines?: readonly string[];
+  readonly caption?: string;
+  /** In Recently Deleted, with the time it was deleted on it. */
+  readonly deletedAt?: string;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+export type Note = {
+  readonly id: string;
+  readonly title: string;
+  readonly body: readonly string[];
+  readonly at: string;
+  readonly day: string;
+  /** Notes shows this, and in one case it is the whole case. */
+  readonly edited?: string;
+  readonly sharedWith?: string;
+  /** A locked note asks for a password. Whether it holds anything is another matter. */
+  readonly locked?: boolean;
+  readonly password?: string;
+  /** What is inside once it opens. */
+  readonly inside?: readonly string[];
+  readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
 
@@ -305,6 +348,8 @@ export type Story = {
   };
   readonly evidence: readonly Evidence[];
   readonly threads: readonly Thread[];
+  readonly photos: readonly Photo[];
+  readonly notes: readonly Note[];
   readonly calls: readonly CallEntry[];
   readonly settings: readonly SettingsGroup[];
   readonly questions: readonly Question[];

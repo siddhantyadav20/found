@@ -1,6 +1,7 @@
 import type { Story } from "../types";
 
 import { episode1 } from "./episode1";
+import { notes, photos, smsThreads } from "./paper";
 import { calls, settings, threads } from "./phone";
 
 /* ===========================================================================
@@ -48,7 +49,9 @@ export const story: Story = {
       { app: "casefile", label: "Case file" },
     ],
   },
-  threads,
+  threads: [...threads, ...smsThreads],
+  photos,
+  notes,
   calls,
   settings,
   ...episode1,

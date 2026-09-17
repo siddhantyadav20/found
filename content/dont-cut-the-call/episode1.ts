@@ -28,6 +28,14 @@ const evidence: Evidence[] = [
   { id: "passcode-off", device: "hers", app: "settings", label: "The passcode was turned off on Thursday" },
   { id: "profile", device: "hers", app: "settings", label: "A device management profile she didn't install", requires: ["ask:whose"] },
   { id: "apple-account", device: "hers", app: "settings", label: "Her Apple Account is on a device she doesn't own", requires: ["ask:whose"] },
+
+  // Her diary, her notes, and the bank's own account of what she lost.
+  { id: "diary-1", device: "hers", app: "photos", label: "Diary, page 1: \"It is a lie\"" },
+  { id: "diary-3", device: "hers", app: "photos", label: "Diary, page 3: the FIR number is a mobile number" },
+  { id: "diary-4", device: "hers", app: "photos", label: "Diary, page 4: Myawaddy, Lotus Park" },
+  { id: "she-knew", device: "hers", app: "notes", label: "She knew it was fake by 5:52 PM on Thursday" },
+  { id: "lure", device: "hers", app: "notes", label: "A note for whoever gets this phone, edited at 12:39 AM" },
+  { id: "the-49k", device: "hers", app: "messages", label: "She lost ₹49,000, not ₹38 lakh" },
 ];
 
 const questions: Question[] = [
@@ -94,6 +102,12 @@ const events: LiveEvent[] = [
 ];
 
 const exposures: Exposure[] = [
+  {
+    id: "pin",
+    what: "Her password",
+    used: "Aapne unka password khola. 3:02 AM pe ek lakh transfer hua.",
+    english: "You opened her password. At 3:02 AM, one lakh was transferred.",
+  },
   {
     id: "voice",
     what: "Your voice",
