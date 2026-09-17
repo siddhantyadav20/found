@@ -120,6 +120,24 @@ const exposures: Exposure[] = [
     used: "Aapki awaaz humare paas hai.",
     english: "We have your voice.",
   },
+  {
+    id: "shaila",
+    what: "Shaila's name",
+    used: "Aapne ek gawah ko sampark kiya. Shaila Joshi, Shivaji Park.",
+    english: "You contacted a witness. Shaila Joshi, Shivaji Park.",
+  },
+  {
+    id: "nikhil",
+    what: "Her son's trust",
+    used: "Aapne mrit mahila ke bete se baat ki, aur jhooth bola.",
+    english: "You spoke to the dead woman's son, and you lied.",
+  },
+  {
+    id: "delivery",
+    what: "The delivery at 1:11 AM",
+    used: "1:11 AM pe ek mrit mahila ka phone aapke ghar deliver hua. CCTV hai.",
+    english: "At 1:11 AM a dead woman's phone was delivered to your home. There is CCTV.",
+  },
 ];
 
 /** Placeholders until P8. The rows are the chapter's three answers. */

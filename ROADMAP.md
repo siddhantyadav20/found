@@ -32,7 +32,7 @@ browser at phone size; tick this file; commit when Siddhant says so.
 | **P11** | The real assets | Shoot, voices, handwriting, documents |
 | **P12** | Ship-ready | Performance, accessibility, captions, tests, QA |
 
-**P0, P1 and P2 are done** (2026-09-17/18): the opening plays, from the pouch
+**P0–P4 are done** (2026-09-17/18): the opening plays, from the pouch
 to the call to her home screen and the first question. What each phase left
 for later is noted under it.
 
@@ -119,7 +119,7 @@ shadow rather than a person, and the real clips arrive in P11.
 
 ---
 
-## P3 — The ledger and the board
+## P3 — The ledger and the board · **done**
 
 **Goal:** the systems that make the ending personal.
 
@@ -133,12 +133,19 @@ shadow rather than a person, and the real clips arrive in P11.
 | Question type: claim check | A list of statements marked **True** or **Bluff**, with evidence pulled from either phone; used in Ep 2 (three versions) and Ep 3 (your arrest) |
 | Case file | Keep: one question at a time, free "where to look", three hints, the 45-second idle nudge, badges for reachable-but-unseen evidence |
 
-**Done when:** a scripted run produces a correct ledger, and both new question
-types play with hints on a phone screen.
+**Built:** the ledger lives in the engine and in the save, and already records
+her password and the player's voice without ever announcing either. The case
+file now asks all four kinds of question — pick, type, two-lane timeline, and
+true-or-bluff claims, where a claim is true only when the player actually
+handed it over. `resultOf` is "What they had on you" and the share line is
+"They had N things on me". All four kinds and the hint ladder are tested.
+
+**Left for later:** the end card itself is P8, and the idle nudge after 45
+seconds is not back yet.
 
 ---
 
-## P4 — Her apps
+## P4 — Her apps · **done**
 
 **Goal:** everything the player opens on Vasu's phone. All Android-styled, all
 drawn by us, all story-driven from `content/`.
@@ -156,9 +163,16 @@ drawn by us, all story-driven from `content/`.
 | **Chrome** | History as a second route to Myawaddy |
 | **News** | Notifications, and one article view for the 6:42 AM story |
 
-**Done when:** every app opens from her home screen with placeholder content,
-badges count correctly, and a test holds each piece of evidence to exactly one
-place.
+**Built, in current iOS** (Siddhant asked for the look and feel back, so her
+phone is the iPhone Nikhil handed down): WhatsApp with pinned chats, a society
+group, documents, a voice note and "This message was deleted"; Phone's
+Recents; Settings with the passcode off at 8:10 and their profile at 8:14;
+Photos with her diary as paper and Recently Deleted; Notes with the edited
+note and the locked one; Messages; Instagram; PikDrop with the fourteen-minute
+stop; Safari; City Desk.
+
+**Left for later:** the notification shade and app switcher, Live Text on the
+paper, and the real photographs (P11).
 
 ---
 
