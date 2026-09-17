@@ -76,10 +76,24 @@ These come from the pilot and aren't recoverable from the code alone.
 - **"Start over" asks first,** and a finished episode stays on the desk
   afterwards.
 
+## Decided 2026-09-17
+
+- **Chapter One is a new story,** from Siddhant's script *FOUND — Chapter 1*:
+  Raghav Mehra's phone, under the player's door at 4:17 AM. The playable
+  version, with every contradiction resolved, is `CHAPTER1.md`.
+- **Take a fresh pass.** Nothing is kept because it was built; everything
+  has to earn its place in the new chapter (CHAPTER1.md, Part 9).
+- **Raghav is one person, male, with a real face and voice.** The dealt cast
+  and the whisper-only rule were Low Battery's.
+- **Built alongside Low Battery** as the `blue-room` case, and Low Battery is
+  deleted once the new chapter plays end to end.
+
 ## Still open
 
 - Episode 2's NightCam fuel-can photo is a placeholder: no CC0 photo fits.
-- Episode 3 hasn't been started.
+- Episode 3's eleven NightCam frames and the stairwell photo are placeholders
+  (decided 2026-09-16: build with placeholders, replace at launch). The call
+  is captions only until it's recorded.
 - A domain, and a Vercel project, for this app. Deliberately deferred: Found
   stays local until it's a good product with multiple storylines.
 - Whether the portfolio's `/found` redirects here once this app is live.

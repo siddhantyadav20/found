@@ -1,3 +1,4 @@
+import { blueRoom, blueRoomTeaser } from "./blue-room";
 import { found, teaser } from "./found";
 
 /* ===========================================================================
@@ -29,6 +30,9 @@ export type CaseMeta = {
 
 export const CASES = {
   "low-battery": { ...found, teaser },
+  // Chapter One's rewrite (CHAPTER1.md). Playable at /c/blue-room while it's
+  // built; it replaces Low Battery on the desk once it plays end to end.
+  "blue-room": { ...blueRoom, teaser: blueRoomTeaser },
 } as const satisfies Record<string, CaseMeta>;
 
 export type CaseId = keyof typeof CASES;

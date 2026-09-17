@@ -1,3 +1,4 @@
+import { story as blueRoom } from "./blue-room/story";
 import type { CaseId } from "./cases";
 import { story as lowBattery } from "./found/story";
 import type { Story } from "./found/types";
@@ -9,4 +10,5 @@ import type { Story } from "./found/types";
  */
 export const STORIES: Record<CaseId, Story> = {
   "low-battery": lowBattery,
+  "blue-room": blueRoom,
 };

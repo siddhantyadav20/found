@@ -129,7 +129,51 @@ Built: `scripts/prep-photos.mjs` (`npm run photos`, `npm run photos:check`) — 
 - **Siddhant's shots** (locker, van, cake, story, shoes, letterbox, fuel): still to come. `npm run photos` does the rest.
 - **Still open:** cinema and balcony, revisited at launch; and the pilot photographs' provenance, which didn't come across with them (S15).
 
-### S7 — Finish Chapter One
+### S7 — Chapter One, rewritten: "The Blue Room"
+On 2026-09-17 Chapter One became a new story: Raghav Mehra's phone, under
+your door at 4:17 AM. The build document is [CHAPTER1.md](CHAPTER1.md): the
+resolved truth, every fix to the script and why, the episodes as puzzles,
+the three choices, and what's cut. It's built as a new case, `blue-room`,
+next to Low Battery, which stays playable and untouched until the new
+chapter plays end to end (N8).
+
+**N1 — Foundations and the opening · *done 2026-09-17*.** Built: The Blue Room
+registered as its own case (`/c/blue-room`); a story can now fix its
+character instead of dealing one, open with a swipe instead of a passcode,
+set its own clocks and days (04:17, Saturday), lay out its own home screen
+(Phone, WhatsApp, Photos, Case file in the dock; Telegram, Recorder, Files,
+Maps, Settings), time its own events, and play scripted calls that hang up
+by themselves, with English under Hinglish. New icons for Phone, WhatsApp,
+Telegram, Recorder and Files, drawn from scratch. The opening plays: the
+envelope with no name on it, the lock screen stacking "don't call him" and
+RAGHAV's missed call as they land, the call, the whisper, back to the lock
+screen at 4%, swipe open, the case file introduces itself.
+
+**N2 — The chat apps and Phone.** WhatsApp, Telegram (deleted history, live
+location, contact info), Phone (recents, contacts), Settings (SIM 2, passcode,
+camera log).
+
+**N3 — Photos, Recorder, Files.** Video clips with captions, camera imports,
+the Telegram album, the hidden album and its lock; the Recorder; Files with a
+tappable floor plan and a spreadsheet with a hidden sheet.
+
+**N4 — Episode 1 as data.** CHAPTER1.md Part 5.
+
+**N5 — Episode 2 as data.** Part 6, including three-at-once matching and the
+phone dying at 1%.
+
+**N6 — Episode 3 as data.** Part 7, including the charger gate.
+
+**N7 — The choices and the endings.** Part 8, including the final card and
+Ending 03's share.
+
+**N8 — Tests, then retire Low Battery.** Walk every ending. Delete Low
+Battery's content, apps, tests and CHAPTER1-FINAL.md; the desk, share and OG
+copy move to the new chapter; PHOTOS.md becomes the new shot, video and voice
+list.
+
+<details><summary>Low Battery's S7, as it was built (S7a–S7f, done 2026-09-16)</summary>
+
 The story is locked in `CHAPTER1-FINAL.md`: Mumbai, three episodes, an
 anthology chapter that closes. Chapters do not connect — each is a different
 city and a different story — so Chapter One answers everything it asks.
@@ -141,32 +185,62 @@ toast saying what was added and how much is found; the case file introducing
 itself on the first unlock; and an idle nudge that offers the next hint after
 45 seconds, counted apart from hints the player asked for.
 
-**S7b — Episode 1 tightening.** The midpoint turn: a Guardian session logged
+**S7b — Episode 1 tightening · *done 2026-09-16*.** The midpoint turn: a Guardian session logged
 **Sat 00:05**, four minutes before the van photo was deleted — someone else was
 inside this phone first. Dev compressed from a deduction to two messages and a
 photograph. The activity report leaving the phone as it dies.
 
-**S7c — Episode 2 tightening.** Mum's confession (she saw Friday's log on
+**S7c — Episode 2 tightening · *done 2026-09-16*.** Mum's confession (she saw Friday's log on
 Saturday and said nothing). Five deductions down to three. "I don't know"
 accepted as an answer. 3107 left unconfirmed. The last beat: the player's own
 home Wi-Fi in the phone's known networks, joined three minutes before they
 picked it up.
+Built: the questions are now who (typed "me"), who wanted it and why a
+stranger (typed; "I don't know" is accepted and answered "Good."), and did
+{name} start the fire (NightCam frame 1). 3107's right answer gets "okay."
+and no more. After the letterbox, a banner points to Settings, where Home-4B
+reads "Auto-joined Mon 08:11". Seeing that ends the episode. The first pickup
+is never earlier than 08:12, so that timing always holds.
 
-**S7d — Episode 3 as data.** `content/found/episode3.ts`: eleven NightCam
+**S7d — Episode 3 as data · *done 2026-09-16*.** `content/found/episode3.ts`: eleven NightCam
 frames, the watchman, {name}'s unsent note, Kiran's three messages, and the
 question that turns the chapter — who was carried out of the engine house on
 Friday night. All three episode titles land together here ("Don't Unlock It.",
 "Read Receipts", "Delivered"), since an episode name is a new field the
 envelope and the end cards both read.
+Built: eleven frames, each downloading once the one before has been opened;
+the sync pauses at 11 of 12 until the watchman is named. Frame 11 is the only
+zoomable photo (pinch, double-tap or scroll), and past 2.2× the two men
+appear. Other pieces: the draft note (in the vault, where {name}'s own notes
+live; Notes is the case file); the Dabba order to Currey Road; City Desk's
+watchman column; K.'s "Stop downloading." Placeholders stand in for every
+frame until the photographs exist.
 
-**S7e — The climax and the endings.** The call screen (the only full-bleed
+**S7e — The climax and the endings · *done 2026-09-16*.** The call screen (the only full-bleed
 screen in the game), the two converging clocks, three endings that each cost
 something, and the desk return that lights the next object.
+Built: after frame 12, K. either turns sharing on (his dot closes on yours in
+Maps) or, if sharing was stopped in Episode 1, sends a photo of your
+stairwell. 3107 is outside Byculla station, then "I'm outside. Bring it
+down." (prefixed "You said you knew what I did." after a threat), then the
+call. The call rings until answered (Decline refuses), plays captions for
+45 seconds, and offers the three answers. Each ending runs: act (send, erase,
+open the door, with knocking), what happened (some lines depend on the van
+recovery and Mum's reply), a news item, Tara's line, then the desk and
+"Close the case". The chapter end card shows what you said, "1 in N players
+said what you said" (hidden under 50 answers), and Pass it on.
 
-**S7f — Tests and the linter.** Walk all three episodes and every ending; check
+**S7f — Tests and the linter · *done 2026-09-16*.** Walk all three episodes and every ending; check
 every question has two routes in and three hints.
+Built: the perfect player walks all three episodes and each ending; the curious
+players fire every event (both of K.'s routes included); every question names
+at least two apps and has three distinct hints, and where-to-look includes the
+app that holds its proof. 94 tests.
 
 Retired along the way: the "Would you play Episode 3?" vote and its email box.
+
+
+</details>
 
 ### S8 — Voices
 - **A casting brief, and a script of every voiced line:** Mum's voicemails, K.'s voice note, Tara, Dev. Hinglish where they'd naturally speak it.
@@ -234,7 +308,8 @@ Retired along the way: the "Would you play Episode 3?" vote and its email box.
 | Set `FOUND_STATS_TOKEN` on the portfolio's Vercel and read the pilot's funnel | S5, S7 | Any time |
 | Shoot the seven photos in PHOTOS.md | S6 | Before S6 |
 | Approve sourced photos | S6 | In S6 |
-| Episode 3 and ending decisions | S7 | Before S7 |
+| Answer CHAPTER1.md Part 11 (title, script fixes, English lines, app names, charger gate) | S7 N2 onwards | Before N4 |
+| The Blue Room's photos, video (above all the FOUND video) and voices (CHAPTER1.md Part 10) | S7 (placeholders now), S8 | Before launch |
 | Cast and record voices | S8 | Before S8 |
 | Case two's concept | S12 | Before S12 |
 | Buy Canela; domain; GitHub and Vercel steps | S15 | Before S15 |
