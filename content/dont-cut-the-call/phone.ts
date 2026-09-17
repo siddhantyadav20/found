@@ -222,8 +222,51 @@ export const threads: Thread[] = [
 
 export const calls: CallEntry[] = [
   { id: "c-cb", name: "Mumbai Crime Branch", kind: "in", at: "17:38", day: "Thursday", seconds: 113_587, number: "+91 62901 77441" },
-  { id: "c-1930", name: "1930", kind: "out", at: "21:48", day: "Friday", seconds: 1_440, evidence: "helpline" },
+  {
+    id: "c-1930",
+    name: "1930",
+    kind: "out",
+    at: "21:48",
+    day: "Friday",
+    seconds: 1_440,
+    evidence: "helpline",
+    recording: {
+      seconds: 1_440,
+      lines: [
+        { who: "Recording", line: "Your call is important to us. Please stay on the line." },
+        { who: "Recording", line: "Your call is important to us. Please stay on the line." },
+        { who: "An officer, at 22:12", line: "Madam, online complaint file kijiye. Portal pe. Yahan se kuch nahi hota." , english: "Madam, file the complaint online. On the portal. Nothing happens from here." },
+        { who: "Vasu", line: "Beta, mere paas do ghante nahi hain.", english: "Son, I don't have two hours." },
+      ],
+    },
+  },
   { id: "c-dsouza", name: "C. D'Souza", kind: "out", at: "22:19", day: "Friday", seconds: 96, number: "+91 98204 11902" },
+  {
+    /* The number "Tanvi" sent back. A man answers, and she keeps the
+       recording, because a bank manager keeps everything. */
+    id: "c-collector",
+    name: "+91 90040 23117",
+    kind: "out",
+    at: "21:42",
+    day: "Friday",
+    seconds: 38,
+    number: "+91 90040 23117",
+    evidence: "collector",
+    requires: ["ep:2"],
+    recording: {
+      seconds: 38,
+      lines: [
+        { who: "Vasu", line: "Tanvi?", english: "Tanvi?" },
+        { who: "A man", line: "Bolo, aunty.", english: "Go on, aunty." },
+        { who: "Vasu", line: "Main Tanvi se baat karna chahti hoon.", english: "I want to speak to Tanvi." },
+        {
+          who: "A man",
+          line: "Aunty, aap bahut samajhdaar ho. Ghar pe raho. Raat ko bahar mat nikalna.",
+          english: "Aunty, you're very clever. Stay at home. Don't go out at night.",
+        },
+      ],
+    },
+  },
   { id: "c-unknown-1", name: "+91 90040 23117", kind: "out", at: "22:02", day: "Friday", seconds: 0 },
   { id: "c-unknown-2", name: "+91 99873 40021", kind: "out", at: "22:31", day: "Friday", seconds: 12 },
   { id: "c-nikhil", name: "Nikhil ❤️", kind: "out", at: "23:58", day: "Friday", seconds: 0, evidence: "last-call-son" },

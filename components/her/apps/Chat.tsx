@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import type { Message, Story, Thread } from "@/content/types";
+import type { Message, ReplyOption, Story, Thread } from "@/content/types";
 import { all, seen, type CaseState } from "@/lib/game/engine";
 import styles from "../ios/Chats.module.css";
 
@@ -89,16 +89,44 @@ export default function Chat({
   state,
   app,
   onRead,
+  onSay,
 }: {
   story: Story;
   state: CaseState;
   app: Thread["app"];
   /** Opening a chat is how what's in it gets found. */
   onRead: (evidenceIds: readonly string[]) => void;
+  /** The player, saying something on a dead woman's phone. */
+  onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
-  const threads = story.threads.filter((t) => t.app === app && all(state, t.requires));
+  const live = story.threads.filter((t) => t.app === app && all(state, t.requires));
+
+  /* Two entries with the same name are one chat: Episode 2 adds messages to
+     Shaila rather than a second Shaila. */
+  const threads = live.reduce<Thread[]>((acc, t) => {
+    const same = acc.find((x) => x.name === t.name);
+    if (!same) return [...acc, t];
+    return acc.map((x) =>
+      x === same ? { ...x, messages: [...x.messages, ...t.messages], reply: t.reply ?? x.reply } : x,
+    );
+  }, []);
+
   const here = threads.find((t) => t.id === open);
+  const said = (o: ReplyOption) => o.sets?.some((f) => state.flags.includes(f));
+
+  /* Anything visible in the open chat counts as found, including messages
+     that arrive while the player is still sitting in it — which is how
+     Shaila's reply reaches them. */
+  const visible = here
+    ? here.messages
+        .filter((m) => all(state, m.requires) && m.evidence)
+        .map((m) => m.evidence as string)
+        .join(",")
+    : "";
+  useEffect(() => {
+    if (visible) onRead(visible.split(","));
+  }, [visible, onRead]);
 
   if (here)
     return (
@@ -123,9 +151,26 @@ export default function Chat({
           ))}
         </div>
 
-        <div className={styles.composer}>
-          <span className={styles.field}>It isn&apos;t your phone.</span>
-        </div>
+        {here.reply && all(state, here.reply.requires) && !here.reply.options.some(said) ? (
+          <div className={styles.replies}>
+            {here.reply.prompt && <p className={styles.replyPrompt}>{here.reply.prompt}</p>}
+            {here.reply.options.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                className={styles.replyOption}
+                onClick={() => onSay?.(o, here.reply!.id)}
+              >
+                <span>{o.text}</span>
+                {o.english && <span className={styles.docMeta}>{o.english}</span>}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.composer}>
+            <span className={styles.field}>It isn&apos;t your phone.</span>
+          </div>
+        )}
       </div>
     );
 

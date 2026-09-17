@@ -1,6 +1,7 @@
 import type { Story } from "../types";
 
 import { episode1 } from "./episode1";
+import * as ep2 from "./episode2";
 import { instagramThreads, notes, photos, smsThreads } from "./paper";
 import { calls, settings, threads } from "./phone";
 import { article, courier, searches } from "./world";
@@ -50,8 +51,12 @@ export const story: Story = {
       { app: "casefile", label: "Case file" },
     ],
   },
-  threads: [...threads, ...smsThreads, ...instagramThreads],
-  photos,
+  /* Each episode only ever adds. Episode 2's chats, photographs and questions
+     are gated on its own flag, so the merged story plays Episode 1 exactly as
+     it was written. */
+  threads: [...threads, ...smsThreads, ...instagramThreads, ...ep2.threads],
+  photos: [...photos, ...ep2.photos],
+  stories: ep2.stories,
   notes,
   calls,
   settings,
@@ -59,4 +64,9 @@ export const story: Story = {
   searches,
   article,
   ...episode1,
+  evidence: [...episode1.evidence, ...ep2.evidence],
+  questions: [...episode1.questions, ...ep2.questions],
+  cues: [...episode1.cues, ...ep2.cues],
+  events: [...episode1.events, ...ep2.events],
+  exposures: [...episode1.exposures, ...ep2.exposures],
 };

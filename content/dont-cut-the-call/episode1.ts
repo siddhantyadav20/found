@@ -26,7 +26,6 @@ const evidence: Evidence[] = [
   { id: "last-call-son", device: "hers", app: "phone", label: "Her last call was to her son, unanswered" },
   { id: "helpline", device: "hers", app: "phone", label: "She called 1930 and held for 24 minutes" },
   { id: "passcode-off", device: "hers", app: "settings", label: "The passcode was turned off on Thursday" },
-  { id: "profile", device: "hers", app: "settings", label: "A device management profile she didn't install", requires: ["ask:whose"] },
   { id: "apple-account", device: "hers", app: "settings", label: "Her Apple Account is on a device she doesn't own", requires: ["ask:whose"] },
 
   // Her diary, her notes, and the bank's own account of what she lost.
@@ -217,6 +216,8 @@ const events: LiveEvent[] = [
     id: "alert",
     device: "hers",
     after: ["did:unlock"],
+    // Long enough for the player to have the phone in their hands, short
+    // enough that they are still looking at it.
     delay: 8,
     app: "news",
     banner: "City Desk · Dadar: retired bank manager, 64, found dead below building",

@@ -112,6 +112,8 @@ export function answer(story: Story, s: CaseState, id: string, given: readonly s
 
   switch (q.kind) {
     case "pick": {
+      // You cannot put something on the table that you have not found.
+      if (!picked.every((id) => seen(s, id))) return { state: s, ok: false, reply: WRONG };
       const routes = [q.proof, ...(q.orProof ?? [])];
       ok = routes.some((route) => picked.length === route.length && picked.every((p) => route.includes(p)));
       // Something in there proves it, and something else doesn't.
@@ -122,8 +124,16 @@ export function answer(story: Story, s: CaseState, id: string, given: readonly s
       ok = q.accepts.some((a) => normalise(a) === text);
       break;
     case "timeline": {
-      const want = new Set(q.rows.filter((r) => r.lane === "phone").map((r) => r.id));
-      ok = picked.length === want.size && picked.every((p) => want.has(p));
+      /* The board only holds what the player has found, so the answer is
+         judged against that and not against the whole script. */
+      const known = q.rows.filter((r) => seen(s, r.evidence));
+      const want = new Set(known.filter((r) => r.lane === "phone").map((r) => r.id));
+      ok =
+        want.size > 0 &&
+        picked.length === want.size &&
+        picked.every((p) => want.has(p)) &&
+        // Nothing can be put on the board that isn't on it.
+        picked.every((p) => known.some((r) => r.id === p));
       break;
     }
     case "claims": {

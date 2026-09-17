@@ -1,0 +1,30 @@
+/* Two halves of one app, and the tabs iOS would put between them. */
+
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--os-bg);
+}
+
+.tabs { flex: none; display: flex; gap: 8px; padding: 6px 14px 10px; }
+
+.tabs button {
+  flex: 1;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--os-panel);
+  color: var(--os-dim);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs button[data-on] { background: var(--ios-blue); color: #fff; }
+
+.body { position: relative; flex: 1; min-height: 0; overflow-y: auto; padding: 0 14px 14px; }
+
+/* The chat inside the tab fills what's left of the app, not the whole phone. */
+.body > div { position: static; }

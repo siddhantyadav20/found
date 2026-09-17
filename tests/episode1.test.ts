@@ -67,6 +67,8 @@ describe("the other way in", () => {
     s = answered(s, "whose", ["alert", "watchman"]);
     s = answered(s, "knew", ["diary-1"]);
     s = answered(s, "number", "his mother");
+    // The extinguisher's label is found by zooming, not by opening an app.
+    s = see(ep, s, "burmese");
     s = answered(s, "where", ["burmese", "she-searched-mw"]);
     expect(s.flags).toContain("did:placed-him");
   });

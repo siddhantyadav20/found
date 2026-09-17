@@ -242,6 +242,42 @@ export type Message = {
   readonly requires?: readonly Flag[];
 };
 
+/**
+ * What the player can say, when the story lets them say anything at all.
+ * Four places in the chapter, and no more: the call, her son, her friend, and
+ * the last message of Ending 03. Never generated, always picked from a list.
+ */
+export type ReplyOption = {
+  readonly id: string;
+  readonly text: string;
+  readonly english?: string;
+  readonly sets?: readonly Flag[];
+  /** Saying this hands them something, and the ledger keeps it. */
+  readonly exposes?: string;
+  /** What comes back, and when. */
+  readonly then?: readonly Message[];
+};
+
+export type Reply = {
+  readonly id: string;
+  readonly requires?: readonly Flag[];
+  readonly prompt?: string;
+  readonly options: readonly ReplyOption[];
+};
+
+/** A story on Instagram, which expires, with something on the audio. */
+export type Story24 = {
+  readonly id: string;
+  readonly who: string;
+  readonly at: string;
+  readonly expires: string;
+  readonly caption: string;
+  /** What the microphone caught above her, once the volume is up. */
+  readonly audio: readonly { readonly who: string; readonly line: string; readonly english?: string }[];
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
 export type Thread = {
   readonly id: string;
   readonly app: Extract<AppId, "whatsapp" | "messages" | "instagram">;
@@ -255,6 +291,8 @@ export type Thread = {
   /** Unsaved numbers show as numbers, which is how two of them get confused. */
   readonly number?: string;
   readonly messages: readonly Message[];
+  /** What the player may say back, once they have something to say. */
+  readonly reply?: Reply;
   readonly requires?: readonly Flag[];
 };
 
@@ -388,6 +426,7 @@ export type Story = {
   readonly photos: readonly Photo[];
   readonly notes: readonly Note[];
   readonly courier: Courier;
+  readonly stories: readonly Story24[];
   readonly searches: readonly Search[];
   readonly article: {
     readonly kicker: string;

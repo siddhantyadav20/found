@@ -10,7 +10,20 @@ import Screen from "@/components/her/Screen";
 import YourPhone from "@/components/yours/Phone";
 import type { AppId, CallCue, Flag } from "@/content/types";
 import { nextCue } from "@/lib/game/call";
-import { add, appLabel, battery, clockNow, expose, has, newCase, openApp as findIn, see, type CaseState } from "@/lib/game/engine";
+import {
+  add,
+  appLabel,
+  battery,
+  clockNow,
+  dueEvents,
+  expose,
+  fire,
+  has,
+  newCase,
+  openApp as findIn,
+  see,
+  type CaseState,
+} from "@/lib/game/engine";
 import { bindProgress, commit, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { track } from "@/lib/found/track";
 import Chat from "@/components/her/apps/Chat";
@@ -20,9 +33,11 @@ import HerPhotos from "@/components/her/apps/Photos";
 import PikDrop from "@/components/her/apps/PikDrop";
 import Safari from "@/components/her/apps/Safari";
 import Recents from "@/components/her/apps/Recents";
+import Instagram from "@/components/her/apps/Instagram";
 import HerSettings from "@/components/her/apps/Settings";
 import CaseFile from "./CaseFile";
 import Charge from "./Charge";
+import SeenByThem from "./SeenByThem";
 import InAppGuard from "./InAppGuard";
 import Note from "./Note";
 import Pouch from "./Pouch";
@@ -40,10 +55,12 @@ import styles from "./Stage.module.css";
    the call, her home screen, the first notification and the first question.
    =========================================================================== */
 
+/** A banner is written as "Who · what", the way a phone shows one. */
+const bannerFrom = (banner: string) => banner.split(" · ")[0];
+const bannerText = (banner: string) => banner.split(" · ").slice(1).join(" · ");
+
 /** How often he says something while nothing else is happening. */
 const IDLE_MS = 11_000;
-/** The news alert lands a beat after the player has the home screen. */
-const ALERT_MS = 8_000;
 
 export default function Stage() {
   const { id, story, meta, to, minutes, via } = useCase();
@@ -127,36 +144,25 @@ export default function Stage() {
     return undefined;
   }, [cue, spoken, flag]);
 
-  /* The one live event the opening has: the alert that tells the player she
-     is dead, five and a half hours before any newsroom knows it. */
-  /* The last beat of Episode 1: the power bank's light goes out a few seconds
-     after the player works out where he really is. */
-  const placed = Boolean(state && has(state, "did:placed-him"));
-  const bankDead = Boolean(state && has(state, "did:bank-dead"));
+  /* Live events: anything the story says is due, once whatever it waits for
+     is true. The news alert at 1:11, "Good morning, #9." at the end of
+     Episode 2, and whatever P7 adds. */
+  const due = state ? dueEvents(story, state) : [];
+  const next = due[0];
   useEffect(() => {
-    if (!placed || bankDead) return undefined;
-    const t = window.setTimeout(() => {
-      flag("did:bank-dead");
-      setExpanded(true);
-    }, 6000);
+    if (!next) return undefined;
+    const t = window.setTimeout(
+      () => {
+        const now = readProgress();
+        if (!now) return;
+        save(fire(story, now, next.id));
+        if (next.banner) setBanner({ app: next.app, from: bannerFrom(next.banner), text: bannerText(next.banner) });
+        setExpanded(false);
+      },
+      (next.delay ?? 0) * 1000,
+    );
     return () => window.clearTimeout(t);
-  }, [placed, bankDead, flag]);
-
-  const alerted = Boolean(state && state.flags.includes("fired:alert"));
-  useEffect(() => {
-    if (!turned || alerted) return undefined;
-    const t = window.setTimeout(() => {
-      const s = readProgress();
-      if (!s) return;
-      const ev = story.events.find((e) => e.id === "alert");
-      save(add(s, "fired:alert", ...((ev?.sets ?? []) as Flag[])));
-      setBanner({ app: "news", from: "City Desk", text: ev?.banner ?? "" });
-      setExpanded(false);
-    }, ALERT_MS);
-    return () => window.clearTimeout(t);
-    // Deliberately keyed on the two things that decide it, not on the whole
-    // save: anything else changing must not restart the clock on the alert.
-  }, [turned, alerted, story.events, save]);
+  }, [next, story, save]);
 
   if (!state) {
     return (
@@ -179,21 +185,11 @@ export default function Stage() {
   if (has(state, "fired:cue-still-there") && !has(state, "did:charged"))
     return <Charge onPlugged={() => flag("did:charged")} />;
 
-  if (has(state, "did:charged"))
-    return (
-      <div className={styles.building}>
-        <p className={styles.eyebrow}>Episode 1 · Call Mat Kaatna</p>
-        <p>
-          Her phone is charging. The call is still running, and the man on it still does not
-          know she is dead.
-        </p>
-        <p className={styles.minutes}>
-          Episode 2, &ldquo;Delete for Everyone&rdquo;, is written in CHAPTER1.md and arrives
-          with P6: how she died, the girl whose account took the money, the list with your
-          address on it, and the note you have been obeying since 1:11 AM.
-        </p>
-      </div>
-    );
+  /* The end of Episode 2. They have watched every tap since 1:11, and now
+     they say so. One line, at reading speed, and then the screen goes out on
+     its own: no button, nothing to answer (PLAYER-JOURNEY Stage 6). */
+  if (has(state, "did:seen-by-them") && !has(state, "did:ep2-done"))
+    return <SeenByThem onDone={() => flag("did:ep2-done")} />;
 
   const onOpenApp = (app: AppId) => {
     setOpenApp(app);
@@ -301,8 +297,28 @@ function AppBody({
   };
 
   if (app === "casefile") return <CaseFile story={story} state={state} save={save} />;
-  if (app === "whatsapp" || app === "messages" || app === "instagram")
-    return <Chat story={story} state={state} app={app} onRead={read} />;
+  const say = (option: Parameters<NonNullable<Parameters<typeof Chat>[0]["onSay"]>>[0]) => {
+    const now = readProgress();
+    if (!now) return;
+    let next = add(now, ...(option.sets ?? []));
+    if (option.exposes) next = expose(story, next, option.exposes);
+    save(next);
+  };
+
+  if (app === "instagram") return <Instagram story={story} state={state} onRead={read} onSay={say} />;
+
+  if (app === "whatsapp" || app === "messages")
+    return (
+      <>
+        <Chat
+          story={story}
+          state={state}
+          app={app}
+          onRead={read}
+          onSay={say}
+        />
+      </>
+    );
   if (app === "phone") return <Recents story={story} state={state} onRead={read} />;
   if (app === "photos")
     return (

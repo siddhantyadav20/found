@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { Question, Story } from "@/content/types";
-import { answer, appLabel, caseFile, hint, openQuestion, whereToLook, type CaseState } from "@/lib/game/engine";
+import { answer, appLabel, caseFile, hint, openQuestion, seen, whereToLook, type CaseState } from "@/lib/game/engine";
 import styles from "./CaseFile.module.css";
 
 /* ===========================================================================
@@ -94,7 +94,7 @@ export default function CaseFile({
         Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
       </p>
 
-      <Board q={q} found={found} picked={picked} toggle={toggle} typed={typed} setTyped={setTyped} />
+      <Board q={q} state={state} found={found} picked={picked} toggle={toggle} typed={typed} setTyped={setTyped} />
 
       <div className={styles.row}>
         <button
@@ -127,6 +127,7 @@ export default function CaseFile({
 
 function Board({
   q,
+  state,
   found,
   picked,
   toggle,
@@ -134,6 +135,7 @@ function Board({
   setTyped,
 }: {
   q: Question;
+  state: CaseState;
   found: readonly { readonly id: string; readonly label: string }[];
   picked: readonly string[];
   toggle: (id: string) => void;
@@ -161,7 +163,7 @@ function Board({
           <span>This phone</span>
         </p>
         <ul className={styles.list}>
-          {q.rows.map((r) => (
+          {q.rows.filter((r) => seen(state, r.evidence)).map((r) => (
             <li key={r.id}>
               <button
                 type="button"

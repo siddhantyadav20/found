@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Question, Story } from "@/content/types";
-import { add, answer, hint, newCase, TOO_MUCH, WRONG } from "@/lib/game/engine";
+import { add, answer, hint, newCase, see, TOO_MUCH, WRONG, type CaseState } from "@/lib/game/engine";
 
 /**
  * The four kinds of question, judged away from the DOM. A wrong answer costs
@@ -13,21 +13,28 @@ import { add, answer, hint, newCase, TOO_MUCH, WRONG } from "@/lib/game/engine";
 const ep = STORIES["dont-cut-the-call"];
 const start = () => newCase("t", 0);
 
+/** A player who has found these things, which is the only way to table them. */
+const found = (...ids: string[]): CaseState => ids.reduce((s, id) => see(ep, s, id), start());
+
 /** A story is just data, so a test can write its own questions. */
 const withQuestions = (questions: Question[]): Story => ({ ...ep, questions });
 
 describe("picking the proof", () => {
   it("wants exactly what proves it, and says so when there's more", () => {
     const q = ep.questions[0];
-    expect(answer(ep, start(), q.id, ["alert", "wallpaper"]).ok).toBe(true);
-    expect(answer(ep, start(), q.id, ["alert"]).ok).toBe(false);
-    expect(answer(ep, start(), q.id, ["alert", "wallpaper", "note"]).reply).toBe(TOO_MUCH);
-    expect(answer(ep, start(), q.id, ["note"]).reply).toBe(WRONG);
+    const s = found("alert", "wallpaper", "note");
+    expect(answer(ep, s, q.id, ["alert", "wallpaper"]).ok).toBe(true);
+    expect(answer(ep, s, q.id, ["alert"]).ok).toBe(false);
+    expect(answer(ep, s, q.id, ["alert", "wallpaper", "note"]).reply).toBe(TOO_MUCH);
+    expect(answer(ep, s, q.id, ["note"]).reply).toBe(WRONG);
+
+    // And nothing can be tabled that was never found.
+    expect(answer(ep, start(), q.id, ["alert", "wallpaper"]).ok).toBe(false);
   });
 
   it("sets what the script says it sets, once", () => {
     const q = ep.questions[0];
-    const after = answer(ep, start(), q.id, ["alert", "wallpaper"]).state;
+    const after = answer(ep, found("alert", "wallpaper"), q.id, ["alert", "wallpaper"]).state;
     expect(after.flags).toContain("did:named-her");
     expect(answer(ep, after, q.id, ["alert", "wallpaper"]).ok).toBe(false);
   });
@@ -73,9 +80,18 @@ describe("the two lanes", () => {
   ]);
 
   it("is right only when every impossible act is on the phone's side", () => {
-    expect(answer(story, start(), "who-used-it", ["edit", "delete"]).ok).toBe(true);
-    expect(answer(story, start(), "who-used-it", ["edit"]).ok).toBe(false);
-    expect(answer(story, start(), "who-used-it", ["edit", "delete", "terrace"]).ok).toBe(false);
+    // The board holds what has been found: the three rows' evidence.
+    const s = ["story", "lure", "list"].reduce((acc, id) => add(acc, `saw:${id}`), start());
+    expect(answer(story, s, "who-used-it", ["edit", "delete"]).ok).toBe(true);
+    expect(answer(story, s, "who-used-it", ["edit"]).ok).toBe(false);
+    expect(answer(story, s, "who-used-it", ["edit", "delete", "terrace"]).ok).toBe(false);
+  });
+
+  it("judges only the rows the player has actually found", () => {
+    // Only the edit is known, so only the edit belongs on the phone's side.
+    const partial = add(start(), "saw:lure");
+    expect(answer(story, partial, "who-used-it", ["edit"]).ok).toBe(true);
+    expect(answer(story, partial, "who-used-it", ["edit", "delete"]).ok).toBe(false);
   });
 });
 

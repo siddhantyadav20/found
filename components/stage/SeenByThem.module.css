@@ -1,0 +1,44 @@
+/* A blank white app screen, and somebody typing on it from somewhere else. */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  min-height: 100dvh;
+  padding: 2rem;
+  background: #f4f4f6;
+  color: #17181b;
+  transition: background-color 1.6s ease, color 1.6s ease;
+}
+
+.screen[data-dark] { background: #000; color: #000; }
+
+.app {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a867f;
+}
+
+.line {
+  font-family: var(--font-ui);
+  font-size: 1.5rem;
+  letter-spacing: 0.01em;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55rem;
+  height: 1.25rem;
+  margin-left: 0.15rem;
+  translate: 0 0.18rem;
+  background: currentColor;
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
