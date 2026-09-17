@@ -79,7 +79,6 @@ expect the photographer to notice.
 
 | Time | What happened | How the phone knows |
 |---|---|---|
-| Thu 16:10 | Raghav asks the client, *"Who referred you to me?"* No answer. | Telegram |
 | **Fri 20:00** | Kamat's team photographs the inventory for the claim. **The painting is on the bedroom wall.** | Reference photos in Telegram's saved images |
 | 20:04 | The client sends the brief: reference photos, an inventory page (*Oil on canvas · ₹48,00,000*), the floor plan, and "shoot these angles exactly". | Photos › Telegram album; Files |
 | **21:41** | Prakash to "Kamat Saab": ***"Jo bola tha wo nikal gaya."*** The painting and the valuables are out. | A screenshot Prakash forwards at 23:21 |
@@ -89,6 +88,7 @@ expect the photographer to notice.
 | **22:29** | Voice note to Rohan: *"Teen hazaar ke liye bhi attitude dekh."* | WhatsApp |
 | 22:30 | *"I'm here."* Three dots. Gone. *"Guard will let you in."* | Telegram |
 | 22:31 | At the door, Prakash: *"Kamat saab ne bola hai photos achhe aane chahiye."* *"Kamat?"* A look, too long. *"Haan. Contractor."* | Walkthrough video, clip 1 |
+| 22:33 | Raghav asks the client, *"Who referred you to me?"* The answer: *"Just do the photos exactly as discussed."* Then *"who is kamat?"* Read. No reply. | Telegram |
 | 22:38–22:45 | Living, dining, kitchen. The locked cabinet: *"Isme kya hai?"* *"Khaali hai."* *"Toh lock kyun hai?"* No answer. | Walkthrough video, clip 2 |
 | **22:47** | The study: painting, silver watch, sculpture, safe. **On the table, a glass: a half-finished drink, the ice not melted, and a second set of prints.** | Photo, zoom |
 | 22:52 | Prakash: *"Kamat saab ki team Tuesday ko furniture le gayi thi."* | Walkthrough video, clip 3 |
@@ -159,7 +159,7 @@ It matches the player's platform (iOS first), as before. Home screen:
 
 | App | Its job | Script |
 |---|---|---|
-| **Phone** | Recents (RAGHAV, the 23:31 call to Kamat), contacts. Where the opening call rings. | Premise, Ep 3 |
+| **Phone** | Recents (RAGHAV, the 23:31 call to Kamat), contacts. Where the opening call rings. **Calls never go through:** the prepaid SIM has no balance, and the network says so, so nobody is called from Raghav's phone. | Premise, Ep 3 |
 | **WhatsApp** | Maa ❤️, Rohan, Ishita, the school group, 23:19's unsaved number, and live texts through the night. | Ep 1–3 |
 | **Telegram** | @AVM_Property: the deleted brief, *"Who referred you to me?"*, the live location still sharing. | Ep 1, 3 |
 | **Photos** | The walkthrough video clips, the study and bedroom photos, the camera's imported frames, the Telegram album, and the hidden "B-2" album. | All |

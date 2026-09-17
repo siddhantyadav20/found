@@ -149,9 +149,19 @@ envelope with no name on it, the lock screen stacking "don't call him" and
 RAGHAV's missed call as they land, the call, the whisper, back to the lock
 screen at 4%, swipe open, the case file introduces itself.
 
-**N2 — The chat apps and Phone.** WhatsApp, Telegram (deleted history, live
-location, contact info), Phone (recents, contacts), Settings (SIM 2, passcode,
-camera log).
+**N2 — The chat apps and Phone · *done 2026-09-17*.** Built: WhatsApp and
+Telegram as one chat app with two looks: a chat list with pinned chats,
+previews, times and unread counts, conversations with day labels, ticks,
+"Forwarded", deleted and still-downloading messages, voice notes that play
+their captions, documents, video, and a live location that can be stopped
+(the chapter's one irreversible act), plus each contact's info page. Phone:
+Recents, Contacts, contact cards with notes, and calls that dial and then get
+the network's "not enough balance" line, so nobody is ever called from
+Raghav's phone. Settings as rows written in the story: passcode off at 03:58,
+SIM 2 removed at 03:58, the camera. Episode 1's chats with Maa, Papa, Rohan,
+Ishita, the school group, the unsaved 23:19 number and the client, as data,
+with the live texts at 4 AM. Tests hold every piece of evidence to exactly
+one place and every attachment to something real.
 
 **N3 — Photos, Recorder, Files.** Video clips with captions, camera imports,
 the Telegram album, the hidden album and its lock; the Recorder; Files with a

@@ -48,6 +48,46 @@ describe("The Blue Room's shape", () => {
     for (const e of ep.events) for (const f of e.when) expect(flags.has(f), `${e.id} → ${f}`).toBe(true);
   });
 
+  it("shows every piece of evidence in exactly one place", () => {
+    const messages = [...ep.threads.flatMap((t) => t.messages), ...ep.events.flatMap((e) => e.messages)];
+    const shown = [
+      ep.envelope.evidence,
+      ...messages.map((m) => m.evidence),
+      ...ep.threads.map((t) => t.infoEvidence),
+      ...(ep.contacts ?? []).map((c) => c.evidence),
+      ...(ep.callLog ?? []).map((c) => c.evidence),
+      ...(ep.settings ?? []).flatMap((sec) => sec.rows.map((r) => r.evidence)),
+      ...ep.photos.map((p) => p.evidence),
+    ].filter((id): id is string => Boolean(id));
+    expect([...shown].sort()).toEqual(ep.evidence.map((e) => e.id).sort());
+  });
+
+  it("gives every chat attachment something real to open", () => {
+    const photos = new Set(ep.photos.map((p) => p.id));
+    const actions = new Set(ep.actions.map((a) => a.id));
+    for (const t of ep.threads)
+      for (const m of t.messages) {
+        if (m.photo) expect(photos.has(m.photo), `${t.id} ${m.at}`).toBe(true);
+        const a = m.attachment;
+        if (a?.kind === "video") expect(photos.has(a.photo), `${t.id} ${m.at}`).toBe(true);
+        if (a?.kind === "live-location") expect(actions.has(a.stops), `${t.id} ${m.at}`).toBe(true);
+        if (a?.kind === "voice") for (const l of a.transcript) if (l.text.startsWith("“")) expect(l.en, l.text).toBeTruthy();
+        expect(m.text.trim() || m.photo || m.attachment || m.deleted, `${t.id} ${m.at}`).toBeTruthy();
+      }
+  });
+
+  it("files every call and contact under someone who exists", () => {
+    const contacts = new Set((ep.contacts ?? []).map((c) => c.id));
+    for (const c of ep.callLog ?? []) expect(contacts.has(c.who) || c.who.startsWith("+91"), c.id).toBe(true);
+    // The first deduction: RAGHAV is this phone's own other number, and the SIM is gone.
+    expect(ep.contacts?.find((c) => c.name === "RAGHAV")?.label).toMatch(/SIM 2/);
+    expect(ep.settings?.flatMap((sec) => sec.rows).some((r) => r.evidence === "sim2-removed")).toBe(true);
+  });
+
+  it("only writes chats in the apps a phone in Mumbai has", () => {
+    for (const t of ep.threads) expect(["whatsapp", "telegram"], t.id).toContain(t.app);
+  });
+
   it("puts the English under every line said in Hinglish", () => {
     for (const c of ep.calls ?? []) for (const l of c.lines) if (l.text.startsWith("“")) expect(l.en, l.text).toBeTruthy();
   });

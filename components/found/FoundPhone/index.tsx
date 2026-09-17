@@ -23,11 +23,14 @@ import Health from "../apps/Health";
 import Maps from "../apps/Maps";
 import Memos from "../apps/Memos";
 import Messages from "../apps/Messages";
+import Chats from "../apps/Chats";
 import News from "../apps/News";
 import NightCam from "../apps/NightCam";
 import Notes from "../apps/Notes";
+import PhoneApp from "../apps/PhoneApp";
 import Photos from "../apps/Photos";
 import Settings from "../apps/Settings";
+import SettingsList from "../apps/SettingsList";
 import type { Nav } from "../apps/types";
 import * as play from "./actions";
 import Call from "./Call";
@@ -472,8 +475,13 @@ export default function FoundPhone() {
   // become a lit path, which is most of the answer to "what do I do now".
   const badges = useMemo(() => {
     if (!s) return {};
-    const b = badgesOf(ep, s);
-    return unread.size ? { ...b, messages: (b.messages ?? 0) + unread.size } : b;
+    const b = { ...badgesOf(ep, s) };
+    // Unread chats count on the app they arrived in.
+    for (const id of unread) {
+      const app = ep.threads.find((t) => t.id === id)?.app ?? "messages";
+      b[app] = (b[app] ?? 0) + 1;
+    }
+    return b;
   }, [ep, s, unread]);
 
   /* Live events, one at a time, each after a beat. Whatever is due fires in
@@ -496,7 +504,7 @@ export default function FoundPhone() {
       const n = noticeOf(ep, cur, due);
       if (!n) return;
       buzz();
-      const thread = n.app === "messages" ? n.arg : undefined;
+      const thread = n.app === "messages" || n.app === "whatsapp" || n.app === "telegram" ? n.arg : undefined;
       if (thread) setUnread((u) => new Set(u).add(thread));
       showBanner(n);
     }, due.delay ?? EVENT_DELAY[due.id] ?? DEFAULT_DELAY);
@@ -875,7 +883,12 @@ function App({
     case "health":
       return <Health />;
     case "settings":
-      return <Settings {...props} />;
+      return <SettingsFor {...props} />;
+    case "whatsapp":
+    case "telegram":
+      return <Chats {...props} app={route.app} unread={unread} onRead={markRead} />;
+    case "phone":
+      return <PhoneApp {...props} />;
     case "maps":
       return <Maps {...props} />;
     case "memos":
@@ -893,4 +906,10 @@ function App({
     default:
       return null;
   }
+}
+
+/** A story that writes its settings as data gets them as rows; Low Battery keeps its own Settings. */
+function SettingsFor(props: React.ComponentProps<typeof Settings>) {
+  const { story } = useCase();
+  return story.settings ? <SettingsList {...props} /> : <Settings {...props} />;
 }

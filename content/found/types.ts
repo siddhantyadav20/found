@@ -82,6 +82,17 @@ export type Evidence = {
   readonly requires?: readonly Flag[];
 };
 
+/** What a chat message carries besides its words. */
+export type Attachment =
+  /** A voice note: its length, and what's said in it, as captions. */
+  | { readonly kind: "voice"; readonly seconds: number; readonly transcript: readonly CallLine[] }
+  /** A file, opened in Files. */
+  | { readonly kind: "document"; readonly file: string; readonly name: string; readonly size: string }
+  /** A video, by the photo id of its first frame. */
+  | { readonly kind: "video"; readonly photo: string; readonly seconds: number }
+  /** A live location still being shared, until `until`. `stops` is the action that ends it. */
+  | { readonly kind: "live-location"; readonly place: string; readonly until: string; readonly stops: string };
+
 export type Message = {
   readonly from: "owner" | "them" | "system";
   /** Group threads only: who in the group said it. */
@@ -99,6 +110,15 @@ export type Message = {
   readonly requires?: readonly Flag[];
   /** Deleted by its sender once this flag is set: K. scrubbing his side. */
   readonly scrubbedBy?: Flag;
+  readonly attachment?: Attachment;
+  /** "Forwarded", above the message. */
+  readonly forwarded?: boolean;
+  /** Deleted before the phone reached you: only the placeholder is left. */
+  readonly deleted?: boolean;
+  /** Shows "Waiting for this message" until this flag is set. */
+  readonly pendingUntil?: Flag;
+  /** Ticks on a sent message. Read, otherwise. */
+  readonly ticks?: "sent" | "delivered" | "read";
 };
 
 export type Thread = {
@@ -113,6 +133,18 @@ export type Thread = {
   readonly notifyAs?: string;
   /** Which chat app it lives in. Messages, otherwise. */
   readonly app?: "whatsapp" | "telegram";
+  /** On its info page: the number, the @username, the about line. */
+  readonly number?: string;
+  readonly username?: string;
+  readonly about?: string;
+  /** Under the name in the chat's header: "last seen today at 23:47". */
+  readonly lastSeen?: string;
+  /** Kept at the top of the chat list. */
+  readonly pinned?: boolean;
+  /** No profile photo: the empty silhouette, whatever the name. */
+  readonly noPhoto?: boolean;
+  /** Seen when its info page is opened. */
+  readonly infoEvidence?: string;
   readonly messages: readonly Message[];
   /** A thread that only exists once something writes into it. */
   readonly requires?: readonly Flag[];
@@ -409,6 +441,12 @@ export type Story = {
   readonly home?: { readonly pages: readonly (readonly HomeIcon[])[]; readonly dock: readonly HomeIcon[] };
   /** Calls that play out and hang up by themselves. */
   readonly calls?: readonly ScriptedCall[];
+  readonly contacts?: readonly Contact[];
+  readonly callLog?: readonly CallEntry[];
+  /** Settings as data: what this phone knows about itself. */
+  readonly settings?: readonly SettingsSection[];
+  /** What the phone says when the player tries to call anyone from it. */
+  readonly cantCall?: { readonly from: string; readonly text: string; readonly en?: string };
   readonly names: Readonly<Record<Gender, readonly string[]>>;
   readonly surname: string;
   readonly envelope: {
@@ -480,6 +518,50 @@ export type Story = {
     /** After every ending: one line from a friend, then the desk. */
     readonly coda: { readonly from: string; readonly text: string; readonly next: readonly string[] };
   } | null;
+};
+
+/** Someone in the phone's contacts. */
+export type Contact = {
+  readonly id: string;
+  readonly name: string;
+  readonly number: string;
+  /** Under the number: "SIM 2 · My other number". */
+  readonly label?: string;
+  /** The card's note, as whoever saved it wrote it. */
+  readonly note?: string;
+  /** Seen when the card is opened. */
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** One row in the phone's Recents. */
+export type CallEntry = {
+  readonly id: string;
+  /** A contact id, or a number nobody saved. */
+  readonly who: string;
+  readonly dir: "in" | "out" | "missed";
+  readonly at: string;
+  /** Missed several times in a row: "(6)". */
+  readonly count?: number;
+  readonly duration?: string;
+  /** Seen when Recents is opened. */
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** A group of rows in Settings, each one a fact about the phone. */
+export type SettingsSection = {
+  readonly title?: string;
+  readonly rows: readonly {
+    readonly title: string;
+    readonly value?: string;
+    readonly sub?: string;
+    /** Seen when Settings is opened. */
+    readonly evidence?: string;
+    readonly requires?: readonly Flag[];
+  }[];
+  /** A line under the group. */
+  readonly footer?: string;
 };
 
 export type Order = {
