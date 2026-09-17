@@ -1,0 +1,62 @@
+/* A phone ringing in a quiet room, at an hour when nobody rings. */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 2.5rem 1.4rem calc(2rem + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #17181c 0%, #08090b 100%);
+  color: #f1ede7;
+  text-align: center;
+}
+
+.label { font-family: var(--font-ui); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a857e; }
+.who { font-family: var(--font-display); font-size: 2rem; line-height: 1.15; }
+.sub { font-family: var(--font-ui); font-size: 0.8rem; color: #8a857e; margin-bottom: 1.4rem; }
+
+.buttons { display: flex; gap: 2.5rem; margin-top: 2rem; }
+
+.answer, .decline {
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 0;
+  border-radius: 50%;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.answer { background: #30d158; color: #06240f; }
+.decline { background: #d8483c; }
+
+.lines { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 24rem; margin-top: 1rem; text-align: left; }
+
+.line { display: flex; flex-direction: column; gap: 0.15rem; font-family: var(--font-ui); font-size: 1rem; line-height: 1.4; }
+.speaker { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a857e; }
+.english { font-size: 0.75rem; color: #8a857e; }
+
+.say { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem; }
+.prompt { font-family: var(--font-ui); font-size: 0.72rem; color: #8a857e; }
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #2d2f33;
+  border-radius: 0.9rem;
+  background: #16181c;
+  color: #e9e5df;
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}

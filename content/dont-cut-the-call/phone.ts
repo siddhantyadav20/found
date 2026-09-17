@@ -301,6 +301,14 @@ export const settings: SettingsGroup[] = [
         value: "1 profile",
         sub: "RBI Secure KYC · installed Thursday, 8:14 PM",
         evidence: "profile",
+        /* The chapter's one irreversible act. Removing it blinds them, and
+           tells them the player knows (CHAPTER1.md, Episode 3, beat 3). */
+        action: {
+          label: "Remove Management",
+          confirm: "Removing this profile will stop the screen being shared. Whoever is watching will know you did it.",
+          sets: ["did:removed-profile"],
+          done: "Removed",
+        },
       },
       { title: "AirDrop", value: "Contacts Only" },
     ],

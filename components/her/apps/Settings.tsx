@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
+
 import type { Story } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
+import { all, has, type CaseState } from "@/lib/game/engine";
 import { Group, Row } from "../AppView";
+import styles from "./Settings.module.css";
 
 /* ===========================================================================
    Settings, in iOS's own grouped lists.
@@ -18,7 +21,17 @@ import { Group, Row } from "../AppView";
    everything the player does on this phone is watched (CHAPTER1.md, twist 5).
    =========================================================================== */
 
-export default function Settings({ story, state }: { story: Story; state: CaseState }) {
+export default function Settings({
+  story,
+  state,
+  onAct,
+}: {
+  story: Story;
+  state: CaseState;
+  onAct?: (sets: readonly import("@/content/types").Flag[]) => void;
+}) {
+  const [asking, setAsking] = useState<string | null>(null);
+
   return (
     <>
       {story.settings.map((g, i) => {
@@ -26,9 +39,41 @@ export default function Settings({ story, state }: { story: Story; state: CaseSt
         if (!rows.length) return null;
         return (
           <Group key={i} label={g.label}>
-            {rows.map((r) => (
-              <Row key={r.title} title={r.title} sub={r.sub} meta={r.value} />
-            ))}
+            {rows.map((r) => {
+              const done = r.action?.sets.every((f) => has(state, f));
+              return (
+                <Row
+                  key={r.title}
+                  title={r.title}
+                  sub={
+                    r.action && asking === r.title ? (
+                      <span className={styles.confirm}>
+                        <span>{r.action.confirm}</span>
+                        <span className={styles.confirmRow}>
+                          <button
+                            type="button"
+                            className={styles.destructive}
+                            onClick={() => {
+                              onAct?.(r.action!.sets);
+                              setAsking(null);
+                            }}
+                          >
+                            {r.action.label}
+                          </button>
+                          <button type="button" className={styles.cancel} onClick={() => setAsking(null)}>
+                            Cancel
+                          </button>
+                        </span>
+                      </span>
+                    ) : (
+                      r.sub
+                    )
+                  }
+                  meta={done ? r.action?.done : r.value}
+                  onClick={r.action && !done ? () => setAsking(r.title) : undefined}
+                />
+              );
+            })}
           </Group>
         );
       })}

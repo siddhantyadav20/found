@@ -220,3 +220,41 @@
     transition: none;
   }
 }
+
+
+/* What the player can say to him. Glass chips under the captions, close
+   enough to his face that choosing one feels like speaking. */
+.say {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 26rem;
+  margin: 0 auto;
+}
+
+.sayPrompt {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: #8a857e;
+  text-align: center;
+}
+
+.sayOption {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #2d2f33;
+  border-radius: 0.9rem;
+  background: #16181c;
+  color: #e9e5df;
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sayOption .english { font-size: 0.72rem; color: #8a857e; }

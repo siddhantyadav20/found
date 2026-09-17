@@ -265,6 +265,33 @@ export type Reply = {
   readonly options: readonly ReplyOption[];
 };
 
+/**
+ * A call that arrives on its own: her son at 1:34 AM, and the one at 10:30
+ * that is meant for the player. Answering is a choice, and so is everything
+ * said afterwards.
+ */
+export type IncomingCall = {
+  readonly id: string;
+  readonly device: DeviceId;
+  readonly from: string;
+  readonly sub?: string;
+  readonly at: string;
+  readonly after: readonly Flag[];
+  /** Left ringing, it rings again. Some calls cannot be refused forever. */
+  readonly insists?: boolean;
+  readonly lines: readonly {
+    readonly who: string;
+    readonly line: string;
+    readonly english?: string;
+    /** Only said when the ledger holds this, which is how an arrest is built. */
+    readonly needs?: string;
+  }[];
+  readonly reply?: Reply;
+  /** What the button says when there is nothing to say back. */
+  readonly dismiss?: string;
+  readonly sets?: readonly Flag[];
+};
+
 /** A story on Instagram, which expires, with something on the audio. */
 export type Story24 = {
   readonly id: string;
@@ -393,6 +420,13 @@ export type SettingsRow = {
   readonly value?: string;
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
+  /** A row that does something, once, and cannot be undone. */
+  readonly action?: {
+    readonly label: string;
+    readonly confirm: string;
+    readonly sets: readonly Flag[];
+    readonly done: string;
+  };
 };
 
 export type SettingsGroup = {
@@ -427,6 +461,9 @@ export type Story = {
   readonly notes: readonly Note[];
   readonly courier: Courier;
   readonly stories: readonly Story24[];
+  readonly incoming: readonly IncomingCall[];
+  /** What the player may say on the video call, once they unmute. */
+  readonly callReplies: readonly Reply[];
   readonly searches: readonly Search[];
   readonly article: {
     readonly kicker: string;

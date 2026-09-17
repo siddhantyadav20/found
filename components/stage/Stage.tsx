@@ -12,6 +12,7 @@ import type { AppId, CallCue, Flag } from "@/content/types";
 import { nextCue } from "@/lib/game/call";
 import {
   add,
+  all,
   appLabel,
   battery,
   clockNow,
@@ -37,6 +38,9 @@ import Instagram from "@/components/her/apps/Instagram";
 import HerSettings from "@/components/her/apps/Settings";
 import CaseFile from "./CaseFile";
 import Charge from "./Charge";
+import Choice from "./Choice";
+import Morning from "./Morning";
+import Ringing from "./Ringing";
 import SeenByThem from "./SeenByThem";
 import InAppGuard from "./InAppGuard";
 import Note from "./Note";
@@ -73,6 +77,7 @@ export default function Stage() {
   const [muted, setMuted] = useState(true);
   const [idleTurn, setIdleTurn] = useState(0);
   const [banner, setBanner] = useState<{ app: AppId; from: string; text: string } | null>(null);
+  const [declined, setDeclined] = useState(0);
 
   /* Resume lands on the screen the player left, so the save decides where they
      are, never component state (PLAYER-JOURNEY Stage 5). */
@@ -110,6 +115,15 @@ export default function Stage() {
   const turnOver = () => {
     flag("did:unlock", "saw:note", "saw:call");
     track({ case: id, event: "unlock", via });
+  };
+
+  /** Saying something: what it sets, and what it hands over. */
+  const say = (option: { sets?: readonly Flag[]; exposes?: string }) => {
+    const now = readProgress();
+    if (!now) return;
+    let next = add(now, ...(option.sets ?? []));
+    if (option.exposes) next = expose(story, next, option.exposes);
+    save(next);
   };
 
   /* Her battery, falling with the beats rather than with a timer: 7% while
@@ -164,6 +178,13 @@ export default function Stage() {
     return () => window.clearTimeout(t);
   }, [next, story, save]);
 
+  /* A call that arrives on its own: her son at 1:34, the Crime Branch at
+     10:30. A declined call that insists comes back. */
+  const ringing = state
+    ? story.incoming.find((c) => all(state, c.after) && !has(state, `did:done-${c.id}`))
+    : undefined;
+  const isRinging = Boolean(ringing && (ringing.insists || declined === 0));
+
   if (!state) {
     return (
       <div className={styles.stage}>
@@ -190,6 +211,29 @@ export default function Stage() {
      its own: no button, nothing to answer (PLAYER-JOURNEY Stage 6). */
   if (has(state, "did:seen-by-them") && !has(state, "did:ep2-done"))
     return <SeenByThem onDone={() => flag("did:ep2-done")} />;
+
+  /* The night ends. Sunlight, a warm phone, and the only good thing that
+     happens in the whole chapter waiting in her messages. */
+  if (has(state, "did:ep2-done") && !has(state, "did:woke"))
+    return <Morning story={story} elapsedMs={elapsed} onUp={() => flag("did:woke")} />;
+
+  /* Everything has been asked. Three rows, and a call still running. */
+  if (has(state, "did:choice")) return <Choice story={story} state={state} />;
+
+  if (ringing && isRinging)
+    return (
+      <Ringing
+        call={ringing}
+        state={state}
+        answered={has(state, `did:answered-${ringing.id}`)}
+        onAnswer={() => flag(`did:answered-${ringing.id}`, ...((ringing.sets ?? []) as Flag[]))}
+        onDecline={() => setDeclined((n) => n + 1)}
+        onSay={(option) => {
+          say(option);
+          flag(`did:done-${ringing.id}`);
+        }}
+      />
+    );
 
   const onOpenApp = (app: AppId) => {
     setOpenApp(app);
@@ -255,6 +299,10 @@ export default function Stage() {
           }}
           onReadClock={() => flag("saw:clock", "did:read-clock")}
           onReadLabel={() => flag("saw:burmese")}
+          reply={story.callReplies.find(
+            (r) => all(state, r.requires) && !r.options.some((o) => o.sets?.some((f) => has(state, f))),
+          )}
+          onSay={say}
         />
       ) : (
         <p className={styles.cutLine}>
@@ -345,7 +393,17 @@ function AppBody({
         }}
       />
     );
-  if (app === "settings") return <HerSettings story={story} state={state} />;
+  if (app === "settings")
+    return (
+      <HerSettings
+        story={story}
+        state={state}
+        onAct={(sets) => {
+          const now = readProgress();
+          if (now) save(add(now, ...sets));
+        }}
+      />
+    );
   if (app === "pikdrop") return <PikDrop story={story} state={state} onRead={read} />;
   if (app === "safari") return <Safari story={story} state={state} onRead={read} />;
   if (app === "news") return <HerNews story={story} />;

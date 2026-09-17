@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import type { CallCue, Story } from "@/content/types";
+import type { CallCue, Reply, ReplyOption, Story } from "@/content/types";
 import { duration, hisClock, ranFor } from "@/lib/game/call";
 import styles from "./LiveCall.module.css";
 import CallFeed from "./CallFeed";
@@ -45,6 +45,8 @@ export default function LiveCall({
   onUnmute,
   onReadClock,
   onReadLabel,
+  reply,
+  onSay,
 }: {
   story: Story;
   mumbaiTime: string;
@@ -59,6 +61,9 @@ export default function LiveCall({
   onUnmute: () => void;
   onReadClock: () => void;
   onReadLabel: () => void;
+  /** What the player may say, once they have unmuted. */
+  reply?: Reply | null;
+  onSay?: (option: ReplyOption) => void;
 }) {
   const [asking, setAsking] = useState(false);
   const [zoom, setZoom] = useState({ scale: 1, x: 0.5, y: 0.5 });
@@ -152,6 +157,20 @@ export default function LiveCall({
           <span className={styles.line}>{cue.line}</span>
           {cue.english && <span className={styles.english}>{cue.english}</span>}
         </p>
+      )}
+
+      {/* Unmuted, with something to say: he is a person, and the player has
+          just decided to speak to him. Picked from a list, never typed. */}
+      {expanded && !muted && reply && onSay && (
+        <div className={styles.say}>
+          {reply.prompt && <p className={styles.sayPrompt}>{reply.prompt}</p>}
+          {reply.options.map((o) => (
+            <button key={o.id} type="button" className={styles.sayOption} onClick={() => onSay(o)}>
+              <span>{o.text}</span>
+              {o.english && <span className={styles.english}>{o.english}</span>}
+            </button>
+          ))}
+        </div>
       )}
 
       {expanded && (

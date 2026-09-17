@@ -32,7 +32,7 @@ browser at phone size; tick this file; commit when Siddhant says so.
 | **P11** | The real assets | Shoot, voices, handwriting, documents |
 | **P12** | Ship-ready | Performance, accessibility, captions, tests, QA |
 
-**P0–P6 are done** (2026-09-17/18): the opening plays, from the pouch
+**P0–P7 are done** (2026-09-17/18): the opening plays, from the pouch
 to the call to her home screen and the first question. What each phase left
 for later is noted under it.
 
@@ -181,8 +181,8 @@ paper, and the real photographs (P11).
 | Phase | Content | Built against |
 |---|---|---|
 | **P5** ✔ | `content/dont-cut-the-call/episode1.ts` | **Done.** Twelve beats, Q1–Q4 each with two routes in, his ten lines, the whisper branch, the battery falling with the beats, his last line to the dark, and the charger gate |
-| **P6** ✔ | `episode2.ts` | **Done**, except two beats held for P7: the unmute choice and Nikhil's call, which both need the call to take a reply. Built: Q5–Q10, the expiring story with its audio, Shaila's trust test, the bin, the timeline board, and "Good morning, #9." |
-| **P7** | `episode3.ts` | Episode 3: the morning, the uninstall decision, **your phone ringing**, the generated arrest, Q11 across two phones, Sahil's 1930 code, the demand |
+| **P6** ✔ | `episode2.ts` | **Done.** Q5–Q10, the expiring story with its audio, Shaila's trust test, the bin, the timeline board, and "Good morning, #9." The unmute choice and Nikhil's call landed with P7. |
+| **P7** ✔ | `episode3.ts` | **Done.** The morning, the profile removal, your phone ringing, the arrest assembled from the ledger, the claims board, the 1930 code, the demand, and the three rows. What each row costs is P8. |
 
 Each phase ends with the episode playable end to end with placeholder video,
 audio and photographs, every question answerable two ways, and three hints each.

@@ -1,0 +1,16 @@
+/* The one row in this phone that does something, and cannot be undone. */
+
+.confirm { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.confirmRow { display: flex; gap: 10px; }
+
+.destructive, .cancel {
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.destructive { background: var(--os-danger); color: #fff; }
+.cancel { background: var(--os-panel-2); color: var(--os-text); }

@@ -1,4 +1,15 @@
-import type { CallCue, Evidence, Exposure, LiveEvent, Photo, Question, Story24, Thread } from "../types";
+import type {
+  CallCue,
+  Evidence,
+  Exposure,
+  IncomingCall,
+  LiveEvent,
+  Photo,
+  Question,
+  Reply,
+  Story24,
+  Thread,
+} from "../types";
 
 /* ===========================================================================
    Episode 2 — "Delete for Everyone" · 1:40 AM → 6:42 AM.
@@ -194,6 +205,75 @@ export const threads: Thread[] = [
       },
       { id: "sh-14", from: "them", text: "Me police la phone karte.", english: "I'm calling the police.", at: "02:52", day: "Saturday" },
     ],
+  },
+];
+
+/** What the player can say into a call, and what saying it costs. */
+export const callReplies: Reply[] = [
+  {
+    id: "tell-him",
+    requires: ["ep:2"],
+    prompt: "He doesn't know. Say something, or don't.",
+    options: [
+      {
+        id: "dead",
+        text: "She's dead. She died at 12:40 this morning.",
+        sets: ["did:told-him"],
+        exposes: "voice",
+      },
+      {
+        id: "who",
+        text: "Sahil. Tumhari maa ne mujhe tumhari photo bheji hai.",
+        english: "Sahil. Your mother sent me your photograph.",
+        sets: ["did:said-his-name"],
+        exposes: "voice",
+      },
+      { id: "quiet", text: "Say nothing. Stay muted." },
+    ],
+  },
+];
+
+export const incoming: IncomingCall[] = [
+  {
+    /* Her son, told by the police that his mother is dead and her phone is
+       missing, ringing his mother's phone at 1:34 in the morning. */
+    id: "nikhil",
+    device: "hers",
+    from: "Nikhil ❤️",
+    sub: "mobile",
+    at: "01:34",
+    after: ["ep:2"],
+    insists: true,
+    lines: [
+      { who: "Nikhil", line: "Aai? Aai, kaay zala?", english: "Aai? Aai, what happened?" },
+      { who: "Nikhil", line: "Kaun hai? Kaun bol raha hai?", english: "Who is this? Who's speaking?" },
+      {
+        who: "Nikhil",
+        line: "Police ne bola phone nahi mila. Aai ka phone tumhare paas kaise aaya?",
+        english: "The police said the phone wasn't found. How do you have my mother's phone?",
+      },
+    ],
+    reply: {
+      id: "nikhil",
+      prompt: "His mother died half an hour ago.",
+      options: [
+        {
+          id: "truth",
+          text: "It was delivered to my door at 1:11 AM. I don't know why. I'm trying to find out.",
+          sets: ["did:nikhil-truth"],
+          exposes: "nikhil",
+        },
+        {
+          id: "police",
+          text: "Main police se hoon. Aap subah station aa jaiye.",
+          english: "I'm from the police. Come to the station in the morning.",
+          sets: ["did:nikhil-lied"],
+          exposes: "nikhil",
+        },
+        { id: "end", text: "End the call without speaking.", sets: ["did:nikhil-silent"] },
+      ],
+    },
+    sets: ["did:nikhil-rang"],
   },
 ];
 

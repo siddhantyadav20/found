@@ -2,6 +2,7 @@ import type { Story } from "../types";
 
 import { episode1 } from "./episode1";
 import * as ep2 from "./episode2";
+import * as ep3 from "./episode3";
 import { instagramThreads, notes, photos, smsThreads } from "./paper";
 import { calls, settings, threads } from "./phone";
 import { article, courier, searches } from "./world";
@@ -54,9 +55,11 @@ export const story: Story = {
   /* Each episode only ever adds. Episode 2's chats, photographs and questions
      are gated on its own flag, so the merged story plays Episode 1 exactly as
      it was written. */
-  threads: [...threads, ...smsThreads, ...instagramThreads, ...ep2.threads],
+  threads: [...threads, ...smsThreads, ...instagramThreads, ...ep2.threads, ...ep3.messages],
   photos: [...photos, ...ep2.photos],
   stories: ep2.stories,
+  incoming: [...ep2.incoming, ...ep3.incoming],
+  callReplies: ep2.callReplies,
   notes,
   calls,
   settings,
@@ -64,9 +67,9 @@ export const story: Story = {
   searches,
   article,
   ...episode1,
-  evidence: [...episode1.evidence, ...ep2.evidence],
-  questions: [...episode1.questions, ...ep2.questions],
-  cues: [...episode1.cues, ...ep2.cues],
-  events: [...episode1.events, ...ep2.events],
+  evidence: [...episode1.evidence, ...ep2.evidence, ...ep3.evidence],
+  questions: [...episode1.questions, ...ep2.questions, ...ep3.questions],
+  cues: [...episode1.cues, ...ep2.cues, ...ep3.cues],
+  events: [...episode1.events, ...ep2.events, ...ep3.events],
   exposures: [...episode1.exposures, ...ep2.exposures],
 };
