@@ -1,8 +1,9 @@
 import type { Story } from "../types";
 
 import { episode1 } from "./episode1";
-import { notes, photos, smsThreads } from "./paper";
+import { instagramThreads, notes, photos, smsThreads } from "./paper";
 import { calls, settings, threads } from "./phone";
+import { article, courier, searches } from "./world";
 
 /* ===========================================================================
    Chapter One — "Don't Cut the Call" · Mumbai.
@@ -49,10 +50,13 @@ export const story: Story = {
       { app: "casefile", label: "Case file" },
     ],
   },
-  threads: [...threads, ...smsThreads],
+  threads: [...threads, ...smsThreads, ...instagramThreads],
   photos,
   notes,
   calls,
   settings,
+  courier,
+  searches,
+  article,
   ...episode1,
 };

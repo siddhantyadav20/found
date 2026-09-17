@@ -293,6 +293,37 @@ export type Note = {
   readonly requires?: readonly Flag[];
 };
 
+/** The courier booking that brought this phone to the player's door. */
+export type Courier = {
+  readonly bookedAt: string;
+  readonly day: string;
+  readonly item: string;
+  readonly from: string;
+  readonly to: string;
+  readonly rider: string;
+  readonly fare: string;
+  /** Where the bike went, in order. One of these stops was nobody's idea but theirs. */
+  readonly route: readonly {
+    readonly at: string;
+    readonly place: string;
+    readonly note?: string;
+    readonly wrong?: boolean;
+    readonly evidence?: string;
+    readonly requires?: readonly Flag[];
+  }[];
+  readonly chat: readonly { readonly from: "rider" | "her"; readonly text: string; readonly english?: string; readonly at: string; readonly evidence?: string }[];
+};
+
+/** What she searched for, which is how a bank manager thinks out loud. */
+export type Search = {
+  readonly id: string;
+  readonly text: string;
+  readonly at: string;
+  readonly day: string;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
 export type Recording = {
   readonly seconds: number;
   readonly lines: readonly { readonly who: string; readonly line: string; readonly english?: string }[];
@@ -350,6 +381,14 @@ export type Story = {
   readonly threads: readonly Thread[];
   readonly photos: readonly Photo[];
   readonly notes: readonly Note[];
+  readonly courier: Courier;
+  readonly searches: readonly Search[];
+  readonly article: {
+    readonly kicker: string;
+    readonly headline: string;
+    readonly body: readonly string[];
+    readonly note: string;
+  };
   readonly calls: readonly CallEntry[];
   readonly settings: readonly SettingsGroup[];
   readonly questions: readonly Question[];

@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { Message, Story, Thread } from "@/content/types";
-import { seen, type CaseState } from "@/lib/game/engine";
+import { all, seen, type CaseState } from "@/lib/game/engine";
 import styles from "../ios/Chats.module.css";
 
 /* ===========================================================================
@@ -97,7 +97,7 @@ export default function Chat({
   onRead: (evidenceIds: readonly string[]) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
-  const threads = story.threads.filter((t) => t.app === app);
+  const threads = story.threads.filter((t) => t.app === app && all(state, t.requires));
   const here = threads.find((t) => t.id === open);
 
   if (here)

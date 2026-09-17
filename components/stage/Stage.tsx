@@ -15,7 +15,10 @@ import { bindProgress, commit, readProgress, subscribeProgress } from "@/lib/fou
 import { track } from "@/lib/found/track";
 import Chat from "@/components/her/apps/Chat";
 import HerNotes from "@/components/her/apps/Notes";
+import HerNews from "@/components/her/apps/News";
 import HerPhotos from "@/components/her/apps/Photos";
+import PikDrop from "@/components/her/apps/PikDrop";
+import Safari from "@/components/her/apps/Safari";
 import Recents from "@/components/her/apps/Recents";
 import HerSettings from "@/components/her/apps/Settings";
 import CaseFile from "./CaseFile";
@@ -283,22 +286,9 @@ function AppBody({
       />
     );
   if (app === "settings") return <HerSettings story={story} state={state} />;
-
-  if (app === "news")
-    return (
-      <article className={styles.article}>
-        <p className={styles.kicker}>City Desk · Mumbai · 1:11 AM</p>
-        <h3 className={styles.headline}>
-          Dadar: retired bank manager, 64, found dead below her building
-        </h3>
-        <p>
-          The body of Vasundhara Kulkarni, 64, was found at the foot of Shanti Kunj CHS,
-          Hindu Colony, shortly after midnight. A family member said she had been under
-          &ldquo;digital arrest&rdquo; for 31 hours.
-        </p>
-        <p className={styles.small}>No other outlet is carrying this yet.</p>
-      </article>
-    );
+  if (app === "pikdrop") return <PikDrop story={story} state={state} onRead={read} />;
+  if (app === "safari") return <Safari story={story} state={state} onRead={read} />;
+  if (app === "news") return <HerNews story={story} />;
 
   return (
     <p className={styles.soon}>

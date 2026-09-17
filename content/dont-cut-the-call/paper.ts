@@ -138,6 +138,48 @@ export const notes: Note[] = [
   },
 ];
 
+/** Instagram, which she uses for exactly two things: her friends, and, on
+    Friday night, finding the girl whose bank account took her ₹49,000. */
+export const instagramThreads: Thread[] = [
+  {
+    id: "ig-shaila",
+    app: "instagram",
+    name: "Shaila Joshi",
+    messages: [
+      { id: "igs-1", from: "them", text: "😂😂 he pahila", english: "Watch this one first", at: "19:10", day: "Wednesday" },
+      { id: "igs-2", from: "her", text: "Udya park madhe dakhav.", english: "Show me at the park tomorrow.", at: "19:40", day: "Wednesday" },
+    ],
+  },
+  {
+    id: "ig-tanvi",
+    app: "instagram",
+    name: "tanvi.d_",
+    sub: "Vile Parle · 2nd year",
+    requires: ["ep:2"],
+    messages: [
+      {
+        id: "igt-1",
+        from: "her",
+        text: "Beta, ₹49,000 tumhare account mein gaye hain. Kisi ne tumhara account rent pe liya hai kya? Main 32 saal bank mein thi. Main tumhe bachaungi.",
+        english: "Beta, ₹49,000 went into your account. Has someone rented your account? I was in a bank for 32 years. I will protect you.",
+        at: "20:47",
+        day: "Friday",
+        evidence: "tanvi-dm",
+      },
+      { id: "igt-2", from: "system", text: "Seen 20:51", at: "20:51", day: "Friday" },
+      {
+        id: "igt-3",
+        from: "them",
+        text: "Aunty please call karo. 90040 23117",
+        english: "Aunty please call. 90040 23117",
+        at: "21:40",
+        day: "Friday",
+        evidence: "tanvi-number",
+      },
+    ],
+  },
+];
+
 /** The bank talks to her in SMS, and the phone decides what she sees. */
 export const smsThreads: Thread[] = [
   {
