@@ -18,7 +18,10 @@ export const isDropCode = (x: unknown): x is string => typeof x === "string" && 
 
 export const dropKey = (code: string) => `found:drop:${code}`;
 
-export type Drop = { case: CaseId; to: string; created: number };
+/** `held`: how many things they had on the sender, if the sender had finished. */
+export type Drop = { case: CaseId; to: string; created: number; held?: number };
+
+const isHeld = (x: unknown): x is number => typeof x === "number" && Number.isInteger(x) && x >= 0 && x <= 20;
 
 export async function readDrop(code: unknown): Promise<Drop | null> {
   if (!isDropCode(code) || !redisReady()) return null;
@@ -27,7 +30,7 @@ export async function readDrop(code: unknown): Promise<Drop | null> {
     if (typeof raw !== "string") return null;
     const d = JSON.parse(raw) as Partial<Drop>;
     return isCaseId(d.case) && typeof d.to === "string" && typeof d.created === "number"
-      ? { case: d.case, to: d.to, created: d.created }
+      ? { case: d.case, to: d.to, created: d.created, ...(isHeld(d.held) ? { held: d.held } : {}) }
       : null;
   } catch {
     return null;

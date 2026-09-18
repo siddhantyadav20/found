@@ -11,7 +11,7 @@ export const runtime = "edge";
 
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = "An envelope addressed by hand, with a phone inside";
+export const alt = "A courier pouch addressed to you, with a phone inside that is already on a call";
 
 /**
  * The preview a friend sees in the chat: their own name on the envelope.
@@ -23,7 +23,10 @@ export const alt = "An envelope addressed by hand, with a phone inside";
  */
 export default async function Image({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  const to = (await readDrop(code))?.to ?? "";
+  const drop = await readDrop(code);
+  const to = drop?.to ?? "";
   const drawable = to && /^[\p{Script=Latin} ]+$/u.test(to);
-  return new ImageResponse(<EnvelopeCard label={[drawable ? `TO ${to}` : "TO YOU", "BY HAND"]} />, size);
+  const n = drop?.held;
+  const said = n === undefined ? undefined : n === 0 ? "They had nothing on me." : `They had ${n} thing${n === 1 ? "" : "s"} on me.`;
+  return new ImageResponse(<EnvelopeCard label={[drawable ? `TO ${to}` : "TO YOU", "DELIVERED 1:11 AM"]} said={said} />, size);
 }

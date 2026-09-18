@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { IncomingCall, ReplyOption } from "@/content/types";
-import { exposed, type CaseState } from "@/lib/game/engine";
+import { exposed, has, type CaseState } from "@/lib/game/engine";
 import styles from "./Ringing.module.css";
 
 /* ===========================================================================
@@ -39,7 +39,7 @@ export default function Ringing({
 }) {
   const [answered, setAnswered] = useState(alreadyAnswered);
   const [said, setSaid] = useState(0);
-  const lines = call.lines.filter((l) => !l.needs || exposed(state, l.needs));
+  const lines = call.lines.filter((l) => (!l.needs || exposed(state, l.needs)) && (!l.when || has(state, l.when)));
 
   /* He talks. The player listens, the way a person under a digital arrest
      listens: one line at a time, with no way to hurry him. */

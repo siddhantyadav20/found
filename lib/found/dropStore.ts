@@ -45,9 +45,9 @@ function newCode(): string {
   return Array.from(randomBytes(8), (b) => ALPHABET[b % ALPHABET.length]).join("");
 }
 
-export async function createDropRecord(caseId: CaseId, to: string): Promise<string> {
+export async function createDropRecord(caseId: CaseId, to: string, held?: number): Promise<string> {
   const code = newCode();
-  const drop: Drop = { case: caseId, to, created: Date.now() };
+  const drop: Drop = { case: caseId, to, created: Date.now(), ...(held === undefined ? {} : { held }) };
   await redis(["SET", key(code), JSON.stringify(drop), "EX", TTL]);
   return code;
 }

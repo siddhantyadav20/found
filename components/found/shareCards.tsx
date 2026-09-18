@@ -33,7 +33,7 @@ export function CaseCard({ meta }: { meta: CaseMeta }) {
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 28, maxWidth: 640 }}>
         <div style={{ fontSize: 24, letterSpacing: 4, textTransform: "uppercase", color: "#ff8a3d" }}>
-          A mystery in one sitting
+          A thriller in one sitting
         </div>
         <div style={{ fontSize: 108, fontWeight: 700, lineHeight: 1 }}>{meta.title}</div>
         <div style={{ fontSize: 38, lineHeight: 1.35, color: "rgba(242,237,230,0.72)" }}>{meta.hint}</div>
@@ -50,21 +50,21 @@ export function CaseCard({ meta }: { meta: CaseMeta }) {
           borderRadius: 44,
           border: "10px solid #1f1f21",
           backgroundColor: "#050505",
-          color: "#ff453a",
-          fontSize: 30,
+          color: "#f2ede6",
+          fontSize: 22,
         }}
       >
-        <div style={{ display: "flex", width: 96, height: 44, border: "4px solid #555", borderRadius: 10, padding: 4 }}>
-          <div style={{ width: 10, height: "100%", borderRadius: 4, backgroundColor: "#ff453a" }} />
-        </div>
-        4%
+        {/* A call that has run 31 hours, on a phone that isn't yours. */}
+        <div style={{ display: "flex", fontSize: 20, color: "rgba(242,237,230,0.6)" }}>Mumbai Crime Branch</div>
+        <div style={{ display: "flex", fontSize: 40, color: "#30d158" }}>31:33:07</div>
+        <div style={{ display: "flex", width: 72, height: 72, marginTop: 40, borderRadius: 36, backgroundColor: "#ff3b30" }} />
       </div>
     </div>
   );
 }
 
 /** A passed-on phone: an envelope addressed by hand, a phone lit inside it. */
-export function EnvelopeCard({ label }: { label: readonly string[] }) {
+export function EnvelopeCard({ label, said }: { label: readonly string[]; said?: string }) {
   return (
     <div
       style={{
@@ -145,7 +145,11 @@ export function EnvelopeCard({ label }: { label: readonly string[] }) {
           ))}
         </div>
       </div>
-      <div style={{ display: "flex", fontSize: 30, color: "rgba(242,237,230,0.72)" }}>Don&apos;t unlock it.</div>
+      {/* The sender's result, if they finished: the spoiler-free brag, and the question. */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 30, color: "rgba(242,237,230,0.72)" }}>
+        {said && <div style={{ display: "flex", color: "#f2ede6" }}>{said}</div>}
+        <div style={{ display: "flex" }}>Would you have cut the call?</div>
+      </div>
     </div>
   );
 }

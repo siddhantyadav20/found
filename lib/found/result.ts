@@ -43,8 +43,8 @@ export function resultLine(r: Result): string {
   return `They had ${r.held.length} things on me.`;
 }
 
-/** What goes in the chat when someone passes the phone on. */
+/** What goes in the chat when someone passes the phone on. The question is the hook. */
 export function shareText(title: string, result: Result | null, url: string): string {
-  const line = result ? resultLine(result) : "Would you have cut the call?";
-  return `${title} — Found\n${line}\n${url}`;
+  const lines = [`${title} — Found`, ...(result ? [resultLine(result)] : []), "Would you have cut the call?", url];
+  return lines.join("\n");
 }

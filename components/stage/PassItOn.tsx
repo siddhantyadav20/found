@@ -117,7 +117,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
     if (phase === "sealing") return;
     setPhase("sealing");
     const origin = window.location.origin;
-    const r = await createDrop(id, name).catch(() => null);
+    const r = await createDrop(id, name, result?.minutes != null ? result.held.length : undefined).catch(() => null);
     if (r?.ok) {
       const entry: Sent = { code: r.code, to: r.to, case: id, at: Date.now() };
       remember(entry);
@@ -185,7 +185,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
         <form className={styles.form} onSubmit={seal}>
           <span className={styles.label} aria-hidden="true">
             <span>TO {preview || "YOU"}</span>
-            <span>BY HAND</span>
+            <span>DELIVERED 1:11 AM</span>
           </span>
           <label className={styles.formLabel} htmlFor="pass-name">
             Who&apos;s it for? A first name goes on the envelope.

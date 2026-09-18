@@ -79,6 +79,17 @@ export const events: LiveEvent[] = [
     banner: "City Desk · Dadar death: police say no foul play suspected (published 6:42 AM)",
     sets: ["saw:published"],
   },
+  {
+    /* The profile is gone, and a minute later so is he: without eyes on the
+       phone, they pull Sahil off the call (CHAPTER1.md Ep 3, beat 3). */
+    id: "they-hang-up",
+    device: "hers",
+    after: ["did:removed-profile"],
+    delay: 60,
+    app: "phone",
+    banner: "FaceTime · Mumbai Crime Branch ended the call",
+    sets: ["did:they-hung-up"],
+  },
 ];
 
 /**
@@ -103,6 +114,13 @@ export const incoming: IncomingCall[] = [
         who: "Inspector Rathore",
         line: "Sir, aapke ghar pe 1:11 AM ko ek mrit mahila ka phone deliver hua hai. Building ka CCTV hai.",
         english: "Sir, a dead woman's phone was delivered to your home at 1:11 AM. There is building CCTV.",
+      },
+      {
+        // Off script, fast, while the supervisor looks at something else (CHAPTER1.md F4).
+        who: "Inspector Rathore, quietly",
+        line: "Aapne call kaata tha. Unhone mujhe do din khana nahi diya.",
+        english: "You cut the call. They didn't feed me for two days.",
+        when: "did:cut-early",
       },
       {
         who: "Inspector Rathore",

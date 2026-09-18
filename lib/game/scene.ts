@@ -1,5 +1,6 @@
 import type { Flag, IncomingCall, Story } from "@/content/types";
 import { all, has, type CaseState } from "./engine";
+import { ENDING_SEEN } from "./endings";
 
 /* ===========================================================================
    Where the player is.
@@ -18,6 +19,8 @@ export type Scene =
   | { readonly kind: "seen-by-them" }
   | { readonly kind: "morning" }
   | { readonly kind: "choice" }
+  | { readonly kind: "ending" }
+  | { readonly kind: "end-card" }
   | { readonly kind: "ringing"; readonly call: IncomingCall }
   | { readonly kind: "table" };
 
@@ -45,6 +48,10 @@ export function sceneOf(story: Story, s: CaseState | null): Scene {
 
   if (has(s, "did:seen-by-them") && !has(s, "did:ep2-done")) return { kind: "seen-by-them" };
   if (has(s, "did:ep2-done") && !has(s, "did:woke")) return { kind: "morning" };
+  /* The choice, the act that makes it, what it costs, and the card. Once a
+     row's act is done there is no going back to the rows. */
+  if (has(s, ENDING_SEEN)) return { kind: "end-card" };
+  if (has(s, "did:chose")) return { kind: "ending" };
   if (has(s, "did:choice")) return { kind: "choice" };
 
   const call = ringingNow(story, s);

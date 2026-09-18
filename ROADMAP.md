@@ -209,6 +209,18 @@ audio and photographs, every question answerable two ways, and three hints each.
 **No signalling:** identical weight, fixed order, flat copy, no praise
 (PLAYER-JOURNEY Stage 9). A test asserts the three rows share one style.
 
+**Done (2026-09-18).** `content/dont-cut-the-call/endings.ts` holds the three
+scripts, read through six variables (PIN, SHAILA, NOTE, APP, NIKHIL and the
+bike's route); `lib/game/endings.ts` picks the lines; `components/stage/ending/`
+draws the choice, the acts, the aftermath, the last images and the card.
+Also landed: the 90-second "cooperate" line, CHAPTER1 F4's three ringbacks
+and Sahil's line about the cut call, the syndicate hanging up a minute after
+the profile goes (which is now offered only in Episode 3), what-others-did
+by ending, and the ledger count plus "Would you have cut the call?" on share
+text and drop previews. Left for later: the ledger's times ("Your voice,
+1:52 AM") need exposure timestamps in the save; the end card's stat shows
+only after 50 finishes; the drawn scenes wait for P11's footage.
+
 ---
 
 ## P9 — Arrival

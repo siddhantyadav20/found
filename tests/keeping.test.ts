@@ -93,12 +93,12 @@ describe("your cases, in a line", () => {
     const s = fresh();
     expect(summarise(s)).toMatchObject({ episode: 1, phase: "playing" });
     expect(describeCase(s, null, hours(3))).toEqual({ status: "Episode 1 · the call is still running · 3 h ago", result: null, cta: "Carry on" });
-    expect(describeCase(add(s, "did:dead"), null, 0).cta).toBe("Charge it");
-    expect(summarise(add(s, "did:dead", "ep:2")).episode).toBe(2);
+    expect(describeCase(add(s, "did:bank-dead"), null, 0).cta).toBe("Charge it");
+    expect(summarise(add(s, "did:bank-dead", "did:charged", "ep:2")).episode).toBe(2);
     // Episode 2's end card leads straight into Episode 3.
-    expect(summarise(add(s, "did:dead", "ep:2", "ep:2-done"))).toMatchObject({ episode: 3, phase: "playing" });
-    expect(summarise(add(s, "did:dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done")).phase).toBe("done");
-    expect(describeCase(add(s, "did:dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), null, 0).status).toBe("Case closed");
+    expect(summarise(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3"))).toMatchObject({ episode: 3, phase: "playing" });
+    expect(summarise(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3", "did:chose")).phase).toBe("done");
+    expect(describeCase(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3", "did:chose"), null, 0).status).toBe("Case closed");
   });
 
   it("keeps a finish on the desk after the save is gone", () => {
@@ -122,10 +122,10 @@ describe("the desk remembers", () => {
   it("draws the phone as it was left", () => {
     expect(deskState(null, null)).toEqual({ kind: "new" });
     expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1 });
-    expect(deskState(add(s, "did:dead"), one)).toEqual({ kind: "between" });
-    expect(deskState(add(s, "did:dead", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
-    expect(deskState(add(s, "did:dead", "ep:2", "ep:2-done"), one)).toMatchObject({ kind: "playing", episode: 3 });
-    expect(deskState(add(s, "did:dead", "ep:2", "ep:2-done", "ep:3", "ep:3-done"), one)).toEqual({ kind: "solved", solved: one, again: false });
+    expect(deskState(add(s, "did:bank-dead"), one)).toEqual({ kind: "between" });
+    expect(deskState(add(s, "did:bank-dead", "did:charged", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
+    expect(deskState(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3"), one)).toMatchObject({ kind: "playing", episode: 3 });
+    expect(deskState(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3", "did:chose"), one)).toEqual({ kind: "solved", solved: one, again: false });
     expect(deskState(null, one)).toEqual({ kind: "solved", solved: one, again: true });
   });
 

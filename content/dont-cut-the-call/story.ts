@@ -1,5 +1,6 @@
 import type { Story } from "../types";
 
+import { endings } from "./endings";
 import { episode1 } from "./episode1";
 import * as ep2 from "./episode2";
 import * as ep3 from "./episode3";
@@ -72,4 +73,5 @@ export const story: Story = {
   cues: [...episode1.cues, ...ep2.cues, ...ep3.cues],
   events: [...episode1.events, ...ep2.events, ...ep3.events],
   exposures: [...episode1.exposures, ...ep2.exposures],
+  endings,
 };

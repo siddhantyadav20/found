@@ -127,7 +127,7 @@ export function eventsFor(ep: Story): readonly string[] {
 
 export const isFoundEvent = (ep: Story, x: unknown): x is string => typeof x === "string" && eventsFor(ep).includes(x);
 
-type Tracked = (typeof MILESTONES)[number] | (typeof CHOICES)[number];
+type Tracked = (typeof MILESTONES)[number] | (typeof CHOICES)[number] | (typeof VERDICTS)[number];
 
 /** The flag that marks each milestone or choice, so it's counted where it's saved. */
 export const MILESTONE_OF: Partial<Record<Flag, Tracked>> = {
@@ -148,6 +148,9 @@ export const MILESTONE_OF: Partial<Record<Flag, Tracked>> = {
   "did:nikhil-lied": "nikhil:lied",
   "did:nikhil-silent": "nikhil:silent",
   "did:removed-profile": "profile:removed",
+  "did:end-police": "end:police",
+  "did:end-bin": "end:bin",
+  "did:end-friend": "end:friend",
 };
 
 /**

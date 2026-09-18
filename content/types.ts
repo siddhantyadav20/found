@@ -193,17 +193,32 @@ export type Exposure = {
   readonly english?: string;
 };
 
+/**
+ * A line of an ending. Which lines a player reads is decided by what they
+ * did: `needs` all of these flags, `any` at least one, `unless` none.
+ */
+export type EndingLine = {
+  readonly text: string;
+  readonly english?: string;
+  /** A time cut before the line: "Nine days later". */
+  readonly at?: string;
+  /** Somebody saying it, as a message. Without one, it is narration. */
+  readonly who?: string;
+  readonly needs?: readonly Flag[];
+  readonly any?: readonly Flag[];
+  readonly unless?: readonly Flag[];
+};
+
 /** One of the three things a player can do with what they know. */
 export type Ending = {
   readonly id: "police" | "bin" | "friend";
   readonly row: string;
-  /** Lines in order. A line can depend on what the ledger holds. */
-  readonly lines: readonly {
-    readonly text: string;
-    readonly english?: string;
-    readonly needs?: readonly string[];
-    readonly unless?: readonly string[];
-  }[];
+  /** What happens afterwards, a line at a time. */
+  readonly lines: readonly EndingLine[];
+  /** The last image: who says what, before the black. */
+  readonly last: readonly EndingLine[];
+  /** Ending 03 ends on a reply to somebody you love. The others withhold one. */
+  readonly reply?: readonly ReplyOption[];
   /** The one thing only this ending shows, for the end card. */
   readonly onlyHere: string;
 };
@@ -289,6 +304,8 @@ export type IncomingCall = {
     readonly english?: string;
     /** Only said when the ledger holds this, which is how an arrest is built. */
     readonly needs?: string;
+    /** Only said when this happened earlier in the night. */
+    readonly when?: Flag;
   }[];
   readonly reply?: Reply;
   /** What the button says when there is nothing to say back. */
@@ -430,6 +447,8 @@ export type SettingsRow = {
     readonly confirm: string;
     readonly sets: readonly Flag[];
     readonly done: string;
+    /** Only offered once these are true. */
+    readonly requires?: readonly Flag[];
   };
 };
 

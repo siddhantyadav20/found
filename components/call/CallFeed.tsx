@@ -21,6 +21,7 @@ export default function CallFeed({
   clock,
   supervisor,
   dark,
+  label = "မီးသတ်",
 }: {
   board: string;
   /** His time, not Mumbai's: "02:11" while her phone says 01:11. */
@@ -28,6 +29,8 @@ export default function CallFeed({
   supervisor: boolean;
   /** Her side is dark: the camera has been off since the pouch was sealed. */
   dark?: boolean;
+  /** What the extinguisher says. Burmese on his wall; Marathi in a real Mumbai station. */
+  label?: string;
 }) {
   const [h, m] = clock.split(":").map(Number);
   // A clock face, not a digital readout: a player has to read it to notice.
@@ -122,7 +125,7 @@ export default function CallFeed({
           <rect x="292" y="150" width="18" height="54" rx="5" fill="#8a3a2e" />
           <rect x="294" y="168" width="14" height="16" rx="1" fill="#e2ddd2" />
           <text x="301" y="179" textAnchor="middle" className={styles.burmese}>
-            မီးသတ်
+            {label}
           </text>
         </g>
 

@@ -8,7 +8,9 @@ import { PLUGGED_IN, sceneOf } from "@/lib/game/scene";
 import { useNow } from "@/lib/found/now";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
 import Charge from "./Charge";
-import Choice from "./Choice";
+import Aftermath from "./ending/Aftermath";
+import Choice from "./ending/Choice";
+import EndCard from "./ending/EndCard";
 import InAppGuard from "./InAppGuard";
 import Morning from "./Morning";
 import Note from "./Note";
@@ -80,6 +82,13 @@ export default function Stage() {
     /* Everything has been asked. Three rows, and a call still running. */
     case "choice":
       return <Choice story={story} state={state} clock={clockNow(story, state, now)} />;
+
+    /* The act is done. What it cost, the last image, and black. */
+    case "ending":
+      return <Aftermath story={story} state={state} />;
+
+    case "end-card":
+      return <EndCard story={story} state={state} />;
 
     /* Her son at 1:34, the Crime Branch at 10:30. */
     case "ringing": {

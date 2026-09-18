@@ -144,6 +144,7 @@ export default function Settings({
               {rows.map((r) => {
                 const tile = TILES[r.title];
                 const done = r.action?.sets.every((f) => has(state, f));
+                const offered = Boolean(r.action && all(state, r.action.requires));
                 const inner = (
                   <>
                     {tile && <Tile bg={tile.bg}>{tile.glyph}</Tile>}
@@ -156,7 +157,7 @@ export default function Settings({
                 );
                 return (
                   <li key={r.title}>
-                    {r.action && !done ? (
+                    {r.action && offered && !done ? (
                       <button type="button" className={app.row} onClick={() => setAsking(r.title)}>
                         {inner}
                         <Chevron />
@@ -166,7 +167,7 @@ export default function Settings({
                     )}
 
                     {/* The one row that does something, and cannot be undone. */}
-                    {r.action && asking === r.title && (
+                    {r.action && offered && asking === r.title && (
                       <div className={local.confirm}>
                         <span>{r.action.confirm}</span>
                         <span className={local.confirmRow}>

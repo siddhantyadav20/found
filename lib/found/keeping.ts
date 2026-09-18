@@ -92,9 +92,10 @@ export type Progress = {
 
 export function summarise(s: CaseState): Progress {
   const flags = s.flags as readonly string[];
-  // Episode 2's end card leads straight on, so a finished Episode 2 is Episode 3 waiting.
-  const episode = flags.includes("ep:3") || flags.includes("ep:2-done") ? 3 : flags.includes("ep:2") ? 2 : 1;
-  const phase = flags.includes("ep:3-done") ? "done" : episode === 1 && flags.includes("did:dead") ? "between" : "playing";
+  const episode = flags.includes("ep:3") ? 3 : flags.includes("ep:2") ? 2 : 1;
+  // Between episodes: the power bank has died and nobody has plugged in yet.
+  const between = flags.includes("did:bank-dead") && !flags.includes("did:charged");
+  const phase = flags.includes("did:chose") ? "done" : between ? "between" : "playing";
   return { episode, phase, last: Math.max(s.started, ...Object.values(s.at)) };
 }
 
@@ -147,7 +148,7 @@ export function describeCase(save: CaseState | null, solved: Solved | null, now:
     : null;
   if (!save) return { status: "Back in its envelope", result, cta: "Play again" };
   const p = summarise(save);
-  if (p.phase === "between") return { status: "Episode 1 done · the phone is dead", result, cta: "Charge it" };
+  if (p.phase === "between") return { status: "Episode 1 done · her phone is at 4%", result, cta: "Charge it" };
   if (p.phase === "done") return { status: "Case closed", result, cta: "Open it" };
   return { status: `Episode ${p.episode} · the call is still running · ${ago(p.last, now)}`, result, cta: "Carry on" };
 }

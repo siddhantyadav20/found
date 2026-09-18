@@ -1,4 +1,4 @@
-import type { CallCue, Ending, Evidence, Exposure, LiveEvent, Question } from "../types";
+import type { CallCue, Evidence, Exposure, LiveEvent, Question } from "../types";
 
 /* ===========================================================================
    Episode 1 — "Call Mat Kaatna" · 1:11 AM · 7% and a power bank on one LED.
@@ -241,6 +241,32 @@ const events: LiveEvent[] = [
     app: "phone",
     sets: ["did:bank-dead"],
   },
+  /* Cut at 1:11, the call rings back three times, and then stops
+     (CHAPTER1.md F4). Nobody answers; the missed calls stay. */
+  {
+    id: "ringback-1",
+    device: "hers",
+    after: ["did:cut-early"],
+    delay: 20,
+    app: "phone",
+    banner: "Mumbai Crime Branch · Missed FaceTime Video",
+  },
+  {
+    id: "ringback-2",
+    device: "hers",
+    after: ["fired:ringback-1"],
+    delay: 35,
+    app: "phone",
+    banner: "Mumbai Crime Branch · Missed FaceTime Video (2)",
+  },
+  {
+    id: "ringback-3",
+    device: "hers",
+    after: ["fired:ringback-2"],
+    delay: 50,
+    app: "phone",
+    banner: "Mumbai Crime Branch · Missed FaceTime Video (3)",
+  },
 ];
 
 const exposures: Exposure[] = [
@@ -276,11 +302,4 @@ const exposures: Exposure[] = [
   },
 ];
 
-/** Placeholders until P8. The rows are the chapter's three answers. */
-const endings: [Ending, Ending, Ending] = [
-  { id: "police", row: "Report to police", lines: [], onlyHere: "Who PK Kothari was." },
-  { id: "bin", row: "Throw it away", lines: [], onlyHere: "What the world believes when nobody speaks." },
-  { id: "friend", row: "Share with a friend", lines: [], onlyHere: "What virality does to the people in the screenshots." },
-];
-
-export const episode1 = { evidence, questions, cues, events, exposures, endings } as const;
+export const episode1 = { evidence, questions, cues, events, exposures } as const;

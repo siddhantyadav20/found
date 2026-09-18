@@ -71,7 +71,8 @@ export default function Table({ story, meta, state }: { story: Story; meta: Case
   const [idleTurn, setIdleTurn] = useState(0);
   const [banner, setBanner] = useState<Banner | null>(null);
 
-  const cut = has(state, "did:cut-early");
+  // Cut by the player at 1:11, or ended by them once the profile is gone.
+  const cut = has(state, "did:cut-early") || has(state, "did:they-hung-up");
   const muted = !has(state, "did:unmuted");
   const mumbai = clockNow(story, state, now);
 

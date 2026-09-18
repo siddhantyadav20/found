@@ -22,7 +22,8 @@ const awake = (): CaseState => ({
 });
 
 /** What he can actually say, given what they gave him. */
-const chargesFor = (s: CaseState) => arrest.lines.filter((l) => !l.needs || exposed(s, l.needs)).map((l) => l.line);
+const chargesFor = (s: CaseState) =>
+  arrest.lines.filter((l) => (!l.needs || exposed(s, l.needs)) && (!l.when || s.flags.includes(l.when))).map((l) => l.line);
 
 describe("the arrest", () => {
   it("is assembled out of the player's own night", () => {

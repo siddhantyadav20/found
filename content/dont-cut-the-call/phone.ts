@@ -308,6 +308,8 @@ export const settings: SettingsGroup[] = [
           confirm: "Removing this profile will stop the screen being shared. Whoever is watching will know you did it.",
           sets: ["did:removed-profile"],
           done: "Removed",
+          // Not before "Good morning, #9.": until then nobody knows who is watching.
+          requires: ["ep:3"],
         },
       },
       { title: "AirDrop", value: "Contacts Only" },
