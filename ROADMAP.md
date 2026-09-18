@@ -39,7 +39,8 @@ for later is noted under it.
 **Inserted after the QA pass of 2026-09-18 ([QA.md](QA.md)), before P8:**
 **R1 — make it an iPhone again** (the pilot's lock screen, motion, gestures,
 shade, buzz and real app looks, full-bleed on handsets) and **R2 — fix the QA
-list** (two blockers, a dozen majors, a test for each).
+list** (two blockers, a dozen majors, a test for each). **Both done**
+(`16ff682`, then R2); what R2 deferred is at the end of QA.md.
 
 P0–P8 are the game. P9–P10 are how it spreads. P11 runs in parallel from P2
 (Siddhant shoots; placeholders stand in until each asset lands). P12 is the

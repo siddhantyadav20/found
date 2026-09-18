@@ -6,6 +6,7 @@ import type { Question, Story } from "@/content/types";
 import { answer, appLabel, caseFile, hint, openQuestion, seen, whereToLook, type CaseState } from "@/lib/game/engine";
 import note from "@/components/her/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
+import { wrong } from "./playthrough";
 
 /* ===========================================================================
    The case file: one question at a time, what you have found, and help that
@@ -85,6 +86,7 @@ export default function CaseFile({
     const r = answer(story, state, q.id, given);
     setSaid({ text: r.reply, ok: r.ok, ask: q.ask });
     if (r.ok) save(r.state);
+    else wrong(q.id);
   };
 
   return (

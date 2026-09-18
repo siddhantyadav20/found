@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Flag } from "@/content/types";
-import { add, answer, exposed, expose, newCase, type CaseState } from "@/lib/game/engine";
+import { add, answer, exposed, expose, newCase, openApp, see, type CaseState } from "@/lib/game/engine";
 
 /**
  * Episode 3. The scam is fake and the evidence is real, because the player
@@ -18,7 +18,7 @@ const arrest = ep.incoming.find((c) => c.id === "arrest")!;
 
 const awake = (): CaseState => ({
   ...newCase("t", 0),
-  flags: ["did:opened", "did:unlock", "ep:2", "ep:3", "did:woke"] as Flag[],
+  flags: ["did:opened", "did:unlock", "saw:note", "saw:call", "ep:2", "ep:3", "did:woke"] as Flag[],
 });
 
 /** What he can actually say, given what they gave him. */
@@ -46,7 +46,19 @@ describe("the arrest", () => {
 });
 
 describe("checking what he says", () => {
-  const ask = (s: CaseState, picked: readonly string[]) => answer(ep, s, "against-you", picked);
+  /** Everything on her phone looked at, the way a careful player checks him. */
+  const checked = (s: CaseState) =>
+    see(
+      ep,
+      (["messages", "phone", "whatsapp", "settings"] as const).reduce((acc, app) => openApp(ep, acc, app), s),
+      // The debit is read in Unknown Senders, not found by opening the app.
+      "the-lakh",
+    );
+  const ask = (s: CaseState, picked: readonly string[]) => answer(ep, checked(s), "against-you", picked);
+
+  it("won't be judged before any of it has been checked", () => {
+    expect(answer(ep, awake(), "against-you", ["delivered"]).ok).toBe(false);
+  });
 
   it("is all bluff for a player who gave them nothing", () => {
     const clean = awake();

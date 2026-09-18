@@ -20,8 +20,8 @@ describe("the timer", () => {
   });
 
   it("carries on from where the pouch found it", () => {
-    expect(ranFor(ep, 0)).toBe(113_587);
-    expect(duration(ranFor(ep, 90_000))).toBe("31:34:37");
+    expect(ranFor(ep, start(), 0)).toBe(113_587);
+    expect(duration(ranFor(ep, start(), 90_000))).toBe("31:34:37");
   });
 });
 

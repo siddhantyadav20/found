@@ -27,6 +27,8 @@ export type AppId =
   | "safari"
   | "news"
   | "casefile"
+  /** The management profile. Never on her home screen; only its notifications wear it. */
+  | "kyc"
   // Your phone
   | "yours:chats"
   | "yours:phone"
@@ -172,6 +174,8 @@ export type LiveEvent = {
   readonly delay?: number;
   readonly app: AppId;
   readonly banner?: string;
+  /** Whose icon the banner wears, when it isn't the app's own. */
+  readonly icon?: AppId;
   readonly sets?: readonly Flag[];
 };
 

@@ -1,11 +1,13 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { drag } from "@/components/stage/drag";
 
 import type { CallCue, Reply, ReplyOption, Story } from "@/content/types";
 import { duration, hisClock, ranFor } from "@/lib/game/call";
+import type { CaseState } from "@/lib/game/engine";
+import { useNow } from "@/lib/found/now";
 import styles from "./LiveCall.module.css";
 import CallFeed from "./CallFeed";
 
@@ -30,13 +32,21 @@ import CallFeed from "./CallFeed";
    doesn't move. */
 
 const ZOOM_MAX = 3.5;
+/** How long a thumb has to stay on Unmute. Speaking is never an accident. */
+const HOLD_TO_SPEAK_MS = 900;
+
+/** The only thing on the page that changes every second. */
+function Timer({ story, state }: { story: Story; state: CaseState }) {
+  const now = useNow(1000);
+  return <>{now ? duration(ranFor(story, state, now)) : null}</>;
+}
 /** Below this the hands are a smudge; above it, the hour is unarguable. */
 const ZOOM_READS = 2.4;
 
 export default function LiveCall({
   story,
   mumbaiTime,
-  elapsedMs,
+  state,
   cue,
   expanded,
   muted,
@@ -52,7 +62,7 @@ export default function LiveCall({
 }: {
   story: Story;
   mumbaiTime: string;
-  elapsedMs: number;
+  state: CaseState;
   cue: CallCue | null;
   expanded: boolean;
   muted: boolean;
@@ -68,6 +78,23 @@ export default function LiveCall({
   onSay?: (option: ReplyOption) => void;
 }) {
   const [asking, setAsking] = useState(false);
+  /* Unmuting is held, not tapped (PLAYER-JOURNEY Stage 3): the ring fills
+     while the thumb stays down, and letting go early changes nothing. */
+  const [holding, setHolding] = useState(false);
+  const holdTimer = useRef<number | undefined>(undefined);
+  const letGo = () => {
+    window.clearTimeout(holdTimer.current);
+    setHolding(false);
+  };
+  const press = () => {
+    if (!muted) return;
+    setHolding(true);
+    holdTimer.current = window.setTimeout(() => {
+      setHolding(false);
+      onUnmute();
+    }, HOLD_TO_SPEAK_MS);
+  };
+  useEffect(() => () => window.clearTimeout(holdTimer.current), []);
   /* Where the window is parked. iOS lets a picture-in-picture call be thrown
      to any corner, and it snaps there; so does this one. */
   const [corner, setCorner] = useState<"tr" | "br" | "tl" | "bl">("tr");
@@ -175,7 +202,7 @@ export default function LiveCall({
         <div className={styles.top}>
           <span className={styles.who}>{story.call.caller}</span>
           <span className={styles.timer} aria-label="Call duration">
-            {duration(ranFor(story, elapsedMs))}
+            <Timer story={story} state={state} />
           </span>
         </div>
 
@@ -190,11 +217,21 @@ export default function LiveCall({
       </div>
 
       {cue && (
-        <p className={styles.caption} data-whisper={cue.whisper ? "" : undefined}>
+        <p className={styles.caption} data-whisper={cue.whisper ? "" : undefined} aria-hidden="true">
           <span className={styles.line}>{cue.line}</span>
           {cue.english && <span className={styles.english}>{cue.english}</span>}
         </p>
       )}
+
+      {/* What he says is read out even with the window put away, and in the
+          language he says it in, so a screen reader doesn't mangle it. */}
+      <p className="sr" role="log" aria-live="polite">
+        {cue && (
+          <>
+            <span lang="hi-Latn">{cue.line}</span> {cue.english}
+          </>
+        )}
+      </p>
 
       {/* Unmuted, with something to say: he is a person, and the player has
           just decided to speak to him. Picked from a list, never typed. */}
@@ -203,7 +240,7 @@ export default function LiveCall({
           {reply.prompt && <p className={styles.sayPrompt}>{reply.prompt}</p>}
           {reply.options.map((o) => (
             <button key={o.id} type="button" className={styles.sayOption} onClick={() => onSay(o)}>
-              <span>{o.text}</span>
+              <span lang={o.english ? "hi-Latn" : undefined}>{o.text}</span>
               {o.english && <span className={styles.english}>{o.english}</span>}
             </button>
           ))}
@@ -214,13 +251,28 @@ export default function LiveCall({
           the red one in the middle. "Minimise" is how iOS puts a call away. */}
       {expanded && (
         <div className={styles.controls}>
-          <button type="button" className={styles.round} onClick={onUnmute} aria-pressed={!muted} data-on={!muted || undefined}>
+          <button
+            type="button"
+            className={styles.round}
+            onPointerDown={press}
+            onPointerUp={letGo}
+            onPointerLeave={letGo}
+            onPointerCancel={letGo}
+            onContextMenu={(e) => e.preventDefault()}
+            // A keyboard has no hold. Enter is already a deliberate act.
+            onClick={(e) => e.detail === 0 && onUnmute()}
+            aria-pressed={!muted}
+            aria-label={muted ? "Hold to unmute" : "Unmuted"}
+            data-on={!muted || undefined}
+            data-holding={holding || undefined}
+            style={{ ["--hold" as string]: `${HOLD_TO_SPEAK_MS}ms` }}
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="9" y="3.5" width="6" height="11" rx="3" />
               <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5" />
               {muted && <path d="M4 4l16 16" />}
             </svg>
-            <span>{muted ? "Unmute" : "Mute"}</span>
+            <span>{muted ? (holding ? "Keep holding" : "Hold to unmute") : "Unmuted"}</span>
           </button>
           <button type="button" className={styles.round} data-end onClick={ask}>
             <svg viewBox="0 0 24 24" aria-hidden="true">

@@ -69,6 +69,9 @@ describe("Episode 2", () => {
 
   it("answers the note question the hard way, without Shaila", () => {
     let s = opens(afterEpisodeOne(), ["pikdrop", "photos"]);
+    // Every version of her death is checked on her phone before it's judged.
+    expect(answer(ep, s, "how-died", ["murder"]).ok).toBe(false);
+    s = opens(s, ["messages", "phone"]);
     s = answered(s, "how-died", ["murder"]);
     s = answered(s, "who-told", "the girl");
     s = see(ep, add(s, "did:restored-diary-6"), "list");

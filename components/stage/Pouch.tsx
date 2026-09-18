@@ -62,7 +62,7 @@ export default function Pouch({ meta, to, minutes, onOpen }: { meta: CaseMeta; t
           PULL TO OPEN →
         </span>
         <span className={styles.label}>
-          <span className={styles.to}>{to ? `TO ${to}` : "BY HAND"}</span>
+          <span className={styles.to}>{to ? `TO ${to}` : "FLAT —"}</span>
           <span className={styles.from}>PikDrop · 1:08 AM · Dadar East</span>
           <span className={styles.note}>{meta.note}</span>
         </span>

@@ -114,10 +114,14 @@ describe("true or bluff", () => {
   ]);
 
   it("depends on what the player actually handed over", () => {
-    // A player who gave them nothing: every charge is a bluff.
-    expect(answer(story, start(), "against-you", []).ok).toBe(true);
+    // Nothing is judged until what settles it has been looked at.
+    expect(answer(story, start(), "against-you", []).ok).toBe(false);
+    const checked = () => add(start(), "saw:call");
 
-    const typed = add(start(), "did:typed-password");
+    // A player who gave them nothing: every charge is a bluff.
+    expect(answer(story, checked(), "against-you", []).ok).toBe(true);
+
+    const typed = add(checked(), "did:typed-password");
     expect(answer(story, typed, "against-you", ["pin"]).ok).toBe(true);
     expect(answer(story, typed, "against-you", []).ok).toBe(false);
     expect(answer(story, typed, "against-you", ["pin", "invented"]).ok).toBe(false);

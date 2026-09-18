@@ -47,7 +47,7 @@ export const courier: Courier = {
 
 export const searches: Search[] = [
   { id: "s1", text: "can police arrest on video call india", at: "17:51", day: "Thursday", evidence: "she-searched" },
-  { id: "s2", text: "fedex parcel aadhaar scam", at: "17:54", day: "Thursday" },
+  { id: "s2", text: "skyex parcel aadhaar scam", at: "17:54", day: "Thursday" },
   { id: "s3", text: "myawaddy lotus park indians rescued", at: "13:22", day: "Friday", evidence: "she-searched-mw" },
   { id: "s4", text: "1930 cyber helpline complaint status", at: "22:16", day: "Friday" },
 ];

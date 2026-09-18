@@ -27,6 +27,8 @@ export type CaseState = {
   readonly at: Readonly<Record<string, number>>;
   /** The drop this playthrough arrived through, if any. */
   readonly via?: string;
+  /** When Episodes 2 and 3 began, so each one's clock starts at its own base. */
+  readonly began?: Readonly<Record<string, number>>;
 };
 
 export function newCase(run: string, now: number, via?: string): CaseState {
@@ -95,6 +97,7 @@ export type Answer = { readonly state: CaseState; readonly ok: boolean; readonly
 
 export const WRONG = "Not quite. Look again.";
 export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
+export const UNCHECKED = "Check each of them on her phone before you decide.";
 
 /**
  * Judge an answer. `given` is evidence ids for a pick, text for a type, row
@@ -137,6 +140,14 @@ export function answer(story: Story, s: CaseState, id: string, given: readonly s
       break;
     }
     case "claims": {
+      /* A claim is only judged once what settles it has been looked at, so
+         the board can't be passed by guessing (QA.md L5). What can't be
+         reached — a transfer that never happened — needs no checking. */
+      const unchecked = q.claims.some((c) => {
+        const e = c.proof ? story.evidence.find((x) => x.id === c.proof) : undefined;
+        return e !== undefined && reachable(s, e) && !seen(s, e.id);
+      });
+      if (unchecked) return { state: s, ok: false, reply: UNCHECKED };
       const want = new Set(q.claims.filter((c) => c.trueWhen && all(s, c.trueWhen)).map((c) => c.id));
       ok = picked.length === want.size && picked.every((p) => want.has(p));
       break;
@@ -191,12 +202,38 @@ export const against = (story: Story, s: CaseState) =>
 
 /* --- time --------------------------------------------------------------- */
 
-/** The story's own clock: its base time plus how long this episode has run. */
+/**
+ * Note the moment an episode began, the first time a save shows it. Every
+ * save goes through here, so Episode 2 starts at 1:40 however long the
+ * player spent in Episode 1, and Episode 3 at 10:29 (QA.md L3).
+ */
+export function stamp(s: CaseState, now: number): CaseState {
+  const ep = episodeOf(s);
+  if (ep === 1 || s.began?.[ep] !== undefined) return s;
+  return { ...s, began: { ...s.began, [ep]: now } };
+}
+
+/** When this episode began. Saves from before `began` fall back to the start. */
+export const episodeStart = (s: CaseState): number => s.began?.[episodeOf(s)] ?? s.started;
+
+const minutesOf = (hhmm: string): number => {
+  const [h, m] = hhmm.split(":").map(Number);
+  return h * 60 + m;
+};
+
+/** How far the story's clock has run since 1:11 AM, in seconds. */
+export function storySeconds(story: Story, s: CaseState, now: number): number {
+  const base = minutesOf(story.clocks[episodeOf(s) - 1].base);
+  const first = minutesOf(story.clocks[0].base);
+  const gap = ((base - first + 24 * 60) % (24 * 60)) * 60;
+  return gap + Math.max(0, Math.floor((now - episodeStart(s)) / 1000));
+}
+
+/** The story's own clock: this episode's base time plus how long it has run. */
 export function clockNow(story: Story, s: CaseState, now: number): string {
-  const { base } = story.clocks[episodeOf(s) - 1];
-  const [h, m] = base.split(":").map(Number);
-  const minutes = Math.floor((now - s.started) / 60_000);
-  const t = (h * 60 + m + minutes) % (24 * 60);
+  const base = minutesOf(story.clocks[episodeOf(s) - 1].base);
+  const minutes = Math.max(0, Math.floor((now - episodeStart(s)) / 60_000));
+  const t = (base + minutes) % (24 * 60);
   return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
 }
 

@@ -25,7 +25,6 @@ import type {
    =========================================================================== */
 
 export const evidence: Evidence[] = [
-  { id: "helpline-held", device: "hers", app: "phone", label: "She held for 24 minutes on the cyber helpline", requires: ["ep:2"] },
   { id: "collector", device: "hers", app: "phone", label: "The 38-second call to \"Tanvi\", recorded", requires: ["ep:2"] },
   { id: "diary-7", device: "hers", app: "photos", label: "Diary, page 7: \"The girl gave me to them\"", requires: ["ep:2"] },
   {
@@ -229,7 +228,8 @@ export const callReplies: Reply[] = [
         sets: ["did:said-his-name"],
         exposes: "voice",
       },
-      { id: "quiet", text: "Say nothing. Stay muted." },
+      // Silence is a choice too, and once made the question goes away (QA.md L6).
+      { id: "quiet", text: "Say nothing.", sets: ["did:said-nothing"] },
     ],
   },
 ];
@@ -244,7 +244,7 @@ export const incoming: IncomingCall[] = [
     sub: "mobile",
     at: "01:34",
     after: ["ep:2"],
-    insists: true,
+    // "Answer or not" (CHAPTER1.md Ep 2, beat 2). Declined, he doesn't ring back.
     lines: [
       { who: "Nikhil", line: "Aai? Aai, kaay zala?", english: "Aai? Aai, what happened?" },
       { who: "Nikhil", line: "Kaun hai? Kaun bol raha hai?", english: "Who is this? Who's speaking?" },
@@ -419,6 +419,7 @@ export const events: LiveEvent[] = [
     delay: 3,
     app: "settings",
     banner: "RBI Secure KYC · Good morning, #9.",
+    icon: "kyc",
     sets: ["did:seen-by-them", "ep:3"],
   },
 ];

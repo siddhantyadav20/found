@@ -90,7 +90,7 @@ export default function LockScreen({
           {notes.map((n) => (
             <span key={n.key} className={styles.note}>
               <span className={styles.noteIcon}>
-                <AppGlyph app={n.app} />
+                <AppGlyph app={n.icon ?? n.app} />
               </span>
               <span className={styles.noteBody}>
                 <span className={styles.noteFrom}>{n.from}</span>

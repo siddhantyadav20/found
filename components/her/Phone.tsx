@@ -31,7 +31,15 @@ import styles from "./ios/Screen.module.css";
    =========================================================================== */
 
 export type Origin = { x: number; y: number; w: number; h: number };
-export type Notice = { key: string; app: AppId; from: string; text: string; time?: string };
+export type Notice = {
+  key: string;
+  app: AppId;
+  from: string;
+  text: string;
+  time?: string;
+  /** Whose icon it wears, when that isn't the app it opens. */
+  icon?: AppId;
+};
 
 const CLOSE_MS = 300;
 const BACK_MS = 260;
@@ -354,7 +362,7 @@ export default function Phone({
                       }}
                     >
                       <span className={styles.noticeIcon}>
-                        <AppGlyph app={n.app} />
+                        <AppGlyph app={n.icon ?? n.app} />
                       </span>
                       <span className={styles.noticeBody}>
                         <span className={styles.noticeTop}>
@@ -388,10 +396,9 @@ export default function Phone({
               onBanner?.();
             }}
             onPointerDown={flickBanner}
-            aria-live="polite"
           >
             <span className={styles.bannerIcon}>
-              <AppGlyph app={banner.app} />
+              <AppGlyph app={banner.icon ?? banner.app} />
             </span>
             <span className={styles.bannerText}>
               <span className={styles.bannerFrom}>{banner.from}</span>
@@ -401,6 +408,11 @@ export default function Phone({
             <span className={styles.bannerNow}>now</span>
           </button>
         )}
+
+        {/* Announced the moment it lands, before anybody has to find it. */}
+        <p className="sr" role="status" aria-live="polite">
+          {banner ? `${banner.from}: ${banner.text}` : ""}
+        </p>
 
         {overlay}
       </div>

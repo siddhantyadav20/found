@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     /** Each episode supplies its own half. */
     template: "%s · Found",
   },
-  description: "Mysteries played on the missing person's phone.",
+  description: "Thrillers played on somebody else's phone.",
   openGraph: { type: "website", siteName: "Found" },
 };
 

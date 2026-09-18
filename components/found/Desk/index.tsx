@@ -23,7 +23,7 @@ export default function Desk({ minutes }: { minutes?: number }) {
 
       <header className={styles.head}>
         <h1 className={styles.brand}>Found</h1>
-        <p className={styles.tagline}>Mysteries played on the missing person&apos;s phone.</p>
+        <p className={styles.tagline}>Thrillers played on somebody else&apos;s phone.</p>
       </header>
 
       <DeskPhone minutes={minutes} />

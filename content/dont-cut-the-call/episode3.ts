@@ -31,7 +31,7 @@ export const messages: Thread[] = [
       {
         id: "d-1",
         from: "them",
-        text: "Aunty, subah 9 baje FedEx ka call aaya. Parcel, Taiwan, wahi sab. Maine kaat diya.",
+        text: "Aunty, subah 9 baje SkyEx ka call aaya. Parcel, Taiwan, wahi sab. Maine kaat diya.",
         english: "Aunty, at 9 this morning I got the courier call. A parcel, Taiwan, all of it. I cut the call.",
         at: "10:12",
         day: "Saturday",

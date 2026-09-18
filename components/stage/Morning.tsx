@@ -2,6 +2,8 @@
 
 import type { Story } from "@/content/types";
 import { duration, ranFor } from "@/lib/game/call";
+import type { CaseState } from "@/lib/game/engine";
+import { useNow } from "@/lib/found/now";
 import styles from "./Morning.module.css";
 
 /* ===========================================================================
@@ -19,18 +21,20 @@ import styles from "./Morning.module.css";
 
 export default function Morning({
   story,
-  elapsedMs,
+  state,
   onUp,
 }: {
   story: Story;
-  elapsedMs: number;
+  state: CaseState;
   onUp: () => void;
 }) {
+  // 40:51 and counting: the call ran all night while the player slept.
+  const now = useNow(1000);
   return (
     <div className={styles.morning}>
       <p className={styles.eyebrow}>Saturday · 10:29 AM</p>
       <p className={styles.line}>You slept, in the end. Holding it.</p>
-      <p className={styles.timer}>{duration(ranFor(story, elapsedMs))}</p>
+      <p className={styles.timer}>{now ? duration(ranFor(story, state, now)) : null}</p>
       <p className={styles.sub}>The call is still running.</p>
       <button type="button" className={styles.up} onClick={onUp}>
         Sit up

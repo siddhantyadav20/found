@@ -4,20 +4,23 @@ import type { Flag, Story } from "@/content/types";
    What Found measures, and nothing it doesn't.
 
    Whether strangers start a case, where they get stuck, whether they finish,
-   whether the turn lands, and whether they pass the phone on:
+   what they gave away, and whether they pass the phone on:
 
-     open → unlock → d1 → d2 → vault → d3 → end                   Episode 1
-     ep2-start → e2-who → e2-why → e2-wifi → e2-trust →
-       e2-fire → ep2-end                                          Episode 2
-     ep3-start → e3-plan → e3-guard → e3-call → ep3-end           Episode 3
-     e2-saw:yes|maybe|no                                          did the turn land
-     mum:lie|truth|silence, k:threat, call:send|run|fix           what they chose
-     wrong:<id>, hint:<id>:<tier>, nudge:<id>:<tier>              where it's too hard
+     open → unlock → past-lock → ep2-start → ep3-start →
+       arrested → choice → end                                    the chapter
+     solved:<id>, wrong:<id>, hint:<id>:<tier>, nudge:<id>        where it's too hard
+     cut:early, voice:on, pin:typed, shaila:told, nikhil:*,
+       profile:removed                                            what they gave away
+     end:police|bin|friend                                        what they did with it
      resume                                                       whether they come back
      share:open|whatsapp|native|copy, drop:create                 whether they pass it on
      drop:arrive → drop:open → drop:unlock → drop:end             whether that worked
      keep:number|copy|whatsapp|restore, reset:ask|yes             whether cases are kept
      guard:inapp|chrome                                           in-app browsers, and leaving them
+
+   Nearly all of it is reported from the save (`reportFlag`): a flag that
+   means something is sent the first time it lands, so the funnel can't drift
+   from what the game actually recorded.
 
    An allowlist per case, shared by the browser and the route, so the store's
    keys are bounded by this file rather than by whatever a request body says.
@@ -28,9 +31,11 @@ const MILESTONES = [
   "open",
   "resume",
   "unlock",
+  "past-lock",
   "ep2-start",
-  "ep2-end",
   "ep3-start",
+  "arrested",
+  "choice",
   "end",
 ] as const;
 
@@ -39,9 +44,12 @@ const CHOICES = [
   "cut:early",
   "voice:on",
   "pin:typed",
-  "shaila:asked",
-  "nikhil:answered",
-  "app:killed",
+  "shaila:told",
+  "nikhil:declined",
+  "nikhil:truth",
+  "nikhil:lied",
+  "nikhil:silent",
+  "profile:removed",
 ] as const;
 
 const VERDICTS = ["end:police", "end:bin", "end:friend"] as const;
@@ -99,14 +107,13 @@ export function eventsFor(ep: Story): readonly string[] {
       ...MILESTONES,
       ...CHOICES,
       ...puzzles.flatMap((id) => [
+        `solved:${id}`,
         `wrong:${id}`,
         `hint:${id}:1`,
         `hint:${id}:2`,
         `hint:${id}:3`,
         // Offered rather than asked for: where the game noticed a player was stuck.
-        `nudge:${id}:1`,
-        `nudge:${id}:2`,
-        `nudge:${id}:3`,
+        `nudge:${id}`,
       ]),
       ...VERDICTS,
       ...SHARING,
@@ -124,8 +131,31 @@ type Tracked = (typeof MILESTONES)[number] | (typeof CHOICES)[number];
 
 /** The flag that marks each milestone or choice, so it's counted where it's saved. */
 export const MILESTONE_OF: Partial<Record<Flag, Tracked>> = {
+  "did:opened": "open",
   "did:unlock": "unlock",
+  "did:past-lock": "past-lock",
   "ep:2": "ep2-start",
   "ep:3": "ep3-start",
+  "did:arrested": "arrested",
+  "did:choice": "choice",
   "did:chose": "end",
+  "did:cut-early": "cut:early",
+  "did:unmuted": "voice:on",
+  "did:typed-password": "pin:typed",
+  "did:shaila-told": "shaila:told",
+  "did:declined-nikhil": "nikhil:declined",
+  "did:nikhil-truth": "nikhil:truth",
+  "did:nikhil-lied": "nikhil:lied",
+  "did:nikhil-silent": "nikhil:silent",
+  "did:removed-profile": "profile:removed",
 };
+
+/**
+ * What the funnel hears when a flag lands, if anything. A solved question and
+ * an asked-for hint are flags already; everything else is looked up.
+ */
+export function reportFlag(flag: Flag): string | null {
+  if (flag.startsWith("ask:")) return `solved:${flag.slice(4)}`;
+  if (flag.startsWith("hint:")) return flag;
+  return MILESTONE_OF[flag] ?? null;
+}

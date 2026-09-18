@@ -306,3 +306,22 @@
 .call[data-corner="tl"] { top: 34%; left: 10px; bottom: auto; right: auto; }
 .call[data-corner="br"] { top: auto; bottom: calc(118px + env(safe-area-inset-bottom)); right: 10px; left: auto; }
 .call[data-corner="bl"] { top: auto; bottom: calc(118px + env(safe-area-inset-bottom)); left: 10px; right: auto; }
+
+/* Hold to unmute: a ring fills round the button while the thumb stays down. */
+.round[data-holding] svg {
+  box-shadow: 0 0 0 0 #f2f2f7;
+  animation: hold var(--hold, 900ms) linear forwards;
+}
+
+@keyframes hold {
+  to {
+    box-shadow: 0 0 0 4px #f2f2f7;
+    background: rgba(242, 242, 247, 0.55);
+  }
+}
+
+.round {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}

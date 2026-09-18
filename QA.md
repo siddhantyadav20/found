@@ -185,3 +185,52 @@ phase is drawn on top of it)
 
 **Then the roadmap as planned:** P8 the endings and end card → P9 arrival →
 P10 The First Minute → P11 the shoot (yours) → P12 ship-ready.
+
+---
+
+## R2 — what was fixed (2026-09-18)
+
+A third blocker turned up while fixing the first two, and it was the worst:
+**in real play, Episode 1 never handed over to Episode 2.** Nothing set
+`did:bank-dead` (so the power bank never died and the charger never came) or
+`ep:2` (so plugging in changed nothing). Every walk-through had seeded those
+flags by hand, which is how it passed QA. The screen decision now lives in
+`lib/game/scene.ts` and `tests/blockers.test.ts` walks the boundary for real.
+
+| # | Fix |
+|---|---|
+| **E1→2** | `bank-dies` event after he's placed; plugging in sets `did:charged` + `ep:2` |
+| **L1** | Q4 answerable from diary page 4 plus her Myawaddy search (or Sahil's photo); the charger comes without his last line if the call was cut, with its own copy |
+| **L2** | Nikhil can be declined, and it's saved (`did:declined-nikhil`); a declined call can't hold up the arrest; the arrest has no Decline button |
+| **L3** | Episodes stamp their start (`began`); clocks read 1:11 / 1:40 / 10:29 from each start; the call timer follows the story's clock (40:51 in the morning) |
+| L4 | (done in R1) the ₹1 lakh debit in Unknown Senders |
+| L5 | Claims are judged only after each reachable proof has been seen |
+| L6 | "Say nothing" is a choice that sets a flag |
+| L7 | Duplicate `helpline-held` evidence removed |
+| L8 | Diary pages 2 and 5 exist; only page 6 is missing |
+| C1 | FedEx → SkyEx (diary, D'Souza, her search) |
+| C2 | Q1's hints point at her name in Settings, not a face on a lock screen |
+| C3 | Pouch reads "FLAT —" with no friend's name, not "BY HAND" |
+| C4 | The 1:11 alert (and "Good morning, #9.") wear the grey shield (`kyc`) |
+| C6 | The choice screen's time is the story's clock |
+| J1 | No developer copy: the choice screen's P8 note and the stage's fallback are gone |
+| J2 | Unmute is held for 0.9 s with a filling ring; keyboard Enter still works |
+| J3 | 45 s with nothing new found → a Case file banner says where to look, once per question, not counted as a hint |
+| J6 | "Thrillers played on somebody else's phone" on the desk, metadata and OG alt |
+| a11y | Live regions for his captions (with `lang="hi-Latn"`), banners and the incoming call; dock icons named (an R1 regression) |
+| Funnel | Every save reports new milestone/choice flags, `solved:<id>` and `hint:<id>:<n>`; wrong answers and nudges too; the allowlist is tested against it |
+| Perf | One shared ticker (`lib/found/now.ts`): the stage re-renders on the minute, only the call timer on the second |
+| Code | `Stage.tsx` 446 → ~120 lines: `Table`, `AppBody`, `playthrough` (every save), `lib/game/scene.ts` |
+| Tests | 61 → 77, `tests/blockers.test.ts` holds each blocker down |
+
+**Deferred, on purpose:**
+- CHAPTER1.md F4's full cut-call branch: the call ringing back three times,
+  and Sahil's Episode 3 line about the two days without food. Belongs with P8,
+  where the ledger's variables are read.
+- A declined Nikhil doesn't yet leave a second missed call in Recents.
+- Removing the profile clears the blue pill but doesn't yet end the call a
+  minute later (CHAPTER1.md Ep 3 beat 3). P8.
+- J4 (the pouch's tear gesture reads as optional), J5 (the 90 s "cooperate"
+  line, P8), L9 (1930 as the only way to the choice; hints cover it), the
+  incoming call as a focus-taking dialog.
+- Her own Notes app list still uses a simplified style (R1 leftover).

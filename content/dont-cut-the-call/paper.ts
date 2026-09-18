@@ -24,12 +24,28 @@ export const photos: Photo[] = [
     title: "Diary · page 1",
     lines: [
       "Thu 5.38 pm — 'Crime Branch'. Parcel, Taiwan, MDMA.",
-      "FedEx does not put an Aadhaar number on a waybill.",
+      "SkyEx does not put an Aadhaar number on a waybill.",
       "Police do not arrest anybody on a video call.",
       "It is a lie. But the boy is frightened, not clever.",
       "Keep him talking. Do not let him know I know.",
     ],
     evidence: "diary-1",
+  },
+  {
+    // Pages 2 and 5 hold nothing the case needs, which is why they are here:
+    // page 6 is only missing if the others aren't (QA.md L8).
+    id: "diary-2",
+    album: "diary",
+    at: "23:40",
+    day: "Friday",
+    kind: "paper",
+    title: "Diary · page 2",
+    lines: [
+      "Fri 11 am — ₹49,000 as 'verification'.",
+      "Small enough to lose. Big enough to be believed.",
+      "Bank SMS kept. Everything kept.",
+      "He said thank you, madam. Nobody in a police station says thank you.",
+    ],
   },
   {
     id: "diary-3",
@@ -60,6 +76,20 @@ export const photos: Photo[] = [
       "He is not a policeman. He is a prisoner.",
     ],
     evidence: "diary-4",
+  },
+  {
+    id: "diary-5",
+    album: "diary",
+    at: "23:41",
+    day: "Friday",
+    kind: "paper",
+    title: "Diary · page 5",
+    lines: [
+      "Nikhil rang twice. Did not pick up.",
+      "If they hear him they will use him.",
+      "Madhav would have laughed at me — phone lock off, like a child.",
+      "Charger in the bag. Power bank from the drawer.",
+    ],
   },
   {
     id: "diary-6",

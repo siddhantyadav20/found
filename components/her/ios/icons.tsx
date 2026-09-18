@@ -21,6 +21,7 @@ const TILE: Record<AppId, string> = {
   settings: "linear-gradient(180deg, #e3e3e8 0%, #a1a1a8 100%)",
   news: "linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%)",
   casefile: "linear-gradient(180deg, #ffd84a 0%, #f8c81c 23%, #ffffff 23.5%, #f8f8f4 100%)",
+  kyc: "linear-gradient(180deg, #9a9aa1 0%, #6c6c72 100%)",
   "yours:chats": "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
   "yours:phone": "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
   "yours:share": "linear-gradient(180deg, #5eb0ff 0%, #1d6fe6 100%)",
@@ -128,6 +129,14 @@ function Glyph({ app }: { app: AppId }) {
           <rect x="6.5" y="11" width="11" height="1" rx="0.5" fill="#b9b9c0" />
           <rect x="6.5" y="13" width="11" height="1" rx="0.5" fill="#b9b9c0" />
           <rect x="6.5" y="15" width="7" height="1" rx="0.5" fill="#b9b9c0" />
+        </g>
+      );
+    case "kyc":
+      // The grey shield: iOS's mark for a management profile, and theirs.
+      return (
+        <g fill="none" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round">
+          <path d="M12 4.5 18 6.7v4.9c0 3.5-2.5 6-6 7.9-3.5-1.9-6-4.4-6-7.9V6.7Z" />
+          <path d="m9.4 12 1.9 1.9 3.4-3.6" />
         </g>
       );
     case "yours:share":

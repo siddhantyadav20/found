@@ -25,12 +25,18 @@ const ROWS = [
   { id: "friend", n: "03", label: "Share with a friend" },
 ] as const;
 
-export default function Choice({ story, state }: { story: Story; state: CaseState }) {
+/** "10:41" → "10:41 AM", the way her status bar would say it. */
+function twelve(hhmm: string): string {
+  const [h, m] = hhmm.split(":").map(Number);
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
+}
+
+export default function Choice({ story, state, clock }: { story: Story; state: CaseState; clock: string }) {
   const held = against(story, state);
 
   return (
     <div className={styles.choice}>
-      <p className={styles.eyebrow}>10:41 AM · still on the call</p>
+      <p className={styles.eyebrow}>{twelve(clock)} · still on the call</p>
       <p className={styles.orders}>
         Don&apos;t cut the call.
         <br />
@@ -54,10 +60,6 @@ export default function Choice({ story, state }: { story: Story; state: CaseStat
           : `They have ${held.length} thing${held.length === 1 ? "" : "s"} on you: ${held
               .map((e) => e.what.toLowerCase())
               .join(", ")}.`}
-      </p>
-      <p className={styles.soon}>
-        What each of these costs is written in CHAPTER1.md, section E, and is built in P8:
-        three acts done with your hands, then the end card that lists what they had on you.
       </p>
     </div>
   );

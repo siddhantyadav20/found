@@ -1,5 +1,5 @@
 import type { CallCue, Flag, Story } from "@/content/types";
-import { has, type CaseState } from "./engine";
+import { has, storySeconds, type CaseState } from "./engine";
 
 /* ===========================================================================
    The call that never ends.
@@ -20,9 +20,13 @@ export function duration(seconds: number): string {
   return `${two(s / 3600)}:${two((s % 3600) / 60)}:${two(s % 60)}`;
 }
 
-/** How long the call has run, in seconds, this many ms into the playthrough. */
-export const ranFor = (story: Story, elapsedMs: number): number =>
-  story.call.since + Math.floor(elapsedMs / 1000);
+/**
+ * How long the call has run, in seconds. It follows the story's clock, not
+ * the player's: at 10:29 on Saturday morning it reads 40:51, however long
+ * the night took to play.
+ */
+export const ranFor = (story: Story, s: CaseState, now: number): number =>
+  story.call.since + storySeconds(story, s, now);
 
 /**
  * The line he says next.

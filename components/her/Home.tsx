@@ -45,12 +45,18 @@ export default function Home({
         key={`${app}-${label}`}
         type="button"
         className={styles.icon}
+        // The dock draws no labels, as iOS doesn't; a screen reader still gets one.
+        aria-label={unseen > 0 ? `${label}, ${unseen} new` : label}
         onClick={(e) => onOpen(app, e.currentTarget.querySelector("span")?.getBoundingClientRect())}
       >
         <span className={styles.tile}>
           <AppGlyph app={app} />
         </span>
-        {unseen > 0 && <span className={styles.badge}>{unseen}</span>}
+        {unseen > 0 && (
+          <span className={styles.badge} aria-hidden="true">
+            {unseen}
+          </span>
+        )}
         <span className={styles.label}>{label}</span>
       </button>
     );

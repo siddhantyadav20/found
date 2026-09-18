@@ -74,7 +74,11 @@ export function upgrade(x: unknown): CaseState | null {
     typeof x.started === "number" &&
     isRecord(x.at);
   if (!ok) return null;
-  return { ...(x as unknown as CaseState), via: typeof x.via === "string" ? x.via : undefined };
+  return {
+    ...(x as unknown as CaseState),
+    via: typeof x.via === "string" ? x.via : undefined,
+    began: isRecord(x.began) && Object.values(x.began).every((n) => typeof n === "number") ? (x.began as Record<string, number>) : undefined,
+  };
 }
 
 export function readProgress(): CaseState | null {

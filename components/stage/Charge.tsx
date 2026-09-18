@@ -18,9 +18,12 @@ import styles from "./Charge.module.css";
 
    Where the browser won't say (Safari, Firefox), there is a cable on screen
    and the beat reads exactly the same.
+
+   A player who cut the call at 1:11 gets here too, to a phone with nobody on
+   it: what they keep alive is her phone, and everything still in it.
    =========================================================================== */
 
-export default function Charge({ onPlugged }: { onPlugged: () => void }) {
+export default function Charge({ onPlugged, cut }: { onPlugged: () => void; cut?: boolean }) {
   const [battery, setBattery] = useState<BatteryLike | null | undefined>(undefined);
   const [waited, setWaited] = useState(false);
 
@@ -49,12 +52,21 @@ export default function Charge({ onPlugged }: { onPlugged: () => void }) {
     <div className={styles.charge}>
       <p className={styles.level}>4%</p>
       <p className={styles.line}>The power bank taped to her phone has gone out.</p>
-      <p className={styles.line}>
-        He is still talking. If the call drops, the boy on it loses a meal, and neither of you
-        knows that yet.
-      </p>
+      {cut ? (
+        <p className={styles.line}>
+          The call is gone; you saw to that. What is left of her is on this phone, and it has four
+          percent.
+        </p>
+      ) : (
+        <p className={styles.line}>
+          He is still talking. If the call drops, the boy on it loses a meal, and neither of you
+          knows that yet.
+        </p>
+      )}
 
-      <p className={styles.ask}>Plug your phone in to keep the call alive.</p>
+      <p className={styles.ask}>
+        {cut ? "Plug your phone in to keep hers alive." : "Plug your phone in to keep the call alive."}
+      </p>
 
       {cable ? (
         <button type="button" className={styles.cable} onClick={onPlugged}>

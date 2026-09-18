@@ -56,8 +56,8 @@ const questions: Question[] = [
     whereToLook: ["news", "settings", "whatsapp"],
     hints: [
       "The news alert names a building. So does one of her chats.",
-      "Her lock screen has her face on it, and so does the article.",
-      "The woman on the wallpaper is the woman in the news: Vasundhara Kulkarni.",
+      "Her name is at the top of Settings. Is it the name in the alert?",
+      "The name on her Settings card is the name in the news: Vasundhara Kulkarni.",
     ],
     proof: ["alert", "wallpaper"],
     orProof: [["alert", "watchman"]],
@@ -113,15 +113,18 @@ const questions: Question[] = [
     episode: 1,
     whereToLook: ["phone", "safari", "photos", "whatsapp"],
     hints: [
-      "He is on screen the whole time. Look past him, at the room.",
-      "Zoom into the wall behind him — the clock, and the extinguisher. Then look at what she searched for on Friday.",
-      "The clock reads an hour ahead of Mumbai and the label isn't in any Indian script. He is in a compound near Myawaddy, and he is the boy in his mother's photograph.",
+      "Look past him, at his room. Or, if he's gone, at what she worked out without him.",
+      "Zoom into the wall behind him: the clock, and the extinguisher. With no call to look at, her diary names the place on page 4, and Safari shows she looked it up.",
+      "The clock reads an hour ahead of Mumbai and the label isn't in any Indian script. Her diary says Myawaddy, Lotus Park. He is in a compound there, and he is the boy in his mother's photograph.",
     ],
     proof: ["clock", "sahil-photo"],
     orProof: [
       ["clock", "burmese"],
       ["clock", "she-searched-mw"],
       ["burmese", "she-searched-mw"],
+      // A player who cut the call has no room to look at (CHAPTER1.md F4).
+      ["diary-4", "she-searched-mw"],
+      ["diary-4", "sahil-photo"],
     ],
     reply:
       "Not Mumbai. His clock is an hour ahead and the writing on his wall is Burmese. He is twenty-three, he is from Kurla, and he is not a policeman. He is a prisoner.",
@@ -221,7 +224,22 @@ const events: LiveEvent[] = [
     delay: 8,
     app: "news",
     banner: "City Desk · Dadar: retired bank manager, 64, found dead below building",
+    /* Twist 7. It says City Desk, and it wears their grey shield: the alert
+       came from the profile, five and a half hours before any outlet had the
+       story. Nobody sees it the first time. Everybody sees it the second. */
+    icon: "kyc",
     sets: ["saw:alert"],
+  },
+  {
+    /* Beat 12. He has been placed, and then the power bank's one LED goes
+       out. The call holds on the phone's own 5%, and he asks the dark whether
+       she is still there. */
+    id: "bank-dies",
+    device: "hers",
+    after: ["did:placed-him"],
+    delay: 6,
+    app: "phone",
+    sets: ["did:bank-dead"],
   },
 ];
 
