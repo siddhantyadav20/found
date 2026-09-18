@@ -6,7 +6,9 @@ import { useCase } from "@/components/found/StoryContext";
 import LiveCall from "@/components/call/LiveCall";
 import AppView from "@/components/her/AppView";
 import Home from "@/components/her/Home";
-import Screen from "@/components/her/Screen";
+import LockScreen from "@/components/her/LockScreen";
+import Phone, { type Notice, type Origin } from "@/components/her/Phone";
+import phoneStyles from "@/components/her/ios/Screen.module.css";
 import YourPhone from "@/components/yours/Phone";
 import type { AppId, CallCue, Flag } from "@/content/types";
 import { nextCue } from "@/lib/game/call";
@@ -29,6 +31,7 @@ import { bindProgress, commit, readProgress, subscribeProgress } from "@/lib/fou
 import { track } from "@/lib/found/track";
 import Chat from "@/components/her/apps/Chat";
 import HerNotes from "@/components/her/apps/Notes";
+import HerMessages from "@/components/her/apps/Messages";
 import HerNews from "@/components/her/apps/News";
 import HerPhotos from "@/components/her/apps/Photos";
 import PikDrop from "@/components/her/apps/PikDrop";
@@ -73,11 +76,14 @@ export default function Stage() {
   const state = useSyncExternalStore(subscribeProgress, readProgress, () => null);
   const [now, setNow] = useState(() => Date.now());
   const [openApp, setOpenApp] = useState<AppId | null>(null);
-  const [expanded, setExpanded] = useState(true);
+  /* The call fills the screen when it arrives, and once the player has put
+     it down it stays down across a reload: resume lands where they were. */
+  const [expanded, setExpanded] = useState(() => !readProgress()?.flags.includes("did:minimised"));
   const [muted, setMuted] = useState(true);
   const [idleTurn, setIdleTurn] = useState(0);
   const [banner, setBanner] = useState<{ app: AppId; from: string; text: string } | null>(null);
   const [declined, setDeclined] = useState(0);
+  const [origin, setOrigin] = useState<Origin | null>(null);
 
   /* Resume lands on the screen the player left, so the save decides where they
      are, never component state (PLAYER-JOURNEY Stage 5). */
@@ -235,7 +241,10 @@ export default function Stage() {
       />
     );
 
-  const onOpenApp = (app: AppId) => {
+  const onOpenApp = (app: AppId, from?: DOMRect) => {
+    // Where the tap landed, relative to her screen, so the app zooms out of it.
+    const screen = document.querySelector(`.${phoneStyles.screen}`)?.getBoundingClientRect();
+    setOrigin(from && screen ? { x: from.left - screen.left, y: from.top - screen.top, w: from.width, h: from.height } : null);
     setOpenApp(app);
     setBanner(null);
     const s = readProgress();
@@ -244,85 +253,100 @@ export default function Stage() {
     if (s) save(findIn(story, s, app));
   };
 
+  /* What is waiting on her lock screen at 1:11, and everything that has
+     arrived since, for Notification Centre. */
+  const waiting: Notice[] = [
+    { key: "nikhil", app: "phone", from: "Nikhil ❤️", text: "Missed call", time: "11:58 PM" },
+    { key: "society", app: "whatsapp", from: "Shanti Kunj CHS", text: "Secretary: Please koi kuch forward mat karo.", time: "1:04 AM" },
+    { key: "cb", app: "whatsapp", from: "Mumbai Crime Branch", text: "Do din nahi hain, madam.", time: "Fri" },
+  ];
+  const arrived: Notice[] = story.events
+    .filter((e) => e.banner && has(state, `fired:${e.id}`))
+    .map((e) => ({ key: e.id, app: e.app, from: bannerFrom(e.banner!), text: bannerText(e.banner!), time: "now" }))
+    .reverse();
+  const notices = [...arrived, ...waiting];
+
+  const pastLock = has(state, "did:past-lock");
+
+  const call = !cut ? (
+    <LiveCall
+      story={story}
+      mumbaiTime={mumbai}
+      elapsedMs={elapsed}
+      cue={cue}
+      expanded={expanded}
+      muted={muted}
+      onExpand={() => setExpanded(true)}
+      onCollapse={() => {
+        setExpanded(false);
+        flag("did:minimised");
+      }}
+      onReachEnd={() => flag("did:reach-for-end")}
+      onCut={() => {
+        flag("did:cut-early");
+        track({ case: id, event: "cut:early", via });
+      }}
+      onUnmute={() => {
+        if (!muted) return;
+        setMuted(false);
+        // They can hear the room now, and a voice is a thing they can keep.
+        const s = readProgress();
+        if (s) save(expose(story, add(s, "did:unmuted"), "voice"));
+        track({ case: id, event: "voice:on", via });
+      }}
+      onReadClock={() => flag("saw:clock", "did:read-clock")}
+      onReadLabel={() => flag("saw:burmese")}
+      reply={story.callReplies.find(
+        (r) => all(state, r.requires) && !r.options.some((o) => o.sets?.some((f) => has(state, f))),
+      )}
+      onSay={say}
+    />
+  ) : null;
+
   return (
-    <div className={styles.stage} data-playing>
+    <div className={phoneStyles.surface}>
       <div className={styles.table}>
-        <div className={styles.hers}>
-          <Screen
-            time={mumbai}
-            battery={percent(state)}
-            wallpaper={meta.wallpaper}
-            recording
-            banner={expanded ? null : banner}
-            onBanner={() => banner && onOpenApp(banner.app)}
-          >
-            <Home story={story} state={state} onOpen={onOpenApp} covered={Boolean(openApp)} />
-            {openApp && (
+        <Phone
+          time={mumbai}
+          day={story.clocks[0].day}
+          battery={percent(state)}
+          wallpaper={meta.wallpaper}
+          recording
+          lock={
+            pastLock ? undefined : (
+              <LockScreen day={story.clocks[0].day} clock={mumbai} notes={notices} onOpen={() => flag("did:past-lock")} />
+            )
+          }
+          home={<Home story={story} state={state} onOpen={onOpenApp} covered={Boolean(openApp)} />}
+          app={
+            openApp ? (
               <AppView
                 title={appLabel(story, openApp)}
                 onBack={() => setOpenApp(null)}
-                bare={openApp === "whatsapp" || openApp === "messages" || openApp === "instagram"}
+                bare={openApp === "whatsapp" || openApp === "instagram"}
+                own={openApp === "messages"}
+                whole={openApp === "photos"}
               >
-                <AppBody app={openApp} story={story} state={state} save={save} />
+                <AppBody app={openApp} story={story} state={state} save={save} onHome={() => setOpenApp(null)} />
               </AppView>
-            )}
-          </Screen>
-        </div>
+            ) : undefined
+          }
+          appKey={openApp ?? undefined}
+          origin={origin}
+          onCloseApp={() => setOpenApp(null)}
+          banner={expanded || !banner ? null : { key: `${banner.app}-${banner.text}`, ...banner }}
+          onBanner={() => banner && onOpenApp(banner.app)}
+          onDismissBanner={() => setBanner(null)}
+          notices={notices}
+          onNotice={(n) => onOpenApp(n.app)}
+          overlay={call}
+        />
+
         <div className={styles.yours}>
-          <YourPhone time={mumbai} />
+          <YourPhone time={mumbai} day={story.clocks[0].day} />
           <p className={styles.yoursNote}>Yours. It stays quiet until 10:30.</p>
         </div>
       </div>
-
-      {!cut ? (
-        <LiveCall
-          story={story}
-          mumbaiTime={mumbai}
-          elapsedMs={elapsed}
-          cue={cue}
-          expanded={expanded}
-          muted={muted}
-          onExpand={() => setExpanded(true)}
-          onCollapse={() => setExpanded(false)}
-          onReachEnd={() => flag("did:reach-for-end")}
-          onCut={() => {
-            flag("did:cut-early");
-            track({ case: id, event: "cut:early", via });
-          }}
-          onUnmute={() => {
-            if (!muted) return;
-            setMuted(false);
-            // They can hear the room now, and a voice is a thing they can keep.
-            const s = readProgress();
-            if (s) save(expose(story, add(s, "did:unmuted"), "voice"));
-            track({ case: id, event: "voice:on", via });
-          }}
-          onReadClock={() => flag("saw:clock", "did:read-clock")}
-          onReadLabel={() => flag("saw:burmese")}
-          reply={story.callReplies.find(
-            (r) => all(state, r.requires) && !r.options.some((o) => o.sets?.some((f) => has(state, f))),
-          )}
-          onSay={say}
-        />
-      ) : (
-        <p className={styles.cutLine}>
-          The call ended. The timer stopped at 31 hours. Somewhere, a man who needed it to
-          keep running is explaining why it didn&apos;t.
-        </p>
-      )}
-
-      {expanded && banner && (
-        <button
-          type="button"
-          className={styles.overBanner}
-          onClick={() => {
-            setExpanded(false);
-            onOpenApp("news");
-          }}
-        >
-          {banner.text}
-        </button>
-      )}
     </div>
   );
 }
@@ -333,8 +357,10 @@ function AppBody({
   story,
   state,
   save,
+  onHome,
 }: {
   app: AppId;
+  onHome: () => void;
   story: ReturnType<typeof useCase>["story"];
   state: CaseState;
   save: (next: CaseState) => void;
@@ -355,7 +381,9 @@ function AppBody({
 
   if (app === "instagram") return <Instagram story={story} state={state} onRead={read} onSay={say} />;
 
-  if (app === "whatsapp" || app === "messages")
+  if (app === "messages") return <HerMessages story={story} state={state} onRead={read} />;
+
+  if (app === "whatsapp")
     return (
       <>
         <Chat
@@ -373,6 +401,7 @@ function AppBody({
       <HerPhotos
         story={story}
         state={state}
+        onBack={onHome}
         onRead={read}
         onRestore={(id) => {
           const now = readProgress();

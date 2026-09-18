@@ -43,6 +43,7 @@ export const evidence: Evidence[] = [
   { id: "shaila-asks", device: "hers", app: "whatsapp", label: "Shaila noticed the note change at 2:14 AM", requires: ["ep:2"] },
   { id: "real-note", device: "hers", app: "whatsapp", label: "Her real note: CUT THE CALL", requires: ["did:shaila-trusted"], manual: true },
   { id: "profile", device: "hers", app: "settings", label: "A profile installed four minutes after the passcode went off", requires: ["ep:2"] },
+  { id: "the-lakh", device: "hers", app: "messages", label: "₹1,00,000 left her account at 3:02 AM", requires: ["did:typed-password"], manual: true },
 ];
 
 export const photos: Photo[] = [

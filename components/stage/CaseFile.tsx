@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { Question, Story } from "@/content/types";
 import { answer, appLabel, caseFile, hint, openQuestion, seen, whereToLook, type CaseState } from "@/lib/game/engine";
+import note from "@/components/her/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
 
 /* ===========================================================================
@@ -54,11 +55,11 @@ export default function CaseFile({
      by the next question, which threw it away. */
   if (said?.ok)
     return (
-      <div className={styles.file}>
-        <p className={styles.eyebrow}>Answered</p>
-        <h3 className={styles.ask}>{said.ask}</h3>
-        <p className={styles.said}>{said.text}</p>
-        <button type="button" className={styles.answer} onClick={reset}>
+      <div className={note.card}>
+        <p className={note.eyebrow}>Answered</p>
+        <h3 className={note.question}>{said.ask}</h3>
+        <p className={note.solvedA}>{said.text}</p>
+        <button type="button" className={note.primary} onClick={reset}>
           Keep going
         </button>
       </div>
@@ -87,19 +88,19 @@ export default function CaseFile({
   };
 
   return (
-    <div className={styles.file}>
-      <p className={styles.eyebrow}>The question</p>
-      <h3 className={styles.ask}>{q.ask}</h3>
-      <p className={styles.where}>
+    <div className={note.card}>
+      <p className={note.eyebrow}>Open question</p>
+      <h3 className={note.question}>{q.ask}</h3>
+      <p className={note.ask}>
         Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
       </p>
 
       <Board q={q} state={state} found={found} picked={picked} toggle={toggle} typed={typed} setTyped={setTyped} />
 
-      <div className={styles.row}>
+      <div className={note.actions}>
         <button
           type="button"
-          className={styles.answer}
+          className={note.primary}
           disabled={q.kind === "type" ? typed.trim().length === 0 : picked.length === 0}
           onClick={() => give(q.kind === "type" ? typed : picked)}
         >
@@ -107,7 +108,7 @@ export default function CaseFile({
         </button>
         <button
           type="button"
-          className={styles.hint}
+          className={note.secondary}
           onClick={() => {
             const h = hint(story, state, q.id);
             if (!h) return;
@@ -119,8 +120,8 @@ export default function CaseFile({
         </button>
       </div>
 
-      {helped && <p className={styles.helped}>{helped}</p>}
-      {said && !said.ok && <p className={styles.said}>{said.text}</p>}
+      {helped && <p className={note.hint}>{helped}</p>}
+      {said && !said.ok && <p className={note.choose} data-over>{said.text}</p>}
     </div>
   );
 }
@@ -145,7 +146,7 @@ function Board({
   if (q.kind === "type")
     return (
       <input
-        className={styles.field}
+        className={note.input}
         value={typed}
         onChange={(e) => setTyped(e.target.value)}
         placeholder="Type it"
@@ -169,6 +170,7 @@ function Board({
                 type="button"
                 className={styles.lane}
                 data-on={picked.includes(r.id) || undefined}
+                aria-pressed={picked.includes(r.id)}
                 onClick={() => toggle(r.id)}
               >
                 <span className={styles.at}>{r.at}</span>
@@ -191,6 +193,7 @@ function Board({
               type="button"
               className={styles.lane}
               data-on={picked.includes(c.id) || undefined}
+              aria-pressed={picked.includes(c.id)}
               onClick={() => toggle(c.id)}
             >
               <span className={styles.laneText}>
@@ -207,15 +210,24 @@ function Board({
   return found.length === 0 ? (
     <p className={styles.empty}>Open something on her phone first.</p>
   ) : (
-    <ul className={styles.list}>
-      {found.map((e) => (
-        <li key={e.id}>
-          <label className={styles.item}>
-            <input type="checkbox" checked={picked.includes(e.id)} onChange={() => toggle(e.id)} />
-            <span>{e.label}</span>
-          </label>
-        </li>
-      ))}
-    </ul>
+    <div className={note.pick}>
+      <p className={note.choose}>Put the proof on the table.</p>
+      <ul className={note.pickList}>
+        {found.map((e) => (
+          <li key={e.id}>
+            <button
+              type="button"
+              className={note.pickRow}
+              data-on={picked.includes(e.id) || undefined}
+              aria-pressed={picked.includes(e.id)}
+              onClick={() => toggle(e.id)}
+            >
+              <span className={note.check} aria-hidden="true" />
+              <span>{e.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

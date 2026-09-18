@@ -1,58 +1,75 @@
-/* Asleep, face up, next to a phone that isn't yours. */
+/* A second, smaller phone on the table. The holder is its own size container,
+   so the device frame's `100cqh` sizing works out against it. */
 
-.phone {
-  width: 100%;
-  max-width: 11rem;
-  aspect-ratio: 9 / 19;
-  border-radius: 1.5rem;
-  padding: 0.5rem;
-  background: #111214;
-  border: 1px solid #26282d;
-  box-shadow: 0 1rem 2rem rgb(0 0 0 / 45%);
+.holder {
+  container-type: size;
+  width: 250px;
+  height: 540px;
+  display: grid;
+  place-items: center;
 }
 
 .screen {
+  background:
+    radial-gradient(90% 60% at 30% 10%, #2d3a52 0%, transparent 60%),
+    linear-gradient(170deg, #111623 0%, #06070a 100%);
+}
+
+.ios {
+  position: absolute;
+  inset: 54px 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  height: 100%;
-  border-radius: 1.1rem;
-  background: #050506;
-  color: #55524e;
+  gap: 2px;
+  color: #f2f2f7;
+}
+
+.day { font-family: var(--font-ui); font-size: 13px; font-weight: 600; opacity: 0.85; }
+.clock { font-family: var(--font-display); font-size: 58px; line-height: 1; letter-spacing: -0.02em; }
+
+/* A Pixel's lock screen: the hours over the minutes, large and centred. */
+.android {
+  position: absolute;
+  inset: 70px 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #e6ecff;
+}
+
+.bigClock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-family: var(--font-ui);
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 0.92;
 }
 
-/* iOS puts the clock high and light; Android sits it lower and heavier. */
-.phone[data-os="ios"] .time {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 400;
+.date { font-family: var(--font-ui); font-size: 13px; opacity: 0.8; }
+
+.nothing {
+  position: absolute;
+  inset: auto 0 44px;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: rgba(235, 235, 245, 0.35);
 }
 
-.phone[data-os="android"] .time {
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.label {
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.phone[data-ringing] {
+.holder[data-ringing] {
   animation: shiver 0.5s ease-in-out infinite;
 }
 
 @keyframes shiver {
   0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(0.5px, -0.5px); }
-  75% { transform: translate(-0.5px, 0.5px); }
+  25% { transform: translate(0.6px, -0.6px); }
+  75% { transform: translate(-0.6px, 0.6px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .phone[data-ringing] { animation: none; }
+  .holder[data-ringing] { animation: none; }
 }

@@ -163,7 +163,7 @@ export const questions: Question[] = [
         trueWhen: ["did:unlock"],
         proof: "note",
       },
-      { id: "transfer", text: "You moved ₹1,00,000 out of her account at 3:02 AM.", trueWhen: ["did:typed-password"], proof: "the-49k" },
+      { id: "transfer", text: "You moved ₹1,00,000 out of her account at 3:02 AM.", trueWhen: ["did:typed-password"], proof: "the-lakh" },
       { id: "voice", text: "They have your voice.", trueWhen: ["did:unmuted"], proof: "call" },
       { id: "witness", text: "You contacted a witness.", trueWhen: ["did:shaila-told"], proof: "shaila-asks" },
       { id: "son", text: "You lied to her son.", trueWhen: ["did:nikhil-lied"], proof: "last-call-son" },

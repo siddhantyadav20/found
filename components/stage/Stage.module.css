@@ -129,38 +129,26 @@
   text-align: left;
 }
 
-/* --- the table, once the pouch is open ------------------------------------ */
+/* --- the table, once the pouch is open ------------------------------------
 
-.stage[data-playing] {
-  display: block;
-  padding: 0;
-}
+   Inside the pilot's `.surface`, which is the container the phone's own
+   full-bleed switch listens to. On a phone her screen *is* the viewport; on a
+   table there are two devices, hers and yours. */
 
 .table {
   display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 1.5rem;
-  min-height: 100dvh;
-  padding: 1rem 0.75rem calc(1rem + env(safe-area-inset-bottom));
-}
-
-.hers {
-  flex: 0 1 24rem;
-  display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 0;
+  gap: 56px;
+  width: 100cqw;
+  height: 100cqh;
 }
 
-/* On a phone, her phone is the whole screen and yours is out of sight until
-   it matters. On a table, both are on the table. */
 .yours {
   display: none;
   flex-direction: column;
   align-items: center;
   gap: 0.6rem;
-  align-self: center;
 }
 
 .yoursNote {
@@ -172,7 +160,7 @@
   text-align: center;
 }
 
-@media (min-width: 60rem) {
+@container found (width >= 900px) {
   .yours { display: flex; }
 }
 

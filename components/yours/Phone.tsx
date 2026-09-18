@@ -1,24 +1,47 @@
 "use client";
 
+import phone from "@/components/her/ios/Screen.module.css";
 import { useDevice } from "@/lib/found/platform";
 import styles from "./Phone.module.css";
 
 /* ===========================================================================
    Your phone: the second device on the table.
 
-   It matches the player's own platform, because it is meant to be theirs, and
-   it is almost empty on purpose. It sleeps through Episodes 1 and 2 and does
-   nothing at all until 10:30 AM (ROADMAP.md P7), which is exactly what makes
-   that moment land.
+   It matches the player's own platform, because it is meant to be theirs:
+   an iPhone's lock screen for an iPhone, a Pixel's for Android. It is almost
+   empty on purpose — a plain wallpaper, the time, nothing waiting — and it
+   stays that way through Episodes 1 and 2. At 10:30 it rings (ROADMAP P7),
+   and the emptiness is what makes that land.
+
+   Drawn with her phone's own device frame, a size smaller, so the two read as
+   two real phones on one table rather than one phone and a sketch.
    =========================================================================== */
 
-export default function YourPhone({ time, ringing }: { time: string; ringing?: boolean }) {
+export default function YourPhone({ time, day, ringing }: { time: string; day: string; ringing?: boolean }) {
   const { os } = useDevice();
+  const [h, m] = time.split(":");
+
   return (
-    <div className={styles.phone} data-os={os} data-ringing={ringing ? "" : undefined} aria-label="Your own phone">
-      <div className={styles.screen}>
-        <p className={styles.time}>{time}</p>
-        <p className={styles.label}>Your phone</p>
+    <div className={styles.holder} data-ringing={ringing || undefined} aria-label="Your own phone">
+      <div className={phone.device}>
+        <div className={`${phone.screen} ${styles.screen}`} data-os={os}>
+          {os === "ios" && <span className={phone.osIsland} aria-hidden="true" />}
+          {os === "ios" ? (
+            <div className={styles.ios}>
+              <p className={styles.day}>{day}</p>
+              <p className={styles.clock}>{time}</p>
+            </div>
+          ) : (
+            <div className={styles.android}>
+              <p className={styles.bigClock}>
+                <span>{h}</span>
+                <span>{m}</span>
+              </p>
+              <p className={styles.date}>{day}</p>
+            </div>
+          )}
+          <p className={styles.nothing}>No notifications</p>
+        </div>
       </div>
     </div>
   );

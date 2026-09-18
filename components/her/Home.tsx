@@ -30,7 +30,8 @@ export default function Home({
 }: {
   story: Story;
   state: CaseState;
-  onOpen: (app: AppId) => void;
+  /** Which app, and the box it was tapped in, relative to the viewport. */
+  onOpen: (app: AppId, from?: DOMRect) => void;
   covered?: boolean;
 }) {
   const [page, setPage] = useState(0);
@@ -40,7 +41,12 @@ export default function Home({
   const icon = (app: AppId, label: string) => {
     const unseen = unseenIn(story, state, app);
     return (
-      <button key={`${app}-${label}`} type="button" className={styles.icon} onClick={() => onOpen(app)}>
+      <button
+        key={`${app}-${label}`}
+        type="button"
+        className={styles.icon}
+        onClick={(e) => onOpen(app, e.currentTarget.querySelector("span")?.getBoundingClientRect())}
+      >
         <span className={styles.tile}>
           <AppGlyph app={app} />
         </span>
@@ -52,7 +58,7 @@ export default function Home({
 
   return (
     <div className={styles.home} data-covered={covered || undefined} inert={covered} aria-hidden={covered || undefined}>
-      <button type="button" className={styles.widget} onClick={() => onOpen("casefile")}>
+      <button type="button" className={styles.widget} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
         <span className={styles.widgetLabel}>{open ? "Open question" : "Case file"}</span>
         <span className={styles.widgetText}>
           {open ? open.ask : "Look around. What you open, you keep."}

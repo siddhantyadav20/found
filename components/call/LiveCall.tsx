@@ -2,6 +2,8 @@
 
 import { useCallback, useRef, useState } from "react";
 
+import { drag } from "@/components/stage/drag";
+
 import type { CallCue, Reply, ReplyOption, Story } from "@/content/types";
 import { duration, hisClock, ranFor } from "@/lib/game/call";
 import styles from "./LiveCall.module.css";
@@ -66,6 +68,34 @@ export default function LiveCall({
   onSay?: (option: ReplyOption) => void;
 }) {
   const [asking, setAsking] = useState(false);
+  /* Where the window is parked. iOS lets a picture-in-picture call be thrown
+     to any corner, and it snaps there; so does this one. */
+  const [corner, setCorner] = useState<"tr" | "br" | "tl" | "bl">("tr");
+  const callRef = useRef<HTMLDivElement>(null);
+
+  const throwIt = (e: React.PointerEvent) => {
+    const el = callRef.current;
+    if (expanded || !el) return;
+    const box = el.getBoundingClientRect();
+    const screen = el.parentElement?.getBoundingClientRect();
+    if (!screen) return;
+    drag(e, {
+      engage: (dx, dy) => Math.hypot(dx, dy) > 6,
+      move: (dx, dy) => {
+        el.style.transition = "none";
+        el.style.translate = `${dx}px ${dy}px`;
+      },
+      end: ({ dx, dy }) => {
+        const cx = box.left + box.width / 2 + dx - screen.left;
+        const cy = box.top + box.height / 2 + dy - screen.top;
+        const right = cx > screen.width / 2;
+        const lower = cy > screen.height / 2;
+        el.style.transition = "translate 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.05)";
+        el.style.translate = "";
+        setCorner(`${lower ? "b" : "t"}${right ? "r" : "l"}` as typeof corner);
+      },
+    });
+  };
   const [zoom, setZoom] = useState({ scale: 1, x: 0.5, y: 0.5 });
   const frame = useRef<HTMLDivElement>(null);
 
@@ -117,7 +147,14 @@ export default function LiveCall({
   };
 
   return (
-    <div className={styles.call} data-expanded={expanded ? "" : undefined}>
+    <div
+      ref={callRef}
+      className={styles.call}
+      data-expanded={expanded ? "" : undefined}
+      data-corner={expanded ? undefined : corner}
+      onPointerDown={throwIt}
+      data-no-swipe
+    >
       <div
         ref={frame}
         className={styles.frame}
@@ -173,16 +210,29 @@ export default function LiveCall({
         </div>
       )}
 
+      {/* FaceTime's own controls: round glass buttons, a label under each, and
+          the red one in the middle. "Minimise" is how iOS puts a call away. */}
       {expanded && (
         <div className={styles.controls}>
-          <button type="button" className={styles.control} onClick={onUnmute} aria-pressed={!muted}>
-            {muted ? "Unmute" : "Mic on"}
+          <button type="button" className={styles.round} onClick={onUnmute} aria-pressed={!muted} data-on={!muted || undefined}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="9" y="3.5" width="6" height="11" rx="3" />
+              <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5" />
+              {muted && <path d="M4 4l16 16" />}
+            </svg>
+            <span>{muted ? "Unmute" : "Mute"}</span>
           </button>
-          <button type="button" className={styles.end} onClick={ask}>
-            End call
+          <button type="button" className={styles.round} data-end onClick={ask}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3.2 13.4c4.9-4.1 12.7-4.1 17.6 0l-2.1 2.4-3.3-1.1-.4-2.3a9.6 9.6 0 0 0-6 0l-.4 2.3-3.3 1.1Z" />
+            </svg>
+            <span>End</span>
           </button>
-          <button type="button" className={styles.control} onClick={onCollapse}>
-            Use the phone
+          <button type="button" className={styles.round} onClick={onCollapse}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 4.5v4.5H4.5M15 19.5V15h4.5M9 9 4 4M15 15l5 5" />
+            </svg>
+            <span>Minimise</span>
           </button>
         </div>
       )}

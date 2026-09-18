@@ -1,50 +1,11 @@
-/* Photos, the way iOS lays it out, and paper the way a phone camera sees it:
-   a little warm, a little crooked, lit by whatever was on in the room. */
+/* Paper the way a phone camera sees it at 11:40 at night: a little warm, a
+   little crooked, lit by whatever lamp was on. The pilot's stylesheets own
+   everything else in Photos (ios/Photos.module.css, ios/PhotoFrame.module.css). */
 
-.tabs { display: flex; gap: 8px; margin: 0 0 12px; }
-
-.tabs button {
-  flex: 1;
-  padding: 7px 10px;
-  border: 0;
-  border-radius: 9px;
-  background: var(--os-panel);
-  color: var(--os-dim);
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.tabs button[data-on] { background: var(--ios-blue); color: #fff; }
-
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-
-.cell {
-  position: relative;
-  aspect-ratio: 1;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  background: #17171a;
-  cursor: pointer;
-}
-
-.cellStamp {
-  position: absolute;
-  left: 4px;
-  bottom: 3px;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-}
-
-.empty { color: var(--os-dim); font-size: 14px; padding: 18px 2px; }
-
-/* A page of her diary, photographed at 11:40 at night. */
 .paper {
   width: 100%;
   height: 100%;
-  padding: 10px 11px;
+  padding: 9px 10px;
   overflow: hidden;
   background: linear-gradient(160deg, #f3ecdc 0%, #e7dfcd 100%);
   color: #23262c;
@@ -53,14 +14,17 @@
   box-shadow: inset 0 0 40px rgba(120, 100, 60, 0.18);
 }
 
-.paperTitle { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a7f68; margin-bottom: 4px; }
+.paperTitle { font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: #8a7f68; margin-bottom: 3px; }
 
 .hand {
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: 9.5px;
+  line-height: 1.45;
   border-bottom: 1px solid rgba(60, 70, 110, 0.14);
-  padding-bottom: 1px;
 }
+
+.paper[data-big] { height: auto; min-height: 60%; padding: 20px 18px; rotate: -0.4deg; }
+.paper[data-big] .paperTitle { font-size: 11px; margin-bottom: 10px; }
+.paper[data-big] .hand { font-size: 16px; line-height: 1.7; }
 
 .scene {
   display: grid;
@@ -70,32 +34,12 @@
   background: radial-gradient(80% 60% at 40% 30%, #4b5a49, #1d241f);
 }
 
+.scene[data-big] { min-height: 60%; }
 .sceneTitle { font-size: 10px; color: rgba(255, 255, 255, 0.75); padding: 0 6px; text-align: center; }
+.scene[data-big] .sceneTitle { font-size: 15px; }
 
-.viewer { display: flex; flex-direction: column; gap: 10px; }
-
-.viewerBar { display: flex; align-items: center; justify-content: space-between; }
-
-.link { border: 0; background: none; color: var(--ios-blue); font: inherit; font-size: 15px; cursor: pointer; padding: 0; }
-
-.stamp { color: var(--os-dim); font-size: 12px; }
-
-.viewer .paper, .viewer .scene { min-height: 300px; height: auto; rotate: -0.4deg; padding: 18px; }
-.viewer .hand { font-size: 15px; line-height: 1.7; }
-.viewer .paperTitle { font-size: 11px; margin-bottom: 10px; }
-
-.caption { color: var(--os-dim); font-size: 13px; line-height: 1.45; }
-
-.binBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--os-panel);
-  color: var(--os-dim);
-  font-size: 13px;
+/* In the grid every picture is a square, whatever is on it. */
+.paper:not([data-big]),
+.scene:not([data-big]) {
+  aspect-ratio: 1;
 }
-
-.recover { border: 0; background: none; color: var(--ios-blue); font: inherit; font-size: 15px; cursor: pointer; }

@@ -223,6 +223,17 @@ export const smsThreads: Thread[] = [
     sub: "Filtered",
     messages: [
       { id: "j-1", from: "them", text: "WIN 25 LAKH! Click now bit.ly/xxxx", at: "14:02", day: "Thursday" },
+      {
+        /* Only if the player typed her password into the locked note: that
+           is when they used it. Filed where nobody looks. */
+        id: "j-2",
+        from: "them",
+        text: "Rs.1,00,000.00 debited from a/c XX4417 on 27-09 03:02 via UPI to TANVI R DESHMUKH. Not you? Call 1800-XXX.",
+        at: "03:02",
+        day: "Saturday",
+        evidence: "the-lakh",
+        requires: ["did:typed-password"],
+      },
     ],
   },
 ];
