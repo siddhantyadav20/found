@@ -246,13 +246,19 @@ export const smsThreads: Thread[] = [
     ],
   },
   {
+    // Unknown Senders is a filter, not a contact: each sender is its own thread.
+    id: "junk-prize",
+    app: "messages",
+    folder: "junk",
+    name: "+91 70219 88410",
+    messages: [{ id: "j-1", from: "them", text: "WIN 25 LAKH! Click now bit.ly/xxxx", at: "14:02", day: "Thursday" }],
+  },
+  {
     id: "junk",
     app: "messages",
     folder: "junk",
-    name: "Unknown senders",
-    sub: "Filtered",
+    name: "VM-BNBALT",
     messages: [
-      { id: "j-1", from: "them", text: "WIN 25 LAKH! Click now bit.ly/xxxx", at: "14:02", day: "Thursday" },
       {
         /* Only if the player typed her password into the locked note: that
            is when they used it. Filed where nobody looks. */
@@ -262,7 +268,17 @@ export const smsThreads: Thread[] = [
         at: "03:02",
         day: "Saturday",
         evidence: "the-lakh",
-        requires: ["did:typed-password"],
+        requires: ["did:typed-early"],
+      },
+      {
+        // Typed in the morning: they use it straight away, and the time says so.
+        id: "j-3",
+        from: "them",
+        text: "Rs.1,00,000.00 debited from a/c XX4417 on 27-09 10:34 via UPI to TANVI R DESHMUKH. Not you? Call 1800-XXX.",
+        at: "10:34",
+        day: "Saturday",
+        evidence: "the-lakh",
+        requires: ["did:typed-late"],
       },
     ],
   },

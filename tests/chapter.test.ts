@@ -145,7 +145,11 @@ describe("every piece of evidence", () => {
   })();
 
   /** One thing seen in two places on purpose: Rukhsana sent it, and Vasu saved it. */
-  const SAME_THING_TWICE = new Set(["sahil-photo"]);
+  const SAME_THING_TWICE = new Set([
+    "sahil-photo",
+    // One debit, stamped when it happened: 3:02 if typed in the night, 10:34 if in the morning.
+    "the-lakh",
+  ]);
 
   it("is never filed in two places (opening its app finds the rest)", () => {
     for (const e of ep.evidence) {
@@ -158,7 +162,7 @@ describe("every piece of evidence", () => {
     // Manual evidence found by a gesture on the call or a question, not by a file.
     const gestures = new Set(["note", "call", "clock", "burmese"]);
     for (const e of ep.evidence.filter((x) => x.manual && !gestures.has(x.id)))
-      expect(places.get(e.id) ?? 0, `${e.id} can never be seen`).toBe(1);
+      expect(places.get(e.id) ?? 0, `${e.id} can never be seen`).toBeGreaterThanOrEqual(1);
   });
 
   it("points only at evidence that exists", () => {

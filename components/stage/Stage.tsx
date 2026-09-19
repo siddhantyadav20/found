@@ -23,6 +23,7 @@ import Note from "./Note";
 import Pouch from "./Pouch";
 import Ringing from "./Ringing";
 import SeenByThem from "./SeenByThem";
+import TitleCard from "./TitleCard";
 import Table from "./Table";
 import { flag, save, say } from "./playthrough";
 import styles from "./Stage.module.css";
@@ -72,7 +73,7 @@ export default function Stage() {
     return (
       <div className={styles.stage}>
         <p className={styles.eyebrow}>
-          {story.title} · Episode 1 · {story.episodes[0]}
+          Episode 1 · {story.episodes[0]}
         </p>
         <Pouch
           meta={meta}
@@ -98,6 +99,16 @@ export default function Stage() {
        and the reason anybody goes looking for a cable. */
     case "charge":
       return <Charge cut={has(state, "did:cut-early")} onPlugged={() => flag(...PLUGGED_IN)} />;
+
+    case "title":
+      return (
+        <TitleCard
+          n={2}
+          title={story.episodes[1]}
+          when="Saturday · 2:35 AM · charging"
+          onDone={() => flag("fired:title-2")}
+        />
+      );
 
     /* The end of Episode 2. They have watched every tap since 1:11, and now
        they say so. One line, at reading speed, and then the screen goes out

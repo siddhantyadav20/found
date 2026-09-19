@@ -96,8 +96,9 @@ export default function LiveCall({
   };
   useEffect(() => () => window.clearTimeout(holdTimer.current), []);
   /* Where the window is parked. iOS lets a picture-in-picture call be thrown
-     to any corner, and it snaps there; so does this one. */
-  const [corner, setCorner] = useState<"tr" | "br" | "tl" | "bl">("tr");
+     to any corner, and it snaps there; so does this one. It starts low on
+     the right, above the dock, where it covers the least of any app. */
+  const [corner, setCorner] = useState<"tr" | "br" | "tl" | "bl">("br");
   const callRef = useRef<HTMLDivElement>(null);
 
   const throwIt = (e: React.PointerEvent) => {
@@ -120,9 +121,12 @@ export default function LiveCall({
         el.style.transition = "translate 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.05)";
         el.style.translate = "";
         setCorner(`${lower ? "b" : "t"}${right ? "r" : "l"}` as typeof corner);
+        // Thrown past the edge: tucked away as a tab, as iOS lets you (PLAYTEST.md #13).
+        setStashed(cx > screen.width - 24 || cx < 24);
       },
     });
   };
+  const [stashed, setStashed] = useState(false);
   const [zoom, setZoom] = useState({ scale: 1, x: 0.5, y: 0.5 });
   const frame = useRef<HTMLDivElement>(null);
 
@@ -132,13 +136,26 @@ export default function LiveCall({
     return { x: (e.clientX - box.left) / box.width, y: (e.clientY - box.top) / box.height };
   }, []);
 
-  /** A zoom counts only once what it's aimed at is readable on screen. */
+  /* A zoom counts only once what it's aimed at is readable on screen, and
+     says so on the feed for a moment (PLAYTEST.md #28). */
+  const [noted, setNoted] = useState<string | null>(null);
+  useEffect(() => {
+    if (!noted) return undefined;
+    const t = window.setTimeout(() => setNoted(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [noted]);
   const settle = useCallback(
     (scale: number, x: number, y: number, zone?: string | null) => {
       setZoom({ scale, x, y });
       if (scale < ZOOM_READS) return;
-      if (zone === "clock") onReadClock();
-      if (zone === "label") onReadLabel();
+      if (zone === "clock") {
+        onReadClock();
+        setNoted("His clock · noted in the case file");
+      }
+      if (zone === "label") {
+        onReadLabel();
+        setNoted("The label · noted in the case file");
+      }
     },
     [onReadClock, onReadLabel],
   );
@@ -160,6 +177,42 @@ export default function LiveCall({
     settle(zoom.scale > 1.2 ? 1 : 2.8, x, y, zoneAt(e));
   };
 
+  /* Pinch: two fingers on the feed, the gesture every phone teaches
+     (PLAYTEST.md #29). Scale follows the spread; it counts on release. */
+  const fingers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ start: number; scale: number } | null>(null);
+  const spread = () => {
+    const [a, b] = [...fingers.current.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  };
+  const middle = () => {
+    const [a, b] = [...fingers.current.values()];
+    return { clientX: (a.x + b.x) / 2, clientY: (a.y + b.y) / 2 };
+  };
+  const onFingerDown = (e: React.PointerEvent) => {
+    if (!expanded || e.pointerType !== "touch") return;
+    fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (fingers.current.size === 2) pinch.current = { start: spread(), scale: zoom.scale };
+  };
+  const onFingerMove = (e: React.PointerEvent) => {
+    if (!fingers.current.has(e.pointerId)) return;
+    fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (!pinch.current || fingers.current.size < 2) return;
+    const next = Math.min(ZOOM_MAX, Math.max(1, pinch.current.scale * (spread() / pinch.current.start)));
+    const c = at(middle());
+    setZoom({ scale: next, x: c.x, y: c.y });
+  };
+  const onFingerUp = (e: React.PointerEvent) => {
+    if (pinch.current && fingers.current.size === 2) {
+      const m = middle();
+      const c = at(m);
+      const zone = document.elementFromPoint(m.clientX, m.clientY)?.closest?.("[data-zone]")?.getAttribute("data-zone") ?? null;
+      settle(zoom.scale, c.x, c.y, zone);
+      pinch.current = null;
+    }
+    fingers.current.delete(e.pointerId);
+  };
+
   const onWheel = (e: React.WheelEvent) => {
     if (!expanded) return;
     const { x, y } = at(e);
@@ -179,17 +232,25 @@ export default function LiveCall({
       className={styles.call}
       data-expanded={expanded ? "" : undefined}
       data-corner={expanded ? undefined : corner}
+      data-stashed={(!expanded && stashed) || undefined}
       onPointerDown={throwIt}
       data-no-swipe
     >
       <div
         ref={frame}
         className={styles.frame}
-        onPointerUp={onPointerUp}
+        onPointerUp={(e) => {
+          onFingerUp(e);
+          onPointerUp(e);
+        }}
+        onPointerDown={onFingerDown}
+        onPointerMove={onFingerMove}
+        onPointerCancel={onFingerUp}
         onWheel={onWheel}
         role={expanded ? undefined : "button"}
         tabIndex={expanded ? -1 : 0}
-        onClick={expanded ? undefined : onExpand}
+        // A tucked-away call comes back out on a tap; a parked one opens.
+        onClick={expanded ? undefined : stashed ? () => setStashed(false) : onExpand}
         onKeyDown={expanded ? undefined : (e) => e.key === "Enter" && onExpand()}
       >
         <div
@@ -207,6 +268,11 @@ export default function LiveCall({
         </div>
 
         {zoom.scale > 1.2 && expanded && <span className={styles.zoomed}>{zoom.scale.toFixed(1)}×</span>}
+        {noted && expanded && (
+          <span className={styles.noted} role="status">
+            {noted}
+          </span>
+        )}
 
         {/* Her side of the call: nothing. The camera was off in the pouch. */}
         {expanded && (

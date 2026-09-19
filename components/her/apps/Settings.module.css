@@ -14,3 +14,23 @@
 
 .destructive { background: var(--os-danger); color: #fff; }
 .cancel { background: var(--os-panel-2); color: var(--os-text); }
+
+/* One level down: iOS's back label, and the one red row. */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 8px -4px;
+  padding: 4px;
+  border: 0;
+  background: none;
+  color: var(--ios-blue, #0a84ff);
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.backLink svg { width: 14px; height: 14px; }
+
+.danger .rowTitle,
+.danger span { color: #ff453a; }

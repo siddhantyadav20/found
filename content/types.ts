@@ -83,6 +83,8 @@ export type Claim = {
   /** True when the player gave them this. Otherwise it's a bluff. */
   readonly trueWhen?: readonly Flag[];
   readonly proof: string;
+  /** Only on the board if he actually read it out: the ledger holds this. */
+  readonly needs?: string;
 };
 
 /** One row on the two-lane timeline: where she was, or what the phone did. */
@@ -102,6 +104,8 @@ export type Question =
       readonly episode: EpisodeNo;
       readonly whereToLook: readonly AppId[];
       readonly hints: Hints;
+      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
+      readonly requires?: readonly Flag[];
       /** Evidence ids that prove it. Picking anything else is wrong, not fatal. */
       readonly proof: readonly string[];
       /**
@@ -120,6 +124,8 @@ export type Question =
       readonly episode: EpisodeNo;
       readonly whereToLook: readonly AppId[];
       readonly hints: Hints;
+      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
+      readonly requires?: readonly Flag[];
       readonly accepts: readonly string[];
       readonly reply: string;
       readonly sets?: readonly Flag[];
@@ -131,6 +137,8 @@ export type Question =
       readonly episode: EpisodeNo;
       readonly whereToLook: readonly AppId[];
       readonly hints: Hints;
+      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
+      readonly requires?: readonly Flag[];
       readonly rows: readonly TimelineRow[];
       readonly reply: string;
       readonly sets?: readonly Flag[];
@@ -142,7 +150,11 @@ export type Question =
       readonly episode: EpisodeNo;
       readonly whereToLook: readonly AppId[];
       readonly hints: Hints;
+      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
+      readonly requires?: readonly Flag[];
       readonly claims: readonly Claim[];
+      /** What a marked and an unmarked claim are called: "true" / "bluff" by default. */
+      readonly labels?: readonly [string, string];
       readonly reply: string;
       readonly sets?: readonly Flag[];
     };
@@ -163,6 +175,10 @@ export type CallCue = {
   /** A whisper is played quieter, and the script means it. */
   readonly whisper?: boolean;
   readonly clip?: string;
+  /** An idle line belongs to one episode: it is not light outside at 1:13 AM. */
+  readonly episode?: EpisodeNo;
+  /** An idle line said only once these are true: after a stranger has spoken to him. */
+  readonly requires?: readonly Flag[];
 };
 
 /** Something the story does to a phone on its own: a message, a notification. */
@@ -176,6 +192,10 @@ export type LiveEvent = {
   readonly banner?: string;
   /** Whose icon the banner wears, when it isn't the app's own. */
   readonly icon?: AppId;
+  /** Something that arrived while nobody was looking: it goes into the list at this time, with no banner. */
+  readonly at?: string;
+  /** Brings the call back up, because what happens next happens on it. */
+  readonly expands?: boolean;
   readonly sets?: readonly Flag[];
 };
 
@@ -242,7 +262,16 @@ export type Attachment =
   | { readonly kind: "document"; readonly label: string; readonly meta?: string }
   | { readonly kind: "photo"; readonly label: string; readonly src?: string }
   | { readonly kind: "voice"; readonly seconds: number; readonly transcript: string; readonly english?: string }
-  | { readonly kind: "video"; readonly label: string; readonly seconds: number };
+  | { readonly kind: "video"; readonly label: string; readonly seconds: number }
+  /** A page in someone's own hand, photographed: drawn as paper, in cursive. */
+  | {
+      readonly kind: "handwriting";
+      readonly label: string;
+      readonly lines: readonly string[];
+      readonly sign?: string;
+      /** A line in her own language, under the signature. */
+      readonly blessing?: string;
+    };
 
 export type Message = {
   readonly id: string;
@@ -429,6 +458,8 @@ export type CallEntry = {
   readonly at: string;
   readonly day: string;
   readonly seconds?: number;
+  /** Still connected: Recents shows it as live, not as a length. */
+  readonly ongoing?: boolean;
   /** iOS records calls now, and she had it on. */
   readonly recording?: Recording;
   readonly evidence?: string;
@@ -439,6 +470,13 @@ export type SettingsRow = {
   readonly title: string;
   readonly sub?: string;
   readonly value?: string;
+  /** A page one level down, as iOS keeps a profile: tapping the row opens it. */
+  readonly detail?: {
+    readonly heading: string;
+    readonly title: string;
+    readonly rows: readonly { readonly label: string; readonly value: string }[];
+    readonly footer?: string;
+  };
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
   /** A row that does something, once, and cannot be undone. */

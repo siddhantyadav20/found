@@ -21,6 +21,9 @@ import { track } from "@/lib/found/track";
 
 export function save(next: CaseState): void {
   const before = readProgress();
+  // Nothing changed: writing anyway would stamp a new time, re-render every
+  // reader, and let an effect that marks things read loop forever.
+  if (before && next === before) return;
   const now = Date.now();
   // When the player was last here, so a return after a real gap is noticed.
   const stamped = { ...stamp(next, now), at: { ...next.at, last: now } };

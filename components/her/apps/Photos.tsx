@@ -9,6 +9,7 @@ import AppBar, { Chevron } from "../ios/AppBar";
 import frame from "../ios/PhotoFrame.module.css";
 import styles from "../ios/Photos.module.css";
 import paper from "./Photos.module.css";
+import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
    Photos, as current iOS lays it out and as the pilot drew it: Library and
@@ -96,7 +97,7 @@ function Viewer({
         <span className={frame.viewerWhen}>
           <strong>{photo.place ?? "Dadar East"}</strong>
           <span>
-            {photo.day} {photo.at}
+            {photo.day} {stamp(photo.at)}
           </span>
         </span>
         <span />
@@ -109,11 +110,11 @@ function Viewer({
       {info && (
         <div className={frame.info}>
           <p className={frame.infoDay}>
-            {photo.day} · {photo.at}
+            {photo.day} · {stamp(photo.at)}
           </p>
           <p className={frame.infoCam}>iPhone 12 — Back Camera</p>
           {photo.caption && <p className={frame.infoNote}>{photo.caption}</p>}
-          {photo.deletedAt && <p className={frame.infoNote}>Deleted at {photo.deletedAt}. Kept for 30 days.</p>}
+          {photo.deletedAt && <p className={frame.infoNote}>Deleted at {stamp(photo.deletedAt)}. Kept for 30 days.</p>}
         </div>
       )}
 
@@ -189,9 +190,10 @@ export default function Photos({
           className={styles.thumb}
           onClick={() => {
             setViewing(p.id);
-            if (p.evidence && !p.deletedAt) onRead([p.evidence]);
+            // Read in the bin is read: the list counts from the moment it's opened (PLAYTEST.md #44).
+            if (p.evidence) onRead([p.evidence]);
           }}
-          aria-label={`${p.title}, ${p.day} ${p.at}`}
+          aria-label={`${p.title}, ${p.day} ${stamp(p.at)}`}
         >
           <Picture photo={p} />
           {inDeleted && <span className={styles.days}>29 days</span>}

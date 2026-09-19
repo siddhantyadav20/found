@@ -71,13 +71,44 @@ export const cues: CallCue[] = [
 
 export const events: LiveEvent[] = [
   {
+    // Arrived at 6:42 while the player slept: waiting in the list, no banner.
     id: "morning",
     device: "hers",
     after: ["ep:3"],
-    delay: 4,
     app: "news",
-    banner: "City Desk · Dadar death: police say no foul play suspected (published 6:42 AM)",
+    at: "06:42",
+    banner: "City Desk · Dadar death: police say no foul play suspected",
     sets: ["saw:published"],
+  },
+  {
+    /* The one good thing in the chapter, a few seconds after they sit up:
+       a man she saved, thanking a woman who has been dead since midnight. */
+    id: "dsouza-thanks",
+    device: "hers",
+    after: ["did:woke"],
+    delay: 5,
+    app: "whatsapp",
+    banner: "C. D'Souza · Aapne kal raat phone karke bachaya. Thank you 🙏",
+  },
+  {
+    /* Relief has to come before the crash (PLAYER-JOURNEY Stage 7): about a
+       minute of morning, and then the player's own phone rings. */
+    id: "arrest-due",
+    device: "yours",
+    after: ["did:woke"],
+    delay: 55,
+    app: "yours:phone",
+    sets: ["did:arrest-due"],
+  },
+  {
+    /* The 1930 answer is the third time he risked himself for a stranger.
+       It stays on screen long enough to be read before the choice comes. */
+    id: "choice-due",
+    device: "yours",
+    after: ["did:got-code"],
+    delay: 9,
+    app: "yours:phone",
+    sets: ["did:choice"],
   },
   {
     /* The profile is gone, and a minute later so is he: without eyes on the
@@ -107,7 +138,7 @@ export const incoming: IncomingCall[] = [
     from: "Mumbai Crime Branch ✔",
     sub: "WhatsApp video · 10:30 AM",
     at: "10:30",
-    after: ["ep:3", "did:woke"],
+    after: ["ep:3", "did:woke", "did:arrest-due"],
     insists: true,
     lines: [
       {
@@ -127,6 +158,7 @@ export const incoming: IncomingCall[] = [
         line: "Aapne raat 3:02 baje unke account se ek lakh transfer kiya.",
         english: "At 3:02 AM you transferred one lakh from her account.",
         needs: "pin",
+        when: "did:typed-early",
       },
       {
         who: "Inspector Rathore",
@@ -166,6 +198,7 @@ export const questions: Question[] = [
   {
     kind: "claims",
     id: "against-you",
+    requires: ["did:arrested"],
     ask: "He has just read out a charge sheet. Which parts of it are true?",
     episode: 3,
     whereToLook: ["messages", "phone", "whatsapp", "settings"],
@@ -181,10 +214,11 @@ export const questions: Question[] = [
         trueWhen: ["did:unlock"],
         proof: "note",
       },
-      { id: "transfer", text: "You moved ₹1,00,000 out of her account at 3:02 AM.", trueWhen: ["did:typed-password"], proof: "the-lakh" },
-      { id: "voice", text: "They have your voice.", trueWhen: ["did:unmuted"], proof: "call" },
-      { id: "witness", text: "You contacted a witness.", trueWhen: ["did:shaila-told"], proof: "shaila-asks" },
-      { id: "son", text: "You lied to her son.", trueWhen: ["did:nikhil-lied"], proof: "last-call-son" },
+      { id: "transfer", text: "You moved ₹1,00,000 out of her account at 3:02 AM.", trueWhen: ["did:typed-early"], proof: "the-lakh", needs: "pin" },
+      { id: "voice", text: "They have your voice.", trueWhen: ["did:unmuted"], proof: "call", needs: "voice" },
+      { id: "witness", text: "You contacted a witness.", trueWhen: ["did:shaila-told"], proof: "shaila-asks", needs: "shaila" },
+      // Said to anyone who spoke to him: a bluff for the ones who told him the truth.
+      { id: "son", text: "You lied to her son.", trueWhen: ["did:nikhil-lied"], proof: "last-call-son", needs: "nikhil" },
       { id: "inside", text: "You were inside the building in Dadar last night.", proof: "watchman" },
     ],
     reply:
@@ -205,6 +239,6 @@ export const questions: Question[] = [
     accepts: ["1930", "the helpline", "cyber helpline", "call 1930", "hang up and call 1930", "one nine three zero"],
     reply:
       "1930. The helpline. He read it out as a case number with his supervisor in the room, which is the third time tonight he has risked himself for somebody he has never met.",
-    sets: ["did:got-code", "did:choice"],
+    sets: ["did:got-code"],
   },
 ];

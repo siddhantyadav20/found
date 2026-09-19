@@ -28,7 +28,7 @@ const chargesFor = (s: CaseState) =>
 describe("the arrest", () => {
   it("is assembled out of the player's own night", () => {
     const clean = awake();
-    const messy = ["pin", "voice", "shaila", "nikhil"].reduce((acc, id) => expose(ep, acc, id), clean);
+    const messy = ["pin", "voice", "shaila", "nikhil"].reduce((acc, id) => expose(ep, acc, id), add(clean, "did:typed-early"));
 
     expect(chargesFor(clean)).toHaveLength(3);
     expect(chargesFor(messy)).toHaveLength(7);
@@ -70,7 +70,10 @@ describe("checking what he says", () => {
   });
 
   it("turns into a confession for a player who gave them everything", () => {
-    const messy = add(awake(), "did:typed-password", "did:unmuted", "did:shaila-told", "did:nikhil-lied");
+    const messy = ["pin", "voice", "shaila", "nikhil"].reduce(
+      (acc, id) => expose(ep, acc, id),
+      add(awake(), "did:typed-password", "did:typed-early", "did:unmuted", "did:shaila-told", "did:nikhil-lied"),
+    );
     expect(ask(messy, ["delivered", "transfer", "voice", "witness", "son"]).ok).toBe(true);
     // The one he invented stays a bluff however bad the night was.
     expect(ask(messy, ["delivered", "transfer", "voice", "witness", "son", "inside"]).ok).toBe(false);
@@ -85,9 +88,12 @@ describe("his last risk", () => {
     expect(q.kind === "type" && q.accepts).toContain("1930");
   });
 
-  it("ends the chapter at the choice, and nowhere else", () => {
+  it("ends the chapter at the choice, after its answer has been read", () => {
     const q = ep.questions.find((x) => x.id === "case-number")!;
-    expect(q.sets).toContain("did:choice");
+    expect(q.sets).toContain("did:got-code");
+    const due = ep.events.find((e) => e.after.includes("did:got-code"));
+    expect(due?.sets).toContain("did:choice");
+    expect(due?.delay).toBeGreaterThanOrEqual(6);
   });
 });
 

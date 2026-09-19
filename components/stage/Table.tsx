@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import LiveCall from "@/components/call/LiveCall";
 import AppView from "@/components/her/AppView";
@@ -16,8 +16,11 @@ import {
   all,
   appLabel,
   battery,
+  caseFile,
   clockNow,
   dueEvents,
+  episodeOf,
+  episodeStart,
   fire,
   has,
   openApp as findIn,
@@ -26,6 +29,8 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { useNow } from "@/lib/found/now";
+import { phoneClock, stamp } from "@/lib/found/time";
+import { ended } from "@/lib/found/tones";
 import { boundCase, readProgress } from "@/lib/found/progress";
 import { noteBattery } from "@/lib/found/shelf";
 import AppBody from "./AppBody";
@@ -57,7 +62,8 @@ type Banner = { app: AppId; from: string; text: string; icon?: AppId };
 
 /** What is waiting on her lock screen at 1:11, before anything arrives. */
 const WAITING: Notice[] = [
-  { key: "nikhil", app: "phone", from: "Nikhil ❤️", text: "Missed call", time: "11:58 PM" },
+  // He rang twice on Friday evening, and she let it ring (diary, page 5).
+  { key: "nikhil", app: "phone", from: "Nikhil ❤️", text: "2 missed calls", time: "Fri" },
   { key: "society", app: "whatsapp", from: "Shanti Kunj CHS", text: "Secretary: Please koi kuch forward mat karo.", time: "1:04 AM" },
   { key: "cb", app: "whatsapp", from: "Mumbai Crime Branch", text: "Do din nahi hain, madam.", time: "Fri" },
 ];
@@ -82,6 +88,11 @@ export default function Table({
   const [expanded, setExpanded] = useState(() => !has(state, "did:minimised"));
   const [idleTurn, setIdleTurn] = useState(0);
   const [banner, setBanner] = useState<Banner | null>(null);
+  // Read by the events timer without restarting it every time the call moves.
+  const expandedNow = useRef(expanded);
+  useEffect(() => {
+    expandedNow.current = expanded;
+  }, [expanded]);
 
   // Cut by the player at 1:11, or ended by them once the profile is gone.
   const cut = has(state, "did:cut-early") || has(state, "did:they-hung-up");
@@ -124,9 +135,19 @@ export default function Table({
         const s = readProgress();
         if (!s) return;
         save(fire(story, s, next.id));
-        if (next.banner) {
+        // What happens next happens on the call: bring it back up.
+        if (next.expands) setExpanded(true);
+        // They hung up: the two falling tones of a call that's gone.
+        if (next.sets?.includes("did:they-hung-up")) ended();
+        // Arrived while nobody was looking: into the list, no banner.
+        // On the lock screen it lands in the list; it doesn't pop again after unlocking.
+        if (next.banner && !next.at && s.flags.includes("did:past-lock")) {
           setBanner({ app: next.app, from: bannerFrom(next.banner), text: bannerText(next.banner), icon: next.icon });
-          setExpanded(false);
+          // Put away by what arrived, and remembered that way across a reload.
+          if (expandedNow.current) {
+            setExpanded(false);
+            flag("did:minimised");
+          }
         }
       },
       (next.delay ?? 0) * 1000,
@@ -152,6 +173,25 @@ export default function Table({
     return () => window.clearTimeout(t);
   }, [qid, nudgeDone, nudgeText, progress]);
 
+  const dismissBanner = useCallback(() => setBanner(null), []);
+
+  /* Found by looking rather than by opening: a zoom into his clock, a page
+     read in the bin, a note from Shaila. Say so, once, quietly, so the
+     player knows it counted (PLAYTEST.md #28). */
+  const manual = caseFile(story, state)
+    .filter((e) => e.manual)
+    .map((e) => e.id)
+    .join(",");
+  const knownManual = useRef(manual);
+  useEffect(() => {
+    const before = new Set(knownManual.current.split(","));
+    knownManual.current = manual;
+    const fresh = story.evidence.find((e) => manual.split(",").includes(e.id) && !before.has(e.id));
+    if (!fresh) return undefined;
+    const t = window.setTimeout(() => setBanner({ app: "casefile", from: "Case file", text: `Noted: ${fresh.label}` }), 350);
+    return () => window.clearTimeout(t);
+  }, [manual, story]);
+
   const onOpenApp = (app: AppId, from?: DOMRect) => {
     // Where the tap landed, relative to her screen, so the app zooms out of it.
     const screen = document.querySelector(`.${phoneStyles.screen}`)?.getBoundingClientRect();
@@ -175,7 +215,7 @@ export default function Table({
       look: replay && e.id === "alert",
       from: bannerFrom(e.banner!),
       text: bannerText(e.banner!),
-      time: "now",
+      time: e.at ? stamp(e.at) : "now",
     }))
     .reverse();
   const notices = [...arrived, ...WAITING];
@@ -183,7 +223,20 @@ export default function Table({
   /* Her battery, falling with the beats rather than with a timer: 7% while
      the power bank still has something in it, 5% once the player knows she
      knew, 4% when it dies. The number is a clock the player can feel. */
-  const percent = has(state, "did:bank-dead") ? 4 : has(state, "did:she-knew") ? 5 : battery(story, state);
+  const episode = episodeOf(state);
+  // Episode 2 is on the player's charger: from 4%, a point a minute. By
+  // morning it has been charging all night (the story's own 61%).
+  const charging = episode === 2;
+  const percent =
+    episode === 3
+      ? battery(story, state)
+      : episode === 2
+        ? Math.min(100, 4 + Math.max(0, Math.floor((now - episodeStart(state)) / 60_000)))
+        : has(state, "did:bank-dead")
+          ? 4
+          : has(state, "did:she-knew")
+            ? 5
+            : battery(story, state);
 
   // The desk draws her phone at the battery the player left it on.
   useEffect(() => {
@@ -205,7 +258,10 @@ export default function Table({
         flag("did:minimised");
       }}
       onReachEnd={() => flag("did:reach-for-end")}
-      onCut={() => flag("did:cut-early")}
+      onCut={() => {
+        ended();
+        flag("did:cut-early");
+      }}
       // They can hear the room now, and a voice is a thing they can keep.
       onUnmute={() => give(story, "voice", "did:unmuted")}
       onReadClock={() => flag("saw:clock", "did:read-clock")}
@@ -227,14 +283,15 @@ export default function Table({
       )}
       <div className={styles.table}>
         <Phone
-          time={mumbai}
+          time={phoneClock(mumbai)}
           day={story.clocks[0].day}
           battery={percent}
+          charging={charging}
           wallpaper={meta.wallpaper}
           recording={!has(state, "did:removed-profile")}
           lock={
             has(state, "did:past-lock") ? undefined : (
-              <LockScreen day={story.clocks[0].day} clock={mumbai} notes={notices} onOpen={() => flag("did:past-lock")} />
+              <LockScreen day={story.clocks[0].day} clock={phoneClock(mumbai)} notes={notices} onOpen={() => flag("did:past-lock")} />
             )
           }
           home={<Home story={story} state={state} onOpen={onOpenApp} covered={Boolean(openApp)} />}
@@ -243,9 +300,8 @@ export default function Table({
               <AppView
                 title={appLabel(story, openApp)}
                 onBack={() => setOpenApp(null)}
-                bare={openApp === "whatsapp" || openApp === "instagram"}
                 own={openApp === "messages"}
-                whole={openApp === "photos"}
+                whole={openApp === "photos" || openApp === "whatsapp" || openApp === "instagram"}
               >
                 <AppBody app={openApp} story={story} state={state} onHome={() => setOpenApp(null)} />
               </AppView>
@@ -254,17 +310,22 @@ export default function Table({
           appKey={openApp ?? undefined}
           origin={origin}
           onCloseApp={() => setOpenApp(null)}
-          banner={expanded || !banner ? null : { key: `${banner.app}-${banner.text}`, ...banner }}
+          // On the lock screen a notification lands in the list, never as a banner over it.
+          banner={expanded || !banner || !has(state, "did:past-lock") ? null : { key: `${banner.app}-${banner.text}`, ...banner }}
           onBanner={() => banner && onOpenApp(banner.app)}
-          onDismissBanner={() => setBanner(null)}
+          onDismissBanner={dismissBanner}
           notices={notices}
           onNotice={(n) => onOpenApp(n.app)}
           overlay={call}
         />
 
         <div className={styles.yours}>
-          <YourPhone time={mumbai} day={story.clocks[0].day} />
-          <p className={styles.yoursNote}>Yours. It stays quiet until 10:30.</p>
+          <YourPhone time={phoneClock(mumbai)} day={story.clocks[0].day} />
+          <p className={styles.yoursNote}>
+            {has(state, "did:arrested")
+              ? "Yours. Still on a WhatsApp video call with them."
+              : "Yours. It stays quiet until 10:30."}
+          </p>
         </div>
       </div>
     </div>

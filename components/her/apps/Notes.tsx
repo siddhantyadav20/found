@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Note, Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
 import styles from "./Notes.module.css";
+import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
    Notes, where she thought on Thursday and where somebody else typed at 12:39
@@ -51,7 +52,7 @@ function Open({ note, onOpened }: { note: Note; onOpened: (id: string) => void }
     <article className={styles.note}>
       <h3 className={styles.noteTitle}>{note.title}</h3>
       <p className={styles.noteMeta}>
-        {note.day} {note.at}
+        {note.day} {stamp(note.at)}
         {note.edited && ` · Edited ${note.edited}`}
         {note.sharedWith && ` · Shared with ${note.sharedWith}`}
       </p>
@@ -83,7 +84,7 @@ export default function Notes({
   if (here)
     return (
       <>
-        <button type="button" className={styles.link} onClick={() => setOpen(null)}>
+        <button type="button" className={styles.link} onClick={() => setOpen(null)} data-back>
           ‹ Notes
         </button>
         <Open
@@ -96,29 +97,35 @@ export default function Notes({
       </>
     );
 
+  /* iOS Notes: one inset group, each row a bold title with the time and the
+     note's first line under it, and the count at the foot (PLAYTEST.md #18). */
   return (
-    <ul className={styles.list}>
-      {notes.map((n) => (
-        <li key={n.id}>
-          <button
-            type="button"
-            className={styles.row}
-            onClick={() => {
-              setOpen(n.id);
-              if (n.evidence && !n.locked) onRead([n.evidence]);
-            }}
-          >
-            <span className={styles.rowTitle}>
-              {n.locked && "🔒 "}
-              {n.title}
-            </span>
-            <span className={styles.rowSub}>
-              {n.day} {n.at}
-              {n.edited && ` · Edited ${n.edited}`}
-            </span>
-          </button>
-        </li>
-      ))}
-    </ul>
+    <>
+      <p className={styles.folder}>iCloud</p>
+      <ul className={styles.list}>
+        {notes.map((n) => (
+          <li key={n.id}>
+            <button
+              type="button"
+              className={styles.row}
+              onClick={() => {
+                setOpen(n.id);
+                if (n.evidence && !n.locked) onRead([n.evidence]);
+              }}
+            >
+              <span className={styles.rowTitle}>
+                {n.locked && "🔒 "}
+                {n.title}
+              </span>
+              <span className={styles.rowSub}>
+                <span className={styles.rowWhen}>{n.edited ? stamp(n.edited) : n.day}</span>
+                <span className={styles.rowPreview}>{n.locked ? "Locked" : n.body[0]}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className={styles.count}>{notes.length} Notes</p>
+    </>
   );
 }

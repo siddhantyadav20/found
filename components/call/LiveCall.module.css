@@ -325,3 +325,38 @@
   -webkit-touch-callout: none;
   user-select: none;
 }
+
+/* Found by looking: a small chip on the feed, gone in two seconds. */
+.noted {
+  position: absolute;
+  left: 50%;
+  bottom: 0.6rem;
+  translate: -50% 0;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 65%);
+  color: #f2f2f7;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  animation: noteIn 0.25s ease-out both;
+}
+
+@keyframes noteIn { from { opacity: 0; translate: -50% 0.4rem; } }
+
+/* Tucked away at the edge: only a sliver shows, with a handle to pull it back. */
+.call[data-stashed][data-corner$="r"] { translate: calc(100% - 22px) 0; }
+.call[data-stashed][data-corner$="l"] { translate: calc(-100% + 22px) 0; }
+.call[data-stashed] { opacity: 0.9; }
+.call[data-stashed]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 36px;
+  margin-top: -18px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 70%);
+}
+.call[data-stashed][data-corner$="r"]::after { left: 8px; }
+.call[data-stashed][data-corner$="l"]::after { right: 8px; }

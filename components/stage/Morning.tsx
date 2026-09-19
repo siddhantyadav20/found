@@ -32,7 +32,7 @@ export default function Morning({
   const now = useNow(1000);
   return (
     <div className={styles.morning}>
-      <p className={styles.eyebrow}>Saturday · 10:29 AM</p>
+      <p className={styles.eyebrow}>Episode 3 · {story.episodes[2]} · Saturday, 10:29 AM</p>
       <p className={styles.line}>You slept, in the end. Holding it.</p>
       <p className={styles.timer}>{now ? duration(ranFor(story, state, now)) : null}</p>
       <p className={styles.sub}>The call is still running.</p>

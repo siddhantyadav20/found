@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 
-import type { Question, Story } from "@/content/types";
-import { answer, appLabel, caseFile, hint, openQuestion, seen, whereToLook, type CaseState } from "@/lib/game/engine";
+import type { AppId, Question, Story } from "@/content/types";
+import { answer, appLabel, caseFile, claimsFor, hint, openQuestion, seen, whereToLook, type CaseState } from "@/lib/game/engine";
 import note from "@/components/her/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
 import { wrong } from "./playthrough";
+import { stamp } from "@/lib/found/time";
+
+/** The proof a player has laid out, per question, for as long as the page is open. */
+const onTable = new Map<string, string[]>();
 
 /* ===========================================================================
    The case file: one question at a time, what you have found, and help that
@@ -39,7 +43,14 @@ export default function CaseFile({
 }) {
   const q = openQuestion(story, state);
   const found = caseFile(story, state);
-  const [picked, setPicked] = useState<string[]>([]);
+  // What was on the table survives a trip to another app and back (PLAYTEST.md #67).
+  const [picked, setPickedHere] = useState<string[]>(() => (q ? (onTable.get(q.id) ?? []) : []));
+  const setPicked = (next: string[] | ((p: string[]) => string[])) =>
+    setPickedHere((p) => {
+      const value = typeof next === "function" ? next(p) : next;
+      if (q) onTable.set(q.id, value);
+      return value;
+    });
   const [typed, setTyped] = useState("");
   const [said, setSaid] = useState<{ text: string; ok: boolean; ask: string } | null>(null);
   const [helped, setHelped] = useState<string | null>(null);
@@ -97,7 +108,16 @@ export default function CaseFile({
         Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
       </p>
 
-      <Board q={q} state={state} found={found} picked={picked} toggle={toggle} typed={typed} setTyped={setTyped} />
+      <Board
+        q={q}
+        state={state}
+        found={found}
+        picked={picked}
+        toggle={toggle}
+        typed={typed}
+        setTyped={setTyped}
+        labelOf={(app) => (app === "casefile" ? "From the call and the pouch" : appLabel(story, app))}
+      />
 
       <div className={note.actions}>
         <button
@@ -136,10 +156,13 @@ function Board({
   toggle,
   typed,
   setTyped,
+  labelOf,
 }: {
   q: Question;
   state: CaseState;
-  found: readonly { readonly id: string; readonly label: string }[];
+  found: readonly { readonly id: string; readonly label: string; readonly app: AppId }[];
+  /** What each app is called on her phone, for grouping what was found. */
+  labelOf: (app: AppId) => string;
   picked: readonly string[];
   toggle: (id: string) => void;
   typed: string;
@@ -161,6 +184,7 @@ function Board({
   if (q.kind === "timeline")
     return (
       <>
+        <p className={styles.where}>Tap anything this phone did while she was somewhere else.</p>
         <p className={styles.lanes}>
           <span>Her</span>
           <span>This phone</span>
@@ -175,21 +199,20 @@ function Board({
                 aria-pressed={picked.includes(r.id)}
                 onClick={() => toggle(r.id)}
               >
-                <span className={styles.at}>{r.at}</span>
+                <span className={styles.at}>{stamp(r.at)}</span>
                 <span className={styles.laneText}>{r.text}</span>
                 <span className={styles.side}>{picked.includes(r.id) ? "the phone" : "her"}</span>
               </button>
             </li>
           ))}
         </ul>
-        <p className={styles.where}>Tap anything this phone did while she was somewhere else.</p>
       </>
     );
 
   if (q.kind === "claims")
     return (
       <ul className={styles.list}>
-        {q.claims.map((c) => (
+        {claimsFor(q, state).map((c) => (
           <li key={c.id}>
             <button
               type="button"
@@ -202,7 +225,7 @@ function Board({
                 {c.text}
                 {c.english && <span className={styles.english}>{c.english}</span>}
               </span>
-              <span className={styles.side}>{picked.includes(c.id) ? "true" : "bluff"}</span>
+              <span className={styles.side}>{picked.includes(c.id) ? (q.labels?.[0] ?? "true") : (q.labels?.[1] ?? "bluff")}</span>
             </button>
           </li>
         ))}
@@ -214,22 +237,30 @@ function Board({
   ) : (
     <div className={note.pick}>
       <p className={note.choose}>Put the proof on the table.</p>
-      <ul className={note.pickList}>
-        {found.map((e) => (
-          <li key={e.id}>
-            <button
-              type="button"
-              className={note.pickRow}
-              data-on={picked.includes(e.id) || undefined}
-              aria-pressed={picked.includes(e.id)}
-              onClick={() => toggle(e.id)}
-            >
-              <span className={note.check} aria-hidden="true" />
-              <span>{e.label}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      {/* Grouped by where it was found, so thirty things stay findable. */}
+      {[...new Set(found.map((e) => e.app))].map((app) => (
+        <div key={app}>
+          <p className={styles.groupHead}>{labelOf(app)}</p>
+          <ul className={note.pickList}>
+            {found
+              .filter((e) => e.app === app)
+              .map((e) => (
+                <li key={e.id}>
+                  <button
+                    type="button"
+                    className={note.pickRow}
+                    data-on={picked.includes(e.id) || undefined}
+                    aria-pressed={picked.includes(e.id)}
+                    onClick={() => toggle(e.id)}
+                  >
+                    <span className={note.check} aria-hidden="true" />
+                    <span>{e.label}</span>
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }

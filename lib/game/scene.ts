@@ -16,6 +16,7 @@ export type Scene =
   | { readonly kind: "pouch" }
   | { readonly kind: "note" }
   | { readonly kind: "charge" }
+  | { readonly kind: "title"; readonly episode: 2 }
   | { readonly kind: "seen-by-them" }
   | { readonly kind: "morning" }
   | { readonly kind: "choice" }
@@ -43,8 +44,11 @@ export function sceneOf(story: Story, s: CaseState | null): Scene {
   /* The power bank is out and he has asked the dark whether she is still
      there. A player who cut the call hears nobody ask, and plugs in anyway:
      the phone is at 4%, and it is all they have of her. */
-  const asked = has(s, "did:cut-early") || has(s, "fired:cue-still-there");
-  if (has(s, "did:bank-dead") && asked && !has(s, "did:charged")) return { kind: "charge" };
+  if (has(s, "did:needs-charge") && !has(s, "did:charged")) return { kind: "charge" };
+
+  /* Plugged in: a title, and the night moves on to 2:35 before the table
+     comes back (PLAYTEST.md #34, #46). */
+  if (has(s, "ep:2") && !has(s, "ep:3") && !has(s, "fired:title-2")) return { kind: "title", episode: 2 };
 
   if (has(s, "did:seen-by-them") && !has(s, "did:ep2-done")) return { kind: "seen-by-them" };
   if (has(s, "did:ep2-done") && !has(s, "did:woke")) return { kind: "morning" };

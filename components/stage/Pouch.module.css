@@ -144,3 +144,34 @@
 @media (prefers-reduced-motion: reduce) {
   .strip { animation: none; }
 }
+
+/* It's ringing in there: the pouch shivers on the table, as on the desk. */
+.pouch:not([data-torn]) { animation: shiver 1.6s ease-in-out 0.8s infinite; }
+
+@keyframes shiver {
+  0%, 30%, 100% { translate: 0 0; }
+  4%, 12%, 20% { translate: -2px 1px; }
+  8%, 16%, 24% { translate: 2px -1px; }
+}
+
+/* Torn: the strip flies, the phone rises out of the open top, and it all fades. */
+.inside {
+  position: absolute;
+  left: 32%;
+  right: 32%;
+  top: 12%;
+  height: 46%;
+  border-radius: 0.8rem;
+  background: linear-gradient(150deg, #33353b, #16171a);
+  opacity: 0;
+  transform: translateY(20%);
+}
+
+.pouch[data-torn] { overflow: visible; animation: none; }
+.pouch[data-torn] .strip { transform: translateX(130%) rotate(-14deg); opacity: 0; transition: transform 0.45s cubic-bezier(0.4, 0, 1, 1), opacity 0.45s; }
+.pouch[data-torn] .inside { opacity: 1; transform: translateY(-38%); transition: transform 0.6s 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.1), opacity 0.2s 0.15s; }
+.pouch[data-torn] .label { opacity: 0.35; transition: opacity 0.5s 0.2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pouch:not([data-torn]) { animation: none; }
+}

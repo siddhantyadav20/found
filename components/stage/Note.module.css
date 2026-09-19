@@ -41,10 +41,11 @@
 }
 
 .english {
-  margin-top: 0.7rem;
+  margin-top: -0.3rem;
   font-family: var(--font-ui);
-  font-size: 0.66rem;
-  color: #6b655c;
+  font-size: 0.72rem;
+  font-style: italic;
+  color: #a39d95;
 }
 
 .kit {
@@ -127,4 +128,18 @@
   font-family: var(--font-ui);
   font-size: 0.7rem;
   color: #8d8781;
+}
+
+/* Taped together: the power bank hard against the phone, a strip of tape over both. */
+.kit { position: relative; gap: 0; }
+.bank { margin-left: -0.4rem; }
+.tape {
+  position: absolute;
+  left: 2.6rem;
+  right: -0.3rem;
+  top: 45%;
+  height: 1.3rem;
+  background: rgb(230 222 200 / 55%);
+  rotate: -4deg;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
 }

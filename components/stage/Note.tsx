@@ -25,8 +25,9 @@ export default function Note({ onTurn }: { onTurn: () => void }) {
         <p className={styles.hand}>CALL MAT KATNA.</p>
         <p className={styles.hand}>SAB DEKHO.</p>
         <p className={styles.sign}>— V</p>
-        <p className={styles.english}>Don&apos;t cut the call. Look at everything.</p>
       </div>
+      {/* The translation is ours, not written on her note. */}
+      <p className={styles.english}>&ldquo;Don&apos;t cut the call. Look at everything.&rdquo;</p>
 
       <div className={styles.kit}>
         <span className={styles.facedown}>
@@ -43,6 +44,7 @@ export default function Note({ onTurn }: { onTurn: () => void }) {
         <span className={styles.bank} aria-hidden="true">
           <span className={styles.led} />
         </span>
+        <span className={styles.tape} aria-hidden="true" />
       </div>
       <p className={styles.caption}>
         A phone, face-down, taped to a power bank. One light still on it.

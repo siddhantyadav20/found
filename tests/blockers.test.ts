@@ -36,7 +36,7 @@ describe("Episode 1 hands over to Episode 2 (found in R2)", () => {
     expect(s.flags).toContain("did:bank-dead");
     // He asks the dark whether she is still there; then the charger.
     expect(sceneOf(ep, s).kind).toBe("table");
-    s = add(s, "fired:cue-still-there");
+    s = settle(add(s, "fired:cue-still-there"));
     expect(sceneOf(ep, s).kind).toBe("charge");
     s = add(s, ...PLUGGED_IN);
     expect(s.flags).toContain("ep:2");
@@ -62,7 +62,8 @@ describe("L1: cutting the call at 1:11", () => {
 });
 
 describe("L2: her son's call can be left to ring", () => {
-  const ep2 = () => add(unlocked(), "did:bank-dead", "did:charged", "ep:2");
+  // Plugged in, the title card over, and the half-minute before he rings gone by.
+  const ep2 = () => settle(add(unlocked(), "did:bank-dead", "did:charged", "ep:2", "fired:title-2"));
 
   it("rings at the start of Episode 2, and can be declined for good", () => {
     const s = ep2();
@@ -75,7 +76,7 @@ describe("L2: her son's call can be left to ring", () => {
   });
 
   it("doesn't stop the arrest from ringing at 10:30", () => {
-    const s = add(ep2(), "did:declined-nikhil", "ep:3", "did:seen-by-them", "did:ep2-done", "did:woke");
+    const s = settle(add(ep2(), "did:declined-nikhil", "ep:3", "did:seen-by-them", "did:ep2-done", "did:woke"));
     const call = ringingNow(ep, s);
     expect(call?.id).toBe("arrest");
     // The arrest can only be answered.
@@ -85,14 +86,14 @@ describe("L2: her son's call can be left to ring", () => {
 });
 
 describe("L3: each episode keeps its own clock", () => {
-  it("starts Episode 2 at 1:40 and Episode 3 at 10:29, however long the one before took", () => {
+  it("starts Episode 2 at 2:35 and Episode 3 at 10:29, however long the one before took", () => {
     let s = unlocked();
     expect(clockNow(ep, s, 5 * MIN)).toBe("01:16");
 
     // Forty minutes into Episode 1, the player plugs in.
     s = stamp(add(s, "did:charged", "ep:2"), 40 * MIN);
-    expect(clockNow(ep, s, 40 * MIN)).toBe("01:40");
-    expect(clockNow(ep, s, 43 * MIN)).toBe("01:43");
+    expect(clockNow(ep, s, 40 * MIN)).toBe("02:35");
+    expect(clockNow(ep, s, 43 * MIN)).toBe("02:38");
 
     // An hour later the night ends, and the morning begins where it should.
     s = stamp(add(s, "ep:3"), 100 * MIN);
@@ -107,7 +108,7 @@ describe("L3: each episode keeps its own clock", () => {
   it("stamps an episode once, and leaves old saves on the playthrough's start", () => {
     const s = stamp(add(unlocked(), "ep:2"), 10 * MIN);
     expect(stamp(s, 20 * MIN)).toBe(s);
-    expect(clockNow(ep, add(unlocked(), "ep:2"), 0)).toBe("01:40");
+    expect(clockNow(ep, add(unlocked(), "ep:2"), 0)).toBe("02:35");
   });
 });
 
@@ -122,9 +123,11 @@ describe("L5: the claims are checked, not guessed", () => {
 
 describe("the ₹1 lakh can be checked on her phone (L4)", () => {
   it("lands in Unknown Senders only if the password was typed", () => {
-    const junk = ep.threads.find((t) => t.folder === "junk");
-    const lakh = junk?.messages.find((m) => m.evidence === "the-lakh");
-    expect(lakh?.requires).toContain("did:typed-password");
+    const junk = ep.threads.filter((t) => t.folder === "junk").flatMap((t) => t.messages);
+    const lakh = junk.find((m) => m.evidence === "the-lakh" && m.at === "03:02");
+    // Typed in the night, used at 3:02; typed in the morning, used at once.
+    expect(lakh?.requires).toContain("did:typed-early");
+    expect(junk.find((m) => m.evidence === "the-lakh" && m.at !== "03:02")?.requires).toContain("did:typed-late");
     const s = add(unlocked(), "did:typed-password");
     expect(see(ep, s, "the-lakh").flags).toContain("saw:the-lakh");
   });

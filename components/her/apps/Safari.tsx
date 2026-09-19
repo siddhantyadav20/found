@@ -3,6 +3,7 @@
 import type { Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
 import { Group, Row } from "../AppView";
+import { stamp } from "@/lib/found/time";
 
 /* Safari's history: a woman working out, on her own, what was being done to
    her. It is the second way to reach Myawaddy, for a player who never opens
@@ -25,7 +26,7 @@ export default function Safari({
           <Row
             key={s.id}
             title={s.text}
-            sub={`${s.day} ${s.at}`}
+            sub={`${s.day} ${stamp(s.at)}`}
             onClick={s.evidence ? () => onRead([s.evidence as string]) : undefined}
           />
         ))}

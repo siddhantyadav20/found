@@ -44,6 +44,8 @@ export type Notice = {
 };
 
 const CLOSE_MS = 300;
+/** How long a banner stays before it slides away on its own. */
+const BANNER_MS = 5500;
 const BACK_MS = 260;
 const HOLD_MS = 450;
 
@@ -58,7 +60,17 @@ function zoomOver(o: Origin, width: number, height: number) {
   };
 }
 
-function StatusBar({ time, battery, recording }: { time: string; battery: number; recording?: boolean }) {
+function StatusBar({
+  time,
+  battery,
+  recording,
+  charging,
+}: {
+  time: string;
+  battery: number;
+  recording?: boolean;
+  charging?: boolean;
+}) {
   // At 4–7% a true-width fill is a hairline, so the low end is drawn generously.
   const width = Math.max(8, Math.min(100, battery < 20 ? battery * 6 : battery));
   return (
@@ -75,7 +87,7 @@ function StatusBar({ time, battery, recording }: { time: string; battery: number
           <path d="M3.6 6.8a6.2 6.2 0 0 1 8.8 0l-1.3 1.3a4.4 4.4 0 0 0-6.2 0L3.6 6.8Z" />
           <path d="M1.4 4.6a9.3 9.3 0 0 1 13.2 0l-1.3 1.3a7.5 7.5 0 0 0-10.6 0L1.4 4.6Z" />
         </svg>
-        <span className={styles.battery} data-low={battery <= 7 || undefined}>
+        <span className={styles.battery} data-low={(battery <= 7 && !charging) || undefined} data-charging={charging || undefined}>
           <span className={styles.cell}>
             <span className={styles.fill} style={{ width: `${width}%` }} />
             <span className={styles.cellNum} data-dark={width >= 55 || undefined}>
@@ -92,6 +104,7 @@ export default function Phone({
   time,
   day,
   battery,
+  charging,
   wallpaper,
   recording,
   lock,
@@ -110,6 +123,8 @@ export default function Phone({
   time: string;
   day: string;
   battery: number;
+  /** On the player's charger: the cell goes green and gets its bolt. */
+  charging?: boolean;
   wallpaper: string;
   recording?: boolean;
   /** The lock screen, when the phone is showing it; nothing else is drawn then. */
@@ -146,6 +161,13 @@ export default function Phone({
   useEffect(() => {
     if (bannerKey) buzz();
   }, [bannerKey]);
+
+  /* And then it goes, the way iOS banners do, unless it's being held open. */
+  useEffect(() => {
+    if (!bannerKey || expanded) return undefined;
+    const t = window.setTimeout(() => onDismissBanner?.(), BANNER_MS);
+    return () => window.clearTimeout(t);
+  }, [bannerKey, expanded, onDismissBanner]);
 
   /* The zoom out of the icon is laid on as the app mounts, before paint, so
      the first frame is already sitting over the icon. */
@@ -311,7 +333,7 @@ export default function Phone({
         onPointerDown={swipeBack}
       >
         <span className={styles.osIsland} aria-hidden="true" />
-        <StatusBar time={time} battery={battery} recording={recording} />
+        <StatusBar time={time} battery={battery} recording={recording} charging={charging} />
 
         {lock ?? (
           <>

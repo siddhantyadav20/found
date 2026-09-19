@@ -823,3 +823,15 @@
 }
 
 .replyOption:active { background: rgba(120, 120, 128, 0.42); }
+
+/* Instagram's Direct: black, grey bubbles in, blue bubbles out. */
+.chats[data-app="instagram"] {
+  --chat-bg: #000;
+  --chat-wall: #000;
+  --chat-bar: rgba(0, 0, 0, 0.9);
+  --chat-accent: #3797f0;
+  --chat-in: #262626;
+  --chat-out: #3797f0;
+  --chat-text: #f5f5f5;
+  --chat-dim: #a8a8a8;
+}

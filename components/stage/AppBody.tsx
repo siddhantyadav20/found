@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+
 import Chat from "@/components/her/apps/Chat";
 import Instagram from "@/components/her/apps/Instagram";
 import HerMessages from "@/components/her/apps/Messages";
@@ -11,7 +13,7 @@ import Recents from "@/components/her/apps/Recents";
 import Safari from "@/components/her/apps/Safari";
 import HerSettings from "@/components/her/apps/Settings";
 import type { AppId, Story } from "@/content/types";
-import type { CaseState } from "@/lib/game/engine";
+import { episodeOf, type CaseState } from "@/lib/game/engine";
 import CaseFile from "./CaseFile";
 import { flag, give, read, save, say } from "./playthrough";
 
@@ -31,18 +33,19 @@ export default function AppBody({
   state: CaseState;
   onHome: () => void;
 }) {
-  const onRead = (ids: readonly string[]) => read(story, ids);
-  const onSay = (option: Parameters<typeof say>[1]) => say(story, option);
+  // Stable, because the apps mark things read from effects that depend on them.
+  const onRead = useCallback((ids: readonly string[]) => read(story, ids), [story]);
+  const onSay = useCallback((option: Parameters<typeof say>[1]) => say(story, option), [story]);
 
   switch (app) {
     case "casefile":
       return <CaseFile story={story} state={state} save={save} />;
     case "instagram":
-      return <Instagram story={story} state={state} onRead={onRead} onSay={onSay} />;
+      return <Instagram story={story} state={state} onHome={onHome} onRead={onRead} onSay={onSay} />;
     case "messages":
       return <HerMessages story={story} state={state} onRead={onRead} />;
     case "whatsapp":
-      return <Chat story={story} state={state} app={app} onRead={onRead} onSay={onSay} />;
+      return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} />;
     case "phone":
       return <Recents story={story} state={state} onRead={onRead} />;
     case "photos":
@@ -62,11 +65,14 @@ export default function AppBody({
           state={state}
           onRead={onRead}
           // They watched the keypad. She kept this from them for 31 hours.
-          onPassword={() => give(story, "pin", "did:typed-password")}
+          // In the night they use it at 3:02; typed in the morning, at once.
+          onPassword={() =>
+            give(story, "pin", "did:typed-password", episodeOf(state) === 3 ? "did:typed-late" : "did:typed-early")
+          }
         />
       );
     case "settings":
-      return <HerSettings story={story} state={state} onAct={(sets) => flag(...sets)} />;
+      return <HerSettings story={story} state={state} onAct={(sets) => flag(...sets)} onRead={onRead} />;
     case "pikdrop":
       return <PikDrop story={story} state={state} onRead={onRead} />;
     case "safari":

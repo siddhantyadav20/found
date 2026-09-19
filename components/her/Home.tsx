@@ -49,14 +49,15 @@ export default function Home({
         aria-label={unseen > 0 ? `${label}, ${unseen} new` : label}
         onClick={(e) => onOpen(app, e.currentTarget.querySelector("span")?.getBoundingClientRect())}
       >
+        {/* The badge sits on the tile's corner, as iOS draws it. */}
         <span className={styles.tile}>
           <AppGlyph app={app} />
+          {unseen > 0 && (
+            <span className={styles.badge} aria-hidden="true">
+              {unseen}
+            </span>
+          )}
         </span>
-        {unseen > 0 && (
-          <span className={styles.badge} aria-hidden="true">
-            {unseen}
-          </span>
-        )}
         <span className={styles.label}>{label}</span>
       </button>
     );

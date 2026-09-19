@@ -9,6 +9,7 @@ import Avatar from "../ios/Avatar";
 import app from "../ios/App.module.css";
 import list from "../ios/Messages.module.css";
 import styles from "../ios/Thread.module.css";
+import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
    Messages: the bank, and what the phone decided she shouldn't see.
@@ -62,7 +63,7 @@ function ThreadView({
             <div key={m.id}>
               {newDay && (
                 <p className={styles.stamp}>
-                  <b>{m.day}</b> {m.at}
+                  <b>{m.day}</b> {stamp(m.at)}
                 </p>
               )}
               <div className={styles.row} data-from={m.from === "her" ? "owner" : "them"} data-tail={endOfRun || undefined}>
@@ -87,7 +88,10 @@ export default function Messages({
 }) {
   const [folder, setFolder] = useState<Folder>("inbox");
   const [open, setOpen] = useState<string | null>(null);
-  const threads = story.threads.filter((t) => t.app === "messages" && all(state, t.requires));
+  // A sender with nothing visible yet isn't in the list at all.
+  const threads = story.threads.filter(
+    (t) => t.app === "messages" && all(state, t.requires) && t.messages.some((m) => all(state, m.requires)),
+  );
   const here = threads.find((t) => t.id === open);
 
   if (here) return <ThreadView thread={here} state={state} onBack={() => setOpen(null)} onRead={onRead} />;
@@ -110,7 +114,7 @@ export default function Messages({
                 <span className={list.main}>
                   <span className={list.top}>
                     <span className={list.name}>{t.name}</span>
-                    <span className={list.when}>{last?.day === "Friday" ? "Friday" : last?.at}</span>
+                    <span className={list.when}>{last?.day === "Friday" ? "Friday" : stamp(last?.at)}</span>
                   </span>
                   <span className={list.preview}>{last?.text}</span>
                 </span>

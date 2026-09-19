@@ -59,8 +59,8 @@ export default function Charge({ onPlugged, cut }: { onPlugged: () => void; cut?
         </p>
       ) : (
         <p className={styles.line}>
-          He is still talking. If the call drops, the boy on it loses a meal, and neither of you
-          knows that yet.
+          The call is still running on four percent. If the phone dies, the line drops, and he asked
+          you not to let it.
         </p>
       )}
 

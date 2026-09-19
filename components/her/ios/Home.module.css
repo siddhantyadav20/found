@@ -188,7 +188,8 @@
 }
 
 .label {
-  max-width: 100%;
+  /* A label may run a little past its icon, as iOS lets it, before it truncates. */
+  max-width: calc(100% + 14px);
   overflow: hidden;
   font-size: 12px;
   font-weight: 500;

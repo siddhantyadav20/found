@@ -20,7 +20,8 @@ const TILE: Record<AppId, string> = {
   safari: "linear-gradient(180deg, #f3f5f8 0%, #dfe6ef 100%)",
   settings: "linear-gradient(180deg, #e3e3e8 0%, #a1a1a8 100%)",
   news: "linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%)",
-  casefile: "linear-gradient(180deg, #ffd84a 0%, #f8c81c 23%, #ffffff 23.5%, #f8f8f4 100%)",
+  // A manila case folder: the one icon on her phone that is the player's own.
+  casefile: "linear-gradient(180deg, #3a3f4b 0%, #1d2027 100%)",
   kyc: "linear-gradient(180deg, #9a9aa1 0%, #6c6c72 100%)",
   "yours:chats": "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
   "yours:phone": "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
@@ -28,7 +29,7 @@ const TILE: Record<AppId, string> = {
 };
 
 /** Glyphs that are the whole picture rather than a mark on a coloured tile. */
-const FULL: ReadonlySet<AppId> = new Set<AppId>(["notes", "casefile", "photos", "news", "safari"]);
+const FULL: ReadonlySet<AppId> = new Set<AppId>(["notes", "photos", "news", "safari"]);
 
 /** Photos' flower: eight overlapping petals, clockwise from the top. */
 const PETALS = ["#f8a326", "#f7cf2c", "#a6d25a", "#3fbf8f", "#3aa7dc", "#5b76d6", "#a45fcb", "#ee5b7b"];
@@ -85,8 +86,16 @@ function Glyph({ app }: { app: AppId }) {
           <circle cx="16" cy="8" r="0.9" fill="#fff" stroke="none" />
         </g>
       );
-    case "notes":
     case "casefile":
+      return (
+        <g>
+          <path d="M4.5 8.2c0-.9.7-1.6 1.6-1.6h3.6l1.5 1.6h6.7c.9 0 1.6.7 1.6 1.6v7.4c0 .9-.7 1.6-1.6 1.6H6.1c-.9 0-1.6-.7-1.6-1.6Z" fill="#e2b464" />
+          <rect x="7" y="10.5" width="10" height="1.2" rx="0.6" fill="#8a6a2e" />
+          <circle cx="16.4" cy="14.8" r="2.3" fill="none" stroke="#fff" strokeWidth="1.3" />
+          <path d="m18 16.4 1.6 1.6" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" />
+        </g>
+      );
+    case "notes":
       return (
         <g>
           <rect x="4" y="9" width="16" height="11" fill="#fdfdf8" />

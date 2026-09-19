@@ -14,7 +14,7 @@ const evidence: Evidence[] = [
   { id: "call", device: "hers", app: "casefile", label: "A call that has run 31 hours", manual: true },
   { id: "clock", device: "hers", app: "casefile", label: "His wall clock is an hour ahead", manual: true },
   { id: "alert", device: "hers", app: "news", label: "A woman in Dadar is dead" },
-  { id: "wallpaper", device: "hers", app: "settings", label: "Whose phone this is" },
+  { id: "wallpaper", device: "hers", app: "settings", label: "The name at the top of her Settings" },
 
   // Her life, and the scam sitting in it like an appointment.
   { id: "warrant", device: "hers", app: "whatsapp", label: "An arrest warrant with an FIR number" },
@@ -127,7 +127,7 @@ const questions: Question[] = [
       ["diary-4", "sahil-photo"],
     ],
     reply:
-      "Not Mumbai. His clock is an hour ahead and the writing on his wall is Burmese. He is twenty-three, he is from Kurla, and he is not a policeman. He is a prisoner.",
+      "Not Mumbai. Myawaddy, across the river from Thailand, an hour ahead of her clock. He is twenty-three, he is from Kurla, and he is not a policeman. He is a prisoner.",
     sets: ["did:placed-him"],
   },
 ];
@@ -159,6 +159,7 @@ const cues: CallCue[] = [
   {
     id: "idle-1",
     when: "idle",
+    episode: 1,
     speaker: "rathore",
     line: "Madam, aap sun rahi hain na?",
     english: "Madam, you're listening, aren't you?",
@@ -166,6 +167,7 @@ const cues: CallCue[] = [
   {
     id: "idle-2",
     when: "idle",
+    episode: 1,
     speaker: "rathore",
     line: "Case file khula hua hai, madam. Aaj raat close karna hai.",
     english: "The case file is open, madam. It has to be closed tonight.",
@@ -173,6 +175,7 @@ const cues: CallCue[] = [
   {
     id: "idle-3",
     when: "idle",
+    episode: 1,
     speaker: "rathore",
     line: "Paani pi lijiye. Main yahin hoon.",
     english: "Have some water. I'm right here.",
@@ -237,9 +240,31 @@ const events: LiveEvent[] = [
     id: "bank-dies",
     device: "hers",
     after: ["did:placed-him"],
-    delay: 6,
+    // Long enough to read the answer to Q4, and then the call comes back up:
+    // the last beat of the episode happens on it, not behind a case file.
+    delay: 10,
     app: "phone",
+    expands: true,
     sets: ["did:bank-dead"],
+  },
+  {
+    /* He has asked the dark whether she is still there. A moment, and then
+       the only thing the player is given to do with their hands. */
+    id: "plug-in",
+    device: "hers",
+    after: ["fired:cue-still-there"],
+    delay: 3,
+    app: "phone",
+    sets: ["did:needs-charge"],
+  },
+  {
+    // Cut at 1:11, there's nobody to ask; the phone just goes to 4%.
+    id: "plug-in-cut",
+    device: "hers",
+    after: ["did:bank-dead", "did:cut-early"],
+    delay: 4,
+    app: "phone",
+    sets: ["did:needs-charge"],
   },
   /* Cut at 1:11, the call rings back three times, and then stops
      (CHAPTER1.md F4). Nobody answers; the missed calls stay. */

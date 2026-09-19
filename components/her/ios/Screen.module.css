@@ -161,7 +161,8 @@
 .status {
   position: absolute;
   inset: 0 0 auto;
-  z-index: 30;
+  /* Above the call too: the blue pill round her clock is always visible. */
+  z-index: 65;
   height: var(--os-top);
   display: flex;
   align-items: flex-end;

@@ -1,5 +1,5 @@
 import type { CallCue, Flag, Story } from "@/content/types";
-import { has, storySeconds, type CaseState } from "./engine";
+import { all, episodeOf, has, storySeconds, type CaseState } from "./engine";
 
 /* ===========================================================================
    The call that never ends.
@@ -47,8 +47,13 @@ export function nextCue(story: Story, s: CaseState, spoken: readonly string[], i
   const opening = story.cues.find((c) => c.when === "open" && unspoken(c));
   if (opening) return opening;
 
-  const idle = story.cues.filter((c) => c.when === "idle");
-  return idle.length ? idle[idleTurn % idle.length] : null;
+  /* Idle lines belong to their episode, and some only make sense once a
+     stranger's voice has been on the line: those take over when they apply. */
+  const ep = episodeOf(s);
+  const idle = story.cues.filter((c) => c.when === "idle" && (!c.episode || c.episode === ep) && all(s, c.requires));
+  const specific = idle.filter((c) => c.requires?.length);
+  const pool = specific.length ? specific : idle;
+  return pool.length ? pool[idleTurn % pool.length] : null;
 }
 
 /** Is someone standing behind him right now? It changes what he can say. */

@@ -82,8 +82,11 @@ export const appLabel = (story: Story, app: AppId): string =>
 export const answered = (s: CaseState, id: string): boolean => has(s, `ask:${id}`);
 
 /** The one question in front of the player: first unanswered, this episode. */
-export const openQuestion = (story: Story, s: CaseState): Question | undefined =>
-  story.questions.find((q) => q.episode === episodeOf(s) && !answered(s, q.id));
+export function openQuestion(story: Story, s: CaseState): Question | undefined {
+  const q = story.questions.find((x) => x.episode === episodeOf(s) && !answered(s, x.id));
+  // The next question waits for its moment rather than being skipped past.
+  return q && all(s, q.requires) ? q : undefined;
+}
 
 export const normalise = (t: string): string =>
   t
@@ -92,6 +95,10 @@ export const normalise = (t: string): string =>
     .replace(/[^a-z0-9 ]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+
+/** The claims on a board: only what he actually read out, plus what is said to everyone. */
+export const claimsFor = (q: Extract<Question, { kind: "claims" }>, s: CaseState) =>
+  q.claims.filter((c) => !c.needs || exposed(s, c.needs));
 
 export type Answer = { readonly state: CaseState; readonly ok: boolean; readonly reply: string };
 
@@ -143,12 +150,13 @@ export function answer(story: Story, s: CaseState, id: string, given: readonly s
       /* A claim is only judged once what settles it has been looked at, so
          the board can't be passed by guessing (QA.md L5). What can't be
          reached — a transfer that never happened — needs no checking. */
-      const unchecked = q.claims.some((c) => {
+      const claims = claimsFor(q, s);
+      const unchecked = claims.some((c) => {
         const e = c.proof ? story.evidence.find((x) => x.id === c.proof) : undefined;
         return e !== undefined && reachable(s, e) && !seen(s, e.id);
       });
       if (unchecked) return { state: s, ok: false, reply: UNCHECKED };
-      const want = new Set(q.claims.filter((c) => c.trueWhen && all(s, c.trueWhen)).map((c) => c.id));
+      const want = new Set(claims.filter((c) => c.trueWhen && all(s, c.trueWhen)).map((c) => c.id));
       ok = picked.length === want.size && picked.every((p) => want.has(p));
       break;
     }

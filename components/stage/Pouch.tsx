@@ -18,6 +18,8 @@ import styles from "./Pouch.module.css";
    =========================================================================== */
 
 const TEAR = 0.55;
+/** How long the pouch takes to come apart before the note is on the table. */
+const TEAR_MS = 850;
 
 export default function Pouch({
   meta,
@@ -34,6 +36,7 @@ export default function Pouch({
   onOpen: () => void;
 }) {
   const [pull, setPull] = useState(0);
+  const [torn, setTorn] = useState(false);
   const from = useRef<number | null>(null);
   const done = useRef(false);
 
@@ -46,7 +49,9 @@ export default function Pouch({
     } catch {
       // A phone that won't buzz still opens.
     }
-    onOpen();
+    // The strip goes, the pouch opens, the phone comes up out of it; then the note.
+    setTorn(true);
+    window.setTimeout(onOpen, TEAR_MS);
   };
 
   const move = (x: number, width: number) => {
@@ -62,6 +67,7 @@ export default function Pouch({
       <ViewTransition name="found-phone" share="morph" default="none">
         <div
           className={styles.pouch}
+          data-torn={torn || undefined}
           style={{ "--pull": pull } as React.CSSProperties}
           onPointerDown={(e) => {
             from.current = e.clientX;
@@ -76,6 +82,8 @@ export default function Pouch({
           <span className={styles.strip} aria-hidden="true">
             PULL TO OPEN →
           </span>
+          {/* The phone inside, which rises out as the pouch comes open. */}
+          <span className={styles.inside} aria-hidden="true" />
           {/* A courier's delivery label: who it's for, where it came from, and
               the declaration line, which is where the content note and the
               promise live (PLAYER-JOURNEY Stage 1). */}

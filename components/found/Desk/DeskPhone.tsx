@@ -103,7 +103,7 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
             >
               {state.kind === "new" ? (
                 <span className={styles.pouch} aria-hidden="true">
-                  <span className={styles.pouchStrip}>PULL TO OPEN →</span>
+                  <span className={styles.pouchStrip}>TAP TO PICK UP</span>
                   <span className={styles.sticker}>
                     <b>FLAT —</b>
                     <span>PikDrop · 1:08 AM · Dadar East</span>

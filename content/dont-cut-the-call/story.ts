@@ -26,7 +26,9 @@ export const story: Story = {
   episodes: ["Call Mat Kaatna", "Delete for Everyone", "10:30"],
   clocks: [
     { base: "01:11", day: "Saturday", battery: 7 },
-    { base: "01:40", day: "Saturday", battery: 4 },
+    // The phone took its time coming back on the charger: Shaila has already
+    // written at 2:14 and 2:31, and Nikhil rings at 2:36 (PLAYTEST.md #46).
+    { base: "02:35", day: "Saturday", battery: 4 },
     { base: "10:29", day: "Saturday", battery: 61 },
   ],
   /* What a 64-year-old keeps on the first page, and what she keeps in the

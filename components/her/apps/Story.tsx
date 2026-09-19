@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
 import styles from "./Story.module.css";
+import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
    A neighbour's Instagram story, eleven hours from expiring: a cat on a
@@ -37,7 +38,7 @@ export default function Stories({
         <section key={s.id} className={styles.story}>
           <header className={styles.head}>
             <span className={styles.who}>{s.who}</span>
-            <span className={styles.expires}>{s.at} · expires in {s.expires}</span>
+            <span className={styles.expires}>{stamp(s.at)} · expires in {s.expires}</span>
           </header>
 
           <div className={styles.frame} aria-label={s.caption}>

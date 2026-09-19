@@ -37,11 +37,13 @@ export const evidence: Evidence[] = [
     requires: ["ep:2"],
     manual: true,
   },
-  { id: "terrace", device: "hers", app: "instagram", label: "A cat, a balcony, and two voices above it at 12:37", requires: ["ep:2"] },
+  // Heard, not opened: it counts once the volume is turned up on the story.
+  { id: "terrace", device: "hers", app: "instagram", label: "A cat, a balcony, and two voices above it at 12:37", requires: ["ep:2"], manual: true },
   { id: "detour", device: "hers", app: "pikdrop", label: "The bike stopped 14 minutes in Andheri East", requires: ["ep:2"] },
   { id: "shaila-asks", device: "hers", app: "whatsapp", label: "Shaila noticed the note change at 2:14 AM", requires: ["ep:2"] },
   { id: "real-note", device: "hers", app: "whatsapp", label: "Her real note: CUT THE CALL", requires: ["did:shaila-trusted"], manual: true },
-  { id: "profile", device: "hers", app: "settings", label: "A profile installed four minutes after the passcode went off", requires: ["ep:2"] },
+  // Found on its own page (Settings › VPN & Device Management), not by opening Settings.
+  { id: "profile", device: "hers", app: "settings", label: "A profile installed four minutes after the passcode went off", requires: ["ep:2"], manual: true },
   { id: "the-lakh", device: "hers", app: "messages", label: "₹1,00,000 left her account at 3:02 AM", requires: ["did:typed-password"], manual: true },
   // The trap, sprung: only FD receipts behind the password they watched you type.
   { id: "locked-note", device: "hers", app: "notes", label: "The locked note: FD receipts, and nothing else", requires: ["did:typed-password"], manual: true },
@@ -165,6 +167,7 @@ export const threads: Thread[] = [
     name: "Shaila (laughter club)",
     requires: ["did:shaila-trusted"],
     messages: [
+      { id: "sh-8b", from: "her", text: "6:15. Shivaji Park. She goes every morning.", at: "02:43", day: "Saturday" },
       {
         id: "sh-9",
         from: "them",
@@ -178,15 +181,23 @@ export const threads: Thread[] = [
         from: "them",
         at: "02:44",
         day: "Saturday",
-        attachment: { kind: "photo", label: "Her real note, photographed at 11:48 PM" },
+        /* Her convent cursive, in English, signed, with a line of Marathi
+           under it: everything the note in the pouch is not (CHAPTER1.md
+           Ep 2, beat 11). */
+        attachment: {
+          kind: "handwriting",
+          label: "Her real note, photographed at 11:48 PM",
+          lines: [
+            "॥ श्री ॥",
+            "Cut the call. They can see this phone.",
+            "Don't type anything into it.",
+            "Take it to the Cyber Police at BKC, not the local station.",
+            "Don't trust anything that looks like me.",
+          ],
+          sign: "— Vasundhara",
+          blessing: "सुखी रहा.",
+        },
         evidence: "real-note",
-      },
-      {
-        id: "sh-11",
-        from: "them",
-        text: "CUT THE CALL. THEY CAN SEE THIS PHONE. DON'T TYPE ANYTHING INTO IT. Cyber Police, BKC — not the local station. Don't trust anything that looks like me. — Vasundhara",
-        at: "02:44",
-        day: "Saturday",
       },
     ],
   },
@@ -239,13 +250,14 @@ export const callReplies: Reply[] = [
 export const incoming: IncomingCall[] = [
   {
     /* Her son, told by the police that his mother is dead and her phone is
-       missing, ringing his mother's phone at 1:34 in the morning. */
+       missing, ringing his mother's phone in the middle of the night. He
+       rings once the episode has settled, not the second it starts. */
     id: "nikhil",
     device: "hers",
     from: "Nikhil ❤️",
     sub: "mobile",
-    at: "01:34",
-    after: ["ep:2"],
+    at: "02:36",
+    after: ["ep:2", "did:nikhil-due"],
     // "Answer or not" (CHAPTER1.md Ep 2, beat 2). Declined, he doesn't ring back.
     lines: [
       { who: "Nikhil", line: "Aai? Aai, kaay zala?", english: "Aai? Aai, what happened?" },
@@ -258,13 +270,23 @@ export const incoming: IncomingCall[] = [
     ],
     reply: {
       id: "nikhil",
-      prompt: "His mother died half an hour ago.",
+      prompt: "His mother died two hours ago.",
       options: [
         {
           id: "truth",
           text: "It was delivered to my door at 1:11 AM. I don't know why. I'm trying to find out.",
           sets: ["did:nikhil-truth"],
           exposes: "nikhil",
+          then: [
+            {
+              id: "nk-t",
+              from: "them",
+              text: "Tumhare ghar…? Main pehli flight se aa raha hoon. Phone band mat karna. Please.",
+              english: "Your house…? I'm coming on the first flight. Don't switch the phone off. Please.",
+              at: "02:37",
+              day: "Saturday",
+            },
+          ],
         },
         {
           id: "police",
@@ -272,8 +294,23 @@ export const incoming: IncomingCall[] = [
           english: "I'm from the police. Come to the station in the morning.",
           sets: ["did:nikhil-lied"],
           exposes: "nikhil",
+          then: [
+            {
+              id: "nk-l",
+              from: "them",
+              text: "Kaunsa station? Hello? …Aai ka phone police ke paas kaise? Hello?",
+              english: "Which station? Hello? …How do the police have Aai's phone? Hello?",
+              at: "02:37",
+              day: "Saturday",
+            },
+          ],
         },
-        { id: "end", text: "End the call without speaking.", sets: ["did:nikhil-silent"] },
+        {
+          id: "end",
+          text: "End the call without speaking.",
+          sets: ["did:nikhil-silent"],
+          then: [{ id: "nk-s", from: "them", text: "Aai? Hello? Hello…", english: "Aai? Hello? Hello…", at: "02:37", day: "Saturday" }],
+        },
       ],
     },
     sets: ["did:nikhil-rang"],
@@ -284,9 +321,10 @@ export const questions: Question[] = [
   {
     kind: "claims",
     id: "how-died",
+    labels: ["true", "false"],
     ask: "Three versions of how she died. Which of them is true?",
     episode: 2,
-    whereToLook: ["news", "whatsapp", "messages", "phone"],
+    whereToLook: ["news", "messages", "phone", "photos"],
     hints: [
       "Each version says something you can check on this phone.",
       "The paper says ₹38 lakh. Her bank says something else. The society says she was being arrested — but look at who she rang at 9:48 PM.",
@@ -352,7 +390,7 @@ export const questions: Question[] = [
       ["note", "brother"],
     ],
     reply:
-      "No. She wrote: CUT THE CALL. THEY CAN SEE THIS PHONE. Somebody took that out in Andheri East and put in the note you have been obeying since 1:11 AM.",
+      "No. In her own hand she wrote: cut the call, they can see this phone. Somebody took that out in Andheri East and put in the note you have been obeying since 1:11 AM.",
     sets: ["did:note-is-theirs"],
   },
   {
@@ -367,8 +405,8 @@ export const questions: Question[] = [
       "Between 12:36 and 12:39 this phone was in Andheri East, and she was not with it. Every one of those was somebody else.",
     ],
     rows: [
-      { id: "gate", at: "00:21", text: "A man with a Crime Branch ID reaches her gate", lane: "her", evidence: "watchman" },
       { id: "pickup", at: "00:08", text: "The rider takes the parcel from the watchman", lane: "her", evidence: "booking" },
+      { id: "gate", at: "00:21", text: "A man with a Crime Branch ID reaches her gate", lane: "her", evidence: "watchman" },
       { id: "andheri", at: "00:31", text: "The bike stops in Andheri East, for fourteen minutes", lane: "phone", evidence: "detour" },
       { id: "reminder", at: "00:36", text: "A reminder is scheduled on this phone", lane: "phone", evidence: "lure" },
       { id: "deleted", at: "00:37", text: "Diary page six is deleted", lane: "phone", evidence: "list" },
@@ -380,6 +418,26 @@ export const questions: Question[] = [
     reply:
       "She was in Dadar until 12:40. Her phone was in Andheri East from 12:31. Everything this phone did in those four minutes was done by somebody else, in a room, with it in their hands.",
     sets: ["did:timeline"],
+  },
+  {
+    /* The last question of the night, and the one that points at Settings:
+       without it, nothing tells the player where Episode 2 ends
+       (PLAYTEST.md #51). */
+    kind: "pick",
+    id: "watching",
+    ask: "They knew every tap on this phone. How?",
+    episode: 2,
+    whereToLook: ["settings"],
+    hints: [
+      "Something on this phone was installed by somebody who isn't her.",
+      "Settings › VPN & Device Management. Look at when it was installed, and what she turned off just before.",
+      "\"RBI Secure KYC\", a management profile installed at 8:14 PM on Thursday, four minutes after the passcode went off. It has been sharing her screen ever since: that is the blue pill round her clock.",
+    ],
+    proof: ["profile", "passcode-off"],
+    orProof: [["profile", "apple-account"]],
+    reply:
+      "A management profile, installed four minutes after they talked her into turning off her passcode. The blue pill round her clock has been on since the first second. They have seen everything you opened.",
+    sets: ["did:found-profile"],
   },
 ];
 
@@ -394,9 +452,62 @@ export const cues: CallCue[] = [
   {
     id: "ep2-idle",
     when: "idle",
+    episode: 2,
     speaker: "rathore",
-    line: "Subah ho rahi hai, madam. Aaj hi settle karna hai.",
-    english: "It's getting light, madam. This has to be settled today.",
+    line: "Madam, raat lambi hai. Aaj hi settle karna hai.",
+    english: "The night is long, madam. This has to be settled today.",
+  },
+  {
+    // Someone unmuted, and it wasn't her. He can hear the room now too.
+    id: "heard-1",
+    when: "idle",
+    requires: ["did:unmuted"],
+    speaker: "rathore",
+    line: "Hello? Kaun hai? Madam kahan hain?",
+    english: "Hello? Who is this? Where is madam?",
+  },
+  {
+    id: "heard-2",
+    when: "idle",
+    requires: ["did:unmuted"],
+    speaker: "rathore",
+    line: "Aap… aap bol sakte ho. Main sun raha hoon.",
+    english: "You… you can speak. I'm listening.",
+    whisper: true,
+  },
+  {
+    /* Told she's dead: he breaks for two seconds, and the supervisor's
+       shadow comes back (CHAPTER1.md Ep 2, beat 1). */
+    id: "told-break",
+    when: "did:told-him",
+    speaker: "rathore",
+    line: "Nahi… nahi, woh…",
+    english: "No… no, she…",
+    whisper: true,
+  },
+  {
+    id: "told-back",
+    when: "did:told-him",
+    speaker: "rathore",
+    line: "MADAM, AAPKE NAAM PE WARRANT HAI. Camera on kijiye.",
+    english: "MADAM, THERE IS A WARRANT IN YOUR NAME. Turn the camera on.",
+    supervisorPresent: true,
+  },
+  {
+    id: "name-break",
+    when: "did:said-his-name",
+    speaker: "rathore",
+    line: "Ammi…? Aapko… kisne…",
+    english: "Mum…? Who… told you…",
+    whisper: true,
+  },
+  {
+    id: "name-back",
+    when: "did:said-his-name",
+    speaker: "supervisor",
+    line: "Kiska naam liya? Script padh.",
+    english: "Whose name was that? Read the script.",
+    supervisorPresent: true,
   },
   {
     id: "ep2-tanvi",
@@ -417,9 +528,19 @@ export const cues: CallCue[] = [
 
 export const events: LiveEvent[] = [
   {
+    /* Half a minute into the episode: long enough to hear the call ask about
+       the charger, short enough that nothing else has started. */
+    id: "nikhil-due",
+    device: "hers",
+    after: ["fired:title-2"],
+    delay: 25,
+    app: "phone",
+    sets: ["did:nikhil-due"],
+  },
+  {
     id: "good-morning",
     device: "hers",
-    after: ["did:timeline", "saw:profile"],
+    after: ["did:timeline", "ask:watching"],
     delay: 3,
     app: "settings",
     banner: "RBI Secure KYC · Good morning, #9.",

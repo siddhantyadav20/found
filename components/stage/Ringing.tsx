@@ -2,23 +2,46 @@
 
 import { useEffect, useState } from "react";
 
+import CallFeed from "@/components/call/CallFeed";
 import type { IncomingCall, ReplyOption } from "@/content/types";
 import { exposed, has, type CaseState } from "@/lib/game/engine";
+import { connected, ended, ringtone } from "@/lib/found/tones";
 import styles from "./Ringing.module.css";
 
 /* ===========================================================================
    A call arriving on its own.
 
    Twice in the chapter, and both times the player is holding a phone that is
-   not theirs: her son at 1:34 in the morning, and the Crime Branch at 10:30.
+   not theirs: her son in the middle of the night, and the Crime Branch at
+   10:30, on the player's own phone.
+
+   Drawn as iOS draws an incoming call: the caller's name high on the screen,
+   "mobile" under it, round buttons at the bottom with their words beneath,
+   and a ringtone until it's answered (PLAYTEST.md #36, #64). A video call
+   shows the video once answered: the arrest is a man in uniform with his
+   supervisor sitting in frame (#55).
 
    Her son can be declined, and then he doesn't ring back. The Crime Branch
    can't: there is no red button, only green, which is exactly what the real
    crime does to real people (CHAPTER1.md Ep 3, beat 4).
 
+   Whatever the player says, the other side answers before the line goes:
+   a son doesn't just hang up (#37).
+
    What the caller says can depend on the ledger: an accusation is only made
    when the player actually handed that thing over (CHAPTER1.md, twist 6).
    =========================================================================== */
+
+/** How long the answer to what was said stays before the call ends. */
+const REACTION_MS = 3400;
+
+function Glyph({ kind }: { kind: "answer" | "decline" }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={kind === "decline" ? styles.down : undefined}>
+      <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1Z" />
+    </svg>
+  );
+}
 
 export default function Ringing({
   call,
@@ -39,7 +62,15 @@ export default function Ringing({
 }) {
   const [answered, setAnswered] = useState(alreadyAnswered);
   const [said, setSaid] = useState(0);
+  const [chosen, setChosen] = useState<ReplyOption | null>(null);
+  const video = /video/i.test(call.sub ?? "");
   const lines = call.lines.filter((l) => (!l.needs || exposed(state, l.needs)) && (!l.when || has(state, l.when)));
+
+  // It rings until it's answered, or declined.
+  useEffect(() => {
+    if (answered) return undefined;
+    return ringtone();
+  }, [answered]);
 
   /* He talks. The player listens, the way a person under a digital arrest
      listens: one line at a time, with no way to hurry him. */
@@ -49,11 +80,33 @@ export default function Ringing({
     return () => window.clearTimeout(t);
   }, [answered, said, lines.length]);
 
+  // What was said gets its answer, and then the line goes.
+  useEffect(() => {
+    if (!chosen) return undefined;
+    const t = window.setTimeout(
+      () => {
+        ended();
+        onSay(chosen);
+      },
+      chosen.then?.length ? REACTION_MS : 400,
+    );
+    return () => window.clearTimeout(t);
+  }, [chosen, onSay]);
+
+  const reaction = chosen?.then?.[0];
+
   return (
-    <div className={styles.screen}>
-      <p className={styles.label} role="status">{answered ? "Call in progress" : "Incoming call"}</p>
-      <p className={styles.who}>{call.from}</p>
-      {call.sub && <p className={styles.sub}>{call.sub}</p>}
+    <div className={styles.screen} data-answered={answered || undefined}>
+      <div className={styles.head}>
+        <p className={styles.who}>{call.from}</p>
+        <p className={styles.sub}>{answered && video ? "WhatsApp video" : call.sub}</p>
+      </div>
+
+      {answered && video && (
+        <div className={styles.video}>
+          <CallFeed board="MUMBAI POLICE · CRIME BRANCH" clock="11:30" supervisor />
+        </div>
+      )}
 
       {answered ? (
         <div className={styles.lines} aria-live="polite">
@@ -65,17 +118,31 @@ export default function Ringing({
             </p>
           ))}
 
-          {said >= lines.length && !call.reply && call.dismiss && (
+          {chosen && (
+            <p className={styles.line} data-mine>
+              <span className={styles.speaker}>You</span>
+              <span>{chosen.text}</span>
+            </p>
+          )}
+          {reaction && (
+            <p className={styles.line}>
+              <span className={styles.speaker}>{call.from.replace(/\s*❤️/, "")}</span>
+              <span lang={reaction.english ? "hi-Latn" : undefined}>{reaction.text}</span>
+              {reaction.english && <span className={styles.english}>{reaction.english}</span>}
+            </p>
+          )}
+
+          {!chosen && said >= lines.length && !call.reply && call.dismiss && (
             <button type="button" className={styles.option} onClick={() => onSay({ id: "done", text: call.dismiss! })}>
               {call.dismiss}
             </button>
           )}
 
-          {said >= lines.length && call.reply && (
+          {!chosen && said >= lines.length && call.reply && (
             <div className={styles.say}>
               {call.reply.prompt && <p className={styles.prompt}>{call.reply.prompt}</p>}
               {call.reply.options.map((o) => (
-                <button key={o.id} type="button" className={styles.option} onClick={() => onSay(o)}>
+                <button key={o.id} type="button" className={styles.option} onClick={() => setChosen(o)}>
                   <span lang={o.english ? "hi-Latn" : undefined}>{o.text}</span>
                   {o.english && <span className={styles.english}>{o.english}</span>}
                 </button>
@@ -86,20 +153,28 @@ export default function Ringing({
       ) : (
         <div className={styles.buttons}>
           {onDecline && (
-            <button type="button" className={styles.decline} onClick={onDecline}>
-              Decline
-            </button>
+            <span className={styles.button}>
+              <button type="button" className={styles.decline} onClick={onDecline} aria-label="Decline">
+                <Glyph kind="decline" />
+              </button>
+              <span>Decline</span>
+            </span>
           )}
-          <button
-            type="button"
-            className={styles.answer}
-            onClick={() => {
-              setAnswered(true);
-              onAnswer();
-            }}
-          >
-            Answer
-          </button>
+          <span className={styles.button}>
+            <button
+              type="button"
+              className={styles.answer}
+              aria-label="Accept"
+              onClick={() => {
+                connected();
+                setAnswered(true);
+                onAnswer();
+              }}
+            >
+              <Glyph kind="answer" />
+            </button>
+            <span>Accept</span>
+          </span>
         </div>
       )}
     </div>

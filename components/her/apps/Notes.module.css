@@ -1,16 +1,19 @@
 /* Notes, in Notes' own yellow-on-dark, with her text size. */
 
-.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+/* One inset group, rows split by hairlines, Notes' yellow for anything tappable. */
+.folder { margin: 0 0 6px 4px; font-size: 20px; font-weight: 700; }
+
+.list { list-style: none; margin: 0; padding: 0; border-radius: 12px; overflow: hidden; background: var(--os-panel); }
+.list li + li .row { border-top: 0.5px solid rgb(255 255 255 / 10%); }
 
 .row {
   display: flex;
   flex-direction: column;
   gap: 3px;
   width: 100%;
-  padding: 12px 14px;
+  padding: 11px 16px;
   border: 0;
-  border-radius: 12px;
-  background: var(--os-panel);
+  background: none;
   color: var(--os-text);
   text-align: left;
   font: inherit;
@@ -18,9 +21,12 @@
 }
 
 .rowTitle { font-size: 16px; font-weight: 600; }
-.rowSub { font-size: 12px; color: var(--os-dim); }
+.rowSub { display: flex; gap: 8px; min-width: 0; font-size: 14px; }
+.rowWhen { flex: none; color: var(--os-text); opacity: 0.85; }
+.rowPreview { overflow: hidden; color: var(--os-dim); white-space: nowrap; text-overflow: ellipsis; }
+.count { margin: 14px 0 0; font-size: 12px; text-align: center; color: var(--os-dim); }
 
-.link { border: 0; background: none; color: var(--ios-blue); font: inherit; font-size: 15px; padding: 0 0 10px; cursor: pointer; }
+.link { border: 0; background: none; color: #e5b22a; font: inherit; font-size: 15px; padding: 0 0 10px; cursor: pointer; }
 
 .note { display: flex; flex-direction: column; gap: 8px; }
 .noteTitle { margin: 0; font-size: 21px; font-weight: 700; }

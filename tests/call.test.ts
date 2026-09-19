@@ -26,6 +26,18 @@ describe("the timer", () => {
 });
 
 describe("what he says next", () => {
+  it("keeps each episode's idle lines to that episode", () => {
+    const ep2 = add(start(), "ep:2");
+    const two = [0, 1, 2, 3].map((i) => nextCue(ep, ep2, ["open", "ep2-open"], i)?.id);
+    expect(two).not.toContain("idle-1");
+    expect(two).toContain("ep2-idle");
+  });
+
+  it("talks to the stranger once one has spoken", () => {
+    const heard = add(start(), "did:unmuted");
+    expect(nextCue(ep, heard, ["open"], 0)?.id).toMatch(/^heard-/);
+  });
+
   it("opens with the line he has been saying to an empty room", () => {
     expect(nextCue(ep, start(), [], 0)?.id).toBe("open");
   });
@@ -44,7 +56,8 @@ describe("what he says next", () => {
 
   it("idles in a fixed order, so two players see one performance", () => {
     const s = start();
-    const idles = ep.cues.filter((c) => c.when === "idle");
+    // Episode 1's own idle lines: it is not light outside at 1:13 AM.
+    const idles = ep.cues.filter((c) => c.when === "idle" && (!c.episode || c.episode === 1) && !c.requires);
     const turns = idles.map((_, i) => nextCue(ep, s, ["open"], i)?.id);
     // Every idle line, in the script's order, then round again from the top.
     expect(turns).toEqual(idles.map((c) => c.id));

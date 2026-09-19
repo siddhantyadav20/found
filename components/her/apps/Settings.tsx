@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { Flag, Story } from "@/content/types";
+import type { Flag, SettingsRow, Story } from "@/content/types";
 import { all, has, type CaseState } from "@/lib/game/engine";
 import app from "../ios/App.module.css";
 import { Chevron } from "../ios/AppBar";
@@ -105,18 +105,106 @@ const TILES: Record<string, { bg: string; glyph: React.ReactNode }> = {
   "Low Power Mode": { bg: GREEN, glyph: BATTERY },
 };
 
+/** A page one level down: a profile, what it is, and the one thing you can do about it. */
+function Detail({
+  row,
+  state,
+  onBack,
+  onAct,
+}: {
+  row: SettingsRow & { detail: NonNullable<SettingsRow["detail"]> };
+  state: CaseState;
+  onBack: () => void;
+  onAct?: (sets: readonly Flag[]) => void;
+}) {
+  const [asking, setAsking] = useState(false);
+  const done = row.action?.sets.every((f) => has(state, f));
+  const offered = Boolean(row.action && all(state, row.action.requires));
+  return (
+    <>
+      <button type="button" className={local.backLink} onClick={onBack} data-back>
+        <Chevron back /> Settings
+      </button>
+      <p className={app.groupLabel}>{row.detail.heading}</p>
+      <ul className={app.group}>
+        <li>
+          <div className={app.row}>
+            <Tile bg={GREY}>{PROFILE}</Tile>
+            <span className={app.rowMain}>
+              <span className={app.rowTitle}>{done ? "No profile installed" : row.detail.title}</span>
+            </span>
+          </div>
+        </li>
+        {!done &&
+          row.detail.rows.map((r) => (
+            <li key={r.label}>
+              <div className={app.row}>
+                <span className={app.rowMain}>
+                  <span className={app.rowTitle}>{r.label}</span>
+                </span>
+                <span className={app.rowMeta}>{r.value}</span>
+              </div>
+            </li>
+          ))}
+      </ul>
+      {!done && row.detail.footer && <p className={app.note}>{row.detail.footer}</p>}
+
+      {row.action && offered && !done && (
+        <ul className={app.group}>
+          <li>
+            {!asking ? (
+              <button type="button" className={`${app.row} ${local.danger}`} onClick={() => setAsking(true)}>
+                <span className={app.rowMain}>
+                  <span className={app.rowTitle}>{row.action.label}</span>
+                </span>
+              </button>
+            ) : (
+              <div className={local.confirm}>
+                <span>{row.action.confirm}</span>
+                <span className={local.confirmRow}>
+                  <button
+                    type="button"
+                    className={local.destructive}
+                    onClick={() => {
+                      onAct?.(row.action!.sets);
+                      setAsking(false);
+                    }}
+                  >
+                    {row.action.label}
+                  </button>
+                  <button type="button" className={local.cancel} onClick={() => setAsking(false)}>
+                    Cancel
+                  </button>
+                </span>
+              </div>
+            )}
+          </li>
+        </ul>
+      )}
+    </>
+  );
+}
+
 export default function Settings({
   story,
   state,
   onAct,
+  onRead,
 }: {
   story: Story;
   state: CaseState;
   onAct?: (sets: readonly Flag[]) => void;
+  /** Opening a page one level down is how what's on it gets found. */
+  onRead?: (ids: readonly string[]) => void;
 }) {
   const [asking, setAsking] = useState<string | null>(null);
+  const [page, setPage] = useState<string | null>(null);
   const [account, ...groups] = story.settings;
   const owner = account.rows[0];
+
+  const opened = groups.flatMap((g) => g.rows).find((r) => r.title === page);
+  if (opened?.detail)
+    return <Detail row={{ ...opened, detail: opened.detail }} state={state} onBack={() => setPage(null)} onAct={onAct} />;
 
   return (
     <>
@@ -127,9 +215,12 @@ export default function Settings({
             <Avatar name={owner.title} size="head" />
             <span className={app.rowMain}>
               <span className={s.profileName}>{owner.title}</span>
-              <span className={s.profileSub}>{owner.sub}</span>
+              {/* "2 devices" under her name, so the name keeps its line. */}
+              <span className={s.profileSub}>
+                {owner.sub}
+                {owner.value && ` · ${owner.value}`}
+              </span>
             </span>
-            {owner.value && <span className={app.rowMeta}>{owner.value}</span>}
           </div>
         </li>
       </ul>
@@ -157,7 +248,19 @@ export default function Settings({
                 );
                 return (
                   <li key={r.title}>
-                    {r.action && offered && !done ? (
+                    {r.detail ? (
+                      <button
+                        type="button"
+                        className={app.row}
+                        onClick={() => {
+                          setPage(r.title);
+                          if (r.evidence) onRead?.([r.evidence]);
+                        }}
+                      >
+                        {inner}
+                        <Chevron />
+                      </button>
+                    ) : r.action && offered && !done ? (
                       <button type="button" className={app.row} onClick={() => setAsking(r.title)}>
                         {inner}
                         <Chevron />
@@ -167,7 +270,7 @@ export default function Settings({
                     )}
 
                     {/* The one row that does something, and cannot be undone. */}
-                    {r.action && offered && asking === r.title && (
+                    {!r.detail && r.action && offered && asking === r.title && (
                       <div className={local.confirm}>
                         <span>{r.action.confirm}</span>
                         <span className={local.confirmRow}>

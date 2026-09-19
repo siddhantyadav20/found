@@ -1,0 +1,83 @@
+/* What WhatsApp's own stylesheet (ios/Chats.module.css) doesn't draw:
+   a voice note that plays its length, a photograph until the shoot, and a
+   page in her handwriting. */
+
+.voicePlay {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.wave {
+  flex: 1;
+  height: 18px;
+  background:
+    linear-gradient(90deg, #53bdeb 0 0) 0 0 / 0% 100% no-repeat,
+    repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 4px);
+  opacity: 0.6;
+  -webkit-mask: linear-gradient(0deg, transparent 20%, #000 20% 80%, transparent 80%);
+  mask: linear-gradient(0deg, transparent 20%, #000 20% 80%, transparent 80%);
+}
+
+.wave[data-playing] {
+  animation: listen var(--len, 10s) linear forwards;
+}
+
+@keyframes listen {
+  to {
+    background-size: 100% 100%, auto;
+  }
+}
+
+.photo {
+  display: grid;
+  place-items: end start;
+  width: 230px;
+  max-width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 10px;
+  border-radius: 8px;
+  background: radial-gradient(circle at 50% 35%, #6d5a48 0%, #2b221c 70%);
+  color: #f2ede6;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+/* Photographed on a table under a lamp: a little warm, a little crooked. */
+.paper {
+  display: grid;
+  gap: 4px;
+  width: 240px;
+  max-width: 100%;
+  padding: 16px 16px 14px;
+  border-radius: 4px;
+  background: #f4efe3;
+  color: #1c2340;
+  rotate: -1deg;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 30%);
+}
+
+.hand {
+  font-family: "Snell Roundhand", "Segoe Script", "Brush Script MT", "URW Chancery L", cursive;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.sign {
+  justify-self: end;
+  margin-top: 4px;
+  font-family: "Snell Roundhand", "Segoe Script", "Brush Script MT", "URW Chancery L", cursive;
+  font-size: 18px;
+}
+
+.blessing {
+  justify-self: end;
+  font-size: 14px;
+  color: #3a3f5c;
+}

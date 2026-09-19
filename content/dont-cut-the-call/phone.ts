@@ -99,7 +99,7 @@ export const threads: Thread[] = [
         at: "23:58",
         day: "Friday",
       },
-      { id: "n-5", from: "system", text: "Missed voice call · 11:58 PM", at: "23:58", day: "Friday" },
+      { id: "n-5", from: "system", text: "Voice call · No answer · 11:58 PM", at: "23:58", day: "Friday" },
     ],
   },
   {
@@ -220,7 +220,11 @@ export const threads: Thread[] = [
 ];
 
 export const calls: CallEntry[] = [
-  { id: "c-cb", name: "Mumbai Crime Branch", kind: "in", at: "17:38", day: "Thursday", seconds: 113_587, number: "+91 62901 77441" },
+  // The call itself: still running, so Recents says so rather than a length.
+  { id: "c-cb", name: "Mumbai Crime Branch", kind: "in", at: "17:38", day: "Thursday", number: "+91 62901 77441", ongoing: true },
+  // Her son, tonight, if he rang while the player held the phone.
+  { id: "c-nikhil-in", name: "Nikhil ❤️", kind: "in", at: "02:36", day: "Saturday", seconds: 41, requires: ["did:answered-nikhil"] },
+  { id: "c-nikhil-missed", name: "Nikhil ❤️", kind: "missed", at: "02:36", day: "Saturday", requires: ["did:declined-nikhil"] },
   {
     id: "c-1930",
     name: "1930",
@@ -297,8 +301,19 @@ export const settings: SettingsGroup[] = [
       { title: "Software Update", value: "iOS 26.2" },
       {
         title: "VPN & Device Management",
-        value: "1 profile",
-        sub: "RBI Secure KYC · installed Thursday, 8:14 PM",
+        /* One level down, the way iOS keeps it: the top of Settings says only
+           that a profile exists. What it is, and when it came, is Episode 2's
+           turn (PLAYTEST.md #14). */
+        detail: {
+          heading: "Mobile Device Management",
+          title: "RBI Secure KYC",
+          rows: [
+            { label: "Signed by", value: "Not verified" },
+            { label: "Installed", value: "Thursday, 8:14 PM" },
+            { label: "Contains", value: "Device Management, Screen Recording" },
+          ],
+          footer: "The administrator may collect personal data, add or remove accounts and restrictions, and see your screen.",
+        },
         evidence: "profile",
         /* The chapter's one irreversible act. Removing it blinds them, and
            tells them the player knows (CHAPTER1.md, Episode 3, beat 3). */
