@@ -153,3 +153,50 @@ export function EnvelopeCard({ label, said }: { label: readonly string[]; said?:
     </div>
   );
 }
+
+/** The First Minute: the question, over a call that has run 31 hours. Everything sits inside the middle square. */
+export function MinuteCard() {
+  return (
+    <div
+      style={{
+        ...ROOM,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 36,
+        padding: "60px 0",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: 190,
+          height: 400,
+          padding: "40px 0 44px",
+          borderRadius: 44,
+          border: "10px solid #1f1f21",
+          backgroundColor: "#050505",
+          color: "#f2ede6",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+          <div style={{ display: "flex", fontSize: 16, color: "rgba(242,237,230,0.6)" }}>Mumbai Crime Branch</div>
+          <div style={{ display: "flex", fontSize: 32, color: "#30d158" }}>31:33:07</div>
+        </div>
+        <div style={{ display: "flex", width: 64, height: 64, borderRadius: 32, backgroundColor: "#ff3b30" }} />
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 400 }}>
+        <div style={{ display: "flex", fontSize: 24, letterSpacing: 4, textTransform: "uppercase", color: "#ff8a3d" }}>
+          60 seconds
+        </div>
+        <div style={{ display: "flex", fontSize: 60, fontWeight: 700, lineHeight: 1.05 }}>Would you have cut the call?</div>
+        <div style={{ display: "flex", fontSize: 32, color: "rgba(242,237,230,0.72)" }}>Aap call kaatte?</div>
+      </div>
+    </div>
+  );
+}

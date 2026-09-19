@@ -137,6 +137,10 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
         <p>
           If any of this is close to home, Tele-MANAS is free and open all day: <a href="tel:14416">14416</a>.
         </p>
+        <p>
+          The people most likely to get this call won&apos;t play for forty minutes.{" "}
+          <Link href="/first-minute">There is a sixty-second version</Link> for your family group.
+        </p>
       </aside>
     </div>
   );

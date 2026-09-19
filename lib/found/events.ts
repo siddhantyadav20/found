@@ -84,6 +84,9 @@ export const DROP_LEGS: Readonly<Record<string, "arrive" | "open" | "unlock" | "
  *  plugged in, or the on-screen cable where the browser can't read a battery. */
 export const POWER = ["charge:real", "charge:already", "charge:tap"] as const;
 
+/** The First Minute (/first-minute): the 60-second opening built for family groups. */
+export const FIRST_MINUTE = ["minute:open", "minute:cut", "minute:stay", "minute:share", "minute:play"] as const;
+
 /** Never losing a case: case numbers, restores, starting over, and in-app browsers. */
 export const KEEPING = [
   "keep:number",
@@ -119,6 +122,7 @@ export function eventsFor(ep: Story): readonly string[] {
       ...SHARING,
       ...POWER,
       ...KEEPING,
+      ...FIRST_MINUTE,
     ];
     cache.set(ep, list);
   }

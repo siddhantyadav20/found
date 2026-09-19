@@ -255,6 +255,14 @@ the chapter. Its own route, its own OG image, its own share line, built to be
 forwarded into family WhatsApp groups. **This is the acquisition channel, not
 a marketing afterthought.**
 
+**Done (2026-09-19)** at `/first-minute`: tap the pouch, the call (captioned,
+timer running), the 1:11 alert with its shield, the whisper, the shouted
+script, then **Cut the call? / Call kaatenge?**. Either answer ends on the
+advice in English and Hinglish (cut, 1930, cybercrime.gov.in), a WhatsApp
+share ("60 seconds. Would you have cut the call?") and a link into the
+chapter. Its own share image fits WhatsApp's square crop; funnel events
+`minute:open|cut|stay|share|play`; linked from the desk and the end card.
+
 ---
 
 ## P11 — The real assets *(parallel, from P2)*
