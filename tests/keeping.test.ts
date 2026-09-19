@@ -189,3 +189,11 @@ describe("in-app browsers", () => {
     for (const e of KEEPING) expect(eventsFor(STORIES["dont-cut-the-call"])).toContain(e);
   });
 });
+
+describe("coming back after a gap (P9)", () => {
+  it("knows how long ago the player was last here, from the save's own record", () => {
+    const s = { ...newCase("t", 0), at: { last: 10 * 60_000 } };
+    expect(wasAway(s, 20 * 60_000)).toBe(false);
+    expect(wasAway(s, 10 * 60_000 + AWAY_MS)).toBe(true);
+  });
+});

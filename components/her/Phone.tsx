@@ -39,6 +39,8 @@ export type Notice = {
   time?: string;
   /** Whose icon it wears, when that isn't the app it opens. */
   icon?: AppId;
+  /** On a replay, its icon can be held and looked at closely (PLAYER-JOURNEY Stage 11). */
+  look?: boolean;
 };
 
 const CLOSE_MS = 300;
@@ -356,6 +358,7 @@ export default function Phone({
                     <button
                       type="button"
                       className={styles.notice}
+                      data-look={n.look || undefined}
                       onClick={() => {
                         setShade("closed");
                         onNotice(n);

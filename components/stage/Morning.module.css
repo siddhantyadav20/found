@@ -29,3 +29,14 @@
   color: #f0ebe3;
   cursor: pointer;
 }
+
+/* The same screen at night: coming back to a call that ran without you. */
+.morning[data-night] {
+  background: radial-gradient(circle at 50% 30%, #1b1d26 0%, #07080a 70%);
+  color: #efeae4;
+}
+
+.morning[data-night] .eyebrow,
+.morning[data-night] .sub { color: #8a847c; }
+.morning[data-night] .timer { color: #30d158; }
+.morning[data-night] .up { background: #efeae4; color: #07080a; }

@@ -26,7 +26,8 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { useNow } from "@/lib/found/now";
-import { readProgress } from "@/lib/found/progress";
+import { boundCase, readProgress } from "@/lib/found/progress";
+import { noteBattery } from "@/lib/found/shelf";
 import AppBody from "./AppBody";
 import { flag, give, nudged, save, say } from "./playthrough";
 import styles from "./Stage.module.css";
@@ -61,7 +62,18 @@ const WAITING: Notice[] = [
   { key: "cb", app: "whatsapp", from: "Mumbai Crime Branch", text: "Do din nahi hain, madam.", time: "Fri" },
 ];
 
-export default function Table({ story, meta, state }: { story: Story; meta: CaseMeta; state: CaseState }) {
+export default function Table({
+  story,
+  meta,
+  state,
+  replay,
+}: {
+  story: Story;
+  meta: CaseMeta;
+  state: CaseState;
+  /** Finished before: the ledger is counted live, and the first alert can be looked at closely. */
+  replay?: boolean;
+}) {
   const now = useNow(60_000);
   const [openApp, setOpenApp] = useState<AppId | null>(null);
   const [origin, setOrigin] = useState<Origin | null>(null);
@@ -160,6 +172,7 @@ export default function Table({ story, meta, state }: { story: Story; meta: Case
       key: e.id,
       app: e.app,
       icon: e.icon,
+      look: replay && e.id === "alert",
       from: bannerFrom(e.banner!),
       text: bannerText(e.banner!),
       time: "now",
@@ -171,6 +184,12 @@ export default function Table({ story, meta, state }: { story: Story; meta: Case
      the power bank still has something in it, 5% once the player knows she
      knew, 4% when it dies. The number is a clock the player can feel. */
   const percent = has(state, "did:bank-dead") ? 4 : has(state, "did:she-knew") ? 5 : battery(story, state);
+
+  // The desk draws her phone at the battery the player left it on.
+  useEffect(() => {
+    const id = boundCase();
+    if (id) noteBattery(id, percent);
+  }, [percent]);
 
   const call = cut ? null : (
     <LiveCall
@@ -200,6 +219,12 @@ export default function Table({ story, meta, state }: { story: Story; meta: Case
 
   return (
     <div className={phoneStyles.surface}>
+      {/* A clean run is a goal once you know what they collect. */}
+      {replay && (
+        <p className={phoneStyles.ledgerCount} aria-live="polite">
+          {state.ledger.length === 0 ? "They have nothing on you" : `They have ${state.ledger.length} on you`}
+        </p>
+      )}
       <div className={styles.table}>
         <Phone
           time={mumbai}

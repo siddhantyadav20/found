@@ -653,3 +653,70 @@
   font-size: 13px;
   color: #ff8a7a;
 }
+
+/* --- New: a sealed courier pouch that buzzes -------------------------------
+   The phone inside it is on a call, so the pouch shivers on the table the
+   way a phone in a bag does. Same object, same link, same morph into the
+   pouch the case page opens with. */
+
+.object[data-state="new"] {
+  height: 72%;
+  aspect-ratio: 5 / 7;
+}
+
+.object[data-state="new"] .phone {
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(118deg, rgb(255 255 255 / 4%) 0 5px, transparent 5px 11px),
+    linear-gradient(160deg, #c3bcae 0%, #a79f91 60%, #968e80 100%);
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.7),
+    inset 0 0 3rem rgb(0 0 0 / 12%);
+  /* A ring, not a notification: it keeps going, the way the call does. */
+  animation: buzz 1.6s ease-in-out 0.7s infinite;
+}
+
+.pouch {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.pouchStrip {
+  position: absolute;
+  inset: 0 0 auto 0;
+  padding: 7px 0;
+  background: #d9d3c6;
+  color: #55504a;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+.sticker {
+  position: absolute;
+  inset: auto 9% 8% 9%;
+  display: grid;
+  gap: 4px;
+  padding: 10px 11px;
+  background: #f4f0e8;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 22%);
+  rotate: 1.5deg;
+  text-align: left;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 9px;
+  line-height: 1.35;
+  color: #4b4741;
+}
+
+.sticker b {
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: #17161a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .object[data-state="new"] .phone { animation: none; }
+}

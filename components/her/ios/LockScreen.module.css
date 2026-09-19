@@ -400,3 +400,8 @@
   margin: 2px 0 0;
   font-size: 17px;
 }
+
+/* On a replay, hold the first notification to see its icon up close. */
+.note[data-look] .noteIcon { transition: scale 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1); transform-origin: left center; }
+.note[data-look]:hover .noteIcon,
+.note[data-look]:active .noteIcon { scale: 2.4; position: relative; z-index: 2; }

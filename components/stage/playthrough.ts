@@ -12,6 +12,7 @@ import { track } from "@/lib/found/track";
    three things happen on every save without anybody remembering to:
 
    - the episode's start is stamped, so its clock begins at its own base
+   - the moment is kept as `at.last`, so coming back after a gap is noticed
    - each flag that means something is reported to the funnel, once
    - nothing works from a stale copy of the save
 
@@ -21,7 +22,8 @@ import { track } from "@/lib/found/track";
 export function save(next: CaseState): void {
   const before = readProgress();
   const now = Date.now();
-  const stamped = stamp(next, now);
+  // When the player was last here, so a return after a real gap is noticed.
+  const stamped = { ...stamp(next, now), at: { ...next.at, last: now } };
   commit(stamped);
 
   const id = boundCase();

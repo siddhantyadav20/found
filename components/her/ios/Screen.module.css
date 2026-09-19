@@ -695,3 +695,25 @@
   color: #fff;
   font-variant-numeric: tabular-nums;
 }
+
+/* A replay's second look: hold the first notification and its icon comes up
+   close enough to see whose it really is. */
+.notice[data-look] .noticeIcon { transition: scale 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1); transform-origin: left center; }
+.notice[data-look]:hover .noticeIcon,
+.notice[data-look]:active .noticeIcon { scale: 2.4; position: relative; z-index: 2; }
+
+/* The ledger, counted live on a replay: outside the fiction, and small. */
+.ledgerCount {
+  position: fixed;
+  left: 50%;
+  bottom: calc(26px + env(safe-area-inset-bottom));
+  z-index: 40;
+  translate: -50% 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 55%);
+  color: #f2f2f7;
+  font: 600 11px/1.2 var(--font-ui), system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}

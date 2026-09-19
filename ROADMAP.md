@@ -234,6 +234,17 @@ only after 50 finishes; the drawn scenes wait for P11's footage.
 | Resume | Exact-screen resume including the call window and its timer; "You slept" when returning after a real gap |
 | Replay state | Torn pouch, a postmark, the live ledger counter, and zoom permitted on the status bar and the first notification |
 
+**Done (2026-09-19).** The desk's live object is the sealed courier pouch,
+buzzing because the phone inside is on a call, and it morphs into the case
+page's pouch. The label is a delivery label (Contains / Declared), the drag
+is the way in with a quiet fallback, and sound is the phone's ring/silent
+switch on the note screen. Every save records `at.last`; coming back after
+30 minutes shows "You put it down … The call didn't stop." with the timer.
+A replay gets a postmark, the live "They have N on you" counter, and a held
+second look at the 1:11 alert's icon. Not done: a zoomable status bar on
+replay, and the desk's torn-pouch state (a finished case still shows the
+evidence bag).
+
 ---
 
 ## P10 — The First Minute

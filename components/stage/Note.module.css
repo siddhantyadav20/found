@@ -4,8 +4,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 1.1rem;
+  min-height: 100dvh;
+  padding: 2rem 1rem calc(2rem + env(safe-area-inset-bottom));
   text-align: center;
+  color: #efeae4;
+  background: radial-gradient(circle at 50% 35%, #1d1a17 0%, #0b0b0c 70%);
 }
 
 .paper {
@@ -92,4 +97,34 @@
   background: #e8843c;
   color: #14100c;
   cursor: pointer;
+}
+
+/* The ring/silent switch on the phone's side: orange when silent, as on an iPhone. */
+.facedown { position: relative; }
+
+.ringer {
+  position: absolute;
+  top: 1.3rem;
+  left: -0.35rem;
+  width: 0.5rem;
+  height: 1.1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.2rem;
+  background: #ff8a1f;
+  box-shadow: 0 0 0 0.12rem #26272b;
+  cursor: pointer;
+}
+
+.ringer[data-on] { background: #4a4c52; }
+
+.ringer:focus-visible { outline: 2px solid #efeae4; outline-offset: 3px; }
+
+/* A finger-sized target around a thin switch. */
+.ringer::after { content: ""; position: absolute; inset: -0.8rem -0.9rem; }
+
+.ringerNote {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  color: #8d8781;
 }

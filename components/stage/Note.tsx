@@ -1,5 +1,8 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
+
+import { setSoundOn, soundOn, soundOnServerSide, subscribeSound } from "@/lib/sound";
 import styles from "./Note.module.css";
 
 /* ===========================================================================
@@ -9,9 +12,13 @@ import styles from "./Note.module.css";
    know anything at all (PLAYER-JOURNEY law 1). Block capitals, ballpoint,
    Roman Hinglish, one word misspelled. A 64-year-old Marathi woman who
    spent 32 years in a bank did not write this, and nobody notices tonight.
+
+   Sound is offered here, in the fiction, as the phone's own ring/silent
+   switch on its side: never a modal, and before the call begins.
    =========================================================================== */
 
 export default function Note({ onTurn }: { onTurn: () => void }) {
+  const ringing = useSyncExternalStore(subscribeSound, soundOn, soundOnServerSide);
   return (
     <div className={styles.wrap}>
       <div className={styles.paper}>
@@ -22,7 +29,17 @@ export default function Note({ onTurn }: { onTurn: () => void }) {
       </div>
 
       <div className={styles.kit}>
-        <span className={styles.facedown} aria-hidden="true" />
+        <span className={styles.facedown}>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={ringing}
+            aria-label={ringing ? "Ringer on. Flip to silent." : "Silent. Flip to ring."}
+            className={styles.ringer}
+            data-on={ringing || undefined}
+            onClick={() => setSoundOn(!ringing)}
+          />
+        </span>
         <span className={styles.bank} aria-hidden="true">
           <span className={styles.led} />
         </span>
@@ -30,6 +47,7 @@ export default function Note({ onTurn }: { onTurn: () => void }) {
       <p className={styles.caption}>
         A phone, face-down, taped to a power bank. One light still on it.
       </p>
+      <p className={styles.ringerNote}>{ringing ? "Its ringer is on." : "It's on silent. Flip the switch on its side to hear it."}</p>
 
       <button type="button" className={styles.turn} onClick={onTurn}>
         Turn it over

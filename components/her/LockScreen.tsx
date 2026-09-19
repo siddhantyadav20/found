@@ -88,7 +88,7 @@ export default function LockScreen({
         </span>
         <span className={styles.notes}>
           {notes.map((n) => (
-            <span key={n.key} className={styles.note}>
+            <span key={n.key} className={styles.note} data-look={n.look || undefined}>
               <span className={styles.noteIcon}>
                 <AppGlyph app={n.icon ?? n.app} />
               </span>

@@ -20,6 +20,5 @@ export const meta: Omit<CaseMeta, "teaser"> = {
 export const teaser = [
   { from: "Mumbai Crime Branch", text: "Madam, camera on kijiye." },
   { from: "Shanti Kunj CHS", text: "Ambulance aayi hai. Kya hua?" },
-  { from: "Maa ❤️ Nikhil", text: "Aai, call later. Meeting 🙏" },
-  { from: "Unknown", text: "Good morning, #9." },
+  { from: "Nikhil ❤️", text: "Missed call" },
 ] as const;

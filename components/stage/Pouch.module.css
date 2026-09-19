@@ -92,11 +92,55 @@
 
 .open {
   font-family: var(--font-ui);
-  font-size: 0.8rem;
-  padding: 0.6rem 1.1rem;
-  border-radius: 999px;
-  border: 1px solid #3a3733;
-  background: #17181b;
-  color: #e9e5df;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.4rem;
+  border: 0;
+  background: none;
+  color: #8d8781;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
+}
+
+/* The strip asks to be pulled: a small tug every few seconds until it is. */
+.strip {
+  animation: tug 3.2s ease-in-out 1.2s infinite;
+}
+
+.pouch:active .strip {
+  animation: none;
+}
+
+@keyframes tug {
+  0%, 70%, 100% { translate: 0 0; }
+  78% { translate: 8% 0; }
+  86% { translate: 0 0; }
+}
+
+.note b {
+  font-weight: 600;
+  color: #17161a;
+}
+
+/* A second delivery: the courier's stamp, slightly crooked, over the label. */
+.postmark {
+  position: absolute;
+  top: -1.6rem;
+  right: -0.6rem;
+  padding: 0.35rem 0.5rem;
+  border: 2px solid #9b2d2d;
+  border-radius: 0.3rem;
+  font-family: var(--font-ui);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-align: center;
+  color: #9b2d2d;
+  rotate: -9deg;
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strip { animation: none; }
 }

@@ -1,14 +1,19 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { useCase } from "@/components/found/StoryContext";
 import { add, clockNow, has, newCase } from "@/lib/game/engine";
 import { PLUGGED_IN, sceneOf } from "@/lib/game/scene";
+import { AWAY_MS } from "@/lib/found/keeping";
 import { useNow } from "@/lib/found/now";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
+import { useReplay } from "@/lib/found/shelf";
+import type { CaseId } from "@/content/cases";
+import { track } from "@/lib/found/track";
 import Charge from "./Charge";
 import Aftermath from "./ending/Aftermath";
+import Away from "./Away";
 import Choice from "./ending/Choice";
 import EndCard from "./ending/EndCard";
 import InAppGuard from "./InAppGuard";
@@ -37,8 +42,30 @@ export default function Stage() {
 
   const state = useSyncExternalStore(subscribeProgress, readProgress, () => null);
   const now = useNow(60_000);
+  const replay = useReplay(id as CaseId);
 
   const scene = sceneOf(story, state);
+
+  /* Opened after a real gap: when they were last here, read once per visit. */
+  const [away, setAway] = useState<number | null>(() => {
+    const s = readProgress();
+    if (!s) return null;
+    const last = Math.max(s.started, ...Object.values(s.at));
+    return Date.now() - last >= AWAY_MS ? last : null;
+  });
+  const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "choice" || scene.kind === "charge";
+  if (state && away !== null && midCase)
+    return (
+      <Away
+        story={story}
+        state={state}
+        last={away}
+        onBack={() => {
+          track({ case: id, event: "resume", via: state.via });
+          setAway(null);
+        }}
+      />
+    );
 
   if (!state || scene.kind === "pouch") {
     return (
@@ -50,6 +77,7 @@ export default function Stage() {
           meta={meta}
           to={to}
           minutes={minutes}
+          replay={replay}
           onOpen={() => save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened"))}
         />
         <InAppGuard />
@@ -109,5 +137,5 @@ export default function Stage() {
     }
   }
 
-  return <Table story={story} meta={meta} state={state} />;
+  return <Table story={story} meta={meta} state={state} replay={replay} />;
 }

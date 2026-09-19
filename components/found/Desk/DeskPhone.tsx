@@ -10,8 +10,6 @@ import { enterFullscreen } from "@/lib/found/platform";
 import { useArrivals, useYourCases } from "@/lib/found/shelf";
 import styles from "./Desk.module.css";
 
-/** How many of the teaser's notifications land on the desk phone. */
-const SHOWN = 4;
 /** Holding the phone this long shows its luggage tag instead of picking it up. */
 const HOLD_MS = 450;
 const TAG_MS = 3500;
@@ -32,15 +30,16 @@ function captionOf(state: DeskState, meta: CaseMeta, now: number): { hint: strin
         small: state.again ? "Someone else goes missing next time." : "Bagged, tagged, and still on your desk.",
       };
     default:
-      return { hint: meta.hint, cta: "Pick it up", small: "More are being found." };
+      return { hint: meta.hint, cta: meta.cta, small: "More are being found." };
   }
 }
 
 /**
- * The phone on the desk, as this browser left it. The server draws it new
- * (buzzing, notifications landing); once the browser can read the save it
- * becomes yours: mid-case with your battery, charging between episodes, or
- * sealed in an evidence bag with its tag once it's solved.
+ * The one live thing on the desk, as this browser left it. The server draws
+ * it new: a sealed courier pouch that buzzes, because the phone inside it is
+ * on a call (PLAYER-JOURNEY Stage 1). Once the browser can read the save it
+ * becomes yours: her phone mid-case with its battery, charging between
+ * episodes, or sealed in an evidence bag with its tag once it's solved.
  *
  * Hover (or hold, on a touch screen) shows its luggage tag: how many
  * episodes, how long, what kind of story. Picking it up morphs it into the
@@ -102,6 +101,16 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
               onPointerLeave={release}
               onContextMenu={(e) => e.preventDefault()}
             >
+              {state.kind === "new" ? (
+                <span className={styles.pouch} aria-hidden="true">
+                  <span className={styles.pouchStrip}>PULL TO OPEN →</span>
+                  <span className={styles.sticker}>
+                    <b>FLAT —</b>
+                    <span>PikDrop · 1:08 AM · Dadar East</span>
+                    <span>{meta.note}</span>
+                  </span>
+                </span>
+              ) : (
               <span className={styles.screen}>
                 {state.kind === "between" ? (
                   <span className={styles.charging} aria-hidden="true">
@@ -120,27 +129,21 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
                         {battery}%
                       </span>
                     )}
-                    <span className={styles.time}>08:10</span>
+                    <span className={styles.time}>{state.kind === "solved" ? "10:41" : "1:11"}</span>
                     <span className={styles.notes}>
-                      {state.kind === "playing" ? (
+                      {state.kind === "playing" && (
                         <span className={styles.note} style={{ "--i": 0 } as React.CSSProperties}>
-                          <b>Case file</b>
+                          <b>Mumbai Crime Branch</b>
                           <span>
                             Episode {state.episode} · the call is still running
                           </span>
                         </span>
-                      ) : state.kind === "new" ? (
-                        meta.teaser.slice(0, SHOWN).map((n, i) => (
-                          <span key={n.text} className={styles.note} style={{ "--i": i } as React.CSSProperties}>
-                            <b>{n.from}</b>
-                            <span>{n.text}</span>
-                          </span>
-                        ))
-                      ) : null}
+                      )}
                     </span>
                   </>
                 )}
               </span>
+              )}
             </Link>
           </ViewTransition>
 
