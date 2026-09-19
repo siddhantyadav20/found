@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 
+import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
 import { add, clockNow, has, newCase } from "@/lib/game/engine";
 import { PLUGGED_IN, sceneOf } from "@/lib/game/scene";
@@ -81,6 +82,8 @@ export default function Stage() {
           onOpen={() => save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened"))}
         />
         <InAppGuard />
+        {/* Private browsing: say so before the night starts, and offer a case number. */}
+        <StorageWarning caseId={id as CaseId} />
       </div>
     );
   }

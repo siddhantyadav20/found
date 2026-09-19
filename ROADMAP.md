@@ -292,6 +292,22 @@ placeholder and its status.
   exactly one place
 - A full QA walk of all three endings plus the cut-the-call branch
 
+**Done in code (2026-09-19):** `tests/chapter.test.ts` holds the chapter to
+its promises: three hints and two ways into every question, no evidence
+filed twice or unreachable, and a **clean run** played by a solver from the
+pouch to all three end cards with **zero ledger entries**. It found and fixed
+four content slips (a one-route question, a stray `locked-note`, a
+double-filed `last-call-son`, an unseeable `removed`). The budget now
+measures every landing route whole (`/` 150KB, `/c/[case]` 193KB,
+`/first-minute` 141KB gzipped). Reduced motion covers CSS and the phone's JS
+transitions (the global `!important` rule); the private-browsing warning is
+back under the pouch; captions carry every spoken line. The endings and the
+cut-the-call branch were walked in the browser.
+
+**Still needs a person or a device:** a mid-range Android for 60 fps and a
+2 s first paint on 4G; video degradation once there is video (P11); and a
+full human playthrough, start to finish, on a phone.
+
 ---
 
 ## What only Siddhant can do

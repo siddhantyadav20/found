@@ -27,6 +27,7 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { gzipSync } from "node:zlib";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -65,6 +66,12 @@ const BUDGET = {
    * unwatched — it just does not eat this budget.
    */
   homepageJs: 480,
+  /**
+   * Every route a player lands on, in KB uncompressed: the layout's chunks
+   * plus the page's own (ROADMAP P12). Measured 2026-09-19 at 495 / 646 /
+   * 472; the case page is the whole phone, both episodes' apps and the call.
+   */
+  routes: { "/": 540, "/c/[case]": 700, "/first-minute": 520 },
   /** The largest single file allowed in `public/`, in KB. */
   asset: 1200,
   /**
@@ -144,6 +151,49 @@ if (js !== null) {
       `polyfills     ${(js.polyfill / KB).toFixed(0)}KB (noModule — not sent to any supported browser)`,
     );
   }
+}
+
+/* --- 1b. Every route a player lands on ------------------------------------
+   The homepage number above counts only the layout's chunks. A player pays
+   for the page's own too, so each landing route is measured whole: the
+   layout's files plus the page's client entries, deduplicated, with the
+   gzipped size printed beside it because that is what a 4G phone downloads. */
+
+function routeJs(route) {
+  const seg = route === "/" ? "page" : `${route.slice(1)}/page`;
+  const dir = join(ROOT, ".next");
+  const manifest = join(dir, "server", "app", seg, "build-manifest.json");
+  const refs = join(dir, "server", "app", `${seg}_client-reference-manifest.js`);
+  if (!existsSync(manifest) || !existsSync(refs)) {
+    failures.push(`No build output for ${route}: run \`next build\`, or update this check if Next's layout changed.`);
+    return null;
+  }
+  const scope = {};
+  new Function("globalThis", readFileSync(refs, "utf8"))(scope);
+  const client = Object.values(scope.__RSC_MANIFEST ?? {})[0] ?? {};
+  const files = new Set([
+    ...(JSON.parse(readFileSync(manifest, "utf8")).rootMainFiles ?? []),
+    ...Object.values(client.entryJSFiles ?? {}).flat(),
+  ]);
+  let raw = 0;
+  let gz = 0;
+  for (const file of files) {
+    const at = join(dir, file);
+    if (!existsSync(at)) continue;
+    const buf = readFileSync(at);
+    raw += buf.length;
+    gz += gzipSync(buf).length;
+  }
+  return { raw, gz };
+}
+
+for (const [route, limit] of Object.entries(BUDGET.routes)) {
+  const size = routeJs(route);
+  if (!size) continue;
+  const kb = size.raw / KB;
+  const line = `${route.padEnd(14)}${kb.toFixed(0)}KB / ${limit}KB  (${(size.gz / KB).toFixed(0)}KB gzipped)`;
+  if (kb > limit) failures.push(line);
+  else notes.push(line);
 }
 
 /* --- 2. Everything the browser can fetch ----------------------------------- */

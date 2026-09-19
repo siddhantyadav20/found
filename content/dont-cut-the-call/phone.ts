@@ -98,7 +98,6 @@ export const threads: Thread[] = [
         english: "Nikhil, I wanted to ask you something. It's important.",
         at: "23:58",
         day: "Friday",
-        evidence: "last-call-son",
       },
       { id: "n-5", from: "system", text: "Missed voice call · 11:58 PM", at: "23:58", day: "Friday" },
     ],
@@ -306,7 +305,8 @@ export const settings: SettingsGroup[] = [
         action: {
           label: "Remove Management",
           confirm: "Removing this profile will stop the screen being shared. Whoever is watching will know you did it.",
-          sets: ["did:removed-profile"],
+          // Doing it is how it's found: the case file records it at once.
+          sets: ["did:removed-profile", "saw:removed"],
           done: "Removed",
           // Not before "Good morning, #9.": until then nobody knows who is watching.
           requires: ["ep:3"],

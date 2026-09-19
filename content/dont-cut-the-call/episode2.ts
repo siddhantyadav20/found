@@ -43,6 +43,8 @@ export const evidence: Evidence[] = [
   { id: "real-note", device: "hers", app: "whatsapp", label: "Her real note: CUT THE CALL", requires: ["did:shaila-trusted"], manual: true },
   { id: "profile", device: "hers", app: "settings", label: "A profile installed four minutes after the passcode went off", requires: ["ep:2"] },
   { id: "the-lakh", device: "hers", app: "messages", label: "₹1,00,000 left her account at 3:02 AM", requires: ["did:typed-password"], manual: true },
+  // The trap, sprung: only FD receipts behind the password they watched you type.
+  { id: "locked-note", device: "hers", app: "notes", label: "The locked note: FD receipts, and nothing else", requires: ["did:typed-password"], manual: true },
 ];
 
 export const photos: Photo[] = [
@@ -323,10 +325,12 @@ export const questions: Question[] = [
     whereToLook: ["photos", "pikdrop"],
     hints: [
       "Something was deleted from her phone at 12:37 AM. It is still in the bin.",
-      "Recover page six of her diary, then read the PikDrop booking again.",
+      "Recover page six of her diary, then read the PikDrop booking again, or the label on the pouch that came to your door.",
       "Row nine of tomorrow's list has no phone number, only an address — and it is the address she sent this phone to at 11:52 PM. You.",
     ],
     proof: ["list", "booking"],
+    // Row nine's address is on the booking, and on the pouch in your hands.
+    orProof: [["list", "note"]],
     reply:
       "Because you were the only one she could not call. Nine names on tomorrow's list, and yours is the one with no number beside it. Ten thirty this morning.",
     sets: ["did:number-nine"],

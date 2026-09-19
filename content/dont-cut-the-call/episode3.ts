@@ -16,7 +16,7 @@ import type { CallCue, Evidence, IncomingCall, LiveEvent, Message, Question, Thr
 export const evidence: Evidence[] = [
   { id: "published", device: "hers", app: "news", label: "The real article, published at 6:42 AM", requires: ["ep:3"] },
   { id: "dsouza", device: "hers", app: "whatsapp", label: "A thank-you to a woman who died at midnight", requires: ["ep:3"] },
-  { id: "removed", device: "hers", app: "settings", label: "You removed the profile that was watching", requires: ["did:removed-profile"], manual: true },
+  { id: "removed", device: "hers", app: "settings", label: "You removed the profile that was watching", requires: ["did:removed-profile"] },
 ];
 
 /** What arrived while the player slept. */
