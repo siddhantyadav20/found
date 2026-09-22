@@ -108,13 +108,11 @@ export async function estimatedMinutes(caseId: CaseId): Promise<number | undefin
    for a percentage to mean something. Read by the end card. */
 
 export type Choices = {
-  /** Which ending everyone who finished chose, in percent. */
-  end: { police: number; bin: number; friend: number } | null;
+  /** Which ending everyone who finished chose, in percent, by ending id. */
+  end: Record<string, number> | null;
   /** The share of recent finishes slower than `seconds`. */
   fasterThan: number | null;
 };
-
-const ENDS = ["police", "bin", "friend"] as const;
 
 /** Whole percentages of `counts`, or null under `MIN_ANSWERS`. */
 export function percentages<K extends string>(counts: Record<K, number>): Record<K, number> | null {
@@ -131,7 +129,9 @@ export function fasterThan(times: readonly number[], seconds: number | undefined
 
 export async function readChoices(caseId: CaseId, seconds: unknown): Promise<Choices> {
   if (!redisReady()) return { end: null, fasterThan: null };
-  const results = await redis(...ENDS.map((e) => ["GET", `${prefix(caseId)}:end:${e}`]));
-  const end = Object.fromEntries(ENDS.map((e, i) => [e, asCount(results[i])])) as Record<(typeof ENDS)[number], number>;
+  const ends = STORIES[caseId].endings.map((e) => e.id);
+  if (!ends.length) return { end: null, fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)) };
+  const results = await redis(...ends.map((e) => ["GET", `${prefix(caseId)}:end:${e}`]));
+  const end = Object.fromEntries(ends.map((e, i) => [e, asCount(results[i])]));
   return { end: percentages(end), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)) };
 }

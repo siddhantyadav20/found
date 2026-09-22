@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
-import { all, seen, type CaseState } from "@/lib/game/engine";
+import { all, dayNow, seen, type CaseState } from "@/lib/game/engine";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { Chevron } from "../ios/AppBar";
@@ -11,16 +11,14 @@ import styles from "../ios/Chats.module.css";
 import local from "./Chat.module.css";
 
 /* ===========================================================================
-   WhatsApp, as a phone in Mumbai really has it: pinned chats at the top, a
-   society group nobody can leave, 3,412 unread good mornings, and one chat
-   that is a police station pretending to be a person.
+   WhatsApp, as an Indian phone really has it: pinned chats at the top,
+   groups with many senders, unread counts, and whatever the chapter needs.
 
    Drawn on the pilot's WhatsApp (commit 8cc2907): a list with its own bar,
    a large "Chats" title and the tab bar; a conversation with the contact in
-   its header. Everything a message can be is here because the story needs
-   each one: a document (the warrant), a voice note (hers, the only recording
-   of her), a photograph (Sahil), her own handwriting (the real note), a
-   message deleted for everyone, a forward.
+   its header. A message can be a document, a voice note, a photograph,
+   somebody's handwriting, a message deleted for everyone, or a forward
+   (ROADMAP S4 adds video, archived chats and the one grey tick).
 
    Somebody answering takes a moment, and says so ("typing…"): replies are
    revealed one at a time, never all at once (PLAYTEST.md #47).
@@ -133,8 +131,7 @@ function Bubble({ m }: { m: Message }) {
             </span>
           )}
 
-          {/* Her own hand on paper: cursive, sentence case, signed. Nothing
-              like the block capitals in the pouch, which is the point. */}
+          {/* Somebody's own hand on paper, photographed and sent. */}
           {a?.kind === "handwriting" && (
             <span className={local.paper} role="img" aria-label={`${a.label}: ${a.lines.join(" ")} ${a.sign ?? ""}`}>
               {a.lines.map((l, i) => (
@@ -202,8 +199,8 @@ function Conversation({
   }, [shown]);
 
   /* Anything on screen counts as found, including what arrives while the
-     player is still sitting in the chat: that is how Shaila's note reaches
-     them. Nothing counts before it has been shown. */
+     player is still sitting in the chat. Nothing counts before it has been
+     shown. */
   const visible = messages
     .slice(0, shown)
     .map((m) => m.evidence)
@@ -293,8 +290,8 @@ export default function Chat({
   const [open, setOpen] = useState<string | null>(null);
   const live = story.threads.filter((t) => t.app === app && all(state, t.requires));
 
-  /* Two entries with the same name are one chat: Episode 2 adds messages to
-     Shaila rather than a second Shaila. */
+  /* Two entries with the same name are one chat: a later episode adds
+     messages to a thread rather than opening a second one. */
   const threads = live.reduce<Thread[]>((acc, t) => {
     const same = acc.find((x) => x.name === t.name);
     if (!same) return [...acc, t];
@@ -322,7 +319,7 @@ export default function Chat({
                   <span className={styles.rowTop}>
                     <span className={styles.rowName}>{t.name}</span>
                     <span className={styles.rowTime} data-unread={unread > 0 || undefined}>
-                      {last?.day && last.day !== "Saturday" ? last.day : stamp(last?.at)}
+                      {last?.day && last.day !== dayNow(story, state) ? last.day : stamp(last?.at)}
                     </span>
                   </span>
                   <span className={styles.rowBottom}>

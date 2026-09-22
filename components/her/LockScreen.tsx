@@ -8,16 +8,13 @@ import { AppGlyph } from "./ios/icons";
 import styles from "./ios/LockScreen.module.css";
 
 /* ===========================================================================
-   Her lock screen: the first time the player sees her life.
+   The found phone's lock screen: the first time the player sees its owner's
+   life. Whatever was waiting when it arrived (the chapter's `lockScreen`),
+   and whatever has arrived since. The date, a large Canela clock, the torch
+   and the camera in the corners.
 
-   A 64-year-old's phone at 1:11 in the morning: her son's missed call, the
-   society group arguing, a chat called "Mumbai Crime Branch", and whatever
-   has just arrived. The date, a large Canela clock, the torch and the camera
-   in the corners.
-
-   Her passcode has been off since Thursday at 8:10 PM (they asked her to turn
-   it off), so there is no pad: the swipe opens the phone. That is itself a
-   clue, and Settings will say when it happened.
+   The passcode is off, so there is no pad: the swipe opens the phone. That
+   is itself a clue, and Settings will say when it happened.
 
    The pilot's lock screen (c03aa03), in its "nobody locked it" mode.
    =========================================================================== */

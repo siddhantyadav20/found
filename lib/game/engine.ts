@@ -4,15 +4,15 @@ import type { AppId, EpisodeNo, Evidence, Flag, Hints, LiveEvent, Question, Stor
    The engine: one playthrough, as data.
 
    It knows about flags, evidence, questions, hints, live events and the
-   ledger. It knows nothing about Vasundhara Kulkarni, Mumbai or a video call.
-   Every function here is pure: the store (lib/found/progress.ts) owns the
-   saving, and React owns the rendering.
+   ledger. It knows nothing about any one story. Every function here is pure:
+   the store (lib/found/progress.ts) owns the saving, and React owns the
+   rendering.
 
-   Written for the pivot of 2026-09-17 (ROADMAP.md P0), replacing the engine
-   the two retired chapters shared.
+   Written for the pivot of 2026-09-17, and carried into *Shagun* at
+   ROADMAP.md S1 (save version 4: older saves are dropped, not upgraded).
    =========================================================================== */
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 
 export type CaseState = {
   readonly version: number;
@@ -70,10 +70,10 @@ export const unseenIn = (story: Story, s: CaseState, app: AppId): number =>
 export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
   story.evidence.filter((e) => e.app === app && !e.manual).reduce((acc, e) => see(story, acc, e.id), s);
 
-/** Every icon on her home screen, pages and dock together. */
+/** Every icon on the found phone's home screen, pages and dock together. */
 export const homeIcons = (story: Story) => [...story.hersHome.pages.flat(), ...story.hersHome.dock];
 
-/** What she calls an app. The dock and the pages are the only source. */
+/** What the owner's phone calls an app. The dock and the pages are the only source. */
 export const appLabel = (story: Story, app: AppId): string =>
   homeIcons(story).find((i) => i.app === app)?.label ?? app;
 
@@ -96,7 +96,7 @@ export const normalise = (t: string): string =>
     .replace(/\s+/g, " ")
     .trim();
 
-/** The claims on a board: only what he actually read out, plus what is said to everyone. */
+/** The claims on a board: those whose ledger entry is held, plus those that need none. */
 export const claimsFor = (q: Extract<Question, { kind: "claims" }>, s: CaseState) =>
   q.claims.filter((c) => !c.needs || exposed(s, c.needs));
 
@@ -104,7 +104,7 @@ export type Answer = { readonly state: CaseState; readonly ok: boolean; readonly
 
 export const WRONG = "Not quite. Look again.";
 export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
-export const UNCHECKED = "Check each of them on her phone before you decide.";
+export const UNCHECKED = "Check each of them on the phone before you decide.";
 
 /**
  * Judge an answer. `given` is evidence ids for a pick, text for a type, row
@@ -148,8 +148,8 @@ export function answer(story: Story, s: CaseState, id: string, given: readonly s
     }
     case "claims": {
       /* A claim is only judged once what settles it has been looked at, so
-         the board can't be passed by guessing (QA.md L5). What can't be
-         reached — a transfer that never happened — needs no checking. */
+         the board can't be passed by guessing. What can't be reached needs
+         no checking. */
       const claims = claimsFor(q, s);
       const unchecked = claims.some((c) => {
         const e = c.proof ? story.evidence.find((x) => x.id === c.proof) : undefined;
@@ -204,7 +204,7 @@ export function expose(story: Story, s: CaseState, id: string): CaseState {
   return { ...s, ledger: [...s.ledger, id] };
 }
 
-/** What Episode 3's officer can read out, in the order it was collected. */
+/** What the ledger holds, in the order it was collected. */
 export const against = (story: Story, s: CaseState) =>
   s.ledger.flatMap((id) => story.exposures.filter((e) => e.id === id));
 
@@ -212,8 +212,8 @@ export const against = (story: Story, s: CaseState) =>
 
 /**
  * Note the moment an episode began, the first time a save shows it. Every
- * save goes through here, so Episode 2 starts at 1:40 however long the
- * player spent in Episode 1, and Episode 3 at 10:29 (QA.md L3).
+ * save goes through here, so each episode opens at its own clock's base
+ * however long the player spent in the one before.
  */
 export function stamp(s: CaseState, now: number): CaseState {
   const ep = episodeOf(s);
@@ -229,7 +229,7 @@ const minutesOf = (hhmm: string): number => {
   return h * 60 + m;
 };
 
-/** How far the story's clock has run since 1:11 AM, in seconds. */
+/** How far the story's clock has run since the chapter opened, in seconds. */
 export function storySeconds(story: Story, s: CaseState, now: number): number {
   const base = minutesOf(story.clocks[episodeOf(s) - 1].base);
   const first = minutesOf(story.clocks[0].base);
@@ -247,8 +247,18 @@ export function clockNow(story: Story, s: CaseState, now: number): string {
 
 export const dayNow = (story: Story, s: CaseState): string => story.clocks[episodeOf(s) - 1].day;
 
-/** Her battery: it only ever goes down, and never below one. */
-export const battery = (story: Story, s: CaseState): number => story.clocks[episodeOf(s) - 1].battery;
+/**
+ * The found phone's battery. Off the charger it falls with the beats, not
+ * with a timer (the clock's `drain`); on it, it climbs a point a minute.
+ */
+export function battery(story: Story, s: CaseState, now: number): number {
+  const clock = story.clocks[episodeOf(s) - 1];
+  if (clock.charging) return Math.min(100, clock.battery + Math.max(0, Math.floor((now - episodeStart(s)) / 60_000)));
+  const steps = (clock.drain ?? []).filter((d) => has(s, d.after));
+  return steps.length ? steps[steps.length - 1].battery : clock.battery;
+}
+
+export const charging = (story: Story, s: CaseState): boolean => Boolean(story.clocks[episodeOf(s) - 1].charging);
 
 /** Note an app was open, for badges and the idle nudge. */
 export const logUsage = (s: CaseState, app: AppId, now: number): CaseState => ({

@@ -137,7 +137,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
     setPhase("sealed");
   };
 
-  const text = link ? shareText(meta.title, result, link.url) : "";
+  const text = link ? shareText(meta.title, result, link.url, meta.ask) : "";
 
   const nativeShare = async () => {
     try {
@@ -185,10 +185,10 @@ export default function PassItOn({ result }: { result: Result | null }) {
         <form className={styles.form} onSubmit={seal}>
           <span className={styles.label} aria-hidden="true">
             <span>TO {preview || "YOU"}</span>
-            <span>DELIVERED 1:11 AM</span>
+            <span>BY HAND</span>
           </span>
           <label className={styles.formLabel} htmlFor="pass-name">
-            Who&apos;s it for? A first name goes on the envelope.
+            Who&apos;s it for? A first name goes on the label.
           </label>
           <div className={styles.row}>
             <input

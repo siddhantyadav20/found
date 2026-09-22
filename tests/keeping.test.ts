@@ -89,22 +89,22 @@ describe("two devices, one case", () => {
 describe("your cases, in a line", () => {
   const hours = (h: number) => h * 3_600_000;
 
-  it("follows a case from the envelope to the end", () => {
+  it("follows a case from the parcel to the end", () => {
     const s = fresh();
     expect(summarise(s)).toMatchObject({ episode: 1, phase: "playing" });
-    expect(describeCase(s, null, hours(3))).toEqual({ status: "Episode 1 · the call is still running · 3 h ago", result: null, cta: "Carry on" });
-    expect(describeCase(add(s, "did:bank-dead"), null, 0).cta).toBe("Charge it");
-    expect(summarise(add(s, "did:bank-dead", "did:charged", "ep:2")).episode).toBe(2);
+    expect(describeCase(s, null, hours(3))).toEqual({ status: "Episode 1 · 3 h ago", result: null, cta: "Carry on" });
+    expect(describeCase(add(s, "did:needs-charge"), null, 0)).toMatchObject({ status: "Episode 1 done · the phone is dying", cta: "Charge it" });
+    expect(summarise(add(s, "did:needs-charge", "did:charged", "ep:2")).episode).toBe(2);
     // Episode 2's end card leads straight into Episode 3.
-    expect(summarise(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3"))).toMatchObject({ episode: 3, phase: "playing" });
-    expect(summarise(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3", "did:chose")).phase).toBe("done");
-    expect(describeCase(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3", "did:chose"), null, 0).status).toBe("Case closed");
+    expect(summarise(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3"))).toMatchObject({ episode: 3, phase: "playing" });
+    expect(summarise(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3", "did:chose")).phase).toBe("done");
+    expect(describeCase(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3", "did:chose"), null, 0).status).toBe("Case closed");
   });
 
   it("keeps a finish on the desk after the save is gone", () => {
     const line = describeCase(null, { episode: 1, minutes: 31, held: 2, at: 0 }, 0);
-    expect(line.status).toBe("Back in its envelope");
-    expect(line.result).toBe("Solved Episode 1 in 31 min · they had 2 on you");
+    expect(line.status).toBe("Back in its parcel");
+    expect(line.result).toBe("Solved Episode 1 in 31 min");
   });
 
   it("says how long ago in words a person would use", () => {
@@ -122,17 +122,17 @@ describe("the desk remembers", () => {
   it("draws the phone as it was left", () => {
     expect(deskState(null, null)).toEqual({ kind: "new" });
     expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1 });
-    expect(deskState(add(s, "did:bank-dead"), one)).toEqual({ kind: "between" });
-    expect(deskState(add(s, "did:bank-dead", "did:charged", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
-    expect(deskState(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3"), one)).toMatchObject({ kind: "playing", episode: 3 });
-    expect(deskState(add(s, "did:bank-dead", "did:charged", "ep:2", "ep:3", "did:chose"), one)).toEqual({ kind: "solved", solved: one, again: false });
+    expect(deskState(add(s, "did:needs-charge"), one)).toEqual({ kind: "between" });
+    expect(deskState(add(s, "did:needs-charge", "did:charged", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
+    expect(deskState(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3"), one)).toMatchObject({ kind: "playing", episode: 3 });
+    expect(deskState(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3", "did:chose"), one)).toEqual({ kind: "solved", solved: one, again: false });
     expect(deskState(null, one)).toEqual({ kind: "solved", solved: one, again: true });
   });
 
   it("says something arrived only to someone who has been before", () => {
-    expect(arrivals(null, ["dont-cut-the-call", "case-two"])).toEqual([]);
-    expect(arrivals(["dont-cut-the-call"], ["dont-cut-the-call", "case-two"])).toEqual(["case-two"]);
-    expect(arrivals(["dont-cut-the-call", "case-two"], ["dont-cut-the-call", "case-two"])).toEqual([]);
+    expect(arrivals(null, ["shagun", "case-two"])).toEqual([]);
+    expect(arrivals(["shagun"], ["shagun", "case-two"])).toEqual(["case-two"]);
+    expect(arrivals(["shagun", "case-two"], ["shagun", "case-two"])).toEqual([]);
   });
 
   it("welcomes a player back after half an hour away", () => {
@@ -148,19 +148,19 @@ describe("the shelf", () => {
     const n = await createShelf();
     expect(n).toMatch(SHAPE);
     const s = add(fresh(), "did:unlock");
-    expect(await putShelf(n, "dont-cut-the-call", { save: s, solved: { episode: 1, minutes: 31, held: 2, at: 1 } })).toBe(true);
+    expect(await putShelf(n, "shagun", { save: s, solved: { episode: 1, minutes: 31, held: 2, at: 1 } })).toBe(true);
 
     const shelf = await readShelf(n);
-    expect(shelf?.saves["dont-cut-the-call"]?.flags).toEqual(s.flags);
-    expect(shelf?.solved["dont-cut-the-call"]?.minutes).toBe(31);
+    expect(shelf?.saves["shagun"]?.flags).toEqual(s.flags);
+    expect(shelf?.solved["shagun"]?.minutes).toBe(31);
 
     // Start over: the save goes, the finish stays.
-    await putShelf(n, "dont-cut-the-call", { save: null });
+    await putShelf(n, "shagun", { save: null });
     const after = await readShelf(n);
-    expect(after?.saves["dont-cut-the-call"]).toBeUndefined();
-    expect(after?.solved["dont-cut-the-call"]?.held).toBe(2);
+    expect(after?.saves["shagun"]).toBeUndefined();
+    expect(after?.solved["shagun"]?.held).toBe(2);
 
-    expect(await putShelf("2222-2222-2222", "dont-cut-the-call", { save: s })).toBe(false);
+    expect(await putShelf("2222-2222-2222", "shagun", { save: s })).toBe(false);
     expect(await readShelf("2222-2222-2222")).toBeNull();
   });
 });
@@ -186,7 +186,7 @@ describe("in-app browsers", () => {
   });
 
   it("and everything here is counted, by name, and nothing else", () => {
-    for (const e of KEEPING) expect(eventsFor(STORIES["dont-cut-the-call"])).toContain(e);
+    for (const e of KEEPING) expect(eventsFor(STORIES["shagun"])).toContain(e);
   });
 });
 

@@ -1,6 +1,5 @@
-/* The stage, as far as the pivot has built it: a pouch, a label, and the
-   note that the rest is coming (ROADMAP.md P1). The real two-phone table,
-   her Android and the call over both, replaces everything here. */
+/* The stage: the parcel before anything is opened, then the table with
+   two phones on it. */
 
 .stage {
   display: flex;
@@ -23,17 +22,6 @@
   color: #8d8781;
 }
 
-.pouch {
-  position: relative;
-  width: min(20rem, 82vw);
-  aspect-ratio: 5 / 7;
-  border: 0;
-  border-radius: 0.4rem;
-  padding: 0;
-  cursor: pointer;
-  background: repeating-linear-gradient(115deg, #b9b2a6 0 6px, #b4ada1 6px 12px), #b9b2a6;
-  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 55%);
-}
 
 .sticker {
   position: absolute;
@@ -129,11 +117,11 @@
   text-align: left;
 }
 
-/* --- the table, once the pouch is open ------------------------------------
+/* --- the table, once the parcel is open -----------------------------------
 
    Inside the pilot's `.surface`, which is the container the phone's own
-   full-bleed switch listens to. On a phone her screen *is* the viewport; on a
-   table there are two devices, hers and yours. */
+   full-bleed switch listens to. On a phone the found phone's screen *is* the
+   viewport; on a table there are two devices, the found one and yours. */
 
 .table {
   display: flex;

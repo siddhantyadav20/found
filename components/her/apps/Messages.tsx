@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { Story, Thread } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
+import { all, dayNow, type CaseState } from "@/lib/game/engine";
 import AppBar from "../ios/AppBar";
 import Avatar from "../ios/Avatar";
 import app from "../ios/App.module.css";
@@ -12,17 +12,15 @@ import styles from "../ios/Thread.module.css";
 import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
-   Messages: the bank, and what the phone decided she shouldn't see.
+   Messages: the bank, the lender, and what the phone decided to file away.
 
    The pilot's iMessage (c03aa03), re-pointed at this story: grey bubbles with
    tails on the last of each run, a centred time stamp at each new day, and
    the list with its unread dots.
 
-   A retired bank manager's Messages is mostly her bank. And iOS files
-   anything from a sender it doesn't trust under **Unknown Senders** — which
-   is where the ₹1,00,000 debit lands, if the player typed her password and
-   they used it (CHAPTER1.md, Episode 2, beat 9). The arrest accuses the
-   player of that transfer; this is where they check whether it happened.
+   iOS files anything from a sender it doesn't trust under **Unknown
+   Senders**, a filter over real senders rather than a contact of its own
+   (PLAYTEST.md #59).
    =========================================================================== */
 
 type Folder = "inbox" | "junk";
@@ -114,7 +112,7 @@ export default function Messages({
                 <span className={list.main}>
                   <span className={list.top}>
                     <span className={list.name}>{t.name}</span>
-                    <span className={list.when}>{last?.day === "Friday" ? "Friday" : stamp(last?.at)}</span>
+                    <span className={list.when}>{last?.day && last.day !== dayNow(story, state) ? last.day : stamp(last?.at)}</span>
                   </span>
                   <span className={list.preview}>{last?.text}</span>
                 </span>

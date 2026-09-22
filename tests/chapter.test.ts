@@ -1,109 +1,22 @@
 import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
-import type { AppId, Flag, Question } from "@/content/types";
-import {
-  add,
-  all,
-  answer,
-  dueEvents,
-  fire,
-  homeIcons,
-  newCase,
-  openApp,
-  openQuestion,
-  see,
-  seen,
-  type CaseState,
-} from "@/lib/game/engine";
-import { ENDING_SEEN, finish } from "@/lib/game/endings";
-import { PLUGGED_IN, sceneOf } from "@/lib/game/scene";
-import { resultOf } from "@/lib/found/result";
+import { homeIcons } from "@/lib/game/engine";
 
 /**
- * The whole chapter, held to its own promises (ROADMAP P12):
+ * The chapter, held to its own promises (PLAYER-JOURNEY law 3):
  *
  * - every question has at least two ways in and exactly three hints
- * - every piece of evidence lives in exactly one place on her phone
- * - a player can go from the pouch to the end card handing them nothing
- * - every ending is reachable from that same run
+ * - every piece of evidence lives in exactly one place on the phone
+ * - nothing points at evidence that doesn't exist
  *
- * The run is played by a small solver that only uses what a player can do:
- * open apps, look at things, answer, decline a call. It never seeds a flag
- * the game itself wouldn't set, which is how QA.md's blockers got past.
+ * *Shagun* is a stub since ROADMAP S1, so these hold vacuously until S6–S8
+ * write its episodes. S12 adds the solver runs CHAPTER1.md promises: the full
+ * chain (11 of 11, Ending A), Sameer's version (B), an early post (C) and
+ * Return to Sender, and two sources per link that survive any closed route.
  */
 
-const ep = STORIES["dont-cut-the-call"];
-const apps = [...new Set(homeIcons(ep).map((i) => i.app))] as AppId[];
-
-/** Things a careful player does with their own hands, none of which hands anything over. */
-const HANDS: Flag[] = ["saw:clock", "saw:burmese", "did:restored-diary-6"];
-
-function look(s: CaseState): CaseState {
-  let next = add(s, ...HANDS);
-  next = apps.reduce((acc, app) => openApp(ep, acc, app), next);
-  // Everything that has to be looked at rather than opened, where it can be.
-  return ep.evidence.reduce((acc, e) => see(ep, acc, e.id), next);
-}
-
-function solve(s: CaseState, q: Question): CaseState {
-  switch (q.kind) {
-    case "pick": {
-      const routes = [q.proof, ...(q.orProof ?? [])];
-      const route = routes.find((r) => r.every((id) => seen(s, id)));
-      if (!route) throw new Error(`${q.id}: no route is open (${routes.map((r) => r.join("+")).join(" | ")})`);
-      return answer(ep, s, q.id, route).state;
-    }
-    case "type":
-      return answer(ep, s, q.id, q.accepts[0]).state;
-    case "timeline":
-      return answer(
-        ep,
-        s,
-        q.id,
-        q.rows.filter((r) => r.lane === "phone" && seen(s, r.evidence)).map((r) => r.id),
-      ).state;
-    case "claims":
-      return answer(
-        ep,
-        s,
-        q.id,
-        q.claims.filter((c) => c.trueWhen && all(s, c.trueWhen)).map((c) => c.id),
-      ).state;
-  }
-}
-
-/** Play from the pouch to the choice, as a player who gives them nothing. */
-function cleanRun(): CaseState {
-  let s = add(newCase("clean", 0), "did:opened", "did:unlock", "saw:note", "saw:call", "did:past-lock");
-  for (let step = 0; step < 300; step++) {
-    const scene = sceneOf(ep, s);
-    if (scene.kind === "choice") return s;
-    if (scene.kind === "charge") s = add(s, ...PLUGGED_IN);
-    else if (scene.kind === "seen-by-them") s = add(s, "did:ep2-done");
-    else if (scene.kind === "morning") s = add(s, "did:woke");
-    else if (scene.kind === "ringing") {
-      // Her son is left to ring; the arrest is answered, and nothing is said.
-      const call = scene.call;
-      s = call.insists
-        ? add(s, `did:answered-${call.id}`, ...(call.sets ?? []), `did:done-${call.id}`)
-        : add(s, `did:declined-${call.id}`);
-    } else {
-      s = look(s);
-      const due = dueEvents(ep, s)[0];
-      // The power bank's last line is only heard on a live call.
-      if (due) s = fire(ep, s, due.id);
-      else if (s.flags.includes("did:bank-dead")) s = add(s, "fired:cue-still-there");
-      const q = openQuestion(ep, s);
-      if (q) {
-        const before = s;
-        s = solve(look(s), q);
-        if (s === before) throw new Error(`${q.id}: answering changed nothing`);
-      }
-    }
-  }
-  throw new Error(`stuck at ${sceneOf(ep, s).kind} with ${JSON.stringify(openQuestion(ep, s)?.id)}`);
-}
+const ep = STORIES.shagun;
 
 describe("every question", () => {
   it("has three hints, the last of them the answer", () => {
@@ -113,7 +26,7 @@ describe("every question", () => {
     }
   });
 
-  it("has at least two ways in (PLAYER-JOURNEY law 3)", () => {
+  it("has at least two ways in", () => {
     for (const q of ep.questions) {
       const ways =
         q.kind === "pick"
@@ -125,6 +38,11 @@ describe("every question", () => {
               : q.claims.length;
       expect(ways, q.id).toBeGreaterThanOrEqual(2);
     }
+  });
+
+  it("points only at apps the phone has", () => {
+    const apps = new Set(homeIcons(ep).map((i) => i.app));
+    for (const q of ep.questions) for (const a of q.whereToLook) expect(apps.has(a), `${q.id}: ${a}`).toBe(true);
   });
 });
 
@@ -144,23 +62,16 @@ describe("every piece of evidence", () => {
     return count;
   })();
 
-  /** One thing seen in two places on purpose: Rukhsana sent it, and Vasu saved it. */
-  const SAME_THING_TWICE = new Set([
-    "sahil-photo",
-    // One debit, stamped when it happened: 3:02 if typed in the night, 10:34 if in the morning.
-    "the-lakh",
-  ]);
-
   it("is never filed in two places (opening its app finds the rest)", () => {
     for (const e of ep.evidence) {
       const n = places.get(e.id) ?? 0;
-      expect(n, `${e.id} is filed in ${n} places`).toBeLessThanOrEqual(SAME_THING_TWICE.has(e.id) ? 2 : 1);
+      expect(n, `${e.id} is filed in ${n} places`).toBeLessThanOrEqual(1);
     }
   });
 
   it("that has to be looked for is somewhere it can be looked at", () => {
-    // Manual evidence found by a gesture on the call or a question, not by a file.
-    const gestures = new Set(["note", "call", "clock", "burmese"]);
+    // The note is found by reading it, before the phone is even on.
+    const gestures = new Set(["note"]);
     for (const e of ep.evidence.filter((x) => x.manual && !gestures.has(x.id)))
       expect(places.get(e.id) ?? 0, `${e.id} can never be seen`).toBeGreaterThanOrEqual(1);
   });
@@ -171,24 +82,14 @@ describe("every piece of evidence", () => {
   });
 });
 
-describe("a clean run", () => {
-  const s = cleanRun();
-
-  it("reaches the choice from the pouch, answering every question", () => {
-    expect(sceneOf(ep, s).kind).toBe("choice");
-    for (const q of ep.questions) expect(s.flags, q.id).toContain(`ask:${q.id}`);
+describe("the phone itself", () => {
+  it("is its owner's, with the case file in the dock", () => {
+    expect(ep.owner.name).toBe("Sameer Khurana");
+    expect(ep.hersHome.dock.map((i) => i.app)).toContain("casefile");
   });
 
-  it("hands them nothing at all", () => {
-    expect(s.ledger).toEqual([]);
-  });
-
-  it("can end all three ways, and every one lands on the card with nothing on you", () => {
-    for (const e of ep.endings) {
-      const ended = add(s, ...finish(e.id));
-      expect(sceneOf(ep, ended).kind).toBe("ending");
-      expect(sceneOf(ep, add(ended, ENDING_SEEN)).kind).toBe("end-card");
-      expect(resultOf(ep, ended).held).toEqual([]);
-    }
+  it("opens each episode on the minute CHAPTER1.md gives it", () => {
+    expect(ep.clocks.map((c) => `${c.day} ${c.base}`)).toEqual(["Saturday 23:40", "Sunday 00:32", "Sunday 01:52"]);
+    expect(ep.episodes).toEqual(["Missed Calls", "The Second Shot", "The Cancelled Rescue"]);
   });
 });

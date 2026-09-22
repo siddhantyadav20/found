@@ -3,25 +3,26 @@
 import { useRef, useState, ViewTransition } from "react";
 
 import type { CaseMeta } from "@/content/cases";
-import styles from "./Pouch.module.css";
+import styles from "./Parcel.module.css";
 
 /* ===========================================================================
-   The first thirty seconds: a courier pouch, and a phone taped to a power
-   bank inside it.
+   The first thirty seconds: a padded parcel, and a phone inside it that
+   won't stop buzzing.
 
    The player tears it open with their hand (PLAYER-JOURNEY law 5). It is a
-   drag, not a button, because ownership is what makes the guilt work an hour
-   later: they have to be able to say *I opened it*.
+   drag, not a button, because a letter addressed to somebody else is the
+   purest trespass, and they have to be able to say *I opened it*. ROADMAP S5
+   adds the envelope and the note on its back.
 
    Two things on the label are promises rather than decoration: the content
    note, and the line about nothing here being real.
    =========================================================================== */
 
 const TEAR = 0.55;
-/** How long the pouch takes to come apart before the note is on the table. */
+/** How long the parcel takes to come apart before the note is on the table. */
 const TEAR_MS = 850;
 
-export default function Pouch({
+export default function Parcel({
   meta,
   to,
   minutes,
@@ -49,7 +50,7 @@ export default function Pouch({
     } catch {
       // A phone that won't buzz still opens.
     }
-    // The strip goes, the pouch opens, the phone comes up out of it; then the note.
+    // The strip goes, the parcel opens, the phone comes up out of it; then the note.
     setTorn(true);
     window.setTimeout(onOpen, TEAR_MS);
   };
@@ -66,7 +67,7 @@ export default function Pouch({
       {/* The same object the desk showed, carried over into the room. */}
       <ViewTransition name="found-phone" share="morph" default="none">
         <div
-          className={styles.pouch}
+          className={styles.parcel}
           data-torn={torn || undefined}
           style={{ "--pull": pull } as React.CSSProperties}
           onPointerDown={(e) => {
@@ -82,14 +83,14 @@ export default function Pouch({
           <span className={styles.strip} aria-hidden="true">
             PULL TO OPEN →
           </span>
-          {/* The phone inside, which rises out as the pouch comes open. */}
+          {/* The phone inside, which rises out as the parcel comes open. */}
           <span className={styles.inside} aria-hidden="true" />
           {/* A courier's delivery label: who it's for, where it came from, and
               the declaration line, which is where the content note and the
               promise live (PLAYER-JOURNEY Stage 1). */}
           <span className={styles.label}>
-            <span className={styles.to}>{to ? `TO ${to}` : "FLAT —"}</span>
-            <span className={styles.from}>PikDrop · 1:08 AM · Dadar East</span>
+            {/* Who it was addressed to is still to be decided (CHAPTER1 O1). */}
+            <span className={styles.to}>{to ? `TO ${to}` : "TO —"}</span>
             <span className={styles.note}>
               <b>Contains:</b> {meta.note.split(" · ").slice(0, 2).join(" · ")}
             </span>
@@ -97,10 +98,8 @@ export default function Pouch({
               <b>Declared:</b> {meta.note.split(" · ").slice(2).join(" · ")}
             </span>
             {replay && (
-              <span className={styles.postmark} aria-label="Postmarked: delivered 1:11 AM">
+              <span className={styles.postmark} aria-label="Postmarked: delivered">
                 DELIVERED
-                <br />
-                1:11 AM
               </span>
             )}
           </span>

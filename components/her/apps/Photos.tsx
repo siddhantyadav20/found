@@ -17,14 +17,10 @@ import { stamp } from "@/lib/found/time";
    Utilities, and a viewer with a glass back button, the place and time on
    top, and a toolbar underneath.
 
-   What is in it is the story's. At 11:40 PM on Friday she photographed every
-   page of her diary, the way she used to photograph a cheque before
-   depositing it. Page six went to the bin at 12:37 AM, while she was on a
-   terrace and this phone was in Andheri East; recovering it is how the player
-   learns there was a list, and that they are on it.
+   What is in it is the story's: `paper` pages in somebody's hand, and
+   titled cards for photographs until the shoot (ROADMAP S4 brings real images,
+   video, Revert, Hidden and days left in Recently Deleted).
 
-   The pages are drawn until the handwriting is shot (ROADMAP P11): the words
-   matter now.
    =========================================================================== */
 
 type Tab = "library" | "collections";
@@ -58,7 +54,7 @@ function TrashGlyph() {
   );
 }
 
-/** A photograph, or a page of her diary as a phone camera sees paper. */
+/** A photograph, or a handwritten page as a phone camera sees paper. */
 function Picture({ photo, big }: { photo: Photo; big?: boolean }) {
   if (photo.kind === "paper")
     return (
@@ -95,7 +91,7 @@ function Viewer({
           <Chevron back />
         </button>
         <span className={frame.viewerWhen}>
-          <strong>{photo.place ?? "Dadar East"}</strong>
+          {photo.place && <strong>{photo.place}</strong>}
           <span>
             {photo.day} {stamp(photo.at)}
           </span>
@@ -112,7 +108,7 @@ function Viewer({
           <p className={frame.infoDay}>
             {photo.day} · {stamp(photo.at)}
           </p>
-          <p className={frame.infoCam}>iPhone 12 — Back Camera</p>
+          {photo.camera && <p className={frame.infoCam}>{photo.camera}</p>}
           {photo.caption && <p className={frame.infoNote}>{photo.caption}</p>}
           {photo.deletedAt && <p className={frame.infoNote}>Deleted at {stamp(photo.deletedAt)}. Kept for 30 days.</p>}
         </div>

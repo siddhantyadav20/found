@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 import KeepCase from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
-import { AppGlyph } from "@/components/her/ios/icons";
 import type { CaseId } from "@/content/cases";
 import type { Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
@@ -18,17 +17,17 @@ import PassItOn from "../PassItOn";
 import styles from "./Ending.module.css";
 
 /* ===========================================================================
-   After every ending, the same card (CHAPTER1.md E, PLAYER-JOURNEY Stage 10):
+   After every ending, the same card (PLAYER-JOURNEY Stage 9):
 
-   1. What they had on you, a line at a time, and the count. No score.
-   2. The one thing only this ending showed.
-   3. The first ten seconds again, frozen on the 1:11 alert, its icon growing
-      into the grey shield: nobody had reported her death yet.
-   4. Pass it on, and keep your case number.
-   5. Outside the fiction: what to do if this happens for real.
+   1. How the playthrough went, in a form that spoils nothing. (Until ROADMAP
+      S3 replaces it with the chain, this is still the ledger.)
+   2. The one thing only this ending showed, and what others chose.
+   3. Play again, Pass it on, and keep your case number.
+   4. Outside the fiction: what to do if any of this is close to home.
+      (ROADMAP S9 writes the chapter's own facts here, checked at the source.)
    =========================================================================== */
 
-type Others = { police: number; bin: number; friend: number } | null;
+type Others = Record<string, number> | null;
 
 export default function EndCard({ story, state }: { story: Story; state: CaseState }) {
   const { id } = useCase();
@@ -65,7 +64,7 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
     <div className={`${styles.screen} ${styles.card}`}>
       <section className={styles.section} aria-labelledby="had">
         <p className={styles.eyebrow} id="had">
-          What they had on you
+          What you gave away
         </p>
         {held.length > 0 && (
           <ul className={styles.held}>
@@ -77,9 +76,7 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
           </ul>
         )}
         <p className={styles.count} style={{ animationDelay: `${0.6 + held.length * 0.7}s` }}>
-          {held.length === 0
-            ? "They had nothing on you."
-            : `They had ${held.length} thing${held.length === 1 ? "" : "s"} on you.`}
+          {held.length === 0 ? "Nothing." : `${held.length} thing${held.length === 1 ? "" : "s"}.`}
         </p>
       </section>
 
@@ -89,28 +86,14 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
           <p className={styles.only}>{ending.onlyHere}</p>
           {others && (
             <p className={styles.others}>
-              Of everyone who finished: {others.police}% reported it, {others.bin}% threw it away, {others.friend}% shared
-              it.
+              Of everyone who finished:{" "}
+              {story.endings.map((e) => `${others[e.id] ?? 0}% chose “${e.row}”`).join(", ")}.
             </p>
           )}
         </section>
       )}
 
-      <section className={styles.section} aria-label="The first ten seconds, again">
-        <div className={styles.replay} aria-hidden="true">
-          <span className={styles.replayTime}>1:11</span>
-          <span className={styles.replayAlert}>
-            <span className={styles.replayIcon}>
-              <AppGlyph app="kyc" />
-            </span>
-            <span>
-              <b>City Desk</b>
-              <br />
-              Dadar: retired bank manager, 64, found dead below building
-            </span>
-          </span>
-        </div>
-        <p className={styles.nobody}>No one had reported her death yet.</p>
+      <section className={styles.section}>
         <button type="button" className={styles.button} onClick={playAgain}>
           Play again
         </button>
@@ -127,19 +110,7 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
 
       <aside className={styles.outside} aria-label="Outside the story">
         <p>
-          Real police never arrest anyone over a video call. If it happens to you or your parents, cut the call and
-          dial <a href="tel:1930">1930</a>, or report it at{" "}
-          <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer">
-            cybercrime.gov.in
-          </a>
-          .
-        </p>
-        <p>
           If any of this is close to home, Tele-MANAS is free and open all day: <a href="tel:14416">14416</a>.
-        </p>
-        <p>
-          The people most likely to get this call won&apos;t play for forty minutes.{" "}
-          <Link href="/first-minute">There is a sixty-second version</Link> for your family group.
         </p>
       </aside>
     </div>

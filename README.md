@@ -1,13 +1,20 @@
 # Found
 
-Mysteries played on the missing person's phone. The first case is
-**Low Battery** (Episode 1, plus Episode 2 "Read Receipts"): someone is
-missing, and their phone has arrived in your post.
+Mysteries played on a stranger's phone. **Chapter One is *Shagun*:** a Delhi
+wedding photographer's phone arrives with a note addressed to someone else,
+and everything on it is true, but not in the right order.
 
-Found was piloted inside the portfolio at `sidbuilds.in/found` so interest
-could be measured before it became its own app. This repository is that app.
-It was carried over as-is on 2026-09-15, from the portfolio's `main` at
-`9aa3c0d`. See `PROJECT.md` for the brief and the decisions behind it.
+- The story (canon, never edited): `SCRIPT.md`
+- The game adaptation: `CHAPTER1.md`
+- The experience rules: `PLAYER-JOURNEY.md`
+- The build plan, phase by phase: `ROADMAP.md`
+- The decisions behind all of it: `PROJECT.md`
+
+**Where the code is (2026-09-23):** ROADMAP S1 is done. *Shagun* is the only
+case, a stub that plays its arrival and an empty phone; its episodes arrive
+in S6–S8. The retired *Don't Cut the Call* is at the git tag
+`dont-cut-the-call`. Found was piloted inside the portfolio at `sidbuilds.in/found` and became
+its own app on 2026-09-15.
 
 ## Running it
 
@@ -28,7 +35,7 @@ To play on your phone, open `http://<your-mac's-LAN-IP>:3001` on the same Wi-Fi.
 |---|---|
 | `npm run dev` | Development server, port 3001 |
 | `npm run build` / `npm start` | Production build / serve it |
-| `npm run lint` · `typecheck` · `test` | ESLint · `tsc` · Vitest (walks every episode as a player) |
+| `npm run lint` · `typecheck` · `test` | ESLint · `tsc` · Vitest (a solver plays the chapter end to end) |
 | `npm run budget` | Size ceilings on JS and `public/`; run after a build |
 | `npm run sfx` | Re-cut the buzz from `samples-src/` (`samples.config.mjs`) |
 | `npm run audio` | Re-mix the voice memos from `samples-src/` (needs macOS `say` + `afconvert`) |
@@ -37,42 +44,35 @@ To play on your phone, open `http://<your-mac's-LAN-IP>:3001` on the same Wi-Fi.
 
 ```
 app/
-  page.tsx               / — the desk: a phone buzzing among found things
-  c/[case]/              /c/low-battery — a case, from its cold open
-  d/[code]/              /d/<code> — a passed-on phone: an envelope with a friend's name
+  page.tsx               / — the desk: one parcel among unnamed found things
+  c/[case]/              /c/<case> — a case, from its arrival
+  d/[code]/              /d/<code> — a passed-on case, with a friend's name on it
   r/[number]/            /r/<case number> — brings a case number's cases onto this device
   api/found/             the funnel (POST an event, GET it back) and /choices
-  api/drop/[code]/       how far a passed-on phone has got
+  api/drop/[code]/       how far a passed-on case has got
   api/shelf/             POST: a new case number · [number]: GET its saves, POST one
-components/found/
-  Desk/                  the homepage scene (server-rendered) and YourCases, its one island
-  KeepCase/              the case number card, with a QR code on laptops
-  Restore/               the restore page
-  FoundPhone/            the room, the device, lock screen, home, gestures, end cards,
-                         PassItOn (seal and send), WhatOthersDid
-  apps/                  Messages, Photos, Notes, Maps, Calculator, Guardian, …
-  StoryContext.tsx       which case this page plays (useStory / useCase)
+components/
+  stage/                 the playthrough: Stage (scenes), Table (the phones), CaseFile,
+                         Ringing, Charge, TitleCard, PassItOn, ending/
+  her/                   the found phone's iOS and its apps (renamed owner/ in S2)
+  yours/                 the player's own phone
+  found/                 Desk, KeepCase, Restore, StoryContext, shareCards
 content/
-  cases.ts               every case, light: names, routes, share lines, teasers
-  stories.ts             every case's script, by id
-  found/                 Low Battery: episodes as typed data, no CMS
-lib/found/               engine (plays the script), progress (one save per case),
-                         result (the spoiler-free share), drops + dropStore,
-                         events + store (funnel), voice (the cast), buzz/memoSound
-lib/                     shared helpers carried from the portfolio: sound, sfx,
-                         mail (Resend), upstash (Redis), visitorId, origin
-public/found/            CC0 photographs, wallpaper, memos
-samples-src/             source recordings (git-ignored)
+  types.ts               the story schema
+  cases.ts · stories.ts  every case, light and in full
+  <case>/                a chapter as typed data, no CMS
+lib/game/                the engine: flags, evidence, questions, scenes, endings
+lib/found/               saves, drops, shelf, events, result, battery, platform, buzz
+tests/                   Vitest: the engine, the chapter's laws, keeping, sharing
 ```
 
 ## Things worth knowing
 
 - **Each case's save lives in `localStorage` under `found:<case>:save`**
-  (`found:low-battery:save`). Seed one with just the `dead` flag to land on
-  Episode 1's end card. Add `?cast=` to force the missing person's cast instead
-  of dealing it at random (`components/found/FoundPhone/actions.ts`).
+  (`found:shagun:save`). Saves
+  carry a version, and a save of another version is dropped, not upgraded.
 - **Testing a drop in one browser:** the sender's own save would resume on
-  their own link, so set it aside first (copy `found:low-battery:save` out,
+  their own link, so set it aside first (copy the case's save out,
   remove it, open `/d/<code>`, then put it back). Sealed envelopes are
   remembered under `found:sent`.
 - **Case numbers** live under `found:number`, and a case's finishes under
@@ -89,7 +89,7 @@ samples-src/             source recordings (git-ignored)
   (`lib/upstashDev.ts`, emptied on restart). `next start` with no Upstash
   variables can't seal anything, so "Pass it on" falls back to the case's plain
   link, and a drop's preview image says "TO YOU".
-- **`GET /api/found?case=low-battery` reads a funnel back.** Open in `next dev`;
+- **`GET /api/found?case=<case>` reads a funnel back.** Open in `next dev`;
   in production it needs `&token=` matching `FOUND_STATS_TOKEN`, and is a 404
   without it. "What others did" stays hidden until 50 people have answered.
 - **`.env.local` is not Vercel.** Every production variable has to be set in

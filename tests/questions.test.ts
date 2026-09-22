@@ -7,36 +7,59 @@ import { add, answer, hint, newCase, see, TOO_MUCH, WRONG, type CaseState } from
 /**
  * The four kinds of question, judged away from the DOM. A wrong answer costs
  * nothing but being wrong; a hint never costs anything at all; and a claim is
- * only true when the player actually handed it over.
+ * only true when the player actually did it.
  */
 
-const ep = STORIES["dont-cut-the-call"];
+/**
+ * A story is just data, so a test can write its own evidence and questions.
+ * These are made up, on the chapter's own phone.
+ */
+const ep: Story = {
+  ...STORIES.shagun,
+  evidence: [
+    { id: "poster", device: "hers", app: "whatsapp", label: "A missing-person poster" },
+    { id: "portrait", device: "hers", app: "photos", label: "A waiter with a tray, 9:48 PM" },
+    { id: "invoice", device: "hers", app: "messages", label: "An invoice" },
+  ],
+  questions: [
+    {
+      kind: "pick",
+      id: "who-is-he",
+      ask: "Who is the boy in the poster?",
+      episode: 1,
+      whereToLook: ["whatsapp", "photos"],
+      hints: ["The poster has a face on it.", "So does a photograph from the wedding.", "The poster and the 9:48 PM portrait."],
+      proof: ["poster", "portrait"],
+      reply: "The waiter from 9:48 PM.",
+      sets: ["did:named-him"],
+    },
+  ],
+};
 const start = () => newCase("t", 0);
 
 /** A player who has found these things, which is the only way to table them. */
 const found = (...ids: string[]): CaseState => ids.reduce((s, id) => see(ep, s, id), start());
 
-/** A story is just data, so a test can write its own questions. */
 const withQuestions = (questions: Question[]): Story => ({ ...ep, questions });
 
 describe("picking the proof", () => {
   it("wants exactly what proves it, and says so when there's more", () => {
     const q = ep.questions[0];
-    const s = found("alert", "wallpaper", "note");
-    expect(answer(ep, s, q.id, ["alert", "wallpaper"]).ok).toBe(true);
-    expect(answer(ep, s, q.id, ["alert"]).ok).toBe(false);
-    expect(answer(ep, s, q.id, ["alert", "wallpaper", "note"]).reply).toBe(TOO_MUCH);
-    expect(answer(ep, s, q.id, ["note"]).reply).toBe(WRONG);
+    const s = found("poster", "portrait", "invoice");
+    expect(answer(ep, s, q.id, ["poster", "portrait"]).ok).toBe(true);
+    expect(answer(ep, s, q.id, ["poster"]).ok).toBe(false);
+    expect(answer(ep, s, q.id, ["poster", "portrait", "invoice"]).reply).toBe(TOO_MUCH);
+    expect(answer(ep, s, q.id, ["invoice"]).reply).toBe(WRONG);
 
     // And nothing can be tabled that was never found.
-    expect(answer(ep, start(), q.id, ["alert", "wallpaper"]).ok).toBe(false);
+    expect(answer(ep, start(), q.id, ["poster", "portrait"]).ok).toBe(false);
   });
 
   it("sets what the script says it sets, once", () => {
     const q = ep.questions[0];
-    const after = answer(ep, found("alert", "wallpaper"), q.id, ["alert", "wallpaper"]).state;
-    expect(after.flags).toContain("did:named-her");
-    expect(answer(ep, after, q.id, ["alert", "wallpaper"]).ok).toBe(false);
+    const after = answer(ep, found("poster", "portrait"), q.id, ["poster", "portrait"]).state;
+    expect(after.flags).toContain("did:named-him");
+    expect(answer(ep, after, q.id, ["poster", "portrait"]).ok).toBe(false);
   });
 });
 
@@ -45,17 +68,17 @@ describe("typing a name", () => {
     {
       kind: "type",
       id: "whose-number",
-      ask: "Whose number is 98204 57713?",
+      ask: "Whose number keeps ringing?",
       episode: 1,
       whereToLook: ["phone"],
       hints: ["a", "b", "c"],
-      accepts: ["his mother", "Rukhsana", "Rukhsana Ansari"],
-      reply: "His mother.",
+      accepts: ["his brother", "Raju", "Raju Mahto"],
+      reply: "His brother.",
     },
   ]);
 
   it("forgives case, spacing and punctuation", () => {
-    for (const said of ["Rukhsana", "  rukhsana  ", "RUKHSANA ANSARI", "his mother"])
+    for (const said of ["Raju", "  raju  ", "RAJU MAHTO", "his brother"])
       expect(answer(story, start(), "whose-number", said).ok, said).toBe(true);
     expect(answer(story, start(), "whose-number", "the police").ok).toBe(false);
   });
@@ -66,16 +89,16 @@ describe("the two lanes", () => {
     {
       kind: "timeline",
       id: "who-used-it",
-      ask: "Who used this phone after midnight?",
+      ask: "What did the phone do while its owner was elsewhere?",
       episode: 1,
       whereToLook: ["notes"],
       hints: ["a", "b", "c"],
       rows: [
-        { id: "terrace", at: "00:37", text: "On the terrace", lane: "her", evidence: "story" },
-        { id: "edit", at: "00:39", text: "The note was edited", lane: "phone", evidence: "lure" },
-        { id: "delete", at: "00:37", text: "A photo was deleted", lane: "phone", evidence: "list" },
+        { id: "away", at: "22:40", text: "Out of the house", lane: "her", evidence: "story" },
+        { id: "edit", at: "23:02", text: "A video was trimmed", lane: "phone", evidence: "lure" },
+        { id: "delete", at: "22:48", text: "A clip was deleted", lane: "phone", evidence: "list" },
       ],
-      reply: "She was in Dadar. Her phone was not.",
+      reply: "Somebody was busy on it.",
     },
   ]);
 
@@ -105,26 +128,27 @@ describe("true or bluff", () => {
       whereToLook: ["messages"],
       hints: ["a", "b", "c"],
       claims: [
-        { id: "pin", text: "You opened her password.", trueWhen: ["did:typed-password"], proof: "messages" },
-        { id: "voice", text: "We have your voice.", trueWhen: ["did:unmuted"], proof: "call" },
-        { id: "invented", text: "You were in the building.", proof: "none" },
+        // Settled by something that can't be looked at: nothing to check first.
+        { id: "note", text: "You opened a locked note.", trueWhen: ["did:unlocked-note"], proof: "none" },
+        { id: "reply", text: "You replied from his phone.", trueWhen: ["did:replied"], proof: "poster" },
+        { id: "invented", text: "You were at the wedding.", proof: "none" },
       ],
       reply: "The true ones are the ones you did.",
     },
   ]);
 
-  it("depends on what the player actually handed over", () => {
+  it("depends on what the player actually did", () => {
     // Nothing is judged until what settles it has been looked at.
     expect(answer(story, start(), "against-you", []).ok).toBe(false);
-    const checked = () => add(start(), "saw:call");
+    const checked = () => add(start(), "saw:poster");
 
-    // A player who gave them nothing: every charge is a bluff.
+    // A player who did none of it: every claim is a bluff.
     expect(answer(story, checked(), "against-you", []).ok).toBe(true);
 
-    const typed = add(checked(), "did:typed-password");
-    expect(answer(story, typed, "against-you", ["pin"]).ok).toBe(true);
-    expect(answer(story, typed, "against-you", []).ok).toBe(false);
-    expect(answer(story, typed, "against-you", ["pin", "invented"]).ok).toBe(false);
+    const opened = add(checked(), "did:unlocked-note");
+    expect(answer(story, opened, "against-you", ["note"]).ok).toBe(true);
+    expect(answer(story, opened, "against-you", []).ok).toBe(false);
+    expect(answer(story, opened, "against-you", ["note", "invented"]).ok).toBe(false);
   });
 });
 

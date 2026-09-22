@@ -1,5 +1,7 @@
 # Found — QA pass, 2026-09-18
 
+> **Retired chapter.** This QA pass is of *Don't Cut the Call*, retired on 2026-09-22 (git tag `dont-cut-the-call`). It stays for its lessons about how the phone should feel; nothing in it describes *Shagun*.
+
 A deliberately hostile pass over everything built for *Don't Cut the Call*
 (P0–P7), from nine angles. Every finding below was **verified** — against
 the code, the running app, or both — not guessed. Where it was seen in the

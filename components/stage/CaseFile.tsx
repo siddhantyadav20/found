@@ -116,7 +116,7 @@ export default function CaseFile({
         toggle={toggle}
         typed={typed}
         setTyped={setTyped}
-        labelOf={(app) => (app === "casefile" ? "From the call and the pouch" : appLabel(story, app))}
+        labelOf={(app) => (app === "casefile" ? "From the parcel" : appLabel(story, app))}
       />
 
       <div className={note.actions}>

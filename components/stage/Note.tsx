@@ -2,32 +2,35 @@
 
 import { useSyncExternalStore } from "react";
 
+import type { Arrival } from "@/content/types";
 import { setSoundOn, soundOn, soundOnServerSide, subscribeSound } from "@/lib/sound";
 import styles from "./Note.module.css";
 
 /* ===========================================================================
    The note that came with the phone, and the phone lying face-down beside it.
 
-   The player reads an instruction from a stranger and follows it before they
-   know anything at all (PLAYER-JOURNEY law 1). Block capitals, ballpoint,
-   Roman Hinglish, one word misspelled. A 64-year-old Marathi woman who
-   spent 32 years in a bank did not write this, and nobody notices tonight.
+   The note is somebody's handwriting, addressed to somebody else, and the
+   player reads it anyway: the first choice they don't notice making. The
+   English beneath it is ours, never written on the note (ROADMAP S5 turns
+   this into the envelope, and the note on its back).
 
    Sound is offered here, in the fiction, as the phone's own ring/silent
-   switch on its side: never a modal, and before the call begins.
+   switch on its side: never a modal.
    =========================================================================== */
 
-export default function Note({ onTurn }: { onTurn: () => void }) {
+export default function Note({ arrival, onTurn }: { arrival: Arrival; onTurn: () => void }) {
   const ringing = useSyncExternalStore(subscribeSound, soundOn, soundOnServerSide);
   return (
     <div className={styles.wrap}>
-      <div className={styles.paper}>
-        <p className={styles.hand}>CALL MAT KATNA.</p>
-        <p className={styles.hand}>SAB DEKHO.</p>
-        <p className={styles.sign}>— V</p>
+      <div className={styles.paper} lang="hi-Latn">
+        {arrival.note.map((line) => (
+          <p key={line} className={styles.hand}>
+            {line}
+          </p>
+        ))}
+        {arrival.sign && <p className={styles.sign}>{arrival.sign}</p>}
       </div>
-      {/* The translation is ours, not written on her note. */}
-      <p className={styles.english}>&ldquo;Don&apos;t cut the call. Look at everything.&rdquo;</p>
+      <p className={styles.english}>&ldquo;{arrival.english}&rdquo;</p>
 
       <div className={styles.kit}>
         <span className={styles.facedown}>
@@ -41,14 +44,8 @@ export default function Note({ onTurn }: { onTurn: () => void }) {
             onClick={() => setSoundOn(!ringing)}
           />
         </span>
-        <span className={styles.bank} aria-hidden="true">
-          <span className={styles.led} />
-        </span>
-        <span className={styles.tape} aria-hidden="true" />
       </div>
-      <p className={styles.caption}>
-        A phone, face-down, taped to a power bank. One light still on it.
-      </p>
+      <p className={styles.caption}>{arrival.caption}</p>
       <p className={styles.ringerNote}>{ringing ? "Its ringer is on." : "It's on silent. Flip the switch on its side to hear it."}</p>
 
       <button type="button" className={styles.turn} onClick={onTurn}>

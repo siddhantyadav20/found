@@ -1,4 +1,3 @@
-import Link from "next/link";
 
 import SoundToggle from "../SoundToggle";
 import DeskPhone from "./DeskPhone";
@@ -31,10 +30,6 @@ export default function Desk({ minutes }: { minutes?: number }) {
       <DeskPhone minutes={minutes} />
 
       <YourCases />
-
-      <p className={styles.minute}>
-        <Link href="/first-minute">The first minute, for your family group</Link> · 60 seconds
-      </p>
     </main>
   );
 }

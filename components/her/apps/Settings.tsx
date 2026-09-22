@@ -11,18 +11,12 @@ import s from "../ios/Settings.module.css";
 import local from "./Settings.module.css";
 
 /* ===========================================================================
-   Settings, as the pilot drew it: her name at the top on a profile card, and
-   every row led by iOS's own coloured tile.
+   Settings, as the pilot drew it: the owner's name at the top on a profile
+   card, and every row led by iOS's own coloured tile. What's in it is the
+   chapter's (`story.settings`), and nothing in it is pointed at: a passcode
+   turned off, and when, is the kind of thing it holds. A row can open a page
+   one level down, and can do one thing that can't be undone.
 
-   Three rows in here are the chapter, and none of them is pointed at:
-
-     Face ID & Passcode — Off, turned off Thursday 8:10 PM
-     VPN & Device Management — RBI Secure KYC, installed Thursday 8:14 PM
-     Her Apple Account — signed in on a device she has never owned
-
-   Four minutes after she turned the lock off, they installed the profile.
-   That is why the blue pill has been around her clock ever since
-   (CHAPTER1.md, twist 5). Removing it is the chapter's one irreversible act.
    =========================================================================== */
 
 const BLUE = "#0a84ff";
@@ -199,8 +193,10 @@ export default function Settings({
 }) {
   const [asking, setAsking] = useState<string | null>(null);
   const [page, setPage] = useState<string | null>(null);
+  /* The first group is the account card; a chapter that hasn't written one
+     yet still shows whose phone it is. */
   const [account, ...groups] = story.settings;
-  const owner = account.rows[0];
+  const owner = account?.rows[0] ?? { title: story.owner.name, sub: "Apple Account, iCloud and more" };
 
   const opened = groups.flatMap((g) => g.rows).find((r) => r.title === page);
   if (opened?.detail)
@@ -208,14 +204,14 @@ export default function Settings({
 
   return (
     <>
-      {/* Her name on the profile card, the way the top of Settings looks. */}
+      {/* The owner's name on the profile card, the way the top of Settings looks. */}
       <ul className={app.group}>
         <li>
           <div className={s.profile}>
             <Avatar name={owner.title} size="head" />
             <span className={app.rowMain}>
               <span className={s.profileName}>{owner.title}</span>
-              {/* "2 devices" under her name, so the name keeps its line. */}
+              {/* What sits under the name goes on its own line, so the name keeps its line. */}
               <span className={s.profileSub}>
                 {owner.sub}
                 {owner.value && ` · ${owner.value}`}

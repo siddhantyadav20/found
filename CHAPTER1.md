@@ -1,725 +1,592 @@
-# FOUND — "Don't Cut the Call" · Mumbai
-## A from-scratch story for Chapter One (proposal, 2026-09-17)
+# FOUND — "Shagun" · Delhi
+## Chapter One, adapted for the game (2026-09-22)
 
-*Replaces both the MIRROR draft (Nisha / Arjun) and The Blue Room. Nothing is
-kept because it existed.*
+**The story is [SCRIPT.md](SCRIPT.md)**, the Master Narrative Pass, copied word for
+word from the finalised .docx. That file is canon and is never edited. This
+document is the game adaptation: how the same story *plays* on a phone in
+Found.
 
----
+**The rule:** nothing here changes what happens. The objective truth (script
+§5), the characters (§6), the mystery ladder (§7), the three episodes (§8–10),
+the reveals (§11), the endings (§15) and the final line (§16) are all kept.
+What this document adds is the *game layer*: times to the minute, which app
+holds each fact, the questions, the routes, the choices and what they close,
+the score, and the endings as acts. Anything the script doesn't state is
+marked **(game)**. The appendix (N) traces every canon item to where the player
+meets it.
 
-## Changed on 2026-09-18: her phone is an iPhone
-
-Siddhant asked for the iOS look and feel back, so Vasu's phone is the iPhone
-her son handed down, and the surveillance is what an iPhone can really carry:
-**a configuration profile they talked her into installing** ("RBI Secure KYC",
-8:14 PM Thursday, four minutes after the passcode went off) and **her Apple
-Account signed in on a device she has never owned**. The always-visible tell
-is no longer an icon nobody can name: it is **the blue recording pill around
-her clock**, which iOS shows whenever the screen is being shared, and which
-everybody has learned to ignore. The Secure Folder becomes **a locked note**
-and the Recycle Bin becomes **Recently Deleted**. Nothing else about the plot
-moves.
-
-## Why the MIRROR draft was replaced (short)
-
-- **Its central idea is abstract.** "A company that fabricates evidence" is a
-  premise the player is told, not one they feel on a phone in their hand.
-- **The personal stakes are asserted, not earned.** "CASE 20 — PLAYER" works
-  only because the story says so. No logic explains how MIRROR knew the
-  player's name, device and location, and a player can't work it out.
-- **The mechanics fight the premise.** If any file might be fake, no clue can
-  be trusted, so solving anything feels arbitrary.
-- **The murder is conventional** (a gunshot on an audio file), and Dev is
-  the villain from his first message.
-
-The replacement keeps one thing from that draft's seed: *a confession of sorts
-arrives before the death is public.* Here it becomes the final prestige.
+Decided with Siddhant on 2026-09-22: **~20 minutes per episode** (a 60-minute
+chapter, one sitting); ***Don't Cut the Call* is retired** to git history; the
+score and share line is **links traced** ("I traced 9 of 11 links"); **why the
+phone reaches the player is still open** (M, O1).
 
 ---
 
-# A. THE CORE PREMISE
+# A. THE PREMISE, AS PLAYED
 
-At 1:11 AM a courier pouch arrives at your door. Inside is an old woman's
-Samsung, taped to a cheap power bank, with a note: **"CALL MAT KATNA."**
-(*Don't cut the call.*) The phone is mid-video-call, **31 hours, 33 minutes and
-counting.** On the other end sits a man in a police uniform, in front of a
-Mumbai Crime Branch board, asking *"Madam? Madam, camera on kijiye. Aap
-digital arrest mein hain."* Seconds later a news alert slides over the call:
-a 64-year-old retired bank manager in Dadar has been found dead below her
-building, and her family says she was under "digital arrest" for 31 hours.
-You're holding a dead woman's phone. The man who apparently terrified her to
-death is still on the line, still asking for her.
+A parcel at your door. Inside, a phone with a cracked corner, and a wedding
+envelope, maroon and gold, from somebody else's shaadi. On its back, in a
+man's quick handwriting: **"M — Sab isme hai. Local thane mat le jaana. Bhasin
+ke log wahan baithe hain."** *(M — It's all in here. Don't take it to the local
+police station. Bhasin's people sit there.)* You are not M. **(game: the
+envelope)**
 
-**Digital arrest** is the crime every Indian family now forwards warnings
-about. A fake officer on a video call tells a victim they're under
-investigation, forbids them to cut the call or tell anyone, and drains their
-savings over days. The story's real subject is the fraud's supply chain,
-which is also India in 2026. **Young men from Kurla and Kottayam are
-trafficked** to scam compounds on the Myanmar border by "overseas job"
-agents, and forced to play police officers. **College students rent out their
-bank accounts** for ₹8,000 a month as mule accounts. **Leaked courier data**
-becomes tomorrow's target list. **"Verification profiles"** that victims are talked
-into installing let someone watch the screen. And when a victim dies, **"she died of shame
-after a cyber fraud"** is the one story nobody investigates.
+The phone has no passcode. It wakes to **47 missed calls** from a number
+nobody saved, and while you're still reading the list, that number rings in
+your hand.
 
-The dead woman, **Vasundhara "Vasu" Kulkarni**, was not a victim. She spent 32
-years in a bank and knew it was a scam in the first fourteen minutes. She
-stayed on the call anyway, for 31 hours. She wanted to rescue the boy
-pretending to be a policeman, follow the money to Mumbai, and warn the
-people on tomorrow's list. **You are the ninth name on that list.** She
-sent you the phone because you were the only one she couldn't call. But she
-was killed before it reached you, and her killers intercepted it on the way.
-Everything you do on it tonight, they watch. At 10:30 AM they call **you**,
-and every accusation they make is something you did.
+The phone belongs to **Sameer Khurana, 27**, a Delhi wedding photographer
+(SK Films) with a job offer in Mumbai and a camera on EMI. Among 1,284
+photographs of the Sehgal wedding at a farmhouse in Chhattarpur is a
+nineteen-year-old waiter smiling over a tray. By the end of the first episode
+you'll have seen his face on a missing-person poster, heard Sameer's voice
+notes saying *Kunal was firing, a boy fell, they didn't treat him, they burned
+him*, and watched nine seconds of firelight on a wall.
 
-**The idea that connects everything:** the scam has two commands, *"Don't cut
-the call"* and *"Don't tell anyone."* Every character is held by a call they
-can't cut: Vasu by the arrest, Sahil by the compound, Tanvi by the men who
-rent her account, and the player by the phone. The three endings are the
-three ways to answer those two commands.
+It looks like a witness's phone. It's the phone of the man who fired the shot,
+and he arranged it before he sent it. **Everything on it is true. The order
+is his.**
+
+**The chapter's question** (script §17): *when an accident becomes a chain of
+choices, where does responsibility actually end?* The player answers it with
+their hands: by what they put in the record, and what they do with it.
 
 ---
 
-# B. THE COMPLETE STORY
-
-## B1. The people
+# B. THE PEOPLE
 
 | | |
 |---|---|
-| **Vasundhara "Vasu" Kulkarni, 64** | Retired branch manager, 32 years at a nationalised bank (the last six at its Kurla branch). Widow of Madhav. Lives alone at Shanti Kunj CHS, Hindu Colony, Dadar East. Laughter club at Shivaji Park at 6:15 every morning. Writes in English and Marathi, never in Roman Hinglish. Her phone's font size is huge, and she has 3,412 unread good-morning forwards. Precise, dry and stubborn, and she documents everything, from a cheque photographed before it's deposited to a diary for every problem. |
-| **Sahil Ansari, 23** | Kurla. B.Com dropout. Answered an Instagram ad: *"Data entry, Thailand, ₹80,000/month."* His mother pawned her gold to pay the agent ₹1.8 lakh. He was flown to Bangkok and driven across a river into **Lotus Park**, a scam compound near Myawaddy, Myanmar. For seven months he has played "Inspector Rathore, Mumbai Crime Branch" to Indian victims from a painted set. If he misses his quota he's beaten, and if he drops a call he loses a meal. |
-| **Pritesh "PK" Kothari, 41** | Runs **Skyline Overseas Placements**, Andheri East. He sends boys abroad. He also rents mule accounts, buys SIMs, sells lead lists and runs Mumbai's "field units": men with fake ID cards who collect cheques and gold from victims. The compound's Indian end. Never appears on the phone by name until an ending. |
-| **Tanvi Deshmukh, 20** | Second-year student in Vile Parle. Rented her bank account to "a friend of a friend" for ₹8,000 a month to pay her fees. Sold Vasu out in one frightened forward. |
-| **Nikhil Kulkarni, 36** | Vasu's son, in Bengaluru. Loving, busy, on DND. *"Aai, call later. Meeting 🙏"* |
-| **Shaila Joshi, 66** | Vasu's laughter-club friend. The only person Vasu trusted with a copy. |
-| **Rukhsana Ansari, 49** | Sahil's mother, in Kurla. Sends a voice note to his dead number every Friday. |
-| **Ruchi Pradhan, 29** | Fifth-floor neighbour. Posts her cat on Instagram stories at midnight. |
-| **Imran, 19** | A PikDrop courier rider. Took ₹2,000 to make a detour. |
-| **Cyril D'Souza, 71** | Bandra. Name #4 on the list. The one who listened. |
-| **You** | Name #9. No phone number on the list. Only an address. |
+| **Sameer Khurana, 27** | Wedding photographer, SK Films, South Delhi. Ambitious; wants a cinematic reel for Mumbai. Remembers exactly what he did; builds a meaning around it that protects him. Writes Roman Hinglish, fast, lowercase. (canon) |
+| **Dilip Kumar Mahto, 19** | Catering worker, "Chhotu". Had started helping Sameer's crew on small jobs. Trusted Sameer, because the relationship was real. (canon) Sameer had promised to take him to Mumbai as an assistant. **(game: the promise's content)** |
+| **Kunal Sehgal, 24** | The groom's younger brother. His father's licensed revolver. Social, careless; enables the shooting and helps contain it, and believes he's less responsible because he didn't fire the fatal shot. (canon) |
+| **Vinod Bhasin, 58** | Retired police officer, now security and liaison for the Sehgals. Calm. Sees control as problem-solving. (canon) Known to Sameer's mother as "Bhasin uncle". **(game)** |
+| **Nitin, 22** | Sameer's assistant. Really tries to help, and obeys a false reassurance without checking it. (canon) |
+| **Raju Mahto, 24** | Dilip's older brother, a delivery rider in Delhi; his SIM is from home, Samastipur, Bihar. (canon, **game:** the district) |
+| **Meera Arora, 28** | Junior advocate, Sameer's former partner. "M." Blocked Sameer after they split. **(game: the block)** Her history with him helps her read him and biases her toward him at first. (canon) |
+| *Game layer* | **Neelam Khurana**, Sameer's mother ("Mummy"). **Vicky**, Nitin's friend with a Swift. **Pappu and Ramesh**, the farmhouse guards. **Mr Sethi**, the catering supervisor. Rohan and Ishita, the couple (names only). |
 
-## B2. The scam, in one paragraph
-
-A leaked courier database becomes a daily lead list. The compound calls each
-lead: *"A parcel in your name, seized at Mumbai airport, bound for Taiwan:
-MDMA, five passports."* The call moves to "Crime Branch" on a WhatsApp video
-call with a warrant PDF. The victim is under "digital arrest": camera on,
-tell no one, and move your savings to an "RBI verification account" for
-clearance. That account is a rented mule account (Tanvi's). The money goes
-from there to crypto, and PK's people cash it out. When a victim is slow,
-the call talks them through installing a **configuration profile**, **"RBI
-Secure KYC"**, and signing in to a second device "for the audit". Between
-them, the profile and her own Apple Account let the compound watch the
-screen, read what arrives, and reach into iCloud. When a victim is dangerous, a "field officer" visits.
-
-## B3. The truth, minute by minute
-
-| When | What happened | How the phone knows |
-|---|---|---|
-| **Thu 5:38 PM** | "SkyEx Courier" call → video call with "Inspector Rathore". The arrest begins. | Call log; WhatsApp video call |
-| Thu 5:52 PM | Vasu's note: *"Taiwan parcel — FAKE. Police don't video call. Keep him talking. Don't let him know."* | Notes |
-| Thu 8:10 PM | On the call's orders she turns off her screen lock "for verification" (8:10 PM) and installs their profile four minutes later. She believes the screen sharing she was walked through is the only thing watching. **It isn't.** | Settings › Face ID & Passcode, off 8:10 PM; VPN & Device Management |
-| Thu 11:30 PM | "Rathore" reads out her **"FIR no. 9820457713"** and the **parcel tracking number MW7-LP-0412.** They're Sahil's codes: his mother's mobile number, and Myawaddy / Lotus Park / Building 7 / Room 0412. | Warrant PDF; diary photos |
-| Fri 11:20 AM | To stall and trace, Vasu goes to her old branch, with the call running in her earphones, and transfers **₹49,000**, not the ₹38 lakh they're demanding: *"FD todne mein do din lagte hain, beta."* The payee: **TANVI R DESHMUKH.** | Bank SMS; diary |
-| Fri 1:10 PM | Vasu decodes the "FIR" and messages the number. It's Rukhsana. Voice notes: Sahil, Thailand, "Kothari saab, Andheri," seven months of silence. | WhatsApp › Rukhsana |
-| Fri 7:30 PM | Sahil reads out "co-accused persons in your money-laundering case": **tomorrow's list of nine**, names, cities, numbers. Number nine has no phone number, only an address. | Diary, page 6 |
-| **Fri 8:47 PM** | Vasu DMs Tanvi on Instagram: *"Beta, kisi ne tumhara account rent pe liya hai? Main 32 saal bank mein thi. Main madad karungi."* Seen at 8:51. | Instagram |
-| 9:40 PM | "Tanvi": *"Aunty please call karo"* and a number. | Instagram |
-| **9:42 PM** | Vasu calls it. It's a man: *"Aunty, aap bahut samajhdaar ho. Ghar pe raho."* 38 seconds, auto-recorded. **Tanvi forwarded the DM to the men who rent her account.** | Call recording |
-| 9:44 PM | Diary: *"The girl gave me to them. Not her fault. They will come."* | Diary photo |
-| 9:48 PM | Calls **1930**, the cyber helpline. On hold 24 minutes, then told to file online. | Call log |
-| 10:02–10:31 PM | Calls the eight numbers on the list. No answer, *"wrong number,"* *"Aunty, ye khud scam hai, block kar rahi hoon,"* one switched off, and **Cyril D'Souza, who listens.** | Call log; recordings |
-| 11:40 PM | Photographs every page of her diary. | Gallery › Diary |
-| **11:48 PM** | Sends Shaila a photo of her **real note** for the stranger, and a voice note: *"Shaila, ghabrana mat. Agar mujhe kuch hua, ye police ko dena. Nikhil ko nahi."* | WhatsApp › Shaila |
-| **11:52 PM** | Books a PikDrop two-wheeler: Dadar → **your address**. Item: *"Mobile + power bank + diary + letter."* | PikDrop |
-| 11:58 PM | Calls Nikhil. Unanswered: he's on DND. | Call log |
-| 12:08 AM | The rider picks up. The watchman hands it over. Vasu keeps the call running inside the pouch, on mute with the camera off. Sahil is punished if the call drops, and it keeps the compound believing she's at home. | PikDrop; call timer |
-| **12:21 AM** | A man with a Crime Branch ID reaches the gate. Watchman in the society group: *"Crime Branch se sir aaye hai Kulkarni madam ke liye."* | Society WhatsApp group |
-| 12:24 AM | The compound has watched the PikDrop booking on her shared screen, and PK's people call the rider: *"Madam ka bhai bol raha hoon. Saaman pehle Andheri East dena hai."* ₹2,000 by UPI. | PikDrop rider chat |
-| **12:31–12:45 AM** | The pouch sits at Skyline Overseas Placements, Andheri East. They take the diary, replace her letter with **"CALL MAT KATNA. SAB DEKHO. — V"**, and work the phone remotely: **12:36** schedule a reminder, **12:37** delete diary page 6, **12:38** delete Shaila's photo "for everyone", **12:39** edit her note to add a PIN hint. | PikDrop route map; the timestamps |
-| **12:37 AM** | Terrace, Dadar. Ruchi's cat story catches voices above: *"Madam, diary kahan hai?"* … *"Aap police nahi ho."* | Instagram story (expires in 24 hours) |
-| **12:40 AM** | Vasu falls from the terrace. | Society group, 12:58: *"Ambulance aayi hai"* |
-| 1:04 AM | The secretary: *"Please don't forward anything. Society ka naam."* | Society group |
-| **1:11 AM** | Delivered to you. **The "news alert" that lands on the call is pushed by their profile.** No outlet has the story yet. | Notification (its icon) |
-| 1:34 AM | Nikhil, told by the police that her phone is missing, calls it. | Phone |
-| 6:42 AM | City Desk publishes the real story, and quotes "a nephew": *"She lost ₹38 lakh and couldn't face the family."* Vasu has no nephew. | News app |
-| 9:10 AM | D'Souza gets the SkyEx call and cuts it. At 10:12 he writes to Vasu's phone: *"Aunty, aapne bachaya. Thank you 🙏"* | WhatsApp |
-| **10:30 AM** | Name #9's slot. **Your phone rings.** | Your phone |
-
-**Why they sent the phone on instead of destroying it:** you were already
-name #9 on the list. A target holding a dead woman's phone, whose own taps
-are logged on it, makes for an arrest with *real* evidence, and your
-investigation shows them who else Vasu gave copies to.
-
-## B4. The three episodes, as the player lives them
-
-### Episode 1 — "Call Mat Kaatna" · ~13 min · 1:11 AM · power bank 1 bar, phone 7%
-
-A courier pouch, a phone taped to a power bank, a note in block capitals. A
-video call that has been running for 31 hours. A policeman who wants "madam"
-to turn her camera on. When you reach for the red button, he whispers *"Mat
-kaatna… please,"* then shouts his script at you. A news alert: she's dead.
-
-You go through a stranger's life to find out whose phone it is: a grandson on
-the lock screen, 3,412 good-mornings, a son who says "call later", and a
-society group arguing about reputation beside an ambulance. Then the scam
-itself: the warrant PDF with an Ashoka emblem, *"Do not inform family."* You
-think you're reading the last 31 hours of a frightened widow.
-
-**Then her Notes app, fourteen minutes into the arrest: "FAKE. Keep him
-talking."** She knew. Her photographed diary shows her decoding him, and you
-finish it: the FIR number is a mobile number, and the number belongs to a
-mother in Kurla whose son went to Thailand for a job. You zoom into the live
-call: **the clock on the "Crime Branch" wall is an hour ahead of Mumbai.** The
-officer is the boy in the mother's photograph.
-
-The power bank dies. The supervisor walks through the back of the frame, and
-Sahil performs harder. When the supervisor leaves, Sahil leans close to a camera
-that shows him only darkness: *"Aunty? Aunty, aap ho na?"* **He doesn't know
-she's dead.** The unmute button pulses. **4%. Plug in your phone to continue.**
-
-### Episode 2 — "Delete for Everyone" · ~15 min · 1:40 → 6:42 AM · charging
-
-You decide whether to tell Sahil. Then: how did she die? Three versions, one
-from each source. **City Desk's alert** says she lost ₹38 lakh and died of
-shame. **The society group** says police came to arrest her and she jumped, so
-she must have been involved. **Your own growing suspicion** says murder. Her
-bank SMS says she lost ₹49,000. She called the cyber helpline and waited 24
-minutes. A guilty woman doesn't do that.
-
-You find Tanvi: the DM, the "please call", the 38-second recording of a man
-who is not a twenty-year-old girl. *"The girl gave me to them. Not her
-fault."* In Photos' Recently Deleted is the diary page someone deleted:
-**tomorrow's nine names.** Eight have numbers, and her call log shows what
-happened when she rang them. The ninth has only an address, and it matches the
-PikDrop booking. **It's your address. You're number nine.**
-
-A neighbour's cat story, 11 hours from expiring, holds voices on the terrace at
-12:37. Then a note titled *"For whoever gets this phone,"* with a PIN hint for
-her locked note. Maybe you type it and find nothing but FD receipts.
-Maybe you notice Shaila's message first: *"Vasu, note mein Madhav ka janamdin
-kyun likha? Tu theek hai?"* Win Shaila's trust and she sends back the photo
-Vasu sent her at 11:48. **Her real note, in English cursive: "CUT THE CALL.
-They can see this phone. Don't type anything."**
-
-You line up everything that happened to this phone after midnight: a reminder,
-a deleted page, a message deleted for everyone and a note edited, all between
-12:36 and 12:39. Vasu was on a terrace in Dadar, and the courier's route map
-has the pouch stopped for fourteen minutes in Andheri East. Settings ›
-General › VPN & Device Management: **RBI Secure KYC — this iPhone is supervised.** You
-open it. One line types itself: **"Good morning, #9."**
-
-### Episode 3 — "10:30" · ~14 min · 10:29 AM · your phone
-
-You fell asleep with it on your chest. The found phone: D'Souza's thank-you to
-a dead woman. The real City Desk article, **published 6:42 AM**, hours after
-the "alert" you saw at 1:11. You decide whether to remove their profile.
-
-**10:30. Your phone rings.** A video call from "Mumbai Crime Branch", with Sahil
-in the uniform and the supervisor in the frame. It's the digital arrest, done to
-you, and every charge is built from your night: *a dead woman's phone delivered
-to your door at 1:11 AM (CCTV), ₹1,00,000 transferred from her account at the minute you typed
-her PIN, your voice.* You keep both phones open and check each charge live. Some are
-bluffs. **Some are true, because you did them.**
-
-Reading your "case number", Sahil says *"one… nine… three… zero."* The
-cyber helpline. He's telling you to hang up. The supervisor gives you until 1
-PM to bring the phone to Andheri East. *Don't cut the call. Don't tell
-anyone.*
-
-**The choice.**
+**Fictional names for everything that's part of the crime:** SK Films,
+Sehgal Enterprises, the venue (**Banyan Farms, Chhattarpur**), Bhasin's agency
+(**Shield Liaison Services**), **Sethi Caterers**, **Lifeline Hospital,
+Mehrauli**, the payments app (**Paytap**), the lender (**ZipEMI**), and the
+Mumbai production house (**Rangmanch Productions**). Real places (Delhi,
+Chhattarpur, Mehrauli, Samastipur, Mumbai) are fine.
 
 ---
 
-# C. EVERY MAJOR TWIST
+# C. THE NIGHT, MINUTE BY MINUTE
 
-| # | When | Before, the player believes | After, the player knows | What it changes looking back |
+The objective truth (script §5), with times and the record that holds each
+moment. **(game: every time and every record.)** The wedding is **Saturday 22
+November**; the player's night is **Saturday 29 November**, exactly a week
+later.
+
+## C1. Before
+
+| When | What happened | Where the phone knows it |
+|---|---|---|
+| Thu 20, 4:18 PM | Kunal to Sameer: *"Bhai reel mein Papa wali le aaunga. Asli feel aayegi 🔥"* Sameer: *"😂 done. back lawn, 12:15"* | WhatsApp › Kunal |
+| Fri 21, 11:02 PM | Sameer's shot list for the Sehgal job, last item: *"12:15 — KS reel. back lawn, mango trees. Dilip — light. Nitin — van/batteries."* | Notes › "Sehgal — shot list" |
+| Sat 22, 7:10 PM | Dilip: *"Bhaiya Mumbai wali baat pakki na? 🙏"* Sameer: *"pakki. shaadi ke baad baat karte hain. aaj light tu pakdega"* | WhatsApp › Chhotu (Dilip) |
+
+## C2. The wedding
+
+| When | What happened | Where the phone knows it |
+|---|---|---|
+| 9:48 PM | Sameer takes a real portrait of Dilip in a break: caterer's waistcoat, a tray, fairy lights, smiling at the lens | Photos › Sehgal wedding |
+| **11:52 PM** | **Kunal fires two rounds into the air** on the dance-floor lawn, dhol and cheering. At 11:58 he sends Sameer the clip: *"bhai ye bhi daal dena film mein 🔥🔥"* | WhatsApp › Kunal (video, 0:14) |
+| 12:15 AM | The private reel on the back lawn: Sameer, Kunal, Dilip holding an LED panel, Sameer's iPhone on a tripod. Nitin is outside at the van. | Notes (shot list) |
+| 12:29 AM | Kunal photographs the setup: Sameer holding the revolver, Dilip beside him with the light. He sends it: *"🔥 boss"* | WhatsApp auto-saved it to Photos (the message itself was later deleted) |
+| **12:31:40** | Sameer fires once, upward, for the camera. The take ends at 12:31:54, when he stops recording to check it | Photos › **Recently Deleted** (the take, 0:14) |
+| **12:32:05** | **The second discharge**, made while posing for Kunal's phone, lower than intended. **It hits Dilip. He is alive.** | Kunal's phone (the family's video). Not on Sameer's phone until Monday (C4) |
+
+## C3. The missing interval
+
+| When | What happened | Where the phone knows it |
+|---|---|---|
+| 12:36 AM | Bhasin creates a group, **"Banyan — Security"** (Bhasin, Kunal, Sameer, Pappu, Ramesh). First message: *"Sameer, gun Kunal ko do. Abhi."* | WhatsApp › the group |
+| 12:38 AM | Bhasin: *"Koi 112 nahi karega. Ladke ko service room le jao. Main sambhaal raha hoon."* Dilip is moved, not driven to a hospital | The group |
+| 12:44–12:52 AM | Sameer searches: *"goli lagne pe kya karein"*, *"gunshot hospital without police case delhi"*, *"lifeline hospital mehrauli emergency number"* | Safari › History |
+| 12:52 AM | Bhasin: *"Doctor ka intezaam ho raha hai."* No doctor comes. | The group |
+| 12:58 AM | Nitin: *"Bhai kya hua? andar se awaaz aayi. sab bhaag rahe hain"* | WhatsApp › Nitin (**archived** later) |
+| **1:07 AM** | **Dilip to Sameer:** *"Bhaiya dard ho raha hai. Aap aa rahe ho na?"* Sameer, 1:08: *"aa raha hoon. hospital le jayenge. bas thodi der"* | WhatsApp › Chhotu (Dilip) |
+| 1:14 AM | Pappu: *"Sir ladka hosh mein hai. Paani maang raha hai."* | The group |
+| 1:22 AM | Nitin: *"maine Vicky ko bola hai, uski gaadi hai. 20 min. service gate pe laata hoon. Dilip ko wahan le aao"* **Nitin's genuine attempt.** | Nitin (archived) |
+| 1:31 AM | Bhasin: *"Doctor aa raha hai. Sab shaant raho."* | The group |
+| 1:40 AM | Nitin: *"Vicky 10 min. service gate — Mandi Road wala na?"* | Nitin (archived) |
+| 1:49 AM | Ramesh: *"Sir, Sameer sir service room mein hain ladke ke paas."* | The group |
+| **1:52 AM** | **Sameer to Nitin:** *"Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bhej aur nikal yahan se."* **He knows it's false.** He tells himself Bhasin has it in hand, and that Nitin will make it worse. | **Deleted "for me" on Thursday.** Nitin still has it. |
+| 1:53 AM | Nitin: *"theek hai bhai. agar le gaye hain toh main Vicky ko wapas bhej deta hoon"* | Nitin (archived): **a reply to a message that isn't there** |
+| **1:56 AM** | Sameer searches *"private ambulance chhattarpur 24 hours"*; at 1:57, *"goli lagne ke baad kitne ghante"*. **He is still looking for help four minutes after saying help had come.** | Safari › History |
+| 1:59 AM | Pappu: *"Sir service gate pe ek Swift aayi hai, kisi ko lene."* Bhasin: *"Kaun? Pata karo."* | The group |
+| 2:04 AM | Pappu: *"Chali gayi sir. Driver bol raha tha cancel ho gaya."* Nitin, the same minute: *"Vicky wapas aa gaya. bhai sab theek hai na?"* No reply. **The car left empty.** | The group; Nitin (archived) |
+| 2:41 AM | Pappu: *"Sir ladka bol nahi raha."* Bhasin, 2:42: *"Call karo mujhe."* The group goes quiet. | The group |
+| 2:41–3:30 AM | Dilip dies on the property. **The game never states a minute** (script §18: no false certainty). | — |
+| 3:31 AM | Bhasin calls Sameer: 4 min 12 s | Phone › Recents |
+| 4:20–5:05 AM | The body is burned on the back plot by the old tube well, on Bhasin's orders. Sameer takes part. At 4:47 he films 31 seconds. | Photos › Favorites (the clip, **trimmed** to 0:09 on Thursday) |
+
+## C4. The week after
+
+| When | What happened | Where the phone knows it |
+|---|---|---|
+| Sun 9:10 AM | Bhasin to Sameer: *"Balance aaj aa jayega. Tab tak kisi se baat nahi. Nitin se bhi nahi."* | WhatsApp › Bhasin Uncle |
+| Sun 9:40 AM | Voice note 1 to "M": *"M… main jaanta hoon tu reply nahi karegi. Kal shaadi mein… Kunal firing kar raha tha. Ek ladka gir gaya."* One grey tick: **she blocked him.** | WhatsApp › M (pinned) |
+| Sun 11:04 AM | **+₹1,80,000** from SEHGAL ENTERPRISES: *"Final balance – wedding coverage"*. It's the balance due on his own invoice, dated 3 Nov. **(legitimate money, now leverage)** | Paytap; Mail › invoice SK-1127 |
+| Sun 11:20 PM | Voice note 2: *"Usko hospital nahi le gaye. Bhasin ne kisi ko jaane nahi diya."* | M |
+| Mon 2:05 AM | Voice note 3: *"Unhone usko jala diya, M. Main wahan tha. Maine dekha."* | M |
+| Mon 10:12 AM | Mr Sethi: *"Chhotu ka hisaab Bhasin sir ne kar diya. List se naam hata diya. Aap bhi kuch mat bolna."* **(money that makes the incident disappear)** | WhatsApp › Sethi Caterers |
+| Mon, from 1 PM | Raju's calls begin (he got the number from Dilip's contacts), then a forwarded poster: **LAPATA — Dilip Kumar Mahto (Chhotu), 19**, last seen Sat 22 Nov, Chhattarpur | Phone; WhatsApp › unsaved number |
+| **Mon 3:10 PM** | **Kunal sends a frame from his video:** Sameer's arm coming down, the flash, Dilip behind the light. *"Humare paas bhi hai. Soch samajh ke."* Sameer screenshots it. **Now he knows he fired the shot, and that they can prove it.** | Photos › **Hidden** (the screenshot); the chat message deleted |
+| Mon 4:58 PM | A voice memo, to nobody: *"Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai."* *(The first was for the camera. The second… I was posing. I thought it was empty.)* | Voice Memos › **Recently Deleted** |
+| Tue 11:30 AM | Mummy: *"Bhasin uncle aaye the. Pooch rahe the tu kahan hai. Beta sab theek hai?"* | WhatsApp › Mummy |
+| Tue | Mumbai goes on: the offer letter from Rangmanch Productions (second-unit DOP, joining **Mon 1 Dec**), a flat deposit, and a train, **Sun 30 Nov**, New Delhi → Mumbai Central | Mail; Paytap |
+| Wed 10:15 PM | Voice note 4: *"Agar mujhe kuch hua… sab phone mein hai."* | M |
+| **Thu 27, 10:40–11:41 PM** | **He prepares the phone** (E below). The last act: passcode off, 11:41 PM | Settings; every "deleted", "edited", "archived" and "hidden" marker |
+| Fri 28 | The phone leaves him, with the envelope. **How it reaches the player is open (O1).** | — |
+| **Sat 29, 11:40 PM** | **You open it.** | — |
+
+---
+
+# D. THE CHAIN — ELEVEN LINKS
+
+The score, and what the endings read. **(game)** Each link is a step in the
+causal chain, with its owner (script §17). A link is **traced** when the
+player files it in the record with its proof. An untraced link stays in
+**Sameer's version**, and the end card shows that version in his words.
+
+| # | Link | Owner | Kind | How it's traced | Sameer's version, if untraced |
+|---|---|---|---|---|---|
+| 1 | **The reel.** Sameer staged his own reel with a real gun | Sameer | Spine | Q5 | *"Main bas shaadi shoot kar raha tha."* |
+| 2 | **Kunal's gun.** Kunal fired first, then handed over his father's loaded revolver | Kunal | Spine | Q5 | — (Sameer wants this one found) |
+| 3 | **Two firings.** The celebration shots and the shot that hit Dilip were separate | — | Spine | Q6 | *"Kunal firing kar raha tha. Ek ladka gir gaya."* |
+| 4 | **The shot.** Sameer's second discharge hit Dilip | Sameer | Spine | Q7 | *"Goli Kunal ki thi."* |
+| 5 | **Alive.** Dilip survived the shot, conscious, for more than two hours | — | Spine | Q8 | — |
+| 6 | **Kept there.** Bhasin had him moved to the service room: no 112, no hospital | Bhasin | Spine | Q10 | — |
+| 7 | **The car.** Nitin got a car to the service gate, and it left empty | Nitin | Spine | Q9 | — |
+| 8 | **The lie.** Sameer told Nitin that Dilip had gone for treatment, knowing he hadn't | Sameer | **Deep** | Q11 | *"Bhasin ne gaadi wapas bhej di."* |
+| 9 | **The fire.** The body was burned before dawn, and Sameer took part and filmed it | Bhasin, Sameer | **Deep** | Q12 | *"Maine dekha. Main wahan tha."* |
+| 10 | **The price.** His legitimate balance became leverage for silence | The family | **Deep** | QM | *"Unka paisa. Chup rehne ka."* |
+| 11 | **The edit.** Sameer arranged the phone so that his part ends before the death | Sameer | **Deep** | Q13 | *"Sab phone mein hai."* |
+
+- **Spine links (1–7) are required.** Every finisher of the full chapter
+  traces them. Sameer *wants* 2, 5 and 6 found; 1, 3 and 4 he can't hide,
+  only minimise.
+- **Deep links (8–11) are optional.** The case file accepts Sameer's version
+  for them, without a buzzer, so scores really differ: a first play typically
+  lands between 7 and 10, and **11 of 11** is the replay goal.
+- **Ending A needs links 8 and 11** in the record (I). Missing either one, or
+  leaving the lie out, is Ending B.
+
+---
+
+# E. THE PHONE AS HE PREPARED IT
+
+Script §3 says the phone is *deliberately curated, not a neutral archive, not
+a magical evidence box*. This is that curation, done in one hour on Thursday
+night. **(game: every item.)** It's also the chapter's second law (PLAYER-
+JOURNEY): **every convenience is curation.** The easy paths are Sameer's
+version, and the harder routes hold what he left out. Every harder route is a
+real iOS or WhatsApp behaviour, so it's checkable, and it teaches something
+true about phones.
+
+**What he put in front (the easy path)**
+- The **M** chat pinned to the top of WhatsApp: four voice notes, in order,
+  each with one grey tick.
+- The fire clip in **Favorites**, trimmed to nine seconds.
+- **"Banyan — Security"** left untouched: it's his case against Bhasin.
+- A note, **"For M"** (Thu 11:20 PM, last edited 11:26):
+  *"1. Voice notes — M chat. 2. Favorites — video. 3. Bhasin wala group.
+  4. Nitin —"* **The last line stops there.** He began to point at Nitin,
+  and didn't.
+- Passcode off, 11:41 PM, so M can get in.
+
+**What he minimised or hid (the harder routes)**
+
+| Thu | What he did | What survives it | Real behaviour it rests on |
+|---|---|---|---|
+| 10:48 PM | Deleted the reel take | **Photos › Recently Deleted**, "28 days" | iOS keeps deleted photos and videos for 30 days |
+| 10:52 PM | Deleted the "Doosri… main pose kar raha tha" memo | **Voice Memos › Recently Deleted** | Voice Memos has its own 30-day bin |
+| 11:02 PM | Trimmed the fire clip from 0:31 to 0:09 and favourited it | **Edit › Revert** restores the first 22 seconds: his voice, *"Bhasin sir, yahan?"*, and his hands with a jerrycan, the silver kada from his Instagram selfies on his wrist. **No body, ever.** | iOS keeps the original of an edited video |
+| 11:06 PM | Deleted Kunal's 12:29 photo from their chat | The copy WhatsApp **auto-saved to Photos** | Deleting a WhatsApp message doesn't delete the saved photo |
+| 11:10 PM | Deleted his 1:52 message to Nitin "for me", then **archived** Nitin's chat | **Chats › Archived (1)**, and Nitin's 1:53 reply to a message that isn't there | "Delete for me" removes nothing from the other phone |
+| 11:14 PM | Hid the screenshot of Kunal's frame, and turned off **Show Hidden Album** | **Settings › Apps › Photos › Show Hidden Album** | With no passcode, the Hidden album opens once it's shown |
+| 11:20 PM | Wrote "For M" | The unfinished "4. Nitin —" | — |
+
+**What he didn't think to curate:** Safari history, whose timestamps he
+believed showed a man trying to help (reveal #6), and the security group,
+whose integrity is the point of keeping it.
+
+---
+
+# F. THE THREE EPISODES
+
+Every episode is about 20 minutes, has about six sequences and four
+questions, and each question sits on a stage of the mystery ladder (script
+§7, "L1"–"L10" below). Every question has **two routes and three hints**, as
+the engine already enforces. Hints and full dialogue come in S6–S8; key lines
+are drafted here. **English sits under every Hinglish line in the game.**
+
+**Question types.** *Pick* (table the proof, name the answer), *type*,
+*timeline* (multi-lane, ordered), and *claims* (proven / not proven). New in
+this chapter **(game):** a question can accept **Sameer's version** as a claim,
+and a later find can reopen it as **Revisit** (G).
+
+## Episode 1 — *Missed Calls* · ~20 min · Sat 29 Nov, 11:40 PM · his battery 9%
+
+**End belief (canon):** Sameer witnessed a murder and is being hunted. **And
+(game):** he is alive, and steering what M reads.
+
+| # | Beat | Where | Interaction |
+|---|---|---|---|
+| 1 | **The parcel.** On the desk: a padded parcel. Inside: the phone, cracked at one corner, and the **Sehgal wedding shagun envelope** (*"Ishita weds Rohan · Sehgal Parivar · 22.11"*), with the note on its back, addressed to **"M"** and naming Bhasin. The note is a **photograph of his handwriting**, English beneath. | Arrival | Tear, lift, turn the envelope over. **(game: the envelope, O2)** |
+| 2 | **It wakes.** No passcode. The lock screen stacks up: **Missed Calls (47)** from an unsaved +91 62… number, *Mummy (6)*, *Bhasin Uncle (2)*. Within seconds the unsaved number **rings in your hand**. | Lock screen, Phone | **Choice:** answer / decline / let it ring (H: *reply to Raju early*) |
+| 3 | If answered, Raju: *"Hello? Sameer bhaiya?… Aap kaun ho? Ye Sameer bhaiya ka phone hai na? Dilip kahan hai?"* *(Who are you? Isn't this Sameer's phone? Where's Dilip?)* Pick a reply, or hang up. | Call | Choice |
+| 4 | **Q1 — Whose phone is this?** SK Films on Instagram (his grid of weddings, selfies with a silver kada), invoice SK-1127 in Mail, the Apple Account in Settings. **Sameer Khurana, wedding photographer.** *L1* | Instagram, Mail, Settings | Cross-app match (onboarding; answerable in 15 seconds) |
+| 5 | **His life.** Mummy: *"Beta khana khaya? Rent ka kya socha?"* ZipEMI: *"EMI overdue ₹14,200 — Sony A7 IV"*. Mumbai: an offer letter, a flat deposit, a train **tomorrow**. 1,284 photos of the Sehgal wedding. | WhatsApp, Messages, Mail, Paytap, Photos | Reading (*intrusion; liking him*) |
+| 6 | **The boy with the tray.** In the Sehgal album, 9:48 PM: a waiter in a caterer's waistcoat, smiling into the lens. **Just another face.** | Photos | — (planted) |
+| 7 | **The poster.** The unsaved number, on WhatsApp: a forwarded **LAPATA** poster, *Dilip Kumar Mahto (Chhotu), 19*, and *"Aap Sameer bhaiya ho na? Dilip aapke saath kaam kar raha tha. Ye phone ab kiske paas hai?"* *(Is this Sameer? Dilip was working with you. Who has this phone now?)* His profile photo is from Chhath, in Samastipur. | WhatsApp | Reading (*dread*) |
+| 8 | **Q2 — Who is the boy in the poster?** The waiter from 9:48 PM: zoom into his face, or match *Chhotu* on the poster to Mr Sethi's *"Chhotu Saturday ke baad se nahi aaya"*. **Dilip Kumar Mahto, a catering worker at the Sehgal wedding.** *L3 (first half)* | Photos (zoom), WhatsApp | Face match / name match |
+| 9 | **The voice notes.** The pinned **M** chat: four voice notes, each with one grey tick. *"Kunal firing kar raha tha. Ek ladka gir gaya."* … *"Usko hospital nahi le gaye."* … *"Unhone usko jala diya, M. Main wahan tha. Maine dekha."* | WhatsApp › M | Listening (captions) |
+| 10 | **The fire.** Favorites: a 0:09 clip, 4:47 AM Sunday. Orange light moving on a brick wall, smoke, a crackle, a man off-camera: *"Jaldi karo."* **No body.** | Photos › Favorites | Watching |
+| 11 | **Q3 — What happened at the wedding?** The case file **accepts Sameer's version** as a claim, filed with its sources: *"A worker was shot while Kunal Sehgal was firing; he wasn't treated, and his body was burned."* No verdict, no buzzer. *L2*. **Revisited in Episode 2.** | Case file | Claim (Sameer's version) |
+| 12 | **Someone is looking.** A Find My alert: *a sound was played on this iPhone*. Then Mummy: *"Beta, phone ki location kahin aur dikha rahi hai. Tu kahan hai? Bhasin uncle phir aaye the."* *(Your phone's location shows somewhere else. Where are you? Bhasin uncle came again.)* | Lock screen, WhatsApp | **Choice:** tell her a stranger has it / reply as Sameer / nothing (H: *answer Sameer's mother*) |
+| 13 | **Q4 — Was this phone prepared before it was sent?** Yes. Settings › Face ID & Passcode: *turned off Thu 11:41 PM*. Notes › **"For M"**, Thu 11:20 PM: a reading order, whose last line stops at *"4. Nitin —"*. *L1 (the complication)* | Settings, Notes | Two routes to one realisation |
+| 14 | **Last beat.** An unknown number: *"M? Tu hai?"* … *"Voice notes sun liye? Order mein dekhna. Jo pehle rakha hai woh pehle."* … *"Mere ghar mat jaana. Bhasin wahan aata hai."* *(Did you hear the voice notes? Look in order. What I put first, first. Don't go to my house.)* **2%.** The screen dims. **Plug the phone in to keep it alive.** | WhatsApp; the real charger | The charger gate (re-skinned) |
+
+**Believes:** a frightened photographer saw Kunal Sehgal's gun kill a waiter
+and a family burn him, and he is hiding. **Doesn't know:** the chronology
+(canon), that there was a reel, or why "Nitin —" stops.
+
+## Episode 2 — *The Second Shot* · ~20 min · title card **"12:32 AM"** · charging
+
+The title card carries **the minute of the shot, a week on**. **(game)**
+Sameer's thread is waiting.
+
+| # | Beat | Where | Interaction |
+|---|---|---|---|
+| 1 | **Sameer.** Reply to *"M? Tu hai?"*: *"Main M nahi hoon."* / *"Haan."* / *"Tum kahan ho?"* / nothing. From here he can be messaged, and he steers: *"Bhasin ka group dekh. Sab wahan hai."* (H: *the Sameer route*) | WhatsApp › unknown number | Choice (O1 affects only his reaction) |
+| 2 | **The reel.** Photos › WhatsApp: Kunal's 12:29 AM photo, **Sameer holding the revolver**, Dilip beside him with the light. It isn't in their chat any more. Notes › shot list: *"12:15 — KS reel… Dilip — light."* Kunal, Thursday: *"reel mein Papa wali le aaunga."* | Photos, Notes, WhatsApp | Finding (*suspicion*) |
+| 3 | **Q5 — What was Sameer doing at 12:15?** Shooting his own reel with Kunal's father's real revolver, which Kunal brought. *(links 1, 2)* *L2 → L4* | Case file | Pick |
+| 4 | **Two firings.** Kunal's 11:52 clip (dance floor, two shots up, cheering) against the 12:29 photo and a clip in **Recently Deleted**: the reel take, 12:31, one shot up for the camera, Sameer laughing, 14 seconds, cut off. | WhatsApp, Photos › Recently Deleted | Watching; the timestamps |
+| 5 | **Q6 — Was it one firing or two?** A timeline of the lawns: dance floor at 11:52, back lawn at 12:31. **Two**, forty minutes and a lawn apart. **The Episode 1 claim cracks: *Revisit Q3*.** The player strikes *"while Kunal was firing"* by hand. *(link 3)* *L2's complication* | Case file | Timeline, then Revisit |
+| 6 | **The memo.** Voice Memos › Recently Deleted, Mon 4:58 PM: *"Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai."* | Voice Memos | Listening (*cold*) |
+| 7 | **Q7 — Who fired the shot that hit Dilip?** **Sameer.** Route 1: the memo plus the reel take (the gun in his hand at 12:31). Route 2: the security group's first line, 12:36, *"Sameer, gun Kunal ko do. Abhi."* (Third, if taken: Kunal, messaged as Sameer, *"Tu khud jaanta hai goli kisne chalayi."*) **The first reveal. It should feel like the answer, and it isn't the end.** *(link 4)* *L4* | Case file | Pick |
+| 8 | **Alive.** The Chhotu chat, 1:07 AM: *"Bhaiya dard ho raha hai. Aap aa rahe ho na?"* Sameer, 1:08: *"aa raha hoon. hospital le jayenge. bas thodi der."* The group, 1:14: *"Sir ladka hosh mein hai."* | WhatsApp | Reading (*the crash*) |
+| 9 | **Q8 — Did the shot kill Dilip?** No. He was alive and conscious at 1:07 and at 1:14. **The window.** Safari's 12:44–12:52 hospital searches now mean something else. *(link 5)* *L5* | Case file | Pick; the searches recontextualise |
+| 10 | **Raju.** If you reply to him and keep his trust (H), he tells you what Dilip told him: *"Sameer bhaiya usko Mumbai le jaane wale the. Assistant banayenge bole the. Woh unko bhaiya bolta tha."* And about that night: *"Usko bharosa tha. Sameer bhaiya hain na, sab sambhaal lenge."* *(He trusted him. Sameer bhaiya's there, he'll handle it.)* **The promise, and the expectation.** Fallback: the Chhotu chat, Sat 7:10 PM, *"Mumbai wali baat pakki na?"* *L3 (second half)* | WhatsApp | Trust; reply list |
+| 11 | **QM — What was the ₹1,80,000?** *Optional* (it doesn't block). Claims to mark **proven / not proven**: *"It was hush money"* (not proven: it matches his own invoice); *"The balance was held until he agreed to stay quiet"* (proven: Bhasin, Sun 9:10); *"The family paid to take Dilip off the records"* (proven: Mr Sethi, Mon 10:12). *(link 10)* **Sameer's version is accepted:** *"unka paisa, chup rehne ka"*. | Paytap, Mail, WhatsApp | Claims |
+| 12 | **Bhasin writes.** *"Jiske paas bhi ye phone hai — wapas kar do. Sameer ke liye achha hoga."* *(Whoever has this phone, return it. It'll be better for Sameer.)* It arrives earlier if you told Mummy (H). | WhatsApp | Reading (*danger*) |
+| 13 | **Nitin.** Chats › **Archived (1)**. Nitin at 12:58, *"sab bhaag rahe hain"*; at 1:22, **the car**; at 1:40, *"service gate — Mandi Road wala na?"*; the group at 1:59, *"service gate pe ek Swift aayi hai"*; at 2:04, *"Chali gayi sir."* | WhatsApp (Archived), the group | Finding (*hope*) |
+| 14 | **Q9 — Did anyone try to get him out?** Yes: **Nitin got a car to the service gate. It left empty at 2:04.** *(link 7)* *L6* | Case file | Pick |
+| 15 | **Cliffhanger.** In Nitin's chat, between 1:40 and his 1:53: **nothing**. Then Nitin: *"theek hai bhai. agar le gaye hain toh main Vicky ko wapas bhej deta hoon."* *(OK. If they've taken him, I'll send Vicky back.)* **A reply to a message that isn't there.** Someone told Nitin that Dilip was already on his way. | WhatsApp (Archived) | The episode ends on the gap |
+
+**Believes (canon):** Sameer fired the shot, but the family controlled what
+happened afterwards. **Doesn't know:** what was said at 1:52, or by whom.
+
+## Episode 3 — *The Cancelled Rescue* · ~20 min · title card **"1:52 AM"**
+
+| # | Beat | Where | Interaction |
+|---|---|---|---|
+| 1 | **Q10 — The missing interval.** A **five-lane timeline**, 12:32 → 4:47 AM: *Dilip · Sameer · Nitin · the car · Bhasin*. Place the group's lines, the Chhotu chat, Nitin's archived messages, the Safari searches, the Recents. Beside the board, **the venue's site plan** (Mail: the planner sent it to Sameer for his shot list) puts the service room forty metres from the service gate on Mandi Road: a minute's carry. **Bhasin's lane** holds the orders: 12:38 *no 112*, 12:52 *doctor*, 1:31 *doctor*, 1:59 *kaun?*. **Contradictions light up**: 1:49 *Sameer is with Dilip*, 1:53 *"agar le gaye hain"*, 1:56 *Sameer searches for an ambulance.* *(link 6; reconfirms 5 and 7)* *L6–L7* | Case file (the board) | Multi-lane, ordered timeline |
+| 2 | **Nitin.** Message him (he thinks you're Sameer, until you say otherwise). **Protect him**, and he sends two screenshots, the 1:52 message and **Vicky's live location** from 1:38 to 2:06 (the car's own movement: in, a six-minute stop at the service gate, out), and says: *"Maine check bhi nahi kiya. Bas maan gaya."* *(I didn't even check. I just believed it.)* **Expose him**, or have confronted Kunal first, and he goes silent (H). | WhatsApp | Trust; reply list |
+| 3 | **Q11 — Why did the car leave empty?** **Sameer's version is accepted:** *"Bhasin's people turned it away"* (the group, 1:59–2:04). **The traced answer:** *Sameer told Nitin at 1:52 that Dilip had gone for treatment, and he knew it was false.* Route 1: Nitin's screenshot. Route 2, on this phone: 1:49 (he's in the service room), 1:53 (the reply to a missing message), 1:56 (still searching for an ambulance). *(link 8)* *L7* | Case file | Pick (two answers accepted, H) |
+| 4 | **The fire, again.** Photos › the fire clip › **Edit › Revert**. Twenty-two seconds come back: Sameer's voice, *"Bhasin sir, yahan?"*, his hands, the kada, a jerrycan. **No body.** | Photos | Revert (irreversible on iOS, so it's done by hand) |
+| 5 | **Q12 — Why did Sameer film the fire?** **Sameer's version is accepted:** *"to have proof against them"* (voice note 3, Favorites, "For M"). **The traced answer:** *he took part, and kept the footage as counter-evidence.* Route 1: Revert. Route 2: Kunal, if messaged, *"Aur aag? Lakdi tu khud dhoke laaya tha."* *(link 9)* *L8* | Case file | Pick |
+| 6 | **Their evidence.** Settings › Apps › Photos › **Show Hidden Album**, on. **Hidden** holds one screenshot: Kunal's frame of the second discharge, and *"Humare paas bhi hai. Soch samajh ke."* (Second route: exposing Nitin, or accusing Kunal, makes Kunal send it again, H.) | Settings, Photos | Finding (*understanding*) |
+| 7 | **Q13 — Why did he send this phone?** **Sameer's version is accepted:** *"to confess and get help"* (voice note 4, the envelope's *"Sab isme hai"*). **The traced answer:** *they can prove he fired, so he sent a counter-file: what they did after the shot, with his lie left out.* It needs their evidence (beat 6) and at least two of his edits traced (E). *(link 11)* *L8–L9* | Case file | Pick |
+| 8 | **Sameer, one last time.** **Give him the rescuer:** *"Tumne bachane ki koshish ki thi."* He takes it gratefully and keeps talking. **Or confront him with the full chain** (only with links 4, 5, 7 and 8 traced): *"1:52 pe tumne Nitin ko bola Dilip chala gaya. 1:56 pe tum ambulance dhoond rahe the."* Typing… for a long time. Then: ***"Maine usko bola Dilip nikal gaya hai. Mujhe pata tha woh nahi nikla tha."*** *(I told him Dilip had already left. I knew he hadn't.)* **He never writes again.** *L10* | WhatsApp | The chapter's last choice before the record |
+| 9 | **The record.** Your phone. **(I.)** | Your phone | The ending |
+
+**Believes (canon):** Sameer and the family are both responsible, but not in
+the same way. **The key reveal (canon):** the deepest lie on this phone isn't
+a made-up event. It's a true sequence, arranged so his responsibility seems
+to end earlier than it does.
+
+---
+
+# G. HOW QUESTIONS WORK HERE **(game)**
+
+- **One question at a time**, with free *where to look* and three hints, and
+  the idle nudge after 45 seconds, as in every Found chapter.
+- **The case file is the record.** Every answer is filed as a **claim** with
+  its sources beside it (script §12: observation, then inference). The
+  player sees their theory as a document they're writing.
+- **Sameer's version is a real answer.** Where the evidence Sameer left
+  supports his framing (Q3, Q11, Q12, Q13, QM), the file accepts it: filed,
+  sourced, and never called wrong. **Fair play (law 3) is what makes this
+  honest:** the contradicting evidence is always on a screen the player can
+  reach.
+- **Revisit.** When a later find contradicts a filed claim, the claim cracks
+  and the question comes back. The player strikes the old line by hand and
+  files the new one (script §12: contradiction). **Q3 must be revisited** to
+  go on (spine). Q11–13 and QM reopen only if the player finds the evidence
+  later, and they may never.
+- **Hints lead to the traced answer.** A player who asks for help gets the
+  truth. A player who's sure of themselves may file Sameer's version without
+  ever asking. The score measures that confidence.
+
+---
+
+# H. ROUTES AND CHOICES
+
+Script §13 (branches) and §14 (decisions), made playable. **Every fact a
+closed route could give has a second source**, and a test holds the chapter
+to it (ROADMAP S12).
+
+| Decision (canon) | When and how **(game)** | Immediate | Later | If it closes something, the fallback |
 |---|---|---|---|---|
-| **1** | Ep 1, ~6 min | A frightened widow was bullied to death by fraudsters. | **She knew from minute fourteen and ran the call for 31 hours.** | Every "compliant" message in the scam chat was her acting. *"Haan sir, PIN bhool gayi"* is a bank manager stalling. |
-| **2** | Ep 1 end | The man on the call is the killer, still hunting. | **He's a trafficked Kurla boy in Myanmar, and the call was his only way out.** His "FIR number" was his mother's phone number. | His first whisper, *"Mat kaatna,"* wasn't a threat. It was a plea: a dropped call costs him a meal. His script lines were codes. |
-| **3** | Ep 2, early | Suicide from shame, or she was secretly involved (the society's version). | **Neither.** She lost ₹49,000 on purpose, called the helpline, and was betrayed by the girl she tried to save. | The "₹38 lakh" in the news came from someone who wanted a shame story. Where did the "nephew" come from? |
-| **4** | Ep 2, middle | You're an outsider investigating someone else's tragedy. | **You're name #9 on tomorrow's list.** She sent you the phone because you were the only one she couldn't call. | The envelope wasn't random. The case is about you. |
-| **5** | Ep 2 end | You've been following Vasu's instructions from a dead woman's note. | **The note is theirs.** Her real note said *CUT THE CALL.* The pouch stopped in Andheri East, and they've watched every tap. | The first instruction you ever obeyed was the villains'. Keeping the call alive, and even plugging in your real charger for it, served them. The "PIN hint" was bait. |
-| **6** | Ep 3 | The call accusing you is a scam, so the evidence is fake. | **The scam is fake, but the evidence is real, because you made it.** | Your curiosity, the PIN, the lines you chose and the people you contacted were collected. "Curiosity is part of the crime," made literal. |
-| **7** | End card | The chapter started when you opened the envelope. | **The 1:11 "news alert" came from their profile, five and a half hours before any outlet had the story.** | The first thing you ever saw was the killers telling you she was dead, and framing it as suicide before anyone else could. |
-
-
----
-
-# D. THE EXACT SEQUENCE OF DISCOVERIES AND INTERACTIONS
-
-**Rules the whole chapter follows**
-
-- **The call never leaves.** Vasu's video call runs as a picture-in-picture
-  window over every app. It has a live timer, a mic button (muted), a camera
-  button (off) and tap-to-expand. Sahil idles, types, yawns, and speaks on
-  cues. The supervisor crosses the back of the frame at set moments. **Zoom
-  works on the call itself.**
-- **Every tap can be seen.** From the first second, the status bar has a
-  small grey icon that nobody explains. Anything the player does that the
-  syndicate could use is written to a hidden **exposure ledger** (see G).
-- **Every question has two routes and three hints**, as now. Where one route
-  exposes the player (the PIN, contacting Shaila, unmuting) and the other
-  doesn't, the safe route is always harder, never impossible.
-- **Replies are chosen from a list**, and only in four places: unmuting on the
-  call, Nikhil, Shaila, and Ending 03's friend.
-
-## Episode 1 — "Call Mat Kaatna"
-
-| # | Beat | Where | Interaction |
-|---|---|---|---|
-| 1 | **The pouch.** A PikDrop courier pouch with a delivery sticker (your name if a friend sent the case; otherwise "Flat —"). Tear it open. A Samsung taped to a power bank with 1 LED lit. A note: **"CALL MAT KATNA. SAB DEKHO. — V"** | Envelope | Physical: tear, lift, read |
-| 2 | **The call.** 31:33:07 and counting. "Inspector Rathore" in front of a Crime Branch board, flag, emblem. *"Madam? Camera on kijiye."* Mic muted, camera off. | Call (full screen) | — |
-| 3 | **The red button.** Pressing End brings up *"Call end karein?"* Before you confirm, Sahil leans in and whispers: *"Mat kaatna… please."* Then, loud: *"CALL MAT KAATNA. Aapke naam pe non-bailable warrant hai."* You can still end it (see F, replay). | Call | Choice (the first secret branch) |
-| 4 | **The alert** slides over the call: *City Desk · Dadar: retired bank manager, 64, found dead below building; family says she was under 'digital arrest' for 31 hours.* (It arrives while the blue recording pill sits around her clock, as it has since Thursday. Nobody looks at it the first time.) | Notification | — |
-| 5 | Minimise the call. Home screen: huge font, a grandson on the wallpaper, Samsung account **Vasundhara Kulkarni**. **Q1 — Whose phone is this, and is she the woman in the news?** Match the wallpaper to the news photo, and the society name in the chat to the building. | Home, News, WhatsApp | Cross-app match (easy onboarding) |
-| 6 | **Her life.** Kulkarni Parivar (3,412 unread). Nikhil: *"Aai, call later. Meeting 🙏"* (Thu 6:02 PM). Her last call: **Nikhil, 11:58 PM, unanswered.** Shanti Kunj CHS group: 12:21 *"Crime Branch se sir aaye hai…"*, 12:58 ambulance, 1:04 *"Please don't forward anything. Society ka naam."* | WhatsApp, Phone | Reading (dread) |
-| 7 | **The scam, from its own mouth.** Chat with "Mumbai Crime Branch ✔": the warrant PDF (**FIR No. 9820457713**, **Parcel MW7-LP-0412**), *"Do not inform family. Camera ON 24 hrs. Transfer to RBI verification account."* Her replies: *"Haan sir." "PIN bhool gayi, beta." "FD todne mein do din lagte hain."* | WhatsApp, Files (PDF) | Reading; the player learns what digital arrest is |
-| 8 | **Q2 — Did she believe them?** No. Notes, **Thu 5:52 PM**: *"Taiwan parcel — FAKE. Police don't video call. Keep him talking. Don't let him know."* Second route: the diary photos. | Notes, Gallery | Contradiction. **Twist 1.** |
-| 9 | **Her diary** (Gallery › Diary, photographed 11:40 PM). English, with Marathi asides. Page 3: *"FIR no. is not an FIR format. 10 digits. A mobile no.?"* Page 4: *"MW7-LP-0412 — not a courier code."* Pages 5 and 7 are there. **Page 6 is missing.** | Gallery | Reading; the gap is planted |
-| 10 | **Q3 — Who is 98204 57713?** Search Contacts or WhatsApp: **Rukhsana**, chatted with Fri 1:10 PM. Her voice notes: *"Mera Sahil… Thailand job… Kothari saab, Andheri… saat mahine se awaaz nahi."* A photo of Sahil at a cousin's wedding. | Contacts, WhatsApp | Decode, then search |
-| 11 | **Q4 — Where is the officer really?** Zoom into the live call: **the wall clock reads 2:1x when your phone says 1:1x** (Myanmar is IST + 1:00). A fire extinguisher's label in Burmese script. Chrome history: *"MW LP Myawaddy"*, *"Lotus Park Indians rescued"*. Compare his face with the wedding photo. Answer: **a scam compound in Myanmar; the officer is Sahil.** | Call (zoom), Chrome, WhatsApp | Visual forensics on a live feed. **Twist 2.** |
-| 12 | **Last beat.** The power bank's LED goes out. **5%.** The supervisor walks behind Sahil; Sahil barks his script. The supervisor leaves. Sahil leans to the dark camera: *"Aunty? Aunty, aap ho na?"* The mic button pulses. **4%.** *To keep the call alive, plug in your phone.* | Call; the real charger | Real-world gate |
-
-**Believes:** a brave woman ran a sting on a trafficked boy's call, and something went wrong.
-**Doesn't yet know:** how she died, why the phone came to *them*, or who's watching.
-
-## Episode 2 — "Delete for Everyone"
-
-| # | Beat | Where | Interaction |
-|---|---|---|---|
-| 1 | **Plugged in.** The phone charges and the call holds. **Unmute?** If yes, pick a line: *"Woh nahi rahi."* / *"Main unki beti hoon."* / *"Tum kaun ho, Sahil?"* Sahil breaks character for two seconds (*"Nahi…"*), and the supervisor's shadow returns. If no, he keeps talking to the dark. | Call | Choice. **Ledger: your voice, and the words you picked.** |
-| 2 | **1:34 AM — Nikhil calls.** Answer or not. If answered: *"Kaun bol raha hai? Aai ka phone tumhare paas kaise aaya?"* Tell the truth, lie (*"Main police se hoon"*), or hang up. | Phone | Choice. **Ledger: what you told her son.** |
-| 3 | **Q5 — How did she die? Three versions on three cards.** **City Desk:** lost ₹38 lakh, died of shame. **The society:** police came to arrest her, so she was involved. **Her phone:** ? Break the first with the bank SMS (**only ₹49,000 debited**, Fri 11:20 AM, at a branch counter). Break the second with the call log (**1930, 9:48 PM, 24 min**: a guilty woman doesn't phone the cyber helpline). | News, WhatsApp, Messages, Phone | Contradiction matching, two at once |
-| 4 | **Following her money.** The ₹49,000 went to **TANVI R DESHMUKH.** Instagram search finds @tanvi.d_, a Vile Parle college. Vasu's DM (8:47 PM), *"Aunty please call karo"* (9:40 PM), and the **9:42 PM call recording**: a man's voice, *"Aunty, aap bahut samajhdaar ho. Ghar pe raho."* Diary, page 7: *"The girl gave me to them. Not her fault. They will come."* | Messages, Instagram, Recorder, Gallery | Chain-following |
-| 5 | **Q6 — Who told them she knew?** Tanvi, by forwarding the DM, because the "Tanvi" who wrote back was a man. | — | Deduction. **Twist 3.** |
-| 6 | **The missing page.** Photos › Recently Deleted: diary page 6, **deleted 12:37 AM**. Restore it. *"Sahil read 'co-accused' — TOMORROW'S LIST."* Nine rows: name, area, number, time slot. Eight numbers match her calls from 10:02 to 10:31 PM, and each call's recording shows how people treat a warning that sounds like a scam. **Row 9: no number. An address. 10:30 AM.** | Gallery, Phone, Recorder | Restore; cross-reference |
-| 7 | **Q7 — Why did this phone come to you?** PikDrop: booked **11:52 PM**, Dadar → the address in row 9. **It's your door.** She couldn't call you, so she sent you the phone. | PikDrop | Deduction. **Twist 4: you're #9.** |
-| 8 | **The terrace.** Ruchi's Instagram story (*expires in 11h*), a cat on a balcony at 12:37 AM. Turn the audio up: above her, *"Madam, diary kahan hai?"* … *"Aap police nahi ho."* The clip ends. **Q8 — Did she jump?** No: a man was on the terrace at 12:37, asking for the diary. | Instagram (audio boost) | Audio forensics (nothing graphic, ever) |
-| 9 | **The lure.** Notes: *"For whoever gets this phone"* (last edited **12:39 AM**): *"Sab saboot locked note mein hai. Password: Madhav ka janamdin."* Madhav's birthday is easy to find: a WhatsApp status, *"Happy birthday in heaven, 03/09."* **If the player types 0309:** the locked note holds FD receipts and an Aadhaar scan, and nothing else. No alert, no SMS. (In the story, the malware used the PIN at that moment: ₹1,00,000 by UPI to TANVI R DESHMUKH. The debit SMS went straight to Spam.) | Notes, WhatsApp | **The trap.** Optional, and not required for any question. **Ledger: the PIN, the transfer, and the time you typed it.** |
-| 10 | **Shaila.** Unread, 2:14 AM: *"Vasu, tune jo photo bheja woh delete kyun kiya? Aur note mein Madhav ka janamdin kyun likha?? Tu theek hai?"* (She shares the note, so she saw the edit.) The chat shows **"You deleted this message · 12:38 AM"** and Vasu's 11:48 PM voice note. Message Shaila. She doesn't trust you: *"Vasu ka laughter club kitne baje hota hai?"* (6:15, from the Shivaji Park group). Pass, and she sends the photo back. | WhatsApp | Trust test from a reply list. **Ledger: you led them to Shaila.** |
-| 11 | **Q9 — Did Vasu write the note that came with this phone?** No. The real note (from Shaila) is English cursive signed *Vasundhara*, with a Marathi blessing: ***"CUT THE CALL. They can see this phone. Don't type anything into it. Take it to the Cyber Police at BKC, not the local station. Don't trust anything that looks like me."*** Second route, for players who skipped Shaila: her handwriting in the diary against the block capitals; her Marathi against the Roman Hinglish; **"KATNA"** misspelled; PikDrop's item list (*mobile + power bank + diary + letter*) against what you got (no diary); and the rider's chat, *"Madam ka bhai bola Andheri pehle dena hai"*, when her family group shows **she has no brother.** | Gallery, WhatsApp, PikDrop | Handwriting, language and logistics. **Twist 5, part 1.** |
-| 12 | **Q10 — Who used this phone after midnight?** A two-lane timeline board: **Dadar** (Vasu) and **the phone**. Place the society messages, the terrace story, and the phone's own 12:36 reminder, 12:37 deleted page, 12:38 message deleted for everyone and 12:39 edited note. The PikDrop route map shows the pouch **stopped in Andheri East 12:31–12:45**. Vasu couldn't have done any of it. | Case file (timeline board) | Timeline reconciliation |
-| 13 | **Last beat.** Settings › General › VPN & Device Management › **RBI Secure KYC**, installed Thursday 8:14 PM — four minutes after she turned the lock off. It is why the blue pill has been around her clock since the first second. Open it. A blank white screen, then one line typed out slowly: ***"Good morning, #9."*** The screen goes dark. The clock jumps. | Settings | **Twist 5, part 2: they've watched every tap.** |
-
-## Episode 3 — "10:30"
-
-| # | Beat | Where | Interaction |
-|---|---|---|---|
-| 1 | **10:29 AM.** Sunlight. You fell asleep. The found phone is warm beside you, and the call timer reads **40:51:12**. | — | Time cut |
-| 2 | **What arrived while you slept.** The real City Desk article, **published 6:42 AM**, quoting *"a nephew"* (Vasu has no nephew: her family group). **Cyril D'Souza, 10:12 AM**: *"Aunty, subah SkyEx ka call aaya. Maine kaat diya. Aapne bachaya. Thank you 🙏"* Rukhsana's Friday voice note to Sahil. | News, WhatsApp | Reading (the perceptive player notices that 6:42 ≠ 1:11) |
-| 3 | **Remove the profile?** Settings › General › VPN & Device Management › **Remove Management**. Irreversible. If done, the blue pill leaves her clock, and a minute later **they** end the call (*"Call ended · 40:52:03"*): without eyes on the phone, they pull Sahil off it. The syndicate is blind for the rest of the chapter. If not, they see everything you check on the found phone during the call that follows. | Settings | The one irreversible act. **Ledger: stops growing** |
-| 4 | **Your phone rings.** A second device: yours, in your platform's own look. **"Mumbai Crime Branch ✔ · WhatsApp video."** It can't be declined, only answered or left ringing, and it rings again. | Your phone | — |
-| 5 | **Your digital arrest.** Sahil in uniform, the supervisor seated in frame. The charges are **generated from the ledger**: the delivery at 1:11 AM (*"CCTV hai"*), possessing a dead woman's phone, *[if PIN]* **₹1,00,000 transferred at [the time you typed it]**, *[if Nikhil]* lying to the deceased's son, *[if Shaila]* contacting a witness, *[if unmuted]* **your voice**: a transcript spliced from the lines you chose, with the cuts visible (*"main… unki… beti… nahi… hoon… maine… liya"*). *[If the app was killed]* *"Aapne saboot mitaya."* | Your phone (call) | Listen |
-| 6 | **Q11 — Which charges are true?** Stay on the call and check each one on the found phone: the Spam folder (the ₹1,00,000 SMS, or nothing), call logs, WhatsApp. Mark each **Bluff** or **True**. The true ones are the ones you created. | Both phones | Live verification under pressure. **Twist 6.** |
-| 7 | **The code.** Reading your "case number", Sahil slows down: *"Aapka case number hai… one… nine… three… zero."* The supervisor doesn't notice. **1930 is the national cyber-fraud helpline.** | Call | A decode the player now knows how to do |
-| 8 | **The demand.** The supervisor: *"Bring the phone to Skyline, Andheri East, by 1 PM, or the arrest team comes. Don't cut the call. Don't tell anyone."* | Call | — |
-| 9 | **The choice.** Three rows on your phone, over the still-running call: **01 · Report to police**, **02 · Throw it away**, **03 · Share with a friend.** *(If the player does nothing for 90 seconds, the supervisor says "Good. Aap cooperate kar rahe ho." The rows stay.)* | Your phone | The choice |
-
+| **Answer Sameer's mother** | Ep 1 beat 12: tell her a stranger has it / reply as Sameer / nothing | She learns an unknown person has the phone, or thinks her son answered | *Stranger:* she tells Bhasin, and his message (Ep 2 beat 12) comes early and knows you're not Sameer. *As Sameer:* Bhasin writes to "Sameer": *"Ghar aa jao. Baat karte hain."* *Nothing:* Find My keeps sounding | Nothing closes; the pressure changes shape |
+| **Reply to Raju early** | Ep 1 beats 2–3 (the call), or replying before Q2 | Raju is in the story before you understand Dilip | If you tell him something you later have to take back (*"Kunal ne maara"*), he withdraws: *"Aap log sab ek jaise ho."* | The promise: the Chhotu chat, Sat 7:10 PM |
+| **Protect Nitin** | Ep 3 beat 2 | He trusts you and sends the 1:52 screenshot | Kunal's frame arrives more slowly (Hidden only) | — |
+| **Expose Nitin** | Forward his messages to Kunal, or name him to Bhasin | Kunal and Bhasin move fast: Kunal sends the frame, *"Tera Nitin bhi andar hai"* | Nitin goes silent | The lie: route 2 on this phone (1:49 / 1:53 / 1:56) |
+| **Confront Kunal** | Message Kunal as Sameer (Ep 2 or 3) | The firing order, his *"maine sirf gun di thi"*, the family's story: *"Papa ne bola hai Bhasin uncle sambhalenge. Tu bas Mumbai ja."* | He names Nitin to Bhasin, and **the Nitin route closes** | The lie: route 2 |
+| **Publish early theory** | Your phone's **draft post**, from the end of Q3 on, until the end | Public pressure, now | **Before link 3: Ending C.** After: the chapter ends there, with the post as your record (I) | — |
+| **Preserve evidence first** | Reach **Meera** from your phone (O1 decides how) and do what she says: *"Us phone ko airplane mode pe daalo. Kuch delete mat karo. Kisi ko reply mat karo."* | Control Centre: airplane mode, by your hand. **Raju, Nitin, Kunal and Sameer go quiet.** | She reads his habits for you: *"Sameer jo nahi dekhna chahta, archive karta hai. Ya hide."* The record is stronger in A and B | Every link keeps its on-phone route. Her bias shows first (*"Sameer darpok hai, par jhooth nahi bolta"*), and she takes it back if the lie is traced |
+| **Give Sameer the rescuer narrative** | Ep 3 beat 8 | He cooperates and talks | His *"Maine koshish ki thi"* joins the record as a source for his version | — |
+| **Confront Sameer with the full chain** | Ep 3 beat 8, with links 4, 5, 7 and 8 | The line | He never writes again | — |
+| **The work-record route** (script §13) | Any time: the shot list, invoice SK-1127, the planner's site plan, Paytap, the Mumbai offer | Nobody is contacted, so nothing closes | Establishes the arrangement (link 1), the payment timing (link 10) and his professional motive. Slower and colder: no one talks to you | — |
+| **Tell Sameer your theory** (script §13 cost) | Any time you message him | He agrees with whatever you give him, and adds to it | **His words become sources for his own version:** his agreement can be filed with Q11–Q13's Sameer answers | Ask open questions instead (*"1:52 pe tum kahan the?"*): he's evasive but learns nothing |
 
 ---
 
-# E. THE THREE ENDINGS
+# I. THE ENDINGS
 
-The scam gives two orders: **don't cut the call** and **don't tell anyone.**
-Each ending answers them differently, and none of them is the "good" one.
+Three principal endings and one early exit (script §15), decided by **what
+the player traced and what they did with it**. Each is an act, done by hand,
+on **your phone** or with the parcel. **(game: the acts and variables.)**
+Following the script's realism audit, **no ending declares a verdict**:
+formal legal outcomes stay outside the game.
 
-| | Cut the call? | Tell anyone? | What it believes | What it costs |
-|---|---|---|---|---|
-| **01 Police** | Yes | An institution | The system can still tell real from fake. | You can never again tell a real call from a fake one. |
-| **02 Throw it away** | Yes | No one | Survive first. You can't fix this. | The true story dies with the phone. |
-| **03 A friend** | No: you text while it rings | A person | Truth has to be carried by people. | Everyone you tell becomes the next target. |
+**The final act, the record.** On your phone, the record lists your claims,
+link by link, each with its sources. Traced links can be ticked in or out.
+An untraced link can go in as what it is (*"Sameer says…"*) or **as fact**.
+Filing his version as fact is what the script means by *claiming more than
+the evidence can support*. Then
+**send it** (to Meera, with the phone) or **post it** (the draft).
 
-Every ending changes with the ledger and what the player found. The
-variables are **PIN** (typed the PIN), **VOICE** (unmuted), **SHAILA**
-(contacted her), **NOTE** (recovered the real note), **APP** (killed the
-malware) and **NIKHIL** (answered and lied).
-
-## 01 — Report to police
-
-**The act.** Cut the call, drag the red button all the way, and it's gone. A
-map on your phone: *Cyber Police Station, BKC* if you have the **NOTE**
-(Vasu told you where), or the *nearest police station* if you don't.
-
-**What happens, a line at a time:**
-- **With NOTE, or with APP:** an officer bags the phone in airplane mode before
-  anything else. *"Achha kiya app hataya"* (Good that you removed the app), or
-  *"Aapko pata tha BKC aana hai?"* (You knew to come to BKC?). You're
-  questioned for nine hours.
-  **Without both:** the local station takes a written complaint (an NC) and
-  asks you to come back Monday. The phone sits in a drawer. At 2:14 PM it
-  wipes itself remotely. What's left of the evidence is you.
-- **If PIN:** *"₹1,00,000 aapke haath mein phone ke time pe gaya."* (A lakh
-  left her account while the phone was in your hands.) You're a suspect for
-  three weeks, and cleared only if the NOTE and the route map exist.
-- **Nine days later:** Skyline Overseas Placements is raided. **PK Kothari**
-  is named for the first time. The man with the Crime Branch ID is arrested,
-  and Imran is questioned and released.
-- **Tanvi Deshmukh is arrested as a mule.** The officer: *"Bail mil jayegi.
-  Kagaz pe naam sirf usi ka hai."* (She'll get bail. Hers is the only name on
-  paper.)
-- The accidental-death report on Vasu becomes a **murder case**. Nikhil sends
-  you a single message: *"Thank you."* **If NIKHIL:** he never does.
-- **The Ministry of External Affairs:** 11 Indians rescued from a compound near
-  Myawaddy. You read the names, and you've heard them before: they're
-  the "co-accused" Sahil read out at 1:20 AM, his roommates. **Sahil's name
-  isn't on the list.**
-
-**The last image.** Three weeks later, your phone: **Mumbai Police ✔ ·
-Video call.** You answer. A man in uniform, polite, tired: *"Aapka statement
-record karna hai. Camera on kijiye."* It's probably real. Your thumb
-moves, by itself, to **zoom into the clock on the wall behind him.** Cut to
-black before the zoom resolves.
-
-## 02 — Throw it away
-
-**The act.** Cut the call. Walk (a map, two minutes of real time compressed
-into ten seconds) to **Dadar Chowpatty** at noon. Drag the phone off the edge
-of the screen and into the sea. **If PIN**, the last thing it does before it
-leaves your hand is light up with a Spam folder notification you never
-opened.
-
-**What happens:**
-- "Mumbai Crime Branch" calls you 14 times that afternoon. You block each
-  number. On the fifteenth call the caller ID is *your own name*. You don't
-  answer. Then nothing, for days.
-- **You're fine.** Nobody comes. No arrest team, no knock. The syndicate has
-  lost its lever, and you're not worth the risk.
-- The accidental-death report is closed: **suicide.** City Desk runs a
-  follow-up: *"Digital arrest victim's son urges families to talk."*
-- **A month later**, Nikhil's reel: *"Meri Aai ne kisi ko nahi bataya. Please
-  apne parents se baat karo."* (My mother didn't tell anyone. Please talk to
-  your parents.) **4.2 million views.** The comments say *bechari* (poor
-  thing), and *padhi-likhi hoke bhi* (even though she was educated).
-- **If SHAILA:** two months later, a City Desk brief: *"Shivaji Park woman, 66,
-  loses ₹21 lakh in digital arrest."* **If not:** the brief is about Andheri
-  East, the woman from row 7 who told Vasu *"ye khud scam hai"* and blocked
-  her.
-
-**The last image.** Your family WhatsApp group. Your mausi forwards Nikhil's
-reel: *"Sab log dekho 🙏 Aise mat karna."* You type **"She wasn't scared. She
-was the only one who—"** and hold backspace until it's empty. *Mausi is
-typing…* Cut to black.
-
-## 03 — Share with a friend
-
-**The act.** The call keeps ringing on your screen while you open your
-share sheet. *To:* the friend who sent you this case, pre-filled if you arrived
-by a drop, or a name you type. Everything goes: the note, the diary, the list,
-the recording, the route map. **You never cut the call.** For the syndicate,
-you're still cooperating.
-
-**What happens** (your friend texts as a character, in real time):
-- *"Bhai ye AI hai kya."* → *"Wait."* → *"WAIT."* → *"Main post kar raha hoon."*
-  (Is this AI? … I'm posting it.) You can't stop them. You can only watch it
-  climb.
-- **The thread**, *"My friend received a dead woman's phone. She wasn't a
-  victim. She was hunting them."*, reaches **2.3M views in four hours.**
-  #VasundharaKulkarni trends. City Desk corrects its story. Rukhsana is on a
-  news channel holding Sahil's wedding photo. The ministry responds within 48
-  hours. **The true version wins, and fast.**
-- **It costs.** The screenshots include Sahil's name and his codes. **His
-  number goes silent.** Three weeks later, 23 Indians are rescued and he isn't
-  among them. One of the rescued boys, in an interview: *"Ek ladka policewala
-  banta tha. Viral hone ke baad unhone usko alag le gaye."* (A boy who used to
-  play the policeman. After it went viral, they took him somewhere else.)
-- The screenshots include Tanvi's handle. **#ArrestTanvi.** 40,000 comments.
-  Her college suspends her before the police arrive. **PK Kothari is never
-  named:** nothing in the thread says who he is, and the internet has already
-  found its villain.
-- **If SHAILA:** reporters camp outside Shaila's building, and she's safe
-  because she's famous.
-
-**The last image.** 11:52 PM, the minute Vasu booked the courier. Your friend:
-*"Bhai. Ek call aaya. Mumbai Crime Branch. Bol rahe hain maine murder ka
-evidence leak kiya hai."* (A call came. Mumbai Crime Branch. They say I
-leaked murder evidence.) *"Bol rahe hain call mat kaatna, kisi ko mat batana."*
-(They're saying don't cut the call, don't tell anyone.) *"Maine tujhe bata
-diya. Galat kiya?"* (I told you. Was that wrong?) Your reply options appear:
-**"Kaat de."** (Cut it.) / **"Mat kaat."** (Don't.) / *[send nothing]*. You
-choose. **Black, before any answer arrives.** The chapter opened with a note
-telling you not to cut the call. It ends with you telling someone you love.
-
-*(Afterwards, outside the story: the real Pass it on, whose preset message is
-"Would you have cut the call?")*
-
-## After every ending — the end card
-
-1. **"What they had on you."** No score. A list, built from the ledger, one
-   line at a time: *Your voice, 1:52 AM. Her PIN, 2:47 AM. Shaila's name. Her
-   son's trust.* Then a count: **"They had 4 things on you."** (That line is
-   the spoiler-free share: "They had 0 on me" is the brag.)
-2. **What only this ending showed.** A single line: *"You never learned
-   whether Sahil was rescued"* / *"Who PK Kothari was"* / *"What happened to
-   Tanvi."*
-3. **The final image, the same for everyone.** The first ten seconds again: the
-   pouch, the call, the 1:11 AM alert sliding in. It freezes. The alert's
-   little app icon enlarges: **the grey shield.** One line: ***"No one had
-   reported her death yet."*** Then: **Play again.**
-4. **Outside the fiction, one quiet screen:** *Real police never arrest
-   anyone over a video call. If it happens to you or your parents, cut the
-   call and dial 1930, or report at cybercrime.gov.in.*
-
-
----
-
-# F. WHY IT'S REPLAYABLE
-
-Replay isn't "see the other two endings." Four separate things pull players back.
-
-## F1. The first minute holds clues nobody can read yet
-
-Everything in this list is on screen during a first play and means nothing
-until the player knows what they know at the end.
-
-| On screen from the start | Why nobody sees it | What it means on a second play |
-|---|---|---|
-| The blue pill around her clock | Everyone has seen one and nobody reads it | The screen was being shared from second one |
-| The 1:11 news alert's app icon | You're reading the headline | The killers announced the death before anyone else knew |
-| The wall clock on the call | You're looking at the officer | He was never in Mumbai |
-| **"CALL MAT KATNA"**, Roman capitals, misspelled | It reads like a frightened woman's note | Vasu writes English and Marathi, and spells properly |
-| Sahil's whisper *"Mat kaatna… please"* | It sounds like a threat | It's a plea: a dropped call costs him a meal |
-| The "co-accused" he reads out at 1:20 AM | Filler legalese | His roommates' names, the ones Ending 01's rescue list confirms |
-| *"Madam ka bhai bola…"* in the courier chat | Logistics chatter | She has no brother |
-| *"PIN bhool gayi, beta"* in the scam chat | A confused old woman | A bank manager protecting her PIN for 31 hours, which the player gives up in 30 seconds |
-| The society secretary's *"Please don't forward"* | Background noise | The reason nobody looked twice at a "suicide" |
-| The notes' *"last edited 12:39 AM"* | Metadata | She was on the terrace. The phone was in Andheri. |
-
-## F2. The ledger makes a second play a different game
-
-"They had 4 things on you" is a challenge. **A clean run, with zero on you, is
-possible.** It needs every exposing action avoided and every question still
-answered by the harder route: don't unmute, don't type the PIN, reach the
-real note through handwriting and logistics instead of Shaila, ignore
-Nikhil's call, and kill the app before 10:30. Nobody manages it on a first
-play, because a first play is exactly what the syndicate was counting on.
-That's the thesis, and it's measurable.
-
-A clean run changes Episode 3. **With nothing true to accuse you of, the
-10:30 call is all bluff**, and you can see through every line live. Sahil
-notices, and his "case number" code gets longer: he gives you the compound's
-room number as well. That's the only way to learn it, and it changes Ending
-01: *"12 Indians rescued"*, and **one of them is Sahil.** It's the only
-version of the chapter where he comes home, and nothing points to it.
-
-## F3. The truth is split across the endings
-
-| Only in 01 | Only in 02 | Only in 03 |
-|---|---|---|
-| PK Kothari's name. The rescue list. What the police do with a mule. | What the world believes when nobody speaks. Who the next victim was (Shaila, or row 7). | What virality does to the people in the screenshots: Sahil moved, Tanvi hunted. |
-
-Nobody can piece together the whole shape of the crime from one ending, so
-three-ending players compare notes. That's what the "what others did" stat
-and a future community are for.
-
-## F4. Choices that change the middle, not just the end
-
-| Choice | When | What it changes |
-|---|---|---|
-| **Cut the call at 1:11** (step 3, confirmed twice) | Ep 1 | The call rings back three times, then stops. You play with no live feed, so the clock clue and Sahil's code must come from the diary and Chrome instead. In Ep 3 Sahil says: *"Aapne call kaata tha. Unhone mujhe do din khana nahi diya."* (You cut the call. They didn't feed me for two days.) There's less evidence on you, and a cost to him. |
-| Tell Sahil she's dead | Ep 2 | He breaks, and the supervisor sees two seconds of it. In Ep 3 he's bruised. |
-| Answer Nikhil / lie to Nikhil | Ep 2 | Changes Nikhil's message in 01 and the reel's wording in 02 |
-| Shaila | Ep 2 | Protects or endangers her in all three endings |
-| Kill the app | Ep 3 | Removes Ep 3's "live checking is watched" pressure. In 01 it decides whether the phone survives the police station. |
-
-## F5. The replay hook, as a sentence players say to each other
-
-> *"Look at the icon on the first notification."*
-
-That line spoils nothing and sends people straight back to minute one.
-
-
----
-
-# G. WHAT THIS MEANS FOR THE PRODUCT
-
-This is written as if nothing had been built. Where something already built
-happens to fit, G5 says so, but nothing is kept because it exists.
-
-## G1. Rebuild: the six big calls
-
-**1. The found phone belongs to its owner, not to the player.**
-Reverse "the phone matches the player's platform". Vasu is a 64-year-old in
-Dadar with a son in Bengaluru, so her phone is **the iPhone Nikhil handed
-down two handsets ago**: his Apple Account still half on it, the text size on
-Largest, and 3,412 unread forwards. **The phone is characterisation.** Every future
-chapter's phone gets art-directed to its owner: a Redmi, an iPhone 13 with a
-cracked corner, a work BlackBerry-era relic. The iOS-perfect work moves to
-where it belongs: **the player's own phone** (G1.2), which *should* match
-the player's platform.
-
-**2. Two phones on stage.** The found phone, and **yours**.
-- **Desktop:** side by side, yours smaller and mostly asleep.
-- **Mobile:** the found phone fills the screen, and yours lives one swipe
-  away (a "pocket" edge) and buzzes the real device (vibration API) when
-  it rings.
-- Episode 3 and every ending happen on **your** phone. Personal stakes need a
-  physical place, and "their phone versus my phone" is that place.
-
-**3. The persistent live call.** It's the chapter's new core system and its
-biggest cost.
-- A picture-in-picture video call that survives app switches, with a live
-  timer, mic and camera buttons, and tap-to-expand.
-- A **cue engine**: idle loops (typing, yawning, looking off-camera), lines
-  triggered by the player's progress, timed supervisor crossings, and
-  "listening" reactions when the player unmutes.
-- **Zoom works on live video**, reusing zoom-that-counts: a clue counts only
-  when it's readable on screen.
-- Episode 3 reuses it on your phone, with lines assembled from the ledger.
-
-**4. The exposure ledger.** An engine feature, not a story hack.
-- Any action can write an entry: `{what, when, how it will be used}`. Unmuting,
-  typing a PIN, contacting someone, answering a call.
-- It feeds **Episode 3's accusation script** (conditional lines, and the
-  spliced "confession" built from reply choices, shown as a transcript with
-  visible cuts), **the endings' variables**, and **the end card.**
-- It **replaces the 🟩🟨🟥 hint result** as the share: *"They had 4 things on
-  me."* That line is spoiler-free, makes people competitive, and states the
-  thesis.
-
-**5. The case file becomes a board, not just a list of questions.** Keep
-one question at a time, where-to-look and three hints (the only real player
-feedback was "didn't know what to do"). Add two question types this
-chapter's turns depend on:
-- **The two-lane timeline**: place events on *where the person was* against
-  *what the phone did*, and contradictions light up. (Q10, and the "6:42 vs
-  1:11" realisation.)
-- **Claim checking**: mark each statement true or bluff, with live
-  evidence from another app. (Q5's three versions, and Q11 during your own
-  arrest.)
-
-**6. Real-world moments earn their place, or go.**
-- **The charger gate stays, with a new reason:** *plug in your phone to keep
-  the call alive.* The player physically powers the thing that's watching
-  them. (Twist 5 lands harder because of it.)
-- **Optional real time for Episode 3:** "Your 10:30 is tomorrow at 10:30."
-  An opt-in push from **FOUND, clearly branded**, never styled as the police,
-  a bank or WhatsApp. The default stays play-through.
-- **The vibration API** for your phone ringing.
-
-## G2. Remove
-
-| Remove | Why |
+| Ending | How it's reached |
 |---|---|
-| The platform-matched *found* phone, and "iOS first" for it | The owner decides the phone (G1.1). |
-| Telegram, Maps, Health, Calculator vault, NightCam, Guardian, Dabba, News as a full app | Not in this story. Maps is replaced by the courier app's route map, and the news lives in notifications plus one article view. |
-| Files as a hub | The warrant is a WhatsApp document. The diary is photos. Nothing needs a file browser. |
-| The detached full-screen "three rows" choice | The choice happens on your phone, over a live call, under pressure. |
-| The live-location "Stop sharing" irreversible act | Replaced by **uninstalling the malware**, which has the same weight and a better reason. |
-| Hint-count result squares | Replaced by the ledger count (G1.4). |
-| "No identifiable faces" as a blanket rule | This story needs Sahil's face (the wedding photo, the live call), and Vasu's on the wallpaper. Cast actors with signed releases. Keep the rule for *real* people. |
+| **A — The Complete Record** | Links **8 and 11 traced and left in**, and **no untraced link filed as fact**; sent or posted |
+| **B — Sameer's Version** | Everything else that reaches the record: the lie untraced, or traced and **ticked out** (script: *"never establishes or chooses to disclose"*), or Sameer's version of any link filed as fact |
+| **C — The Wrong Story** | The draft posted **before link 3** (two firings) |
+| **Early exit — Return to Sender** | Reseal the parcel, available from minute one (O1 decides where it goes) |
 
-## G3. Add
+**Variables:** `LINKS` (count), `LIE`, `FIRE`, `PRICE`, `EDIT`, `PUBLIC`
+(posted rather than sent), `NITIN` (protected / exposed / never),
+`RAJU` (trust kept / lost / never), `MEERA` (preserved), `SAMEER` (confronted
+/ rescuer / never), `MUMMY` (stranger / as Sameer / nothing).
 
-| Add | What it needs to do |
+## A — The Complete Record
+The account separates **Kunal's enabling conduct, Sameer's shot and his lie,
+Bhasin's control, Nitin's complicity and failure to verify, and the
+disposal** (canon). It resolves without pretending one person explains it.
+- *Draft beats:* Meera, reading it: *"Ye complete hai. Isliye kisi ko pasand
+  nahi aayega."* *(It's complete. That's why nobody will like it.)*
+- **It costs.** Nitin's name is in it, the one person who tried
+  (*if NITIN protected, he writes: "Theek hai. Sach hai."*). Sameer stops
+  existing on WhatsApp. If `PUBLIC`, the family's lawyers answer within the
+  hour, and the record holds, because every line has its source.
+- *If RAJU:* Raju's last message is a photo of Dilip at Chhath, and nothing
+  else.
+
+## B — Sameer's Version
+Largely factual, and it keeps his boundary: ***"I caused the accident; they
+caused the death."*** (canon) The player invented nothing. They gave
+authority to an incomplete reading.
+- *Draft beats:* Sameer, if he's still writing: *"Thank you. Tune wahi
+  dekha jo hua tha."* *(Thank you. You saw what happened.)* The record
+  names Bhasin for the car. **Nitin is never asked anything.**
+- *If the lie was traced and ticked out:* the end card says so, flatly: *You
+  knew about 1:52. You left it out.* No other comment. (Law: the game never
+  scolds.)
+
+## C — The Wrong Story
+The player named Kunal from the 11:52 clip and Sameer's framing, and acted
+publicly before separating the two firings (canon).
+- *Draft beats:* the post climbs. Then the family releases **the frame**,
+  Sameer with the gun and Dilip behind the light, with a statement: *the
+  photographer fired; our son was forty metres away.* The story collapses
+  (canon). **A correction can't erase the accusation** (script §14): the
+  first post still has more shares than the correction ever will.
+- Raju, *if RAJU:* *"Aapne toh bola tha Kunal ne…"* *(You told me it was
+  Kunal…)*
+
+## Early exit — Return to Sender
+The player decides the phone isn't theirs to carry and hands it back through
+the proper channel (canon; *which* channel is O1). The Delhi story stays
+partly unresolved for them (canon). Lines vary with what they'd already seen:
+*if they'd heard the voice notes*, the last image is the M chat's grey ticks.
+
+---
+
+# J. THE END CARD AND THE SHARE
+
+1. **The chain.** Eleven rows, one at a time. **Traced** rows are in the
+   player's words from the record. **Untraced** rows are Sameer's version,
+   in quotes: *"Bhasin ne gaadi wapas bhej di."* Then the count: **"You
+   traced 9 of 11 links."**
+2. **What only this ending showed.** One line (for example, A: *what Nitin
+   said when he saw his name*; B: *what Sameer said when he said thank you*;
+   C: *the frame*).
+3. **The replay image, identical for everyone.** The note **"For M"**, the
+   cursor blinking after *"4. Nitin —"*. One line: ***"He started to tell
+   you."*** Then **Play again**.
+4. **Pass it on.** Share text: *"I traced 9 of 11 links."* Preset message
+   (draft): *"A photographer's phone. A wedding. Where does it end?"*
+5. **Keep your case number**, then back to the desk.
+6. **Outside the fiction, one quiet screen** (L).
+
+**The sentence players tell each other (F5 in the old chapter's terms):**
+> *"Read the last line of the note he left for M."*
+
+---
+
+# K. WHY IT'S REPLAYABLE
+
+**K1. Minute one holds clues nobody can read yet** (from script §11).
+
+| On screen early | Why nobody sees it | What it means on a second play |
+|---|---|---|
+| The phone opens with no passcode | It's convenient | He prepared it (11:41 PM Thursday) |
+| One grey tick on every voice note | Voice notes are voice notes | M blocked him. That's why he sent the phone and didn't just talk |
+| *"Kunal firing kar raha tha. Ek ladka gir gaya."* | One sentence | Two sentences, two moments, forty minutes apart |
+| The boy smiling over the tray | A waiter | A portrait, taken for someone he'd promised Mumbai to |
+| The fire clip starts mid-movement | It's shaky night footage | It was trimmed. Revert |
+| **"4. Nitin —"** | An unfinished list | The whole chapter |
+| *"Archived (1)"* at the top of Chats | Everyone archives | The chat he couldn't delete |
+| *"Bhasin uncle phir aaye the"* | A mother fussing | The family's man is at his mother's door |
+| The hospital searches | A man trying to help | 1:56: help had already "come" |
+| The title cards, *12:32 AM* and *1:52 AM* | Times | The shot, and the lie |
+
+**K2. The chain makes a second play a different game.** "11 of 11" means
+tracing all four deep links without taking Sameer's version once. First plays
+rarely manage it, because a first play is exactly the reader Sameer was
+counting on.
+
+**K3. The routes differ.** Protecting Nitin, confronting Kunal, trusting Raju
+and preserving with Meera each show a scene the others don't, and some close
+each other (H). No single play hears every voice.
+
+---
+
+# L. RESPONSIBILITY
+
+- **Content note** (on the parcel label): *Contains: death, gun violence, a
+  body burned (not shown). 16+.* Beside it, the promise: *This game never
+  asks for anything real.*
+- **Nothing graphic, ever.** The shot happens off every screen. The fire is
+  light, smoke and sound. The service room is only words.
+- **Fictional names** for everything in the crime (B). Real platforms
+  (WhatsApp, Instagram, iOS) are drawn by us, as before.
+- **No real-world notification** imitates police, a bank or a messaging app.
+- **Outside the fiction, the end card's last screen** (each fact checked
+  against the text of the law before S9 writes the copy):
+  - Celebratory firing is a crime in India: the Arms Act, as amended in 2019,
+    s.25(9).
+  - **Any hospital must give emergency care to an injured person first; a
+    police case can't delay it** (Supreme Court, *Parmanand Katara v. Union
+    of India*, 1989). Dilip stayed on that property partly because of the
+    belief that it can.
+  - Emergency: **112**. Mental health: **Tele-MANAS 14416**.
+
+---
+
+# M. OPEN DECISIONS
+
+| # | Decision | What it touches | Status |
+|---|---|---|---|
+| **O1** | **Why the phone reaches the player** (the note is to M) | Sameer's reaction to *"Main M nahi hoon"*; Return to Sender's destination; how the player first reaches Meera; how *"he wanted an independent investigator"* lands | **Open.** The four beats are written to work either way. The earlier drafts in Downloads went both ways: the *Script Draft* sent the phone to Meera's old Malviya Nagar flat, with the player as the new tenant; the *Complete Narrative Design* and *Second Writers' Room* passes replaced that with Meera's intake arrangement, where the player catalogues phones for her. The Master Pass leaves it open (script §18: *"a bounded reason to catalogue the phone and a credible route to Meera"*). |
+| O2 | The shagun envelope as the note's paper | Arrival; the replay list; the title made physical | Proposed (game); no story fact depends on it |
+| O3 | Where Sameer is while he writes | His messages (*"Main Delhi mein nahi hoon"*?), the Mumbai hook | Open; not needed before the dialogue pass |
+| O4 | Age rating (16+ kept from the last chapter) | The label | Revisit once the fire clip's audio exists |
+| O5 | The First Minute for this chapter | Growth (ROADMAP S10) | To design; the lesson is the end card's |
+
+---
+
+# N. CANON TRACE (appendix)
+
+Every item in the script, and where the game delivers it.
+
+## N1. Objective truth (script §5)
+
+| Canon | In the game |
 |---|---|
-| **Her iOS** | Current iOS, drawn by us: home screen and dock, **the blue recording pill around the clock**, Settings' grouped lists (Apple Account, Face ID & Passcode, **VPN & Device Management**), Photos' **Recently Deleted**, and Notes' **locked note** (a password that pretends to matter). |
-| **PikDrop** (a fictional courier app) | Booking details, item list, a route map with a **timed stop**, and rider chat. |
-| **Instagram** | DMs with Seen, profile search, and **an expiring story with an audio boost** (a countdown in real hours). |
-| **Messages with a Spam folder** | The hidden ₹1,00,000 SMS, shown only if the PIN was typed. |
-| **Notes with "last edited" and sharing** | The 12:39 edit, and Shaila noticing it. |
-| **Chrome history** | Vasu's searches as a second route to Myawaddy. |
-| **Society WhatsApp group** | Many senders, admin-only moments, *"This message was deleted"*: the Indian group chat as a character. |
-| **Your phone (a minimal OS)** | Calls, WhatsApp, a family group, a share sheet, and a map for the endings. It matches the player's platform. |
-| **The courier pouch on the desk** | It replaces the envelope: a delivery sticker carrying the friend's name when it came by a drop. |
+| Hired to shoot a wealthy Delhi wedding, farmhouse near Chhattarpur | C2; Ep 1 beats 4–5 |
+| Kunal has his father's licensed revolver and is already firing | C2 11:52; Ep 2 beat 4 |
+| Sameer is making his own cinematic reel | C1 shot list; Ep 2 beats 2–3 (link 1) |
+| Dilip, helping Sameer's crew, asked to assist | C1 7:10 PM; the shot list; the 12:29 photo |
+| Kunal hands over the loaded revolver; Sameer fires once for camera; the second discharge while posing, lower | C2 12:29–12:32; Ep 2 beats 2–7 |
+| The bullet hits Dilip; he's alive | C2 12:32:05; Ep 2 beats 8–9 (link 5) |
+| Bhasin contains it; no uncontrolled police or medical response | C3 12:36–12:52; Ep 3 beat 1 (link 6) |
+| Dilip moved to a service area | C3 12:38 |
+| Sameer frightened, tries to help, knows a proper response exposes him | C3 searches 12:44–12:52, 1:56; 1:08 reply |
+| Nitin independently arranges a vehicle | C3 1:22–1:40; Ep 2 beat 13 (link 7) |
+| Sameer tells Nitin Dilip has already gone, knowing it's false | C3 1:52; Ep 3 beats 1–3 (link 8) |
+| Nitin abandons; the vehicle arrives and leaves without Dilip | C3 1:53–2:04; Ep 2 beats 13–15 |
+| Dilip dies on the property | C3 2:41–3:30 (no stated minute) |
+| A body that contradicts every attempt to erase the night | C3 3:31 call; the fire |
+| Bhasin organises the burning before dawn; Sameer takes part and records part | C3 4:20–5:05; Ep 1 beat 10; Ep 3 beats 4–5 (link 9) |
+| The family's legitimate payment becomes leverage | C4 Sun 9:10, 11:04; QM (link 10) |
+| Sameer later finds evidence that he fired | C4 Mon 3:10 PM (Kunal's frame) |
+| He also holds evidence that the family obstructed, and that an intervention was abandoned | The security group; Nitin's archived chat |
+| He prepares the phone: keeps the family's wrongdoing, leaves out his false assurance | E, all of it |
+| He sends it for an independent reconstruction, still wanting "my accident / their crime" | Q13 (link 11); B's thank-you |
 
-## G4. Production: what has to be made, not coded
+## N2. The mystery ladder (script §7)
 
-- **Video: the most important asset.** Sahil on a painted Crime Branch set.
-  About 12 minutes of footage: idle loops, roughly 40 cue lines, two supervisor
-  crossings, the whisper, and the break when he hears she's dead. **The wall
-  clock and the Burmese extinguisher label must be readable at 3× zoom.** One
-  actor plus one background actor, one day. Episode 3's call is a second
-  setup on the same set.
-- **Voices.** Vasu's only recording is her **40-second voice note to Shaila**,
-  and it has to make players love her in one listen. Rukhsana's Friday notes.
-  The 38-second collector call. Two voices on the terrace (muffled, never
-  graphic). D'Souza. Nikhil's call. Marathi, Hinglish and English as each
-  person would really speak, always with English captions.
-- **Handwriting: two hands.** Vasu's diary and real note (a 60-something
-  woman's convent-school cursive, with Marathi in Devanagari), and the
-  syndicate's block capitals. Write them for real on paper, then photograph
-  them.
-- **Photos.** Diary pages, the wedding photo (cast), Vasu with her grandson
-  (cast), Dadar's Hindu Colony buildings, a Kurla lane, and a cat on a balcony.
-  Siddhant can shoot most of this in Mumbai.
-- **Documents.** The warrant PDF (convincing enough to teach the real
-  scam, but with our emblem, not the government's), bank SMS text, and the
-  courier booking.
+| Stage | Question on the ladder | Where |
+|---|---|---|
+| 1 | Who owns this phone? → prepared | Q1; Q4 |
+| 2 | What happened at the wedding? → compressed moments | Q3 (Sameer's version); Q6 (Revisit) |
+| 3 | Who is Dilip? → knew him, owed him a promise | Q2; Ep 2 beat 10 |
+| 4 | Who fired the gun? → Sameer, the later shot | Q5; Q7 |
+| 5 | Did the shot kill Dilip? → alive, a long window | Q8 |
+| 6 | Was anyone trying to save him? → Nitin | Q9 |
+| 7 | Why did that attempt fail? → Sameer's false assurance | Q10; Q11 |
+| 8 | Why did Sameer keep evidence? → also to build his boundary | Q12 |
+| 9 | Why did he send the phone? → a counter-file, still framing | Q13 |
+| 10 | What is the real truth? → a chain of choices | The record; the end card |
 
-## G5. What already fits (kept on merit, not sunk cost)
+## N3. Revelation map (script §11)
 
-From the Blue Room build (N1–N3):
-- **The chat engine:** deleted messages, voice notes with captions,
-  documents, contact info.
-- **Phone:** recents, contacts, calls that can't go through.
-- **Photos:** zoom-that-counts, video with captions.
-- **Recorder**, for call recordings.
-- **Scripted calls**, extended into the live call.
-- **Real-charger detection.**
-- **The desk, drops, case numbers**, the funnel allowlist, and the tests
-  (two routes and three hints per question).
+| # | Discovery | First read (where) | Final meaning (where) |
+|---|---|---|---|
+| 1 | Dilip's portrait | Ep 1 beat 6 | Ep 2 beat 10 (the promise) |
+| 2 | Sameer's wedding images | Ep 1 beat 5 | Ep 2 beats 2–3 (the reel) |
+| 3 | Kunal firing | Ep 1 voice notes | Q6 (a separate, earlier firing) |
+| 4 | Sameer with the gun | Ep 2 beat 2 | Q7 (the source of the injury) |
+| 5 | Dilip still responsive | Ep 2 beat 8 | Q8 (the decision window) |
+| 6 | Hospital searches | Q8 (trying to help) | Q10–Q11 (1:56: not proof that help happened) |
+| 7 | The vehicle | Ep 2 beat 13 | Q9 (a genuine attempt) |
+| 8 | Sameer's reassurance to Nitin | Ep 2 beat 15 (a gap) | Q11 (a knowing lie) |
+| 9 | The burning video | Ep 1 beat 10 | Q12 (his participation) |
+| 10 | Payment records | Paytap, Ep 1 | QM (legitimate money turned leverage) |
+| 11 | Phone preparation | Q4 | Q13 (a curated counter-file) |
+| 12 | Phone sent away | The note | Q13; Ep 3 beat 8 (a preferred conclusion inside it) |
 
-**What doesn't fit** is the iOS skin as the found phone, Telegram, Files and
-Maps.
+## N4. Endings (script §15), final reveal (§16), thought sequence (§20)
 
-**The Blue Room itself:** shelve it, don't delete it. It's a good story,
-but it's also a phone, and "Case two is a different object" still stands.
-Decide its future after this chapter ships.
+- **A, B, C, Return to Sender:** I, one for one.
+- **The two-step reveal:** step one is Q7 (Episode 2, deliberately not last);
+  step two is Q11 and Q13, and the line itself is Ep 3 beat 8.
+- **§20's ten thoughts** map to Q1, Q3, Q2 and the poster, the voice notes,
+  Q7, Q8, Q9, Q11, Q13 and the end card, in that order.
+- **§21's sequel hook** (Meera, another handset, Mumbai): the last message
+  after A and B, from Meera: *"Mumbai mein ek aur phone hai."* It promises a
+  new mystery and doesn't tease this one.
 
-## G6. Responsibility (non-negotiable, because this crime is real)
+## N5. The realism audit (script §18)
 
-- **Fictional brands for anything that's part of the crime:** PikDrop (not a
-  real courier app), SkyEx (not a real courier), City Desk, Lotus Park,
-  Skyline Overseas, and an unnamed "nationalised bank". Real platforms
-  (WhatsApp, Instagram) stay as they are, per the existing decision, with our
-  own drawn icons. Myawaddy and Dadar are real places, and that's fine.
-- **The death:** a murder staged as suicide. Nothing graphic, no method on
-  screen, and a helpline line on the end card: **Tele-MANAS 14416** beside
-  **1930**. The content note on the pouch reads *death, fraud, human
-  trafficking.*
-- **The game never asks the player for anything real:** no real PIN, number,
-  camera or contacts. The in-fiction PIN pad looks nothing like a real bank's.
-  Say so once, on the pouch. It also makes the lesson land: *the only PIN you
-  ever type in this game is a trap.*
-- **No real-world notification ever imitates police, a bank or WhatsApp.**
-- **Opportunity:** state cyber cells and I4C run digital-arrest awareness
-  campaigns. A thriller that trains people to cut the call is something they
-  might distribute. Explore it after launch, never before the story is good.
-
-## G7. Growth that comes out of the story itself
-
-- **Pass it on**'s preset message: *"Would you have cut the call?"*
-- **The share line:** *"They had 4 things on me."*
-- **"The First Minute" (new):** a 60-second standalone of the opening only. The
-  pouch, the call, the alert, the whisper, and one choice: **Cut the call?**
-  Whatever you pick, it ends on the real advice and a link to the full
-  chapter. It's built to be forwarded into **family WhatsApp groups**, where
-  the people who most need it will never play 45 minutes, and it's the
-  biggest acquisition channel this story has.
-- **Title:** *Don't Cut the Call*. Hindi desk tag: *Call Mat Kaatna*.
-
-## G8. Decisions for Siddhant
-
-1. **The story itself:** this, instead of The Blue Room and MIRROR?
-2. **The found phone is owner-specific**, and your own phone matches
-   "your phone". This reverses a decision from 2026-09-15.
-3. **Two phones on stage.**
-4. **The live-video shoot** (G4), which is the chapter's largest real-world
-   cost.
-5. **Optional real-time 10:30 AM** for Episode 3.
-6. **"The First Minute"** as a separate shareable.
-7. **The Blue Room is shelved**, not deleted.
-
-## G9. Build order, if approved
-
-| Session | What |
+| Risk | How the game answers it |
 |---|---|
-| D1 | Her iOS shell (home, dock, status bar with the recording pill) and your-phone shell, both on stage |
-| D2 | The live call: picture-in-picture, cue engine, zoom on video, supervisor crossings |
-| D3 | The exposure ledger in the engine, plus the timeline-board and claim-check question types |
-| D4 | Apps: PikDrop, Instagram (DMs, stories, audio boost), Spam, Notes edits, Chrome history, Recycle Bin, Secure Folder |
-| D5 | Episode 1 as data, with placeholder video |
-| D6 | Episode 2 as data |
-| D7 | Episode 3: your arrest, generated from the ledger |
-| D8 | The endings, the end card and The First Minute. Tests: every question has two routes, and a **clean run** is reachable |
-| — | Shoot: video, voices, handwriting, photos (Siddhant, in parallel from D2) |
+| Why does Sameer keep, then send, the phone? | Kunal's frame (Mon 3:10 PM): they can prove the shot, so his phone is the counter-file (Q13) |
+| Why not call the police? | Bhasin's 12:38 order, Sameer's fear and self-interest (the searches), Nitin's car. Emergency help exists in the world; people chose around it |
+| Why would Nitin believe Sameer? | Sameer is his boss; *"Bhasin sir ki gaadi mein"* is plausible that night; the car's own movement corroborates it (Vicky's location, the guards' 1:59 and 2:04) |
+| Why does Dilip stay on the property? | Injured, dependent, and trusting Sameer: 1:07 *"Aap aa rahe ho na?"* / 1:08 *"aa raha hoon"* |
+| Why burn the body? | Treated as destructive and imperfect; the game never claims the fire erased anything |
+| Why doesn't the family destroy every record? | Different devices: Kunal's phone, Nitin's phone, the guards' group, Sameer's phone. The fight is over which version is believed |
+| Why is the player investigating? | O1 (open), and the evidence contradicts itself: the record is the player's own |
+| Too many coincidences | Every event has a prior cause: the shot list, the promise, Kunal's message, the invoice, Vicky, the Thursday curation |
+| The drone as omniscient proof | There is no drone. The shot is proven from imperfect sources: a photo, a cut-off take, a memo, a group message, and the family's frame |
+| Too much legal certainty | No ending declares a verdict. The record is a factual reconstruction, with its uncertainty (no stated time of death) |

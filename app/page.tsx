@@ -5,7 +5,7 @@ import { estimatedMinutes } from "@/lib/found/store";
 
 export const metadata: Metadata = {
   title: { absolute: "Found" },
-  description: "Thrillers played on somebody else's phone. One was delivered to you at 1:11 AM.",
+  description: "Thrillers played on somebody else's phone. One was left at your door.",
   alternates: { canonical: "/" },
 };
 

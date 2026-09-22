@@ -2,28 +2,21 @@
 
 import { useEffect, useState } from "react";
 
+import type { Gate } from "@/content/types";
 import { getBattery, type BatteryLike } from "@/lib/found/battery";
 import styles from "./Charge.module.css";
 
 /* ===========================================================================
-   The end of Episode 1, and the chapter's complicity beat.
+   The end of Episode 1: the found phone is about to die, and the player's own
+   charger is the only thing that keeps it (PLAYER-JOURNEY Stage 5).
 
-   The power bank taped to her phone has given out. The call is the only thing
-   keeping a boy in a room somewhere off a quota sheet, and to keep it alive
-   the player has to get up, find a cable and plug in **their own phone**.
-
-   Half an hour later they learn what they were powering (PLAYER-JOURNEY
-   Stage 5). It asks once, warmly, and then waits: no nagging, no timer, no
-   way to fail it.
-
-   Where the browser won't say (Safari, Firefox), there is a cable on screen
-   and the beat reads exactly the same.
-
-   A player who cut the call at 1:11 gets here too, to a phone with nobody on
-   it: what they keep alive is her phone, and everything still in it.
+   It asks once, warmly, and then waits: no nagging, no timer, no way to fail
+   it. Where the browser won't say whether a charger is in (Safari, Firefox),
+   there is a cable on screen after two minutes and the beat reads the same.
+   The words are the chapter's own (`story.gate`).
    =========================================================================== */
 
-export default function Charge({ onPlugged, cut }: { onPlugged: () => void; cut?: boolean }) {
+export default function Charge({ gate, onPlugged }: { gate: Gate; onPlugged: () => void }) {
   const [battery, setBattery] = useState<BatteryLike | null | undefined>(undefined);
   const [waited, setWaited] = useState(false);
 
@@ -50,23 +43,14 @@ export default function Charge({ onPlugged, cut }: { onPlugged: () => void; cut?
 
   return (
     <div className={styles.charge}>
-      <p className={styles.level}>4%</p>
-      <p className={styles.line}>The power bank taped to her phone has gone out.</p>
-      {cut ? (
-        <p className={styles.line}>
-          The call is gone; you saw to that. What is left of her is on this phone, and it has four
-          percent.
+      <p className={styles.level}>{gate.level}</p>
+      {gate.lines.map((line) => (
+        <p key={line} className={styles.line}>
+          {line}
         </p>
-      ) : (
-        <p className={styles.line}>
-          The call is still running on four percent. If the phone dies, the line drops, and he asked
-          you not to let it.
-        </p>
-      )}
+      ))}
 
-      <p className={styles.ask}>
-        {cut ? "Plug your phone in to keep hers alive." : "Plug your phone in to keep the call alive."}
-      </p>
+      <p className={styles.ask}>{gate.ask}</p>
 
       {cable ? (
         <button type="button" className={styles.cable} onClick={onPlugged}>

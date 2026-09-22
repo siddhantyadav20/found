@@ -44,7 +44,7 @@ export type Solved = {
   readonly episode: EpisodeNo;
   /** Wall-clock minutes for the episode, if it could be told. */
   readonly minutes: number | null;
-  /** How many things they had on the player, as the share says it. */
+  /** The result's count, as the share says it (the chain's, from ROADMAP S3). */
   readonly held: number;
   readonly at: number;
 };
@@ -93,8 +93,8 @@ export type Progress = {
 export function summarise(s: CaseState): Progress {
   const flags = s.flags as readonly string[];
   const episode = flags.includes("ep:3") ? 3 : flags.includes("ep:2") ? 2 : 1;
-  // Between episodes: the power bank has died and nobody has plugged in yet.
-  const between = flags.includes("did:bank-dead") && !flags.includes("did:charged");
+  // Between episodes: the phone is dying and nobody has plugged it in yet.
+  const between = flags.includes("did:needs-charge") && !flags.includes("did:charged");
   const phase = flags.includes("did:chose") ? "done" : between ? "between" : "playing";
   return { episode, phase, last: Math.max(s.started, ...Object.values(s.at)) };
 }
@@ -144,11 +144,11 @@ export type CaseLine = { readonly status: string; readonly result: string | null
 /** How the desk and the restore page describe one of your cases. */
 export function describeCase(save: CaseState | null, solved: Solved | null, now: number): CaseLine {
   const result = solved
-    ? `Solved Episode ${solved.episode}${solved.minutes ? ` in ${solved.minutes} min` : ""}${solved.held ? ` · they had ${solved.held} on you` : ""}`
+    ? `Solved Episode ${solved.episode}${solved.minutes ? ` in ${solved.minutes} min` : ""}`
     : null;
-  if (!save) return { status: "Back in its envelope", result, cta: "Play again" };
+  if (!save) return { status: "Back in its parcel", result, cta: "Play again" };
   const p = summarise(save);
-  if (p.phase === "between") return { status: "Episode 1 done · her phone is at 4%", result, cta: "Charge it" };
+  if (p.phase === "between") return { status: "Episode 1 done · the phone is dying", result, cta: "Charge it" };
   if (p.phase === "done") return { status: "Case closed", result, cta: "Open it" };
-  return { status: `Episode ${p.episode} · the call is still running · ${ago(p.last, now)}`, result, cta: "Carry on" };
+  return { status: `Episode ${p.episode} · ${ago(p.last, now)}`, result, cta: "Carry on" };
 }

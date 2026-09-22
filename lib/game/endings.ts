@@ -8,7 +8,7 @@ import { all, has, type CaseState } from "./engine";
 
 export type EndingId = Ending["id"];
 
-/** Set when the act is done: the call cut, the phone thrown, the message sent. */
+/** Set when the ending's act is done. */
 export const endFlag = (id: EndingId): Flag => `did:end-${id}`;
 
 /** Set when the last image has gone to black, so a reload lands on the end card. */

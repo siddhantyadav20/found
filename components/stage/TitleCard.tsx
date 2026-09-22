@@ -2,13 +2,12 @@
 
 import { useEffect } from "react";
 
-import styles from "./Morning.module.css";
+import styles from "./Interstitial.module.css";
 
 /* ===========================================================================
-   Between episodes: the title, the time, and a breath (PLAYTEST.md #34).
-   Episode 1's title is on the pouch; Episode 3's is on the morning. This is
-   Episode 2's: the phone has come back on the player's charger, and the
-   night has moved on while it did.
+   Between episodes: the title, the time, and a breath. Episode 1's title is
+   on the parcel; every later episode opens on its own card, and on the
+   minute it begins.
    =========================================================================== */
 
 const HOLD_MS = 3800;
@@ -30,7 +29,7 @@ export default function TitleCard({
   }, [onDone]);
 
   return (
-    <div className={styles.morning} data-night role="status">
+    <div className={styles.card} role="status">
       <p className={styles.eyebrow}>Episode {n}</p>
       <p className={styles.line}>{title}</p>
       <p className={styles.sub}>{when}</p>

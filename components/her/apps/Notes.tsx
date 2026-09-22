@@ -8,16 +8,10 @@ import styles from "./Notes.module.css";
 import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
-   Notes, where she thought on Thursday and where somebody else typed at 12:39
-   on Saturday morning.
+   Notes, as iOS draws them: a title, a preview, when it was last edited,
+   who it's shared with. A locked note asks for a password, and whether it
+   holds anything is the chapter's business, never required.
 
-   Three notes, and each is a different kind of evidence:
-   - "Thursday" is her, fourteen minutes in, working out that it is a scam
-   - "For whoever gets this phone" is her, edited by them: iOS says when, and
-     the when is impossible
-   - "FDs & papers" is locked, and the note above tells the player the
-     password. Nothing about it is required, and there is nothing in it. It is
-     the trap, and the trap is optional (PLAYER-JOURNEY Stage 6).
    =========================================================================== */
 
 function Open({ note, onOpened }: { note: Note; onOpened: (id: string) => void }) {
@@ -74,8 +68,8 @@ export default function Notes({
   story: Story;
   state: CaseState;
   onRead: (ids: readonly string[]) => void;
-  /** Typing her password is a thing the player does, and a thing they keep. */
-  onPassword: () => void;
+  /** Opening a locked note is a thing the player did, and the save keeps it. */
+  onPassword: (id: string) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const notes = story.notes.filter((n) => all(state, n.requires));
@@ -90,7 +84,7 @@ export default function Notes({
         <Open
           note={here}
           onOpened={() => {
-            onPassword();
+            onPassword(here.id);
             if (here.evidence) onRead([here.evidence]);
           }}
         />

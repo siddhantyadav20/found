@@ -52,7 +52,7 @@ export default function Recents({
           {call.name} · {call.day} {stamp(call.at)} · {length(call.seconds)}
         </p>
         {call.recording.lines.map((l, i) => (
-          <div key={i} className={styles.bubble} data-out={l.who === "Vasu" || undefined}>
+          <div key={i} className={styles.bubble} data-out={l.who === story.owner.short || undefined}>
             <span className={styles.sender}>{l.who}</span>
             <span className={styles.text}>{l.line}</span>
             {l.english && <span className={styles.docMeta}>{l.english}</span>}

@@ -10,7 +10,7 @@ import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Screen.module.css";
 
 /* ===========================================================================
-   Her phone: an iPhone in current iOS, and it behaves like one.
+   The found phone: an iPhone in current iOS, and it behaves like one.
 
    This is the pilot's shell (commit c03aa03, FoundPhone/index.tsx), brought
    back for the new story after the QA pass of 2026-09-18 found the first
@@ -26,8 +26,8 @@ import styles from "./ios/Screen.module.css";
    Every gesture follows the finger by styling the element directly while it
    moves: re-rendering React sixty times a second would be the wrong trade.
 
-   And one thing that is the chapter: **the blue pill around her clock.** iOS
-   draws it while the screen is being shared, and it has been since Thursday.
+   And one thing a chapter can switch on: **the blue pill around the clock**,
+   which iOS draws while the screen is being shared or recorded.
    =========================================================================== */
 
 export type Origin = { x: number; y: number; w: number; h: number };

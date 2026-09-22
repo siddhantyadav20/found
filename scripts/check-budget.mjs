@@ -69,9 +69,9 @@ const BUDGET = {
   /**
    * Every route a player lands on, in KB uncompressed: the layout's chunks
    * plus the page's own (ROADMAP P12). Measured 2026-09-19 at 495 / 646 /
-   * 472; the case page is the whole phone, both episodes' apps and the call.
+   * 472; the case page is the whole phone and every app on it.
    */
-  routes: { "/": 540, "/c/[case]": 700, "/first-minute": 520 },
+  routes: { "/": 540, "/c/[case]": 700 },
   /** The largest single file allowed in `public/`, in KB. */
   asset: 1200,
   /**

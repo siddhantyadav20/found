@@ -654,10 +654,10 @@
   color: #ff8a7a;
 }
 
-/* --- New: a sealed courier pouch that buzzes -------------------------------
-   The phone inside it is on a call, so the pouch shivers on the table the
+/* --- New: a sealed courier parcel that buzzes ------------------------------
+   The phone inside it keeps ringing, so the parcel shivers on the table the
    way a phone in a bag does. Same object, same link, same morph into the
-   pouch the case page opens with. */
+   parcel the case page opens with. */
 
 .object[data-state="new"] {
   height: 72%;
@@ -672,18 +672,18 @@
   box-shadow:
     0 40px 80px rgba(0, 0, 0, 0.7),
     inset 0 0 3rem rgb(0 0 0 / 12%);
-  /* A ring, not a notification: it keeps going, the way the call does. */
+  /* A ring, not a notification: it keeps going, the way a caller does who won't give up. */
   animation: buzz 1.6s ease-in-out 0.7s infinite;
 }
 
-.pouch {
+.parcel {
   position: absolute;
   inset: 0;
   overflow: hidden;
   border-radius: 6px;
 }
 
-.pouchStrip {
+.parcelStrip {
   position: absolute;
   inset: 0 0 auto 0;
   padding: 7px 0;
@@ -721,12 +721,3 @@
   .object[data-state="new"] .phone { animation: none; }
 }
 
-.minute {
-  margin: 1.5rem auto 2.5rem;
-  font-family: var(--font-ui), system-ui, sans-serif;
-  font-size: 0.8rem;
-  color: #8d8781;
-  text-align: center;
-}
-
-.minute a { color: #efeae4; text-underline-offset: 3px; }

@@ -1,34 +1,31 @@
 /* ===========================================================================
    The vocabulary a chapter is written in.
 
-   One chapter is two devices, a call that never ends, a pile of evidence, a
-   handful of questions, and a ledger of everything the player gave away.
-   Nothing here knows about Vasundhara Kulkarni; the script in
-   `content/dont-cut-the-call/` does.
+   One chapter is two devices (the found phone and the player's own), a pile
+   of evidence, a handful of questions, some people who ring or write, and the
+   endings. Nothing here knows about any one story; `content/<case>/` does.
 
-   Written for the pivot of 2026-09-17 (CHAPTER1.md, ROADMAP.md P0).
+   Written for the pivot of 2026-09-17, and stripped of the retired chapter's
+   call, courier and news app at the pivot to *Shagun* (ROADMAP.md S1).
    =========================================================================== */
 
 export type EpisodeNo = 1 | 2 | 3;
 
-/** Whose phone a thing lives on. Hers is the found phone; yours is yours. */
+/** Whose phone a thing lives on. "hers" is the found phone, whoever owns it
+ *  (renamed in ROADMAP S2); yours is yours. */
 export type DeviceId = "hers" | "yours";
 
 export type AppId =
-  // Her phone
+  // The found phone
   | "whatsapp"
   | "phone"
   | "photos"
   | "settings"
-  | "pikdrop"
   | "instagram"
   | "messages"
   | "notes"
   | "safari"
-  | "news"
   | "casefile"
-  /** The management profile. Never on her home screen; only its notifications wear it. */
-  | "kyc"
   // Your phone
   | "yours:chats"
   | "yours:phone"
@@ -64,8 +61,8 @@ export type Evidence = {
   /** Reachable only once these are true. Badges count reachable-but-unseen. */
   readonly requires?: readonly Flag[];
   /**
-   * Found by doing something particular — zooming into a clock, tearing open
-   * a pouch — rather than by opening the app it is filed under. Manual
+   * Found by doing something particular — zooming into a face, reverting an
+   * edit — rather than by opening the app it is filed under. Manual
    * evidence never puts a badge on an icon, because a badge would give the
    * doing away.
    */
@@ -159,28 +156,6 @@ export type Question =
       readonly sets?: readonly Flag[];
     };
 
-/**
- * A line on the call. `when` is what brings it: "idle" plays on a loop between
- * cues, a flag plays it once that flag lands, and "supervisor" cues are the
- * ones where someone is standing behind him.
- */
-export type CallCue = {
-  readonly id: string;
-  readonly when: "idle" | "open" | Flag;
-  readonly speaker: "rathore" | "supervisor";
-  readonly line: string;
-  /** The English under the Hinglish. Captions are never optional. */
-  readonly english?: string;
-  readonly supervisorPresent?: boolean;
-  /** A whisper is played quieter, and the script means it. */
-  readonly whisper?: boolean;
-  readonly clip?: string;
-  /** An idle line belongs to one episode: it is not light outside at 1:13 AM. */
-  readonly episode?: EpisodeNo;
-  /** An idle line said only once these are true: after a stranger has spoken to him. */
-  readonly requires?: readonly Flag[];
-};
-
 /** Something the story does to a phone on its own: a message, a notification. */
 export type LiveEvent = {
   readonly id: string;
@@ -194,21 +169,18 @@ export type LiveEvent = {
   readonly icon?: AppId;
   /** Something that arrived while nobody was looking: it goes into the list at this time, with no banner. */
   readonly at?: string;
-  /** Brings the call back up, because what happens next happens on it. */
-  readonly expands?: boolean;
   readonly sets?: readonly Flag[];
 };
 
 /**
- * Something the player can do that the syndicate can use. The ledger is the
- * chapter's spine: it writes Episode 3's accusations, the endings' variables
- * and the end card (CHAPTER1.md G1.4).
+ * Something the player hands over that the story keeps, in the order it
+ * was handed over. ROADMAP S3 replaces it with the chain of links.
  */
 export type Exposure = {
   readonly id: string;
-  /** How the end card names it: "Her PIN", "Your voice", "Shaila's name". */
+  /** How the end card names it. (Replaced by the chain in ROADMAP S3.) */
   readonly what: string;
-  /** The line Episode 3's officer reads when they have this. */
+  /** A line the story can say back once it has this. */
   readonly used: string;
   readonly english?: string;
 };
@@ -229,31 +201,61 @@ export type EndingLine = {
   readonly unless?: readonly Flag[];
 };
 
-/** One of the three things a player can do with what they know. */
+/** One of the things a player can do with what they know. */
 export type Ending = {
-  readonly id: "police" | "bin" | "friend";
+  readonly id: string;
   readonly row: string;
   /** What happens afterwards, a line at a time. */
   readonly lines: readonly EndingLine[];
   /** The last image: who says what, before the black. */
   readonly last: readonly EndingLine[];
-  /** Ending 03 ends on a reply to somebody you love. The others withhold one. */
-  readonly reply?: readonly ReplyOption[];
   /** The one thing only this ending shows, for the end card. */
   readonly onlyHere: string;
 };
 
 export type Clock = {
-  /** The story's own time when an episode opens, as "01:11". */
+  /** The story's own time when an episode opens, as "23:40". */
   readonly base: string;
   readonly day: string;
-  /** Her phone's battery when it opens. */
+  /** The found phone's battery when it opens. */
   readonly battery: number;
+  /** On the player's charger: the battery climbs a point a minute from `battery`. */
+  readonly charging?: boolean;
+  /** The battery falling with the beats rather than with a timer: the last step whose flag is set wins. */
+  readonly drain?: readonly { readonly after: Flag; readonly battery: number }[];
+};
+
+/** Waiting on the found phone's lock screen before anything arrives. */
+export type LockNotice = {
+  readonly key: string;
+  readonly app: AppId;
+  readonly from: string;
+  readonly text: string;
+  /** As the lock screen shows it: "Fri", "1:04 AM". */
+  readonly time: string;
+};
+
+/** What the player finds with the phone, before they turn it on (ROADMAP S5 rebuilds this). */
+export type Arrival = {
+  /** The note, in the writer's own hand, a line at a time. */
+  readonly note: readonly string[];
+  readonly sign?: string;
+  /** Ours, never written on the note. */
+  readonly english: string;
+  /** What lies beside it, in a line. */
+  readonly caption: string;
+};
+
+/** The charger gate between Episodes 1 and 2: asked once, warmly. */
+export type Gate = {
+  readonly level: string;
+  readonly lines: readonly string[];
+  readonly ask: string;
 };
 
 export type HomeIcon = { readonly app: AppId; readonly label: string };
 
-/* --- what is on her phone -------------------------------------------------
+/* --- what is on the found phone -------------------------------------------
    Everything below is content, not mechanism: a chat is a list of messages, a
    call is a row in Recents, a setting is a line in a grouped list. Anything
    that can be *found* names an `evidence` id, and the engine does the rest. */
@@ -269,13 +271,13 @@ export type Attachment =
       readonly label: string;
       readonly lines: readonly string[];
       readonly sign?: string;
-      /** A line in her own language, under the signature. */
+      /** A line in the writer's own language, under the signature. */
       readonly blessing?: string;
     };
 
 export type Message = {
   readonly id: string;
-  /** Her, the other side, or the app itself ("Messages and calls are encrypted"). */
+  /** The owner ("her" until ROADMAP S2 renames it), the other side, or the app itself. */
   readonly from: "her" | "them" | "system";
   readonly text?: string;
   /** The English under the Hinglish or Marathi. Never optional where it matters. */
@@ -292,8 +294,7 @@ export type Message = {
 
 /**
  * What the player can say, when the story lets them say anything at all.
- * Four places in the chapter, and no more: the call, her son, her friend, and
- * the last message of Ending 03. Never generated, always picked from a list.
+ * Never generated, always picked from a list.
  */
 export type ReplyOption = {
   readonly id: string;
@@ -314,9 +315,8 @@ export type Reply = {
 };
 
 /**
- * A call that arrives on its own: her son at 1:34 AM, and the one at 10:30
- * that is meant for the player. Answering is a choice, and so is everything
- * said afterwards.
+ * A call that arrives on its own. Answering is a choice, and so is
+ * everything said afterwards.
  */
 export type IncomingCall = {
   readonly id: string;
@@ -331,7 +331,7 @@ export type IncomingCall = {
     readonly who: string;
     readonly line: string;
     readonly english?: string;
-    /** Only said when the ledger holds this, which is how an arrest is built. */
+    /** Only said when the ledger holds this. */
     readonly needs?: string;
     /** Only said when this happened earlier in the night. */
     readonly when?: Flag;
@@ -340,19 +340,6 @@ export type IncomingCall = {
   /** What the button says when there is nothing to say back. */
   readonly dismiss?: string;
   readonly sets?: readonly Flag[];
-};
-
-/** A story on Instagram, which expires, with something on the audio. */
-export type Story24 = {
-  readonly id: string;
-  readonly who: string;
-  readonly at: string;
-  readonly expires: string;
-  readonly caption: string;
-  /** What the microphone caught above her, once the volume is up. */
-  readonly audio: readonly { readonly who: string; readonly line: string; readonly english?: string }[];
-  readonly evidence?: string;
-  readonly requires?: readonly Flag[];
 };
 
 export type Thread = {
@@ -374,22 +361,23 @@ export type Thread = {
 };
 
 /**
- * A photograph on her phone. Until the shoot (ROADMAP P11) these are drawn,
- * and the ones that matter most are drawn anyway: her diary, photographed
- * page by page at 11:40 PM, is paper with her handwriting on it.
+ * A photograph on the found phone. Until the shoot (ROADMAP S11) these are
+ * drawn: `paper` is a page in somebody's hand, `scene` a titled card.
  */
 export type Photo = {
   readonly id: string;
-  readonly album?: "diary" | "family" | "screenshots";
+  readonly album?: string;
   readonly at: string;
   readonly day: string;
   readonly place?: string;
   /** `paper` draws a page; `scene` draws a photograph. */
   readonly kind: "paper" | "scene";
   readonly title: string;
-  /** What is written on the page, in her hand. */
+  /** What is written on the page, in the writer's hand. */
   readonly lines?: readonly string[];
   readonly caption?: string;
+  /** What Info says took it: "iPhone 14 Pro — Back Camera". */
+  readonly camera?: string;
   /** In Recently Deleted, with the time it was deleted on it. */
   readonly deletedAt?: string;
   readonly evidence?: string;
@@ -414,28 +402,7 @@ export type Note = {
   readonly requires?: readonly Flag[];
 };
 
-/** The courier booking that brought this phone to the player's door. */
-export type Courier = {
-  readonly bookedAt: string;
-  readonly day: string;
-  readonly item: string;
-  readonly from: string;
-  readonly to: string;
-  readonly rider: string;
-  readonly fare: string;
-  /** Where the bike went, in order. One of these stops was nobody's idea but theirs. */
-  readonly route: readonly {
-    readonly at: string;
-    readonly place: string;
-    readonly note?: string;
-    readonly wrong?: boolean;
-    readonly evidence?: string;
-    readonly requires?: readonly Flag[];
-  }[];
-  readonly chat: readonly { readonly from: "rider" | "her"; readonly text: string; readonly english?: string; readonly at: string; readonly evidence?: string }[];
-};
-
-/** What she searched for, which is how a bank manager thinks out loud. */
+/** What the owner searched for, with the time: how a person thinks out loud. */
 export type Search = {
   readonly id: string;
   readonly text: string;
@@ -460,7 +427,7 @@ export type CallEntry = {
   readonly seconds?: number;
   /** Still connected: Recents shows it as live, not as a length. */
   readonly ongoing?: boolean;
-  /** iOS records calls now, and she had it on. */
+  /** iOS records calls now, for anyone who turns it on. */
   readonly recording?: Recording;
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
@@ -496,22 +463,17 @@ export type SettingsGroup = {
   readonly rows: readonly SettingsRow[];
 };
 
-/** The call that is already running when the player opens the pouch. */
-export type CallSpec = {
-  readonly caller: string;
-  /** How many seconds it had already run. 31:33:07 is 113,587 of them. */
-  readonly since: number;
-  /** What his room is meant to be, on the board behind him. */
-  readonly board: string;
-};
-
 export type Story = {
   readonly id: string;
   readonly title: string;
-  readonly call: CallSpec;
+  /** Whose phone it is: the name on the account, and what transcripts call them. */
+  readonly owner: { readonly name: string; readonly short: string };
   readonly episodes: readonly [string, string, string];
   readonly clocks: readonly [Clock, Clock, Clock];
-  /** Her home screen, as she left it: pages, and what she kept in the dock. */
+  readonly arrival: Arrival;
+  readonly gate: Gate;
+  readonly lockScreen: readonly LockNotice[];
+  /** The found phone's home screen, as its owner left it: pages, and the dock. */
   readonly hersHome: {
     readonly pages: readonly (readonly HomeIcon[])[];
     readonly dock: readonly HomeIcon[];
@@ -520,23 +482,12 @@ export type Story = {
   readonly threads: readonly Thread[];
   readonly photos: readonly Photo[];
   readonly notes: readonly Note[];
-  readonly courier: Courier;
-  readonly stories: readonly Story24[];
   readonly incoming: readonly IncomingCall[];
-  /** What the player may say on the video call, once they unmute. */
-  readonly callReplies: readonly Reply[];
   readonly searches: readonly Search[];
-  readonly article: {
-    readonly kicker: string;
-    readonly headline: string;
-    readonly body: readonly string[];
-    readonly note: string;
-  };
   readonly calls: readonly CallEntry[];
   readonly settings: readonly SettingsGroup[];
   readonly questions: readonly Question[];
-  readonly cues: readonly CallCue[];
   readonly events: readonly LiveEvent[];
   readonly exposures: readonly Exposure[];
-  readonly endings: readonly [Ending, Ending, Ending];
+  readonly endings: readonly Ending[];
 };

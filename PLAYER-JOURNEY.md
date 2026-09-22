@@ -1,12 +1,14 @@
 # FOUND — The player's journey
-## Chapter One: *Don't Cut the Call* · the experience plan
+## Chapter One: *Shagun* · the experience plan
 
-The story is [CHAPTER1.md](CHAPTER1.md). This document is the other half: what
-a person feels, minute by minute, from the moment they tap a link to the moment
-they put their phone down, and what the interface has to do to earn each of
-those feelings. The phased build plan is [ROADMAP.md](ROADMAP.md).
+The story is [SCRIPT.md](SCRIPT.md) (canon) and its game adaptation is
+[CHAPTER1.md](CHAPTER1.md). This document is the other half: what a person
+feels, minute by minute, from the moment they tap a link to the moment they
+put their phone down, and what the interface has to do to earn each of those
+feelings. The phased build is [ROADMAP.md](ROADMAP.md).
 
-Written for the pivot of 2026-09-17. Nothing here assumes the old build.
+Written for the pivot of 2026-09-22. It replaces the journey for *Don't Cut
+the Call*; what carried over is carried over on merit, and said so.
 
 ---
 
@@ -15,43 +17,45 @@ Written for the pivot of 2026-09-17. Nothing here assumes the old build.
 Every screen in this chapter obeys these. When a design decision is unclear,
 the law wins over the convention.
 
-**1. Obedience arrives before understanding.**
-The player's first act is to follow an instruction from someone they've never
-met: *Call mat katna.* They obey because they're curious, not because they
-trust. Ninety minutes later they learn the instruction was the enemy's. The
-whole chapter is that sentence, so **the note must be the first thing they
-read and the easiest thing to obey.** No tutorial, no menu, no options, no
-"how to play" between the pouch and the call.
+**1. Belief arrives before understanding.**
+The player's first theory is the one Sameer arranged: *Kunal was firing, a
+boy fell, they burned him.* They believe it because the evidence is real and
+it's in the right order. Forty minutes later they learn the order was his.
+The whole chapter is that sentence, so **the first theory must be easy to
+reach, well supported, and accepted by the case file without comment.** The
+script's aim is that expert players form the wrong theory for the right
+reasons (script §23).
 
-**2. Every convenience is a hook.**
-Real scams work through helpfulness. So does this game. The hint that saves
-you is a hint they planted. The PIN that opens a folder is the PIN they
-wanted. The charger that keeps the call alive keeps their camera alive.
-**Anything the game does *for* the player in Episodes 1–2 must be something
-the syndicate would also want.** Nothing kind in this chapter is free.
+**2. Every convenience is curation.**
+What the phone makes easy is what Sameer wants seen: the pinned chat, the
+starred voice notes, Favorites, a note titled *"For M"*, and a phone with no
+passcode. What he didn't want seen is one step harder, never hidden by the
+game: Recently Deleted, Revert, Archived, the Hidden album, other people's
+phones. **Anything the phone does *for* the player in Episodes 1–2 is
+something Sameer set up.** The harder route is always a real iOS or WhatsApp
+behaviour, never an invented one.
 
-**3. Fair play is absolute.**
-Every trap is avoidable, every deduction is reachable two ways, and every
-twist is visible in hindsight on a screen the player already saw. The player
-must be able to say *"it was there"*, never *"how was I supposed to know?"*
-A trap that can't be dodged is a cutscene wearing a costume.
+**3. Fair play is absolute.** *(carried over)*
+Every deduction is reachable two ways, every closed route has a fallback,
+and every twist is visible in hindsight on a screen the player already saw.
+The player must be able to say *"it was there"*: *"4. Nitin —"* was there in
+minute seventeen.
 
-**4. Dread is made of timestamps, not jump scares.**
-No sudden noise, no red flash, no gore. The scares in this chapter are:
-a note edited at 12:39 AM, a call timer that never stops, an icon nobody
-explained, and a stranger saying *"Good morning, #9."* **Quiet, specific,
-checkable.**
+**4. Dread is made of timestamps.** *(carried over)*
+No sudden noise, no red flash, no gore. The scares in this chapter are a
+reply at 1:53 to a message that isn't there, a search for an ambulance at
+1:56, one grey tick on a voice note, and a guard writing *"Sir ladka bol nahi
+raha."* **Quiet, specific, checkable.**
 
-**5. The player's hands do the irreversible things.**
-Tearing the pouch, plugging in a charger, typing a PIN, dragging a phone into
-the sea, pressing send. Never a button labelled "continue". If it matters, it
-takes a gesture, and the gesture is the memory people keep.
+**5. The player's hands do the irreversible things.** *(carried over)*
+Tearing the parcel, turning the envelope over, plugging in the charger,
+striking a claim, reverting an edited video, switching on airplane mode,
+holding to post, resealing the parcel. Never a button labelled "continue".
 
-**6. Never fake the real world.**
+**6. Never fake the real world.** *(carried over, unchanged)*
 No real camera, microphone, contacts, location or personal data, ever. No
-notification that imitates a police force, a bank or a messaging app. The game
-is about manufactured authority, so it can't manufacture any of its own.
-This is a hard rule, not a preference.
+notification that imitates a police force, a bank or a messaging app. Every
+brand that's part of the crime is fictional. This is a hard rule.
 
 ---
 
@@ -59,277 +63,180 @@ This is a hard rule, not a preference.
 
 | Minute | Where | What the player feels | What the design does to cause it |
 |---|---|---|---|
-| 0:00 | Link → desk | *Curiosity with a little guilt* | The desk, one object, no copy explaining the product |
-| 0:30 | The pouch | *This is mine to open* | Their name on the sticker (from a drop), a physical tear |
-| 1:00 | The call | **Panic, then obedience** | A live face, a timer, an instruction they follow |
-| 2:00 | The news alert | *Dread with a specific shape* | She is dead, and he doesn't know |
-| 4:00 | Her home screen | *Intrusion* | 3,412 unread, a grandson, huge font: a real life |
-| 8:00 | Her notes | **Admiration** | She knew. She was never the victim |
-| 12:00 | The clock on his wall | *Vertigo* | The villain is a hostage |
-| 13:00 | The charger gate | *Complicity* | They power the thing that watches them |
-| 20:00 | Tanvi, the terrace | *Anger* | A 20-year-old sold her for fear, and a man asked for the diary |
-| 26:00 | Row 9 | **Cold** | The address is theirs |
-| 32:00 | The PIN | *Cleverness* | They solved it, and that is the trap |
-| 36:00 | The real note | **Shame** | "CUT THE CALL." They did the opposite for 36 minutes |
-| 38:00 | "Good morning, #9." | *Exposure* | The watcher speaks, and the icon was always there |
-| 40:00 | Morning, your phone | *Sick anticipation* | Sunlight, a thank-you from a man she saved |
-| 42:00 | Your arrest | **Vertigo, personal** | Every charge is theirs and true |
-| 46:00 | The choice | *Loneliness* | Two orders, three answers, no right one |
-| 48:00 | The end card | **"Go back and look"** | The ledger, then the first notification's icon |
+| 0:00 | Link → desk | *Curiosity, a little guilt* | The desk, one parcel, no copy explaining the product |
+| 0:40 | The envelope | *This isn't mine* | A wedding envelope; a note to someone called M; a name, Bhasin |
+| 1:30 | The phone wakes | **Pressure** | 47 missed calls, and the number rings in your hand |
+| 4:00 | His life | *Intrusion, then liking him* | SK Films, Mummy asking if he's eaten, an EMI, a Mumbai offer |
+| 7:00 | The boy with the tray | *Nothing yet* | A face among 1,284 |
+| 9:00 | The poster | **Dread** | The same face, *LAPATA* |
+| 12:00 | The voice notes | *Grief, and alliance with him* | His voice; one grey tick each |
+| 14:00 | Nine seconds of fire | *Horror, and certainty* | Light on a wall, no body |
+| 17:00 | "For M" | *Unease* | A reading order that stops at "4. Nitin —" |
+| 19:00 | "M? Tu hai?" | *Watched* | He's alive, and steering. The phone dies |
+| 20:00 | The charger | *Care* | You keep a stranger's phone alive, with your own cable |
+| 24:00 | 12:29 AM | *Suspicion* | Sameer holding the revolver |
+| 28:00 | Two firings | *Cleverness* | 11:52 and 12:31, two lawns |
+| 31:00 | The memo | **Cold** | *"Doosri… main pose kar raha tha."* The first reveal |
+| 34:00 | 1:07 AM | **The crash** | *"Aap aa rahe ho na?"* / *"aa raha hoon."* |
+| 38:00 | The money | *Disgust* | His own invoice, turned into a leash |
+| 41:00 | The car | *Hope* | Nitin tried |
+| 43:00 | 1:53 AM | **Cliffhanger** | A reply to a message that isn't there |
+| 46:00 | The board | *Focus* | Five lanes, one interval |
+| 49:00 | 1:56 AM | **Vertigo** | He searched for an ambulance after saying help had come |
+| 51:00 | Revert | *Betrayed by your own liking* | His voice at the fire |
+| 53:00 | Hidden | *Understanding* | They had him. The phone is his counter-file |
+| 55:00 | The line | **Silence** | *"Mujhe pata tha woh nahi nikla tha."* |
+| 57:00 | The record | *Weight* | Which links go in |
+| 60:00 | The end card | **"Go back and look"** | The chain, then "4. Nitin —" with the cursor blinking |
 
-Two peaks (minute 8 and minute 36), one crash (minute 42), one silence at the
-end. If a build flattens any of those four, it has failed, whatever else it
-gets right.
+Two peaks (the memo, minute 31; 1:56, minute 49), one crash (1:07, minute
+34), one silence (the line, minute 55). If a build flattens any of those
+four, it has failed, whatever else it gets right.
 
 ---
 
 # PART 2 — Stage by stage
 
-## Stage 1 · Arrival (0:00–0:30)
+## Stage 1 · Arrival (0:00–0:40)
 
-**Where players come from.** A WhatsApp forward from a friend (a drop link), a
-reel, or the desk itself. Assume: an Android phone, 4G, one hand, possibly in
-bed at night, possibly inside Instagram's in-app browser.
+**Where players come from.** A WhatsApp forward from a friend (a drop link),
+a reel, or the desk itself. Assume: an Android phone, 4G, one hand, possibly
+in bed at night, possibly inside Instagram's in-app browser. *(carried over)*
 
-**What they see.** The desk: a dark surface, one courier pouch, and the other
-objects as unnamed silhouettes. No headline explaining what FOUND is, no
-"Play" button, no sign-up, no cookie banner. The pouch carries a delivery
-sticker: **their friend's handwriting with their own name**, when they arrived
-by a drop.
+**What they see.** The desk: one parcel, the other objects as unnamed
+silhouettes. No headline, no "Play", no sign-up, no cookie banner.
 
-**Psychology.** A found object is an invitation to trespass. Explaining the
-product breaks it. The single strongest thing we own is that the first screen
-asks nothing and offers one object.
+**UX rules** *(carried over)*
+- **First paint is server-rendered**, so the parcel exists before JavaScript.
+- **One tap to start.** Sound is offered inside the fiction (the phone's
+  ring/silent switch), never as a modal.
+- **The content note lives on the label**, like a courier's declaration:
+  *Contains: death, gun violence, a body burned (not shown). 16+.* And the
+  promise beside it: *This game never asks for anything real.*
+- **In-app browsers get a note, not a wall.**
+- **Returning players** see the parcel already open and the phone as they
+  left it. Resume is the default; "Start over" asks twice.
+- **The label's addressee** depends on open decision O1 (CHAPTER1 M).
 
-**UX rules**
-- **First paint is server-rendered**, so the pouch exists before JavaScript.
-- **One tap to start.** Sound is offered *inside* the fiction, not as a modal:
-  the phone's own ringer switch, before the call begins.
-- **The content note lives on the sticker**, like a courier's declaration
-  line: *Contains: death, fraud, human trafficking. 16+.* One line, legible,
-  never a pop-up.
-- **The "not real" line goes on the same sticker:** *This game never asks for
-  anything real: no PIN, no number, no camera.* It reads as flavour and it is
-  a promise.
-- **In-app browsers get a note, not a wall** (as decided): offer Chrome,
-  let them play anyway.
-- **Returning players** see the pouch already torn, and the phone lying as
-  they left it. Resume is the default; "Start over" asks twice.
+## Stage 2 · The envelope (0:40–1:30)
 
-## Stage 2 · The pouch (0:30–1:00)
+**The gestures.** Tear the parcel. Lift out the phone (cracked corner) and
+the shagun envelope. **Turn the envelope over** to read the note: that's a
+second gesture, not automatic. The note is **a photograph of his
+handwriting**, with English beneath it (never printed *on* the paper).
 
-**The gesture.** Drag to tear along the perforation. Real haptics
-(`navigator.vibrate`) on the tear. Inside: the phone face-down, a power bank
-taped to it with one LED lit, and a folded note.
+**Psychology.** A letter addressed to someone else is the purest form of
+trespass. The player reads it anyway, and that's the first choice they don't
+notice making.
 
-**The note is a photograph, not text.** Block capitals, ballpoint, slightly
-crooked in frame. **CALL MAT KATNA. SAB DEKHO. — V** with a small English line
-beneath, the way the whole chapter subtitles Hinglish.
+## Stage 3 · The phone wakes (1:30–4:00)
 
-**Psychology.** Physicality creates ownership, and ownership creates guilt
-later. The player must be able to say *I tore it open.*
+The lock screen fills with **47 missed calls** from an unsaved number, and
+the number rings. **The first choice is whether to answer.** Both paths
+continue; answering puts Raju in the story early (CHAPTER1 H).
 
 **UX rules**
-- Turning the phone over is a second gesture, not automatic.
-- The power bank's LED is a **visible fuel gauge** from this second on.
-- Nothing on screen is a game control yet: no HUD, no progress, no badges.
+- **The incoming call is iOS's**, rings until answered or declined, and buzzes
+  the real device (the existing `Ringing`).
+- **It calls back**, twice, across Episode 1, then writes instead.
+- **No permanent HUD.** This chapter has no live call. The status bar, the
+  battery and your own phone's edge are the only furniture.
 
-## Stage 3 · The call (1:00–2:30)
+## Stage 4 · Learning to look (4:00–14:00)
 
-The screen is the call, full bleed: **Inspector Rathore**, a Crime Branch
-board, 31:33:07 counting up, the mic crossed out and the camera off.
-
-**The first choice is the red button.** A player's instinct is to hang up.
-Let them press it. A confirm sheet slides up, and before they can answer,
-Sahil leans in and whispers *"Mat kaatna… please."* Then he shouts his
-script. **Both paths continue the game** (cutting it is a real branch, see
-CHAPTER1.md F4), but the whisper is what keeps most hands off the button.
-
-**Psychology.** A person on a video call is a social obligation. That's the
-whole mechanism of the real crime, and the game earns the right to teach it by
-making the player feel it in ninety seconds.
+**The first question is answerable in fifteen seconds** (*whose phone is
+this?*), because question one teaches that the case file exists.
+*(carried over)*
 
 **UX rules**
-- **The call never leaves the screen.** It becomes a small window with the
-  timer, draggable, never closable. It is the chapter's only permanent HUD.
-- **Mute and camera stay off by default**, and unmuting is always the player's
-  deliberate act with a confirm-by-holding gesture.
-- **He must feel alive while idle:** typing, drinking, glancing off-camera,
-  a supervisor crossing behind him. Loops, not a freeze frame.
-- **He speaks on cues, not on timers**, so nobody is interrupted mid-read.
+- **The case file is the record:** one question at a time, free *where to
+  look*, three hints, the 45-second idle nudge, and badges only for
+  reachable-but-unseen evidence. *(carried over)*
+- **Answers are filed as claims, with their sources beside them.**
+- **Sameer's version is accepted without comment.** No buzzer, no "are you
+  sure?", no hint that it's his. Law 1 depends on it.
 
-## Stage 4 · Learning to look (2:30–8:00)
+## Stage 5 · The first unease, and the charger (14:00–20:00)
 
-The news alert lands over the call. The player minimises the call themselves,
-and the home screen is the first time they touch her life.
+"For M" and the passcode-off time, then *"M? Tu hai?"* from an unknown number.
+The battery reaches 2%.
 
-**The first question is answerable in fifteen seconds** — *whose phone is
-this?* — because the point of question one is to teach that the case file
-exists, not to test anyone.
-
-**Psychology.** People don't fear being stuck, they fear looking stupid. The
-old build's only real complaint was "I didn't know what to do". The fix isn't
-more hints, it's **a world where the next thing is always visibly unread**:
-badges on app icons, a count in the case file, and a single question in view.
+**The gate:** *Plug in the phone to keep it alive.* The real Battery Status
+API where it exists, a tappable cable everywhere else. *(carried over,
+re-skinned)*
 
 **UX rules**
-- **The case file is one question at a time**, with a free *where to look*
-  naming apps, and three hints escalating from nudge to answer.
-- **An idle nudge after 45 seconds**, counted separately from asked-for hints,
-  so the ledger and the result never punish someone for being lost.
-- **Badges count reachable-but-unseen evidence only.** They never bait.
-- Two new question types this chapter needs: the **two-lane timeline** and
-  **claim checking** (true / bluff), both described in ROADMAP P3.
+- Ask once, warmly, and never nag. *(carried over)*
+- **This is the natural stopping point.** Resume lands exactly here.
 
-## Stage 5 · The first turn, and the charger (8:00–14:00)
+## Stage 6 · The second shot (20:00–43:00)
 
-Her notes, her diary, his mother, the clock on his wall. Then the power bank
-dies, the supervisor crosses, and Sahil asks the dark *"Aunty, aap ho na?"*
+The reel, two firings, the memo, 1:07, the money, the car, 1:53.
 
-**The gate:** *To keep the call alive, plug your phone in.* The real Battery
-Status API where it exists, a tappable cable everywhere else.
-
-**Psychology.** This is the chapter's complicity beat. The player gets up,
-finds a cable and plugs it in **for a stranger's sake**. Thirty minutes later
-they learn what they were powering. Nobody forgets doing that with their own
-hands.
+**Revisit is the chapter's signature gesture.** When the Episode 1 claim
+cracks, the question comes back and the player **strikes the old line by
+hand**, then files the new one. The struck line stays visible in the
+record. It is the one piece of UI that says *you were wrong*, and it says
+it with the player's own hand, never in copy.
 
 **UX rules**
-- Ask once, warmly, and never nag: the screen dims to the call and waits.
-- Desktop and unplugged-laptop players get the on-screen cable, and the beat
-  reads identically.
-- **This is also the natural stopping point.** If someone leaves here, the
-  resume state must be exactly this screen, with the timer still counting.
+- **Nothing congratulates the player** for finding a deleted thing. No toast,
+  no "+1 evidence". A quiet "noted" on a zoom is the most the game ever says.
+- **The first reveal must feel like the ending of a mystery** (Q7), and the
+  very next screen must be 1:07, so it doesn't get to be.
+- **Title cards carry minutes:** Episode 2 is *12:32 AM*, Episode 3 is
+  *1:52 AM*. They're never explained.
 
-## Stage 6 · The middle, and the trap (14:00–38:00)
+## Stage 7 · The cancelled rescue (43:00–57:00)
 
-Three versions of her death, the money, Tanvi, the terrace audio, row 9, the
-PIN, Shaila, the timeline, the icon.
-
-**Making a trap fair.** The PIN is the chapter's sharpest edge, so it gets
-four protections:
-1. **It is never required.** No question needs the Secure Folder.
-2. **Two warnings exist before it**, and both are discoverable: Shaila's
-   message about the edited note, and the fact that a bank manager who spent
-   31 hours refusing to give a PIN would not write one in a note.
-3. **The payoff is deliberately empty** (FD receipts and nothing else), so the
-   player feels the wrongness before they understand it.
-4. **Afterwards the game never scolds.** No "you shouldn't have". The ledger
-   records it, the arrest uses it, and the player draws their own conclusion.
-
-**Psychology.** Shame only works if it's self-administered. Every line of copy
-after a trap must be neutral, because the player's own memory is the punishment.
+The board, Nitin, 1:56, Revert, Hidden, the line.
 
 **UX rules**
-- **Nothing in the UI congratulates the player for opening the folder.** No
-  toast, no badge, no "+1 evidence".
-- The real note arrives as **a photograph of handwriting**, so the difference
-  between her hand and theirs is visual, not asserted.
-- **"Good morning, #9."** types out at reading speed, and then the screen
-  darkens on its own. No button. The player sits with it.
+- **The five-lane board** lights contradictions; it never states them.
+- **Choices that close routes say nothing about closing them.** A route that
+  closes simply goes quiet. The fallback is always on the phone.
+- **The line is typed out at reading speed**, after a long "typing…", and
+  then the thread goes still. No button. The player sits with it.
 
-## Stage 7 · The night ends (38:00–40:00)
+## Stage 8 · The record (57:00–59:00)
 
-A time cut to 10:29 AM: sunlight, a warm phone, the call timer at 40:51:12,
-and two things that arrived while they slept: the real article published at
-6:42 AM, and a thank-you from a man she saved at 10:12.
+On **your phone**: the record, link by link, with sources. Tick in, tick
+out, then **send** it (to Meera, with the phone) or **post** it.
 
-**Psychology.** Relief must come before the crash, or the crash is just more of
-the same. The thank-you from D'Souza is the chapter's only moment of pure
-good, and it exists so the player has something to lose.
+**Psychology and the one rule that matters: no signalling.** *(carried over)*
+Send and post have identical weight, the order is fixed, the copy is flat,
+and there is **no "recommended", no colour coding, no praise**. Ticking the
+lie *out* is a choice the interface treats exactly like ticking it in.
 
-**UX rules**
-- **If the player actually stops and comes back later, use it:** returning
-  after a real gap opens on this morning screen and says *"You slept."*
-- **The optional real-time version** ("your 10:30 is tomorrow at 10:30") is
-  opt-in, branded FOUND, and never imitates anyone. Default off.
+**The draft post exists from the end of Q3.** It's the chapter's standing
+temptation, and posting it before the two firings are separated is Ending C.
+The phone never nudges toward it and never warns against it.
 
-## Stage 8 · Your phone (40:00–46:00)
+## Stage 9 · The end card (59:00–60:00)
 
-A second device enters the story. It is **the player's own platform** (iOS on
-an iPhone, Android on Android, iOS on desktop), and it is almost empty: a
-family group, a couple of chats, a share sheet, a map.
+1. **The chain**: eleven rows; untraced ones in Sameer's words. *"You traced
+   9 of 11 links."*
+2. **What only this ending showed**, one line.
+3. **The replay image, the same for everyone:** "For M", the cursor after
+   *"4. Nitin —"*. *"He started to tell you."*
+4. **Pass it on**, then the case number, then the desk.
+5. **One quiet screen, outside the fiction:** celebratory firing is a crime;
+   any hospital must treat an injured person first, police case or not; 112;
+   Tele-MANAS 14416.
 
-**How it appears**
-- **Mobile:** the found phone stays full screen; yours lives one swipe from
-  the right edge and **buzzes the real device** when it rings.
-- **Desktop:** both on the table, yours smaller, asleep, screen-down until it
-  lights.
+**Psychology of the share.** *"I traced 9 of 11 links"* is a score people
+argue about, and it spoils nothing. It measures the thesis: how far the
+player got past the version they were handed.
 
-**The call to you.** "Mumbai Crime Branch ✔" with video. It can be left
-ringing; it calls again. Answering is the only way forward, which is exactly
-what a real victim experiences.
+## Stage 10 · Coming back
 
-**Q11, claim checking, is the chapter's best interaction:** the accusation
-plays on one phone while the player checks it on the other. Nothing else in
-the game uses both devices at once, so it is saved for here.
-
-**Psychology.** Every charge that's true is one the player produced by being
-curious. The feeling to aim for is not *"I'm being framed"* but
-**"I did that."** The script must therefore never exaggerate: if the player
-avoided something, the syndicate bluffs, and the bluff is catchable. Their
-power comes from accuracy, and their weakness is that the accurate parts are
-the player's own choices.
-
-## Stage 9 · The decision (46:00–48:00)
-
-The supervisor's orders: *bring the phone to Andheri East by 1 PM, don't cut
-the call, don't tell anyone.* The three rows appear over the still-ringing
-call:
-
-**01 · Report to police  ·  02 · Throw it away  ·  03 · Share with a friend**
-
-**Psychology and the one rule that matters: no signalling.** Players read
-layout as morality. So the rows are identical in weight, order is fixed (not
-randomised, because friends compare), the copy is flat and verbal, and there
-is **no "recommended", no icon connotation, no colour coding, no confirmation
-that praises**. Doing nothing is also real: after 90 seconds the supervisor
-says *"Good. Aap cooperate kar rahe ho,"* and the rows stay. Compliance is
-the fourth thing a person can do under pressure, and the game should let the
-player notice they were doing it.
-
-**Each ending is an action, not a menu pick:**
-- **01** — drag the red button all the way to cut, then a map, then a door.
-- **02** — cut, walk, and drag the phone off the edge of the screen.
-- **03** — don't cut. Open the share sheet while he's still talking, type one
-  name, and press send.
-
-**The last interaction of the chapter is a reply box** (Ending 03) or a
-withheld one (01 and 02). Black comes before the answer, always.
-
-## Stage 10 · The end card, the ledger and the share (48:00–50:00)
-
-1. **"What they had on you."** One line at a time, built from the ledger:
-   *Your voice, 1:52 AM. Her PIN. Shaila's name. Her son's trust.* Then the
-   count: **They had 4 things on you.**
-2. **What only this ending showed**, one line, spoiler-free.
-3. **The replay image, identical for everyone:** the first ten seconds again,
-   frozen on the 1:11 alert, the icon enlarging. *"No one had reported her
-   death yet."*
-4. **Pass it on**, preset message: *"Would you have cut the call?"*
-5. **Keep your case number**, then back to the desk.
-6. **One quiet screen, outside the fiction:** real police never arrest anyone
-   over a video call; if this happens to you or your parents, cut the call and
-   call **1930**, or report at cybercrime.gov.in. Plus **Tele-MANAS 14416**.
-
-**Psychology of the share.** People forward what makes them look interesting,
-not what makes them look scared. *"They had 4 things on me"* is a score you
-want to argue about, and it gives nothing away. The old 🟩🟨🟥 squares
-measured hints, which measured confusion. This measures the thesis.
-
-## Stage 11 · Coming back
-
-**A second play must look different from the first second**, or nobody
-believes their own memory:
-- The desk shows the pouch **already torn**, and the sticker now carries a
-  postmark: *delivered 1:11 AM*.
-- **A "look again" affordance:** on a replay, zoom is permitted on things that
-  weren't zoomable before (the status bar, the first notification), because the
-  player now knows what they're looking for.
-- **The ledger is shown live** on a replay, as a small counter, so a clean run
-  is a playable goal.
-- Nothing else changes. No new dialogue, no director's commentary. The story
-  is identical, and that's the point.
+- The desk shows the parcel **already open**.
+- **The record shows its count live** on a replay, so 11 of 11 is a playable
+  goal.
+- **"Look again":** on a replay, the "For M" note is already in the dock's
+  Notes, and zoom works on the lock screen's first stack.
+- Nothing else changes. The story is identical, and that's the point.
+  *(carried over)*
 
 ---
 
@@ -337,41 +244,37 @@ believes their own memory:
 
 | Concern | Rule |
 |---|---|
-| **Real data** | The game asks for nothing real. No camera, microphone, contacts, location, files or payment. The only inputs are a first name (for a drop or an ending) and typed in-fiction answers. |
-| **Notifications** | Only ever from FOUND, clearly branded. Never an imitation of a police force, bank, courier or messenger. |
-| **Content** | Death (off screen, staged as suicide, revealed as murder), fraud, human trafficking, one non-graphic audio scene. Stated on the pouch, and a helpline on the end card. |
-| **Age** | 16+, as decided. |
-| **Real brands** | WhatsApp and Instagram appear with our own drawn icons. Everything that is part of the crime is fictional: PikDrop, SkyEx, City Desk, Lotus Park, Skyline Overseas, an unnamed bank. |
+| **Real data** | Nothing real is asked for. No camera, microphone, contacts, location, files or payment. The only inputs are a first name (for a drop) and picked or typed in-fiction answers. |
+| **Notifications** | Only ever from FOUND, clearly branded. |
+| **Content** | Death (off screen), gun violence (off screen), a body burned (light, smoke and sound only). Stated on the label, with a helpline on the end card. |
+| **Age** | 16+, to be revisited once the fire clip's audio exists (CHAPTER1 O4). |
+| **Real brands** | WhatsApp, Instagram and iOS, drawn by us. Everything in the crime is fictional (CHAPTER1 B). |
 | **Real people** | No real person's face, voice or name. Actors, with releases. |
 
-## Access and performance (India first)
+## Access and performance (India first) *(carried over)*
 
-- **Budget Android, 4G, one hand.** Target a mid-range phone at 60 fps for
-  everything but video, and a first meaningful paint under 2 s on 4G.
-- **Video is the risk.** The live call must stream in short looping segments,
-  preload the next cue only, and fall back to a still frame with captions when
-  the connection drops. **The chapter must be completable with video failing.**
-- **Data budget:** an explicit ceiling per episode, checked in CI like the
-  existing budget script.
-- **Captions always on** for every spoken line, English under Hinglish and
-  Marathi, as decided. Captions are the plot's safety net, not decoration.
-- **Reduced motion** removes drags in favour of taps, and never removes a
-  choice.
-- **Screen reader:** every photograph carries a description that doesn't give
-  away its clue; every question is reachable as text.
-- **No sound required:** every audio clue has a transcript or a waveform
-  moment that reads visually.
-- **Offline / flaky:** state saves on every action, not on episode boundaries.
+- **Budget Android, 4G, one hand.** 60 fps outside video, first meaningful
+  paint under 2 s on 4G.
+- **Video is short here:** clips of 9 to 31 seconds (the fire, Kunal's clip,
+  the reel take). Each streams on demand, has a poster frame, and **the
+  chapter is completable with video failing** (captions plus a described
+  still).
+- **Captions always on** for every spoken line, English under Hinglish.
+- **Reduced motion** swaps drags for taps and never removes a choice.
+- **Screen reader:** every photograph carries a description that doesn't
+  give away its clue.
+- **No sound required:** every voice note has a transcript.
+- **State saves on every action.**
 
 ## Edge cases the chapter must survive
 
 | Case | Behaviour |
 |---|---|
-| Player cuts the call at 1:11 | A real branch, not a fail state (CHAPTER1.md F4) |
-| Player never plugs in | The call holds, the phone waits, and an on-screen cable appears after two minutes |
-| Player refuses the 10:30 call | It rings again, twice, then the supervisor messages instead, and the three rows arrive by text |
-| Tab closed mid-episode | Resume to the exact screen, including the call window and its timer |
-| Storage refused / private mode | The existing warning, and play continues without a save |
+| Never answers Raju | He calls twice more, then writes; nothing is lost |
+| Posts the draft at minute 16 | A real ending (C), not a fail state |
+| Never plugs in | The phone waits at 2%; an on-screen cable appears after two minutes *(carried over)* |
+| Goes into airplane mode on Meera's word | Every link keeps an on-phone route |
+| Never finds Recently Deleted or Revert | Finishes on Sameer's version (B); the end card shows exactly which links |
+| Tab closed mid-episode | Resume to the exact screen |
+| Storage refused / private mode | The existing warning; play continues without a save |
 | Desktop | Two phones on a table; every gesture has a pointer equivalent |
-| In-app browser | A note offering Chrome, never a wall |
-| Sound off / headphones absent | Captions carry everything |

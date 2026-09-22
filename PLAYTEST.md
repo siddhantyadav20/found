@@ -1,5 +1,7 @@
 # Found — full playtest, 2026-09-19
 
+> **Retired chapter.** This playtest is of *Don't Cut the Call*, retired on 2026-09-22 (git tag `dont-cut-the-call`). It stays for its lessons about how the phone should feel; nothing in it describes *Shagun*.
+
 Played from a cleared browser at 375 × 812 (phone), from the desk to every
 ending, as a player. Every issue is logged where it was met, then fixed in
 one pass. **Sev:** B blocker · M major · m minor · p polish.

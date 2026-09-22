@@ -4,10 +4,10 @@ import { useState, useSyncExternalStore } from "react";
 
 import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
-import { add, clockNow, has, newCase } from "@/lib/game/engine";
-import { PLUGGED_IN, sceneOf } from "@/lib/game/scene";
+import { add, has, newCase } from "@/lib/game/engine";
+import { stamp } from "@/lib/found/time";
+import { PLUGGED_IN, sceneOf, titleShown } from "@/lib/game/scene";
 import { AWAY_MS } from "@/lib/found/keeping";
-import { useNow } from "@/lib/found/now";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { useReplay } from "@/lib/found/shelf";
 import type { CaseId } from "@/content/cases";
@@ -18,24 +18,22 @@ import Away from "./Away";
 import Choice from "./ending/Choice";
 import EndCard from "./ending/EndCard";
 import InAppGuard from "./InAppGuard";
-import Morning from "./Morning";
 import Note from "./Note";
-import Pouch from "./Pouch";
+import Parcel from "./Parcel";
 import Ringing from "./Ringing";
-import SeenByThem from "./SeenByThem";
 import TitleCard from "./TitleCard";
 import Table from "./Table";
 import { flag, save, say } from "./playthrough";
 import styles from "./Stage.module.css";
 
 /* ===========================================================================
-   The stage: the pouch, then two phones and a call that won't end.
+   The stage: the parcel, then two phones on a table.
 
    It reads the save and decides which of the chapter's full-screen moments
-   the player is in: the pouch, the note, the charger, "Good morning, #9.",
-   the morning, a call ringing, the choice. Between them is the table, where
-   the playing happens (`Table`). Resume lands on the right one because the
-   save decides, never component state (PLAYER-JOURNEY Stage 5).
+   the player is in: the parcel, the note, the charger, a title card, a call
+   ringing, the choice. Between them is the table, where the playing happens
+   (`Table`). Resume lands on the right one because the save decides, never
+   component state.
    =========================================================================== */
 
 export default function Stage() {
@@ -43,7 +41,6 @@ export default function Stage() {
   bindProgress(id);
 
   const state = useSyncExternalStore(subscribeProgress, readProgress, () => null);
-  const now = useNow(60_000);
   const replay = useReplay(id as CaseId);
 
   const scene = sceneOf(story, state);
@@ -69,13 +66,13 @@ export default function Stage() {
       />
     );
 
-  if (!state || scene.kind === "pouch") {
+  if (!state || scene.kind === "parcel") {
     return (
       <div className={styles.stage}>
         <p className={styles.eyebrow}>
           Episode 1 · {story.episodes[0]}
         </p>
-        <Pouch
+        <Parcel
           meta={meta}
           to={to}
           minutes={minutes}
@@ -90,40 +87,31 @@ export default function Stage() {
   }
 
   switch (scene.kind) {
-    /* The phone has no screen lock: she was told to turn it off on Thursday,
-       and she did, because that is what the call told her to do. */
+    /* The phone has no passcode. Somebody turned it off before it was sent. */
     case "note":
-      return <Note onTurn={() => flag("did:unlock", "saw:note", "saw:call")} />;
+      return <Note arrival={story.arrival} onTurn={() => flag("did:unlock", "saw:note")} />;
 
-    /* The only thing the player is given to do with their hands in Episode 1,
-       and the reason anybody goes looking for a cable. */
+    /* The only thing the player is given to do with their hands between
+       episodes, and the reason anybody goes looking for a cable. */
     case "charge":
-      return <Charge cut={has(state, "did:cut-early")} onPlugged={() => flag(...PLUGGED_IN)} />;
+      return <Charge gate={story.gate} onPlugged={() => flag(...PLUGGED_IN)} />;
 
-    case "title":
+    /* A new episode: its title, and the minute it opens on, never explained. */
+    case "title": {
+      const clock = story.clocks[scene.episode - 1];
       return (
         <TitleCard
-          n={2}
-          title={story.episodes[1]}
-          when="Saturday · 2:35 AM · charging"
-          onDone={() => flag("fired:title-2")}
+          n={scene.episode}
+          title={story.episodes[scene.episode - 1]}
+          when={`${clock.day} · ${stamp(clock.base)}`}
+          onDone={() => flag(titleShown(scene.episode))}
         />
       );
+    }
 
-    /* The end of Episode 2. They have watched every tap since 1:11, and now
-       they say so. One line, at reading speed, and then the screen goes out
-       on its own: no button, nothing to answer (PLAYER-JOURNEY Stage 6). */
-    case "seen-by-them":
-      return <SeenByThem onDone={() => flag("did:ep2-done")} />;
-
-    /* The night ends. Sunlight, a warm phone, and the only good thing that
-       happens in the whole chapter waiting in her messages. */
-    case "morning":
-      return <Morning story={story} state={state} onUp={() => flag("did:woke")} />;
-
-    /* Everything has been asked. Three rows, and a call still running. */
+    /* Everything has been asked. The rows, and nothing that says which. */
     case "choice":
-      return <Choice story={story} state={state} clock={clockNow(story, state, now)} />;
+      return <Choice story={story} />;
 
     /* The act is done. What it cost, the last image, and black. */
     case "ending":
@@ -132,7 +120,7 @@ export default function Stage() {
     case "end-card":
       return <EndCard story={story} state={state} />;
 
-    /* Her son at 1:34, the Crime Branch at 10:30. */
+    /* A call arriving on its own, on either phone. */
     case "ringing": {
       const { call } = scene;
       return (
@@ -151,5 +139,5 @@ export default function Stage() {
     }
   }
 
-  return <Table story={story} meta={meta} state={state} replay={replay} />;
+  return <Table story={story} meta={meta} state={state} />;
 }

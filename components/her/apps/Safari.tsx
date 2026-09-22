@@ -5,9 +5,9 @@ import { all, type CaseState } from "@/lib/game/engine";
 import { Group, Row } from "../AppView";
 import { stamp } from "@/lib/found/time";
 
-/* Safari's history: a woman working out, on her own, what was being done to
-   her. It is the second way to reach Myawaddy, for a player who never opens
-   her diary (CHAPTER1.md: every question has two routes in). */
+/* Safari's history, with the time of every search: how a person thinks out
+   loud, and often a question's second route in (CHAPTER1.md: every question
+   has two). */
 
 export default function Safari({
   story,

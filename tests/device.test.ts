@@ -32,6 +32,6 @@ describe("the player's device", () => {
   });
 
   it("counts how Episode 2's phone came back", () => {
-    for (const e of POWER) expect(isFoundEvent(STORIES["dont-cut-the-call"], e), e).toBe(true);
+    for (const e of POWER) expect(isFoundEvent(STORIES.shagun, e), e).toBe(true);
   });
 });

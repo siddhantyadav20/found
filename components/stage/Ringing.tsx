@@ -2,34 +2,25 @@
 
 import { useEffect, useState } from "react";
 
-import CallFeed from "@/components/call/CallFeed";
 import type { IncomingCall, ReplyOption } from "@/content/types";
 import { exposed, has, type CaseState } from "@/lib/game/engine";
 import { connected, ended, ringtone } from "@/lib/found/tones";
 import styles from "./Ringing.module.css";
 
 /* ===========================================================================
-   A call arriving on its own.
-
-   Twice in the chapter, and both times the player is holding a phone that is
-   not theirs: her son in the middle of the night, and the Crime Branch at
-   10:30, on the player's own phone.
+   A call arriving on its own, on the found phone or the player's.
 
    Drawn as iOS draws an incoming call: the caller's name high on the screen,
    "mobile" under it, round buttons at the bottom with their words beneath,
-   and a ringtone until it's answered (PLAYTEST.md #36, #64). A video call
-   shows the video once answered: the arrest is a man in uniform with his
-   supervisor sitting in frame (#55).
+   and a ringtone until it's answered (PLAYTEST.md #36, #64).
 
-   Her son can be declined, and then he doesn't ring back. The Crime Branch
-   can't: there is no red button, only green, which is exactly what the real
-   crime does to real people (CHAPTER1.md Ep 3, beat 4).
+   A call that can be declined doesn't ring back; one that insists has no red
+   button, only green. Whatever the player says, the other side answers
+   before the line goes: people don't just hang up (#37).
 
-   Whatever the player says, the other side answers before the line goes:
-   a son doesn't just hang up (#37).
+   What the caller says can depend on what the player did earlier: a line
+   can wait on a flag, or on the ledger.
 
-   What the caller says can depend on the ledger: an accusation is only made
-   when the player actually handed that thing over (CHAPTER1.md, twist 6).
    =========================================================================== */
 
 /** How long the answer to what was said stays before the call ends. */
@@ -63,7 +54,6 @@ export default function Ringing({
   const [answered, setAnswered] = useState(alreadyAnswered);
   const [said, setSaid] = useState(0);
   const [chosen, setChosen] = useState<ReplyOption | null>(null);
-  const video = /video/i.test(call.sub ?? "");
   const lines = call.lines.filter((l) => (!l.needs || exposed(state, l.needs)) && (!l.when || has(state, l.when)));
 
   // It rings until it's answered, or declined.
@@ -72,8 +62,7 @@ export default function Ringing({
     return ringtone();
   }, [answered]);
 
-  /* He talks. The player listens, the way a person under a digital arrest
-     listens: one line at a time, with no way to hurry him. */
+  /* They talk. The player listens, one line at a time, with no way to hurry them. */
   useEffect(() => {
     if (!answered || said >= lines.length) return undefined;
     const t = window.setTimeout(() => setSaid((n) => n + 1), said === 0 ? 900 : 3400);
@@ -99,14 +88,8 @@ export default function Ringing({
     <div className={styles.screen} data-answered={answered || undefined}>
       <div className={styles.head}>
         <p className={styles.who}>{call.from}</p>
-        <p className={styles.sub}>{answered && video ? "WhatsApp video" : call.sub}</p>
+        <p className={styles.sub}>{call.sub}</p>
       </div>
-
-      {answered && video && (
-        <div className={styles.video}>
-          <CallFeed board="MUMBAI POLICE · CRIME BRANCH" clock="11:30" supervisor />
-        </div>
-      )}
 
       {answered ? (
         <div className={styles.lines} aria-live="polite">

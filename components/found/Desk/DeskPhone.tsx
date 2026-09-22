@@ -20,12 +20,12 @@ const minute = () => Math.floor(Date.now() / 60_000) * 60_000;
 function captionOf(state: DeskState, meta: CaseMeta, now: number): { hint: string; cta: string; small: string } {
   switch (state.kind) {
     case "playing":
-      return { hint: "The call is still running.", cta: `Continue · Ep ${state.episode}`, small: `You put it down ${ago(state.last, now)}.` };
+      return { hint: "It's where you left it.", cta: `Continue · Ep ${state.episode}`, small: `You put it down ${ago(state.last, now)}.` };
     case "between":
-      return { hint: "The phone died. The call didn't.", cta: "Charge it · Ep 2", small: "It's on the charger, waiting for you." };
+      return { hint: "The phone is dying.", cta: "Charge it · Ep 2", small: "It's waiting for a charger." };
     case "solved":
       return {
-        hint: state.solved ? `Closed${state.solved.minutes ? ` in ${state.solved.minutes} min` : ""}. They had ${state.solved.held} on you.` : "Closed.",
+        hint: state.solved ? `Closed${state.solved.minutes ? ` in ${state.solved.minutes} min` : ""}.` : "Closed.",
         cta: state.again ? "Play again" : "Open it",
         small: state.again ? "Someone else goes missing next time." : "Bagged, tagged, and still on your desk.",
       };
@@ -36,14 +36,14 @@ function captionOf(state: DeskState, meta: CaseMeta, now: number): { hint: strin
 
 /**
  * The one live thing on the desk, as this browser left it. The server draws
- * it new: a sealed courier pouch that buzzes, because the phone inside it is
- * on a call (PLAYER-JOURNEY Stage 1). Once the browser can read the save it
- * becomes yours: her phone mid-case with its battery, charging between
+ * it new: a sealed courier parcel that buzzes, because the phone inside it
+ * keeps ringing (PLAYER-JOURNEY Stage 1). Once the browser can read the save
+ * it becomes yours: the phone mid-case with its battery, charging between
  * episodes, or sealed in an evidence bag with its tag once it's solved.
  *
  * Hover (or hold, on a touch screen) shows its luggage tag: how many
  * episodes, how long, what kind of story. Picking it up morphs it into the
- * envelope (or your phone), and on Android takes the whole screen.
+ * parcel (or the phone), and on Android takes the whole screen.
  */
 export default function DeskPhone({ minutes }: { minutes?: number }) {
   const meta = CASES[FEATURED];
@@ -102,11 +102,10 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
               onContextMenu={(e) => e.preventDefault()}
             >
               {state.kind === "new" ? (
-                <span className={styles.pouch} aria-hidden="true">
-                  <span className={styles.pouchStrip}>TAP TO PICK UP</span>
+                <span className={styles.parcel} aria-hidden="true">
+                  <span className={styles.parcelStrip}>TAP TO PICK UP</span>
                   <span className={styles.sticker}>
-                    <b>FLAT —</b>
-                    <span>PikDrop · 1:08 AM · Dadar East</span>
+                    <b>TO —</b>
                     <span>{meta.note}</span>
                   </span>
                 </span>
@@ -129,14 +128,12 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
                         {battery}%
                       </span>
                     )}
-                    <span className={styles.time}>{state.kind === "solved" ? "10:41" : "1:11"}</span>
+                    <span className={styles.time}>{meta.time}</span>
                     <span className={styles.notes}>
                       {state.kind === "playing" && (
                         <span className={styles.note} style={{ "--i": 0 } as React.CSSProperties}>
-                          <b>Mumbai Crime Branch</b>
-                          <span>
-                            Episode {state.episode} · the call is still running
-                          </span>
+                          <b>{meta.teaser[0].from}</b>
+                          <span>{meta.teaser[0].text}</span>
                         </span>
                       )}
                     </span>
@@ -152,7 +149,7 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
               <span className={styles.bagLabel}>
                 <b>Evidence</b>
                 <span>{meta.title}</span>
-                <span>{state.solved ? `Ep ${state.solved.episode} · ${state.solved.held} on you` : "Closed"}</span>
+                <span>{state.solved ? `Ep ${state.solved.episode}` : "Closed"}</span>
               </span>
             </span>
           )}
@@ -160,7 +157,7 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
           <span className={styles.tag} id="case-tag" role="note">
             <b>{meta.title}</b>
             <span>
-              {meta.episodes} episodes · about {minutes ?? 40} min in one sitting
+              {meta.episodes} episodes{minutes ? ` · about ${minutes} min` : ""}, in one sitting
             </span>
             <span>{meta.tone}</span>
           </span>

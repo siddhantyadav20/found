@@ -1,96 +1,93 @@
-# Found — Chapter One assets (ROADMAP P11)
+# Found — Chapter One assets (ROADMAP S11)
 
-Everything *Don't Cut the Call* needs that has to be **made**, not coded. One
-row per asset: the beat it serves, where it plugs in, what stands in for it
-now, and its status. The game is complete and playable on the placeholders;
-each asset replaces one without any other change.
+Everything *Shagun* needs that has to be **made**, not coded. One row per
+asset: the beat it serves, where it plugs in, what stands in for it until it
+arrives, and its status. The chapter is built to play on placeholders; each
+asset replaces one without any other change.
 
-**Rules for all of it** (CHAPTER1.md G6, PLAYER-JOURNEY Part 3): no real
-person's face, voice or name; actors and releases for everything; nothing
-from a real police force, bank or courier (PikDrop, SkyEx, City Desk, Lotus
-Park, Skyline Overseas and "RBI Secure KYC" are ours). **Two things are plot
-and must survive every take:** Sahil's wall clock reads **Myanmar time**, one
-hour ahead of Mumbai, and the extinguisher's label is **Burmese**. Both must
-be unreadable at 1× and unarguable at 3× zoom.
+**Rules for all of it** (CHAPTER1 L, PLAYER-JOURNEY Part 3): no real
+person's face, voice or name; actors and releases for everything; every
+brand in the crime is ours (SK Films, Sehgal Enterprises, Banyan Farms,
+Shield Liaison Services, Sethi Caterers, Lifeline Hospital, Paytap, ZipEMI,
+Rangmanch Productions). **Nothing graphic, ever:** no wound, no body, no
+blood on any frame.
+
+**Things that are plot and must survive every take:**
+- **The silver kada** on Sameer's right wrist: in his Instagram selfies, in
+  the 12:29 photo, and in the 22 reverted seconds of the fire clip. It's how
+  the player knows the hands are his.
+- **Dilip's face** must match between the 9:48 PM portrait and the poster,
+  at phone size.
+- **The LED panel** Dilip holds is in the 12:29 photo, and in Kunal's frame
+  (Hidden).
+- **Timestamps** in every clip's and photo's metadata match CHAPTER1 C to the
+  minute.
 
 Status: ⬜ not started · 🟨 in progress · ✅ delivered and swapped in
 
 ---
 
-## 1. Video — the call (the biggest single asset)
+## 1. Photographs — the Sehgal wedding (one cast shoot)
 
-A painted "Mumbai Police · Crime Branch" set: a board, a flag, a wall clock,
-a desk, and a red extinguisher in the corner of frame. Shot like a bad 4G
-call: fixed webcam, soft, a little behind itself.
+A real-looking North Indian wedding at night: fairy lights, marigolds, a
+dance-floor lawn and a back lawn with trees. One evening, a small cast.
 
-| Asset | Beat | Plugs into | Placeholder now | Status |
+| Asset | Beat | Placeholder | Status |
+|---|---|---|---|
+| **~40 wedding frames** for the Sehgal album (baraat, pheras, family, décor, candids). The album says 1,284; these repeat | Ep 1 his work | Titled cards | ⬜ |
+| **Dilip's portrait, 9:48 PM**: waistcoat, tray, fairy lights, smiling at the lens, shallow focus. Sameer's best photograph of the night | Ep 1 beat 6; Q2; Ep 2 the promise | Titled card | ⬜ |
+| **12:29 AM, Kunal's photo**: Sameer holding the revolver (a prop, obviously handled safely), Dilip beside him with an LED panel, the back lawn, a phone on a tripod | Ep 2 Q5 | Titled card | ⬜ |
+| **Kunal's frame** (the family's evidence): Sameer's arm coming down, a flash, Dilip behind the light. **The frame stops before anything happens to him.** Screenshotted, with the WhatsApp chrome | Ep 3 Hidden | Titled card | ⬜ |
+| **SK Films' Instagram grid**: 12 of his best, plus 3 selfies with the kada | Ep 1 Q1 | Titled cards | ⬜ |
+| **Raju's profile photo** at Chhath, Samastipur, and **Dilip at home** (Raju sends it in A) | Ep 1; A | Titled cards | ⬜ |
+
+## 2. Video — short clips, not a call
+
+H.264 MP4, 480p and 360p, each clip with a poster frame and captions.
+
+| Asset | Length | Beat | Placeholder | Status |
 |---|---|---|---|---|
-| **Sahil, idle loops** (~12 min): typing, drinking water, glancing off-camera, reading from paper | The whole of Ep 1–2: he must feel alive while idle | `components/call/CallFeed.tsx` (the `<svg>` scene) | Drawn figure | ⬜ |
-| **~40 cue lines**, one clip each, matching `content/dont-cut-the-call/*.ts` `cues` | Every captioned line (ids: `open`, `whisper`, `script`, `idle-*`, `after-*`, `ep2-*`, …) | `CallCue.clip` (field exists, unused) | Captions only | ⬜ |
-| **The whisper**: "Mat kaatna… please." Leaning in, nobody behind him | Ep 1, reaching for the red button | cue `whisper` | Caption | ⬜ |
-| **Two supervisor crossings**: a shape walking behind him; Sahil straightens and shouts the script | Ep 1 `script`, Ep 1 `supervisor` | `supervisorPresent` cues | A dark overlay | ⬜ |
-| **"Aunty? Aunty, aap ho na?"** to a dark camera | Last beat of Ep 1 | cue `still-there` | Caption | ⬜ |
-| **The break**: two seconds out of character when told she's dead ("Nahi…") | Ep 2, if the player unmutes and says so | reply `tell-him` | Nothing yet | ⬜ |
-| **Ep 3 arrest**: Sahil in uniform, supervisor seated *in* frame; reads the charges; the "one… nine… three… zero" slowdown | Ep 3, your phone | `content/dont-cut-the-call/episode3.ts` `incoming.arrest` | Text lines on the ringing screen | ⬜ |
-| **Ending 01's real police call**: a different, real-looking station; Marathi label on the extinguisher, Mumbai time on the clock | Ending 01 last image | `components/stage/ending/Last.tsx` `Statement` | The drawn feed with `label="अग्निशामक"` | ⬜ |
+| **Kunal's 11:52 clip**: dance floor, dhol, Kunal fires two rounds into the air, cheering, phone-shot and vertical | 0:14 | Ep 2 Q6 | Still + captions | ⬜ |
+| **The reel take, 12:31**: tripod, back lawn, Sameer fires once, straight up, laughs, walks toward the lens; ends abruptly | 0:14 | Ep 2 Q6–Q7 (Recently Deleted) | Still + captions | ⬜ |
+| **The fire, 4:47 AM**: the full 31 s, of which the game first shows the last 9. First 22 s: Sameer's voice (*"Bhasin sir, yahan?"*), his hands and the kada, a jerrycan, walking. Last 9 s: orange light on a brick wall, smoke, crackle, *"Jaldi karo."* **No body in any frame.** | 0:31 | Ep 1 beat 10; Ep 3 Revert | Still + captions | ⬜ |
 
-Format: H.264 MP4 at 480p and 360p, short segments (≤10 s) so the call can
-stream and fall back to a still with captions (P12). Two actors, releases
-signed.
+## 3. Voices
 
-## 2. Voices
+AAC/M4A mono, 64 kbps. Every line already has its transcript and English in
+CHAPTER1; keep delivery to the words written there.
 
-| Asset | Beat | Plugs into | Placeholder now | Status |
-|---|---|---|---|---|
-| **Vasu's voice note to Shaila**, 40 s, Marathi: "Shaila, ghabrana mat…" — *the recording that has to make players love her* | Ep 1, WhatsApp, 11:48 PM | `phone.ts` thread attachment (`seconds: 40`) | Transcript | ⬜ |
-| **Rukhsana's Friday notes** (31 s and 18 s) | Ep 1 Q3 route; Ep 3 | `phone.ts` `r-2`, `r-3` | Transcripts | ⬜ |
-| **The 38-second collector call** ("Aunty, aap bahut samajhdaar ho…") | Ep 2, Recents | `phone.ts` `c-collector.recording` | Transcript | ⬜ |
-| **1930 hold recording + officer** (24 min, cut to ~40 s) | Ep 1–2, Recents | `phone.ts` helpline `recording` | Transcript | ⬜ |
-| **The terrace**: a cat, a balcony, two voices above it at 12:37 | Ep 2, Instagram story | `episode2.ts` `stories.ruchi.audio` | Transcript + audio boost UI | ⬜ |
-| **Cyril D'Souza's thank-you** | Ep 3 morning | `episode3.ts` messages | Text | ⬜ |
-| **Nikhil on the phone** (three lines) | Ep 2, 1:34 AM | `episode2.ts` `incoming.nikhil` | Captions | ⬜ |
-| **Your friend's texts** are text; no audio | Ending 03 | — | — | n/a |
+| Asset | Beat | Placeholder | Status |
+|---|---|---|---|
+| **Sameer's four voice notes to M** (Sun 9:40 AM, Sun 11:20 PM, Mon 2:05 AM, Wed 10:15 PM): tired, fast, Delhi Hinglish. *They have to make players trust him* | Ep 1 beat 9 | Transcripts | ⬜ |
+| **The memo, Mon 4:58 PM**: *"Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai."* Barely spoken | Ep 2 beat 6 | Transcript | ⬜ |
+| **Raju on the phone**: Hindi with a Bihari lilt, a rider on a road | Ep 1 beat 3 | Captions | ⬜ |
+| **Kunal's clip and the reel take's audio**: the dhol, the shots (distant, not cinematic), laughter | Ep 2 | Captions | ⬜ |
+| **Mummy** (a voice note, optional) | Ep 1 | Text | ⬜ |
 
-Format: AAC/M4A mono, 64 kbps. Every line already has its transcript and
-English in the script; keep delivery to the words written there.
+## 4. Handwriting and paper
 
-## 3. Handwriting and paper
-
-| Asset | Beat | Plugs into | Placeholder now | Status |
-|---|---|---|---|---|
-| **The note in the pouch**: block capitals, ballpoint, Roman Hinglish, *KATNA* misspelled: "CALL MAT KATNA. SAB DEKHO. — V" | Ep 1 opening; Ep 2 Q9 handwriting route | `components/stage/Note.tsx` | Styled text | ⬜ |
-| **Her real note**, English cursive signed *Vasundhara*, with a Marathi blessing: "CUT THE CALL. They can see this phone…" | Ep 2, from Shaila | `episode2.ts` (real-note photo) | Text | ⬜ |
-| **Diary pages 1–7**, her convent cursive, photographed at 11:40 PM on a table the way she'd photograph a cheque | Ep 1–2, Photos (page 6 in Recently Deleted) | `paper.ts` + `episode2.ts` `photos` (`kind: "paper"`) | Drawn paper with typed lines | ⬜ |
-
-Two hands, on real paper. Photograph each page flat, phone-camera quality,
-3:4, with the same table and lamp throughout.
-
-## 4. Photographs
-
-| Asset | Beat | Plugs into | Placeholder now | Status |
-|---|---|---|---|---|
-| **Her wallpaper / lock screen** | Every screen of her phone | `content/dont-cut-the-call/index.ts` `wallpaper` | `public/found/wallpaper.jpg` (Marine Drive, from the retired chapter) | ⬜ |
-| **Sahil at his cousin's wedding**, borrowed sherwani, laughing | Ep 1 Q4; Ending 03 (Rukhsana on TV) | `paper.ts` `sahil-photo` | Titled card | ⬜ |
-| **Vasu and her grandson Aarav, Cubbon Park** | Photos, her life | `paper.ts` | Titled card | ⬜ |
-| **Hindu Colony, Dadar** (her street) | Photos | — (add) | — | ⬜ |
-| **A Kurla lane** (Rukhsana's) | Rukhsana's chat | — (add) | — | ⬜ |
-| **A cat on a balcony, 5th floor** | Ep 2 terrace story | `episode2.ts` `stories` | Drawn | ⬜ |
+| Asset | Beat | Placeholder | Status |
+|---|---|---|---|
+| **The Sehgal shagun envelope**: maroon and gold foil, *"Ishita weds Rohan · Sehgal Parivar · 22.11"*, and on the back, in Sameer's quick ballpoint: *"M — Sab isme hai. Local thane mat le jaana. Bhasin ke log wahan baithe hain. — S"* Photographed front and back | Arrival (CHAPTER1 O2) | Styled text | ⬜ |
+| **The LAPATA poster**: a phone-made missing-person poster, Hindi and English, Dilip's photo, Raju's number, *"last seen Sat 22 Nov, Chhattarpur"* | Ep 1 beat 7 | Styled card | ⬜ |
 
 ## 5. Documents
 
-| Asset | Beat | Plugs into | Placeholder now | Status |
-|---|---|---|---|---|
-| **The "arrest warrant" PDF** with an FIR number that is a mobile number — **our emblem, never the government's** | Ep 1, WhatsApp | `phone.ts` warrant message | Text | ⬜ |
-| **Bank SMS**: the ₹49,000 debit, and the ₹1,00,000 debit at 3:02 (Unknown Senders) | Ep 2 claims; Ep 3 charges | `paper.ts` `smsThreads` | Text (already right) | ✅ as text |
-| **PikDrop booking**: "Mobile + power bank + diary + letter", Dadar → your address, and the rider chat | Ep 1–2 | `world.ts` `courier` | Drawn app | ✅ as UI |
+| Asset | Beat | Placeholder | Status |
+|---|---|---|---|
+| **Invoice SK-1127** (SK Films → Sehgal Enterprises, 3 Nov, balance ₹1,80,000 on delivery) | Ep 1 Q1; QM | Text | ⬜ |
+| **The Rangmanch offer letter** (second-unit DOP, joining Mon 1 Dec) | Ep 1 beat 5 | Text | ⬜ |
+| **The Banyan Farms site plan** the planner sent for the shot list: dance lawn, back lawn, service room, service gate on Mandi Road, the back plot and tube well | Ep 3 Q10 | Drawn plan | ⬜ |
+| **Vicky's live location** (Nitin's screenshot), 1:38–2:06 | Ep 3 Nitin route | Drawn map | ⬜ |
 
-## 6. What's already final (no asset needed)
+## 6. What's final in code (no asset needed)
 
-Her iPhone and every app on it, both phones, the call's UI, the case file,
-the endings' acts and cards, The First Minute, the share images: all drawn
-in code, and final.
+His iPhone and every app on it, your phone, the case file and the record,
+the board, the endings' acts and the end card, the share images.
 
 ---
 
-*Removed with this file: the retired chapter's unused photos
-(`public/found/photos/*`) and voice memos (`public/found/memo-*.m4a`).*
+*Retired with the pivot:* every asset row for *Don't Cut the Call* (the
+Crime Branch shoot, Vasu's voices, her diary). See git history at `1de34a2`.
+The placeholder wallpaper `public/found/wallpaper.jpg` stays until S5
+replaces it.
