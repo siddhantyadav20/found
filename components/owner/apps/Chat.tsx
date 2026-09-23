@@ -99,7 +99,7 @@ function Voice({ seconds, transcript, english }: { seconds: number; transcript: 
 function Bubble({ m }: { m: Message }) {
   if (m.from === "system") return <p className={styles.service}>{m.text}</p>;
 
-  const out = m.from === "her";
+  const out = m.from === "owner";
   const a = m.attachment;
   const media = a?.kind === "photo" || a?.kind === "handwriting";
   return (
@@ -182,7 +182,7 @@ function Conversation({
   const [shown, setShown] = useState(messages.length);
   const body = useRef<HTMLDivElement>(null);
   const pending = shown < messages.length;
-  const nextFromThem = pending && messages[shown]?.from !== "her";
+  const nextFromThem = pending && messages[shown]?.from !== "owner";
 
   useEffect(() => {
     if (!pending) return undefined;

@@ -2,7 +2,22 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Question, Story } from "@/content/types";
-import { add, answer, hint, newCase, see, TOO_MUCH, WRONG, type CaseState } from "@/lib/game/engine";
+import {
+  add,
+  answer,
+  filedClaim,
+  filedClaims,
+  hint,
+  needsRevisit,
+  newCase,
+  openQuestion,
+  see,
+  sideQuestions,
+  STRUCK,
+  TOO_MUCH,
+  WRONG,
+  type CaseState,
+} from "@/lib/game/engine";
 
 /**
  * The four kinds of question, judged away from the DOM. A wrong answer costs
@@ -17,9 +32,9 @@ import { add, answer, hint, newCase, see, TOO_MUCH, WRONG, type CaseState } from
 const ep: Story = {
   ...STORIES.shagun,
   evidence: [
-    { id: "poster", device: "hers", app: "whatsapp", label: "A missing-person poster" },
-    { id: "portrait", device: "hers", app: "photos", label: "A waiter with a tray, 9:48 PM" },
-    { id: "invoice", device: "hers", app: "messages", label: "An invoice" },
+    { id: "poster", device: "owner", app: "whatsapp", label: "A missing-person poster" },
+    { id: "portrait", device: "owner", app: "photos", label: "A waiter with a tray, 9:48 PM" },
+    { id: "invoice", device: "owner", app: "messages", label: "An invoice" },
   ],
   questions: [
     {
@@ -84,41 +99,131 @@ describe("typing a name", () => {
   });
 });
 
-describe("the two lanes", () => {
+describe("the lanes", () => {
   const story = withQuestions([
     {
       kind: "timeline",
-      id: "who-used-it",
-      ask: "What did the phone do while its owner was elsewhere?",
+      id: "the-interval",
+      ask: "Who was doing what, and when?",
       episode: 1,
-      whereToLook: ["notes"],
+      whereToLook: ["whatsapp"],
       hints: ["a", "b", "c"],
-      rows: [
-        { id: "away", at: "22:40", text: "Out of the house", lane: "her", evidence: "story" },
-        { id: "edit", at: "23:02", text: "A video was trimmed", lane: "phone", evidence: "lure" },
-        { id: "delete", at: "22:48", text: "A clip was deleted", lane: "phone", evidence: "list" },
+      lanes: [
+        { id: "dilip", label: "Dilip" },
+        { id: "sameer", label: "Sameer" },
+        { id: "nitin", label: "Nitin" },
       ],
-      reply: "Somebody was busy on it.",
+      rows: [
+        { id: "pain", at: "01:07", text: "“Aap aa rahe ho na?”", lane: "dilip", evidence: "poster" },
+        { id: "said", at: "01:52", text: "A message that isn't there", lane: "sameer", evidence: "portrait" },
+        { id: "back", at: "01:53", text: "“Agar le gaye hain…”", lane: "nitin", evidence: "invoice" },
+      ],
+      reply: "Three people, one interval.",
     },
   ]);
+  const all3 = () => found("poster", "portrait", "invoice");
 
-  it("is right only when every impossible act is on the phone's side", () => {
-    // The board holds what has been found: the three rows' evidence.
-    const s = ["story", "lure", "list"].reduce((acc, id) => add(acc, `saw:${id}`), start());
-    expect(answer(story, s, "who-used-it", ["edit", "delete"]).ok).toBe(true);
-    expect(answer(story, s, "who-used-it", ["edit"]).ok).toBe(false);
-    expect(answer(story, s, "who-used-it", ["edit", "delete", "terrace"]).ok).toBe(false);
+  it("is right only when every row sits in its own lane", () => {
+    expect(answer(story, all3(), "the-interval", ["pain@dilip", "said@sameer", "back@nitin"]).ok).toBe(true);
+    expect(answer(story, all3(), "the-interval", ["pain@dilip", "said@nitin", "back@sameer"]).ok).toBe(false);
+    expect(answer(story, all3(), "the-interval", ["pain@dilip", "said@sameer"]).ok).toBe(false);
+    expect(answer(story, all3(), "the-interval", ["pain@dilip", "said@sameer", "back@nitin", "back@dilip"]).ok).toBe(false);
   });
 
   it("judges only the rows the player has actually found", () => {
-    // Only the edit is known, so only the edit belongs on the phone's side.
-    const partial = add(start(), "saw:lure");
-    expect(answer(story, partial, "who-used-it", ["edit"]).ok).toBe(true);
-    expect(answer(story, partial, "who-used-it", ["edit", "delete"]).ok).toBe(false);
+    const partial = found("portrait");
+    expect(answer(story, partial, "the-interval", ["said@sameer"]).ok).toBe(true);
+    expect(answer(story, partial, "the-interval", ["said@sameer", "pain@dilip"]).ok).toBe(false);
   });
 });
 
-describe("true or bluff", () => {
+describe("filing a claim, and the owner's version of it", () => {
+  const story = withQuestions([
+    {
+      kind: "file",
+      id: "the-car",
+      ask: "Why did the car leave empty?",
+      episode: 1,
+      whereToLook: ["whatsapp"],
+      hints: ["a", "b", "c"],
+      claims: [
+        { id: "guards", text: "Bhasin's people turned it away.", proof: ["poster"], reply: "Filed.", version: true },
+        {
+          id: "told",
+          text: "Sameer told Nitin that Dilip had gone.",
+          proof: ["portrait", "invoice"],
+          reply: "Filed.",
+          sets: ["link:lie"],
+        },
+      ],
+      reply: "Filed.",
+      sets: ["did:car-asked"],
+      reopenWhen: ["saw:portrait", "saw:invoice"],
+    },
+  ]);
+
+  it("accepts his version, with its proof, and never calls it wrong", () => {
+    const r = answer(story, found("poster"), "the-car", { claim: "guards", proof: ["poster"] });
+    expect(r.ok).toBe(true);
+    expect(r.state.flags).toEqual(expect.arrayContaining(["ask:the-car", "claim:the-car:guards", "did:car-asked"]));
+    expect(r.state.flags).not.toContain("link:lie");
+    expect(filedClaim(story.questions[0], r.state)?.id).toBe("guards");
+  });
+
+  it("wants the proof that goes with the claim, not any proof", () => {
+    const s = found("poster", "portrait", "invoice");
+    expect(answer(story, s, "the-car", { claim: "told", proof: ["poster"] }).reply).toBe(WRONG);
+    expect(answer(story, s, "the-car", { claim: "told", proof: ["portrait", "invoice", "poster"] }).reply).toBe(TOO_MUCH);
+    expect(answer(story, s, "the-car", { claim: "nobody", proof: ["poster"] }).ok).toBe(false);
+    expect(answer(story, s, "the-car", ["poster"]).ok).toBe(false);
+  });
+
+  it("comes back as Revisit once something found says otherwise, and files the truth over it", () => {
+    const q = story.questions[0];
+    let s = answer(story, found("poster"), "the-car", { claim: "guards", proof: ["poster"] }).state;
+    expect(needsRevisit(q, s)).toBe(false);
+    s = see(story, see(story, s, "portrait"), "invoice");
+    expect(needsRevisit(q, s)).toBe(true);
+    // Not a must: it's offered on the side, and nothing waits on it.
+    expect(sideQuestions(story, s).map((x) => x.id)).toEqual(["the-car"]);
+    expect(openQuestion(story, s)).toBeUndefined();
+
+    // The struck line can't be filed again.
+    expect(answer(story, s, "the-car", { claim: "guards", proof: ["poster"] }).reply).toBe(STRUCK);
+    const after = answer(story, s, "the-car", { claim: "told", proof: ["portrait", "invoice"] }).state;
+    expect(filedClaims(q, after).map((c) => c.id)).toEqual(["guards", "told"]);
+    expect(after.flags).toContain("link:lie");
+    expect(needsRevisit(q, after)).toBe(false);
+    expect(sideQuestions(story, after)).toEqual([]);
+  });
+
+  it("files the truth straight away for a player who found it first", () => {
+    const s = answer(story, found("portrait", "invoice"), "the-car", { claim: "told", proof: ["portrait", "invoice"] }).state;
+    expect(s.flags).toContain("link:lie");
+    expect(needsRevisit(story.questions[0], s)).toBe(false);
+  });
+
+  it("puts a Revisit that must be done in front of everything, whatever the episode", () => {
+    const must = withQuestions([{ ...story.questions[0], mustRevisit: true } as Question, { ...ep.questions[0], episode: 2 }]);
+    let s = answer(must, found("poster"), "the-car", { claim: "guards", proof: ["poster"] }).state;
+    s = add(see(must, see(must, s, "portrait"), "invoice"), "ep:2");
+    expect(openQuestion(must, s)?.id).toBe("the-car");
+    expect(sideQuestions(must, s)).toEqual([]);
+  });
+});
+
+describe("a question on the side", () => {
+  const story = withQuestions([{ ...ep.questions[0], optional: true }]);
+
+  it("never holds the episode up, and is offered until it's answered", () => {
+    expect(openQuestion(story, start())).toBeUndefined();
+    expect(sideQuestions(story, start()).map((q) => q.id)).toEqual(["who-is-he"]);
+    const s = answer(story, found("poster", "portrait"), "who-is-he", ["poster", "portrait"]).state;
+    expect(sideQuestions(story, s)).toEqual([]);
+  });
+});
+
+describe("proven or not", () => {
   const story = withQuestions([
     {
       kind: "claims",
@@ -162,7 +267,8 @@ describe("help", () => {
       expect(h.text).toBe(q.hints[tier - 1]);
       s = h.state;
     }
-    expect(s.ledger).toEqual([]);
+    // Asking changes nothing but the count of hints taken.
+    expect(s.flags.every((f) => f.startsWith("hint:"))).toBe(true);
   });
 
   it("names at least one app to look in, for every question", () => {

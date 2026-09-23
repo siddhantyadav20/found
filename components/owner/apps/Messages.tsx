@@ -64,7 +64,7 @@ function ThreadView({
                   <b>{m.day}</b> {stamp(m.at)}
                 </p>
               )}
-              <div className={styles.row} data-from={m.from === "her" ? "owner" : "them"} data-tail={endOfRun || undefined}>
+              <div className={styles.row} data-from={m.from === "owner" ? "owner" : "them"} data-tail={endOfRun || undefined}>
                 <p className={styles.bubble}>{m.text}</p>
               </div>
             </div>

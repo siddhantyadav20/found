@@ -1,5 +1,7 @@
 import type { Flag, ReplyOption, Story } from "@/content/types";
-import { add, expose, see, stamp, type CaseState } from "@/lib/game/engine";
+import { add, see, stamp, type CaseState } from "@/lib/game/engine";
+import { STORIES } from "@/content/stories";
+import type { CaseId } from "@/content/cases";
 import { reportFlag } from "@/lib/found/events";
 import { boundCase, commit, readProgress } from "@/lib/found/progress";
 import { track } from "@/lib/found/track";
@@ -34,7 +36,7 @@ export function save(next: CaseState): void {
   const had = new Set(before?.flags ?? []);
   for (const f of stamped.flags) {
     if (had.has(f)) continue;
-    const event = reportFlag(f);
+    const event = reportFlag(f, STORIES[id as CaseId]);
     if (event) track({ case: id, event, via: stamped.via, seconds: (now - stamped.started) / 1000 });
   }
 }
@@ -45,25 +47,16 @@ export function flag(...flags: Flag[]): void {
   if (s) save(add(s, ...flags));
 }
 
-/** Saying something: what it sets, and what it hands over. */
-export function say(story: Story, option: Pick<ReplyOption, "sets" | "exposes">): void {
+/** Saying something: what it sets. */
+export function say(option: Pick<ReplyOption, "sets">): void {
   const s = readProgress();
-  if (!s) return;
-  let next = add(s, ...(option.sets ?? []));
-  if (option.exposes) next = expose(story, next, option.exposes);
-  save(next);
+  if (s) save(add(s, ...(option.sets ?? [])));
 }
 
 /** Having looked at something: it goes into the case file, if it can. */
 export function read(story: Story, ids: readonly string[]): void {
   const s = readProgress();
   if (s) save(ids.reduce((acc, id) => see(story, acc, id), s));
-}
-
-/** Handing something over: flags, and one entry in their ledger. */
-export function give(story: Story, exposure: string, ...flags: Flag[]): void {
-  const s = readProgress();
-  if (s) save(expose(story, add(s, ...flags), exposure));
 }
 
 /** A wrong answer costs nothing in the game. The funnel still wants to know. */

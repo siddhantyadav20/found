@@ -117,7 +117,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
     if (phase === "sealing") return;
     setPhase("sealing");
     const origin = window.location.origin;
-    const r = await createDrop(id, name, result?.minutes != null ? result.held.length : undefined).catch(() => null);
+    const r = await createDrop(id, name, result?.minutes != null ? result.traced.length : undefined).catch(() => null);
     if (r?.ok) {
       const entry: Sent = { code: r.code, to: r.to, case: id, at: Date.now() };
       remember(entry);

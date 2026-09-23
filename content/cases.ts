@@ -26,6 +26,8 @@ export type CaseMeta = {
   readonly note: string;
   /** The question that goes with a share, under the result line. */
   readonly ask: string;
+  /** How many links the chain has, for the share images (which never load a story). */
+  readonly links: number;
   /** What keeps landing on this case's lock screen. The desk cycles it. */
   readonly teaser: readonly { readonly from: string; readonly text: string }[];
 };

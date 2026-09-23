@@ -21,8 +21,8 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 |---|---|---|
 | **S0** ✔ | Canon and docs | SCRIPT.md, the adaptation, the journey, this plan, the assets list |
 | **S1** ✔ | Retire | Remove *Don't Cut the Call*; one case, `shagun` |
-| **S2** | Story-agnostic engine | No call, courier, charger or ending ids baked in |
-| **S3** | The chain and the record | Links, claims, Sameer's version, Revisit, the multi-lane board |
+| **S2** ✔ | Story-agnostic engine | No call, courier, charger or ending ids baked in (mostly in S1, the rest folded into S3) |
+| **S3** ✔ | The chain and the record | Links, claims, Sameer's version, Revisit, the multi-lane board |
 | **S4** | His phone | Photos with media, Voice Memos, WhatsApp's archive, Mail, Paytap |
 | **S5** | Arrival | Parcel, envelope, the note, the phone waking, the charger |
 | **S6** | Episode 1 | *Missed Calls* as data |
@@ -87,29 +87,67 @@ made-up data. 55 tests. `/c/[case]` went from 646KB to 577KB.
 screen, home, all nine apps, resume after reload; the charger gate and the
 Episode 2 card on `next dev` (`?battery=unplugged` is dev-only).
 
-## S2 — Story-agnostic engine
+## S2 — Story-agnostic engine · **done (S1 and S3)**
 
-| Where | Change |
-|---|---|
-| `content/types.ts` | `call` and `courier` optional (and likely deleted); `episodes`, `clocks` and `endings` become lists, not 3-tuples; `Ending.id` a string; `TimelineRow.lane` a string, with lanes declared per question; `Exposure` retired for links (S3); `Photo.album` a string |
-| `lib/game/scene.ts` | The scene sequence is declared by the story (arrive → read → gate → title cards → the record → ending → card), not hard-coded flags. *(S1 already removed the old chapter's scenes and made title cards generic.)* |
-| `lib/game/engine.ts` | `episodeOf` reads the story's episode count; no `ep:3` assumption |
-| `components/stage/Table.tsx` | ✔ done in S1 |
-| `components/stage/AppBody.tsx` | ✔ done in S1 (a locked note sets `did:unlocked-<id>`) |
-| `lib/found/events.ts` | A chapter's own choices (Raju answered, Nitin protected…) reported from the story, as endings already are since S1 |
-| `components/her/` | Renamed `components/owner/`: every chapter's phone has a different owner |
-| Strings | ✔ done in S1: no name from the old chapter is left in code |
-| Identifiers | `hers`, `hersHome`, `Message.from: "her"`, the timeline's `"her"` lane: renamed with the folder |
+Most of it landed in S1 (see there). The rest went in with S3 on 2026-09-23:
+`components/her` is `components/owner`; `DeviceId` is `"owner" | "yours"`,
+`Story.hersHome` is `Story.home`, a message from the owner is
+`from: "owner"`; a chapter's own choices are `Story.choices`, reported by
+name. **Not done, on purpose:** declaring the scene order in the story. Since
+S1 the sequence (parcel → note → table, the gate, title cards, a call, the
+choice, the ending, the card) holds no chapter's names or flags, and S9 adds
+the record's screen to it the same way.
 
-## S3 — The chain and the record
+## S3 — The chain and the record · **done (2026-09-23)**
 
-| Module | Detail |
-|---|---|
-| `lib/game/chain.ts` | Eleven links `{id, label, owner, kind: spine\|deep, tracedBy: flags, version: Sameer's line}`; `traced(state)`; the count |
-| Questions (`engine.ts`) | **`variants`**: several accepted answers, each with its own proof routes and flags (the traced answer, and Sameer's version). **`reopenWhen`**: a flag that reopens an answered question as Revisit. **`optional`**: doesn't block the episode (QM). **Timelines**: any number of lanes, and optionally ordered |
-| `components/stage/CaseFile.tsx` | Becomes the record: claims with their sources, Sameer's version filed without comment, Revisit with a strike by hand, a live count on replay |
-| Result and share | `lib/found/result.ts` (`resultOf` → links), `keeping.ts` (`Solved.held` → `traced`), `drops.ts`, `app/d/[code]/opengraph-image.tsx`, `components/found/shareCards.tsx`: "I traced N of 11 links" |
-| Tests | `questions.test.ts` gains variants, Revisit, optional and ordered multi-lane timelines |
+**Built:**
+- **The chain.** `Link` in `content/types.ts`; Shagun's eleven in
+  `content/shagun/chain.ts` (CHAPTER1.md D, with Sameer's words and the
+  English for each deep link). A link is traced when an answer sets
+  `link:<id>`; `traced()` in `lib/game/engine.ts`.
+- **Filing a claim** (question kind `file`): the player picks what they think
+  happened and tables its proof. A claim marked `version` is Sameer's reading,
+  filed like any other and never called wrong. Filed claims are flags
+  (`claim:<question>:<claim>`); the last one stands.
+- **Revisit.** `reopenWhen` brings a question back once the claim on file is
+  a version and the contradicting evidence has been seen. `mustRevisit` puts
+  it in front of everything (Q3); otherwise it waits on the side. The player
+  strikes the old line with a button before the board returns, the struck line
+  can't be filed again, and the record keeps it, struck through.
+- **Side questions** (`optional`): offered under "Also open", never block an
+  episode (QM).
+- **Timelines with any number of lanes**, declared on the question; rows show
+  in time order and a tap moves one to the next lane. *(The plan's "ordered"
+  timelines were dropped: every row carries its time.)*
+- **The record** (`CaseFile.tsx`): the open question, then "Also open", then
+  every answer as a line with its sources, then what's been found.
+- **The score.** `resultOf` counts links; the share line is "I traced N of 11
+  links"; finishes keep `traced`; drops carry it, and the drop's share image
+  prints it (`CaseMeta.links`, so the image never loads a story); the desk
+  says "· N links traced"; a replay counts the chain live.
+- **The end card** draws the chain, one row at a time: traced links in the
+  record's words, untraced ones in Sameer's, then the count.
+- **The ledger is gone** (`Exposure`, `expose`, `CaseState.ledger`,
+  `ReplyOption.exposes`): the chain replaced it. Old version-4 saves load; their
+  ledger is dropped.
+- **The funnel** counts `claim:<q>:<c>` (which reading was filed) and
+  `link:<id>` (how far past his version players get).
+
+**Tests:** 66, one skipped until the episodes exist. They cover filing,
+Revisit, `STRUCK`, must-vs-side revisits, side questions, lanes, the chain's
+laws (eleven links, seven spine, a version on every deep link, never traced by
+a version claim, and every link traceable once S6–S8 write questions), and the
+share line.
+
+**Walked** at 375 × 812 in dev, with a throwaway question on the real phone
+(removed afterwards):
+- file Sameer's version
+- find the evidence against it, and see it offered as Revisit
+- strike it, file the truth
+- see the record with the struck line and sources
+- place three rows in three lanes
+- end card: 2 of 11 in the right words
+- desk: "2 links traced"
 
 ## S4 — His phone
 

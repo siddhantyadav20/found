@@ -2,9 +2,24 @@
 
 import { useState } from "react";
 
-import type { AppId, Question, Story } from "@/content/types";
-import { answer, appLabel, caseFile, claimsFor, hint, openQuestion, seen, whereToLook, type CaseState } from "@/lib/game/engine";
-import note from "@/components/her/ios/Notes.module.css";
+import type { AppId, Evidence, Question, Story } from "@/content/types";
+import {
+  answer,
+  answered,
+  appLabel,
+  caseFile,
+  filedClaim,
+  filedClaims,
+  hint,
+  needsRevisit,
+  openQuestion,
+  seen,
+  sideQuestions,
+  whereToLook,
+  type CaseState,
+  type Given,
+} from "@/lib/game/engine";
+import note from "@/components/owner/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
 import { wrong } from "./playthrough";
 import { stamp } from "@/lib/found/time";
@@ -13,24 +28,27 @@ import { stamp } from "@/lib/found/time";
 const onTable = new Map<string, string[]>();
 
 /* ===========================================================================
-   The case file: one question at a time, what you have found, and help that
-   never costs anything.
+   The case file is the record: the player's own account of the night, one
+   question at a time, with help that never costs anything.
 
    The only real complaint players ever made about Found was "I didn't know
    what to do", so where-to-look is free and unlimited, the three hints end in
    the answer, and nothing anywhere counts how often they were used
    (PLAYER-JOURNEY Stage 4).
 
-   Four kinds of question, because this chapter thinks in four ways
-   (ROADMAP.md P3):
+   Every answer goes into the record as a claim with its sources beside it
+   (script §12: observation, then inference). Five kinds of question:
 
      pick      — put the proof on the table
+     file      — say what you think happened, and put its proof on the table.
+                 The owner's own version is a real answer: filed, sourced,
+                 never called wrong. When a later find contradicts it, the
+                 question comes back as Revisit, and the player strikes the old
+                 line by hand before filing the new one (CHAPTER1.md G).
      type      — say the name out loud
-     timeline  — two lanes: where she was, and what her phone did
-     claims    — mark each thing they say about you true, or a bluff
+     timeline  — put each event in its lane
+     claims    — mark each statement proven, or not
    =========================================================================== */
-
-type Given = readonly string[] | string;
 
 export default function CaseFile({
   story,
@@ -41,8 +59,13 @@ export default function CaseFile({
   state: CaseState;
   save: (next: CaseState) => void;
 }) {
-  const q = openQuestion(story, state);
+  const side = sideQuestions(story, state);
+  const [aside, setAside] = useState<string | null>(null);
+  const main = openQuestion(story, state);
+  // A question taken up from the side, while it's still open; otherwise the one in front.
+  const q = side.find((x) => x.id === aside) ?? main;
   const found = caseFile(story, state);
+
   // What was on the table survives a trip to another app and back (PLAYTEST.md #67).
   const [picked, setPickedHere] = useState<string[]>(() => (q ? (onTable.get(q.id) ?? []) : []));
   const setPicked = (next: string[] | ((p: string[]) => string[])) =>
@@ -51,15 +74,19 @@ export default function CaseFile({
       if (q) onTable.set(q.id, value);
       return value;
     });
+  const [claim, setClaim] = useState<string | null>(null);
+  const [struck, setStruck] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
-  const [said, setSaid] = useState<{ text: string; ok: boolean; ask: string } | null>(null);
+  const [said, setSaid] = useState<{ text: string; ok: boolean; ask: string; filed: boolean } | null>(null);
   const [helped, setHelped] = useState<string | null>(null);
 
   const reset = () => {
     setSaid(null);
     setPicked([]);
+    setClaim(null);
     setTyped("");
     setHelped(null);
+    setAside(null);
   };
 
   /* An answered question stays on screen with its reply. The reply is the
@@ -68,7 +95,7 @@ export default function CaseFile({
   if (said?.ok)
     return (
       <div className={note.card}>
-        <p className={note.eyebrow}>Answered</p>
+        <p className={note.eyebrow}>{said.filed ? "Filed" : "Answered"}</p>
         <h3 className={note.question}>{said.ask}</h3>
         <p className={note.solvedA}>{said.text}</p>
         <button type="button" className={note.primary} onClick={reset}>
@@ -77,164 +104,223 @@ export default function CaseFile({
       </div>
     );
 
+  const record = <Record story={story} state={state} />;
+  const offered = side.filter((x) => x.id !== q?.id);
+  const others = offered.length > 0 && (
+    <div className={styles.side}>
+      <p className={styles.groupHead}>Also open</p>
+      {offered.map((x) => (
+        <button
+          key={x.id}
+          type="button"
+          className={styles.lane}
+          onClick={() => {
+            reset();
+            setAside(x.id);
+            setPickedHere(onTable.get(x.id) ?? []);
+          }}
+        >
+          <span className={styles.laneText}>{x.ask}</span>
+          <span className={styles.tag}>{needsRevisit(x, state) ? "Revisit" : "Open"}</span>
+        </button>
+      ))}
+    </div>
+  );
+
   if (!q)
     return (
       <div className={styles.file}>
-        <p className={styles.done}>Nothing else to answer yet. What you have found so far is below.</p>
-        <ul className={styles.list}>
-          {found.map((e) => (
-            <li key={e.id} className={styles.item}>
-              <span>{e.label}</span>
-            </li>
-          ))}
-        </ul>
+        <p className={styles.done}>Nothing else to answer yet.</p>
+        {others}
+        {record}
+        <Found found={found} story={story} />
       </div>
     );
 
-  const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const revisit = needsRevisit(q, state);
+  const onFile = revisit ? filedClaim(q, state) : undefined;
+  // The old line has to be struck, by hand, before the board comes back.
+  const striking = Boolean(onFile) && struck !== q.id;
 
   const give = (given: Given) => {
     const r = answer(story, state, q.id, given);
-    setSaid({ text: r.reply, ok: r.ok, ask: q.ask });
-    if (r.ok) save(r.state);
-    else wrong(q.id);
+    setSaid({ text: r.reply, ok: r.ok, ask: q.ask, filed: q.kind === "file" });
+    if (r.ok) {
+      save(r.state);
+      onTable.delete(q.id);
+    } else wrong(q.id);
   };
 
+  const ready =
+    q.kind === "type" ? typed.trim().length > 0 : q.kind === "file" ? Boolean(claim) && picked.length > 0 : picked.length > 0;
+
   return (
-    <div className={note.card}>
-      <p className={note.eyebrow}>Open question</p>
-      <h3 className={note.question}>{q.ask}</h3>
-      <p className={note.ask}>
-        Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
-      </p>
+    <div className={styles.file}>
+      <div className={note.card}>
+        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : "Open question"}</p>
+        <h3 className={note.question}>{q.ask}</h3>
+        <p className={note.ask}>
+          Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
+        </p>
 
-      <Board
-        q={q}
-        state={state}
-        found={found}
-        picked={picked}
-        toggle={toggle}
-        typed={typed}
-        setTyped={setTyped}
-        labelOf={(app) => (app === "casefile" ? "From the parcel" : appLabel(story, app))}
-      />
+        {onFile && (
+          <div className={styles.onFile}>
+            <p className={styles.groupHead}>On file</p>
+            <p className={styles.fileLine} data-struck={!striking || undefined}>
+              {onFile.text}
+            </p>
+            {striking && (
+              <button type="button" className={note.secondary} onClick={() => setStruck(q.id)}>
+                Strike it
+              </button>
+            )}
+          </div>
+        )}
 
-      <div className={note.actions}>
-        <button
-          type="button"
-          className={note.primary}
-          disabled={q.kind === "type" ? typed.trim().length === 0 : picked.length === 0}
-          onClick={() => give(q.kind === "type" ? typed : picked)}
-        >
-          Answer
-        </button>
-        <button
-          type="button"
-          className={note.secondary}
-          onClick={() => {
-            const h = hint(story, state, q.id);
-            if (!h) return;
-            setHelped(h.text);
-            save(h.state);
-          }}
-        >
-          Hint
-        </button>
+        {!striking && (
+          <>
+            <Board
+              q={q}
+              state={state}
+              found={found}
+              picked={picked}
+              setPicked={setPicked}
+              claim={claim}
+              setClaim={setClaim}
+              typed={typed}
+              setTyped={setTyped}
+              labelOf={(app) => (app === "casefile" ? "From the parcel" : appLabel(story, app))}
+            />
+
+            <div className={note.actions}>
+              <button
+                type="button"
+                className={note.primary}
+                disabled={!ready}
+                onClick={() =>
+                  give(q.kind === "type" ? typed : q.kind === "file" ? { claim: claim ?? "", proof: picked } : picked)
+                }
+              >
+                {q.kind === "file" ? "File it" : "Answer"}
+              </button>
+              <button
+                type="button"
+                className={note.secondary}
+                onClick={() => {
+                  const h = hint(story, state, q.id);
+                  if (!h) return;
+                  setHelped(h.text);
+                  save(h.state);
+                }}
+              >
+                Hint
+              </button>
+            </div>
+          </>
+        )}
+
+        {helped && <p className={note.hint}>{helped}</p>}
+        {said && !said.ok && (
+          <p className={note.choose} data-over>
+            {said.text}
+          </p>
+        )}
       </div>
 
-      {helped && <p className={note.hint}>{helped}</p>}
-      {said && !said.ok && <p className={note.choose} data-over>{said.text}</p>}
+      {others}
+      {record}
     </div>
   );
 }
 
-function Board({
-  q,
-  state,
-  found,
-  picked,
-  toggle,
-  typed,
-  setTyped,
-  labelOf,
-}: {
-  q: Question;
-  state: CaseState;
-  found: readonly { readonly id: string; readonly label: string; readonly app: AppId }[];
-  /** What each app is called on her phone, for grouping what was found. */
-  labelOf: (app: AppId) => string;
-  picked: readonly string[];
-  toggle: (id: string) => void;
-  typed: string;
-  setTyped: (v: string) => void;
-}) {
-  if (q.kind === "type")
-    return (
-      <input
-        className={note.input}
-        value={typed}
-        onChange={(e) => setTyped(e.target.value)}
-        placeholder="Type it"
-        aria-label={q.ask}
-      />
-    );
+/** Where a claim's sources come from: the first of its routes the player has all of. */
+function sourcesOf(routes: readonly (readonly string[])[], s: CaseState): string[] {
+  return [...(routes.find((r) => r.every((id) => seen(s, id))) ?? [])];
+}
 
-  /* Two lanes. Nothing is dragged anywhere, because dragging on a phone in
-     one hand is a fight: tapping a row moves it to the other lane. */
-  if (q.kind === "timeline")
-    return (
-      <>
-        <p className={styles.where}>Tap anything this phone did while she was somewhere else.</p>
-        <p className={styles.lanes}>
-          <span>Her</span>
-          <span>This phone</span>
-        </p>
-        <ul className={styles.list}>
-          {q.rows.filter((r) => seen(state, r.evidence)).map((r) => (
-            <li key={r.id}>
-              <button
-                type="button"
-                className={styles.lane}
-                data-on={picked.includes(r.id) || undefined}
-                aria-pressed={picked.includes(r.id)}
-                onClick={() => toggle(r.id)}
-              >
-                <span className={styles.at}>{stamp(r.at)}</span>
-                <span className={styles.laneText}>{r.text}</span>
-                <span className={styles.side}>{picked.includes(r.id) ? "the phone" : "her"}</span>
-              </button>
+/** What stands behind a filed answer, as evidence ids. */
+function sources(q: Question, s: CaseState): string[] {
+  switch (q.kind) {
+    case "pick":
+      return sourcesOf([q.proof, ...(q.orProof ?? [])], s);
+    case "file": {
+      const c = filedClaim(q, s);
+      return c ? sourcesOf([c.proof, ...(c.orProof ?? [])], s) : [];
+    }
+    case "timeline":
+      return q.rows.filter((r) => seen(s, r.evidence)).map((r) => r.evidence);
+    case "claims":
+      return q.claims.map((c) => c.proof).filter((id) => seen(s, id));
+    case "type":
+      return [];
+  }
+}
+
+/**
+ * The record: every answer so far, in the order the chapter asks them, each
+ * with what it stands on. A line that was struck stays, struck: the record
+ * remembers what the player believed before.
+ */
+function Record({ story, state }: { story: Story; state: CaseState }) {
+  const lines = story.questions.filter((q) => answered(state, q.id));
+  if (!lines.length) return null;
+  const label = (id: string) => story.evidence.find((e) => e.id === id)?.label ?? id;
+  return (
+    <section className={styles.record} aria-label="The record">
+      <p className={styles.groupHead}>The record</p>
+      <ol className={styles.lines}>
+        {lines.map((q) => {
+          const filed = filedClaims(q, state);
+          const now = filed.at(-1);
+          const from = [...new Set(sources(q, state))];
+          return (
+            <li key={q.id} className={styles.entry}>
+              {filed.slice(0, -1).map((c, i) => (
+                <p key={`${c.id}-${i}`} className={styles.fileLine} data-struck>
+                  {c.text}
+                </p>
+              ))}
+              <p className={styles.fileLine}>{now ? now.text : q.reply}</p>
+              {from.length > 0 && <p className={styles.sources}>{from.map(label).join(" · ")}</p>}
             </li>
-          ))}
-        </ul>
-      </>
-    );
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
 
-  if (q.kind === "claims")
-    return (
+/** Everything found so far, grouped by where. */
+function Found({ found, story }: { found: readonly Evidence[]; story: Story }) {
+  if (!found.length) return null;
+  return (
+    <section aria-label="What you have found">
+      <p className={styles.groupHead}>What you have found</p>
       <ul className={styles.list}>
-        {claimsFor(q, state).map((c) => (
-          <li key={c.id}>
-            <button
-              type="button"
-              className={styles.lane}
-              data-on={picked.includes(c.id) || undefined}
-              aria-pressed={picked.includes(c.id)}
-              onClick={() => toggle(c.id)}
-            >
-              <span className={styles.laneText}>
-                {c.text}
-                {c.english && <span className={styles.english}>{c.english}</span>}
-              </span>
-              <span className={styles.side}>{picked.includes(c.id) ? (q.labels?.[0] ?? "true") : (q.labels?.[1] ?? "bluff")}</span>
-            </button>
+        {found.map((e) => (
+          <li key={e.id} className={styles.item}>
+            <span>{e.label}</span>
+            <span className={styles.where}>{appLabel(story, e.app)}</span>
           </li>
         ))}
       </ul>
-    );
+    </section>
+  );
+}
 
-  return found.length === 0 ? (
-    <p className={styles.empty}>Open something on her phone first.</p>
-  ) : (
+function ProofTable({
+  found,
+  picked,
+  toggle,
+  labelOf,
+}: {
+  found: readonly { readonly id: string; readonly label: string; readonly app: AppId }[];
+  picked: readonly string[];
+  toggle: (id: string) => void;
+  labelOf: (app: AppId) => string;
+}) {
+  if (found.length === 0) return <p className={styles.empty}>Open something on the phone first.</p>;
+  return (
     <div className={note.pick}>
       <p className={note.choose}>Put the proof on the table.</p>
       {/* Grouped by where it was found, so thirty things stay findable. */}
@@ -263,4 +349,148 @@ function Board({
       ))}
     </div>
   );
+}
+
+function Board({
+  q,
+  state,
+  found,
+  picked,
+  setPicked,
+  claim,
+  setClaim,
+  typed,
+  setTyped,
+  labelOf,
+}: {
+  q: Question;
+  state: CaseState;
+  found: readonly { readonly id: string; readonly label: string; readonly app: AppId }[];
+  /** What each app is called on the phone, for grouping what was found. */
+  labelOf: (app: AppId) => string;
+  picked: readonly string[];
+  setPicked: (next: string[] | ((p: string[]) => string[])) => void;
+  claim: string | null;
+  setClaim: (id: string) => void;
+  typed: string;
+  setTyped: (v: string) => void;
+}) {
+  const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  if (q.kind === "type")
+    return (
+      <input
+        className={note.input}
+        value={typed}
+        onChange={(e) => setTyped(e.target.value)}
+        placeholder="Type it"
+        aria-label={q.ask}
+      />
+    );
+
+  /* Say what you think, then prove it. The claims are in the chapter's own
+     order, one style for all of them: nothing says which is the owner's. A
+     line already struck isn't offered again. */
+  if (q.kind === "file") {
+    const struck = new Set(filedClaims(q, state).map((c) => c.id));
+    return (
+      <>
+        <p className={note.choose}>What do you think happened?</p>
+        <ul className={styles.list}>
+          {q.claims
+            .filter((c) => !struck.has(c.id))
+            .map((c) => (
+              <li key={c.id}>
+                <button
+                  type="button"
+                  className={styles.lane}
+                  data-on={claim === c.id || undefined}
+                  aria-pressed={claim === c.id}
+                  onClick={() => setClaim(c.id)}
+                >
+                  <span className={styles.laneText}>
+                    {c.text}
+                    {c.english && <span className={styles.english}>{c.english}</span>}
+                  </span>
+                </button>
+              </li>
+            ))}
+        </ul>
+        <ProofTable found={found} picked={picked} toggle={toggle} labelOf={labelOf} />
+      </>
+    );
+  }
+
+  /* Lanes. Nothing is dragged anywhere, because dragging on a phone in one
+     hand is a fight: tapping a row moves it to the next lane, and round. */
+  if (q.kind === "timeline") {
+    const laneOf = (row: string) => picked.find((p) => p.startsWith(`${row}@`))?.split("@")[1];
+    const cycle = (row: string) =>
+      setPicked((p) => {
+        const now = p.find((x) => x.startsWith(`${row}@`))?.split("@")[1];
+        const at = q.lanes.findIndex((l) => l.id === now);
+        const next = q.lanes[at + 1];
+        const rest = p.filter((x) => !x.startsWith(`${row}@`));
+        return next ? [...rest, `${row}@${next.id}`] : rest;
+      });
+    return (
+      <>
+        <p className={styles.where}>Tap each row until it sits in its lane.</p>
+        <p className={styles.lanes}>
+          {q.lanes.map((l) => (
+            <span key={l.id}>{l.label}</span>
+          ))}
+        </p>
+        <ul className={styles.list}>
+          {q.rows
+            .filter((r) => seen(state, r.evidence))
+            .toSorted((a, b) => a.at.localeCompare(b.at))
+            .map((r) => {
+              const lane = laneOf(r.id);
+              return (
+                <li key={r.id}>
+                  <button
+                    type="button"
+                    className={styles.lane}
+                    data-on={lane !== undefined || undefined}
+                    onClick={() => cycle(r.id)}
+                  >
+                    <span className={styles.at}>{stamp(r.at)}</span>
+                    <span className={styles.laneText}>{r.text}</span>
+                    <span className={styles.tag}>{q.lanes.find((l) => l.id === lane)?.label ?? "—"}</span>
+                  </button>
+                </li>
+              );
+            })}
+        </ul>
+      </>
+    );
+  }
+
+  if (q.kind === "claims")
+    return (
+      <ul className={styles.list}>
+        {q.claims.map((c) => (
+          <li key={c.id}>
+            <button
+              type="button"
+              className={styles.lane}
+              data-on={picked.includes(c.id) || undefined}
+              aria-pressed={picked.includes(c.id)}
+              onClick={() => toggle(c.id)}
+            >
+              <span className={styles.laneText}>
+                {c.text}
+                {c.english && <span className={styles.english}>{c.english}</span>}
+              </span>
+              <span className={styles.tag}>
+                {picked.includes(c.id) ? (q.labels?.[0] ?? "proven") : (q.labels?.[1] ?? "not proven")}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    );
+
+  return <ProofTable found={found} picked={picked} toggle={toggle} labelOf={labelOf} />;
 }

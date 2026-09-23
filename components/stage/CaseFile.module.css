@@ -1,4 +1,4 @@
-/* Her own notes app, which is where the player's thinking ends up too. */
+/* The record: the owner's Notes app, which is where the player's own account of the night ends up too. */
 
 .file { display: flex; flex-direction: column; gap: 0.6rem; }
 
@@ -63,6 +63,8 @@
 
 .lanes {
   display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   justify-content: space-between;
   padding: 0 4px;
   font-size: 11px;
@@ -87,16 +89,16 @@
   cursor: pointer;
 }
 
-/* Moved to the other lane: the phone's side, or "true". */
+/* Chosen, placed in a lane, or marked proven. */
 .lane[data-on] {
   border-color: #e8843c;
   background: rgba(232, 132, 60, 0.1);
 }
 
-.at { flex: none; width: 3.1rem; color: #9a948c; font-variant-numeric: tabular-nums; }
+.at { flex: none; min-width: 3.9rem; white-space: nowrap; color: #9a948c; font-variant-numeric: tabular-nums; }
 .laneText { flex: 1; display: flex; flex-direction: column; gap: 3px; line-height: 1.4; }
 .english { font-size: 12px; color: #9a948c; }
-.side { flex: none; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #9a948c; }
+.tag { flex: none; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #9a948c; }
 
 .groupHead {
   margin: 12px 0 4px;
@@ -105,4 +107,34 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8a857e;
+}
+
+/* --- the record ------------------------------------------------------------ */
+
+.side { display: flex; flex-direction: column; gap: 0.35rem; }
+
+.record { display: flex; flex-direction: column; gap: 0.2rem; }
+.lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.entry { display: flex; flex-direction: column; gap: 0.15rem; padding-left: 0.7rem; border-left: 2px solid #e8843c; }
+
+.fileLine { margin: 0; font-size: 14px; line-height: 1.45; color: #e9e5df; }
+
+/* Struck by the player's own hand: it stays, so the record remembers what they believed. */
+.fileLine[data-struck] {
+  color: #8a857e;
+  text-decoration: line-through;
+  text-decoration-color: #e8843c;
+  text-decoration-thickness: 2px;
+}
+
+.sources { margin: 0; font-size: 12px; line-height: 1.4; color: #9a948c; }
+
+.onFile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px dashed #3a3d44;
+  border-radius: 10px;
 }

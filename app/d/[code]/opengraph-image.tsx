@@ -3,6 +3,7 @@ import { ImageResponse } from "next/og";
 import { EnvelopeCard, OG_SIZE } from "@/components/found/shareCards";
 import { CASES, FEATURED } from "@/content/cases";
 import { readDrop } from "@/lib/found/dropRead";
+import { tracedLine } from "@/lib/found/result";
 
 /* Edge, not Node. On Node, `next/og` rasterises through sharp when it can
    load it, and sharp's SVG reader fails inside the server process ("Input
@@ -27,7 +28,8 @@ export default async function Image({ params }: { params: Promise<{ code: string
   const drop = await readDrop(code);
   const to = drop?.to ?? "";
   const drawable = to && /^[\p{Script=Latin} ]+$/u.test(to);
-  // The sender's result goes back on this card with the chain (ROADMAP S3).
+  // The sender's result, if they finished: the spoiler-free brag.
   const meta = CASES[drop?.case ?? FEATURED];
-  return new ImageResponse(<EnvelopeCard label={[drawable ? `TO ${to}` : "TO YOU", "BY HAND"]} ask={meta.ask} />, size);
+  const said = drop?.traced === undefined ? undefined : tracedLine(drop.traced, meta.links);
+  return new ImageResponse(<EnvelopeCard label={[drawable ? `TO ${to}` : "TO YOU", "BY HAND"]} said={said} ask={meta.ask} />, size);
 }

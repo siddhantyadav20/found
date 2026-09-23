@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import KeepCase from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
 import type { CaseId } from "@/content/cases";
-import type { Story } from "@/content/types";
+import type { EpisodeNo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { chosen } from "@/lib/game/endings";
 import { commit } from "@/lib/found/progress";
@@ -19,8 +19,8 @@ import styles from "./Ending.module.css";
 /* ===========================================================================
    After every ending, the same card (PLAYER-JOURNEY Stage 9):
 
-   1. How the playthrough went, in a form that spoils nothing. (Until ROADMAP
-      S3 replaces it with the chain, this is still the ledger.)
+   1. The chain: every link, traced ones in the record's words and the rest
+      in Sameer's, a line at a time; then the count, which is the share.
    2. The one thing only this ending showed, and what others chose.
    3. Play again, Pass it on, and keep your case number.
    4. Outside the fiction: what to do if any of this is close to home.
@@ -35,12 +35,13 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
   // Minutes are measured to the moment the card first appears.
   const [result] = useState(() => resultOf(story, state, Date.now()));
   const [others, setOthers] = useState<Others>(null);
-  const held = result.held;
+  const done = result.traced;
+  const episodes = story.episodes.length as EpisodeNo;
 
   // A finish outlives "Play again", and goes on the shelf if they keep a number.
   useEffect(() => {
-    markSolved(id as CaseId, { episode: 3, minutes: result.minutes, held: held.length, at: Date.now() });
-  }, [id, result.minutes, held.length]);
+    markSolved(id as CaseId, { episode: episodes, minutes: result.minutes, traced: done.length, at: Date.now() });
+  }, [id, episodes, result.minutes, done.length]);
 
   // What others did, once enough people have, and never as a count.
   useEffect(() => {
@@ -62,21 +63,33 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
 
   return (
     <div className={`${styles.screen} ${styles.card}`}>
-      <section className={styles.section} aria-labelledby="had">
-        <p className={styles.eyebrow} id="had">
-          What you gave away
+      <section className={styles.section} aria-labelledby="chain">
+        <p className={styles.eyebrow} id="chain">
+          The chain
         </p>
-        {held.length > 0 && (
-          <ul className={styles.held}>
-            {held.map((h, i) => (
-              <li key={h} style={{ animationDelay: `${0.4 + i * 0.7}s` }}>
-                {h}
+        <ol className={styles.chain}>
+          {story.chain.map((l, i) => {
+            const traced = done.includes(l.id);
+            return (
+              <li key={l.id} data-traced={traced || undefined} style={{ animationDelay: `${0.3 + i * 0.35}s` }}>
+                <span className={styles.linkLabel}>{l.label}</span>
+                {traced ? (
+                  <span className={styles.linkText}>{l.truth}</span>
+                ) : l.version ? (
+                  /* Untraced: what the owner said happened, in his words. */
+                  <span className={styles.linkText}>
+                    <span lang="hi-Latn">&ldquo;{l.version}&rdquo;</span>
+                    {l.english && <span className={styles.english}>{l.english}</span>}
+                  </span>
+                ) : (
+                  <span className={styles.linkText}>Not traced.</span>
+                )}
               </li>
-            ))}
-          </ul>
-        )}
-        <p className={styles.count} style={{ animationDelay: `${0.6 + held.length * 0.7}s` }}>
-          {held.length === 0 ? "Nothing." : `${held.length} thing${held.length === 1 ? "" : "s"}.`}
+            );
+          })}
+        </ol>
+        <p className={styles.count} style={{ animationDelay: `${0.6 + story.chain.length * 0.35}s` }}>
+          You traced {done.length} of {result.links} links.
         </p>
       </section>
 

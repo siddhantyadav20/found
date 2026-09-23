@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { IncomingCall, ReplyOption } from "@/content/types";
-import { exposed, has, type CaseState } from "@/lib/game/engine";
+import { has, type CaseState } from "@/lib/game/engine";
 import { connected, ended, ringtone } from "@/lib/found/tones";
 import styles from "./Ringing.module.css";
 
@@ -19,7 +19,7 @@ import styles from "./Ringing.module.css";
    before the line goes: people don't just hang up (#37).
 
    What the caller says can depend on what the player did earlier: a line
-   can wait on a flag, or on the ledger.
+   can wait on a flag.
 
    =========================================================================== */
 
@@ -54,7 +54,7 @@ export default function Ringing({
   const [answered, setAnswered] = useState(alreadyAnswered);
   const [said, setSaid] = useState(0);
   const [chosen, setChosen] = useState<ReplyOption | null>(null);
-  const lines = call.lines.filter((l) => (!l.needs || exposed(state, l.needs)) && (!l.when || has(state, l.when)));
+  const lines = call.lines.filter((l) => !l.when || has(state, l.when));
 
   // It rings until it's answered, or declined.
   useEffect(() => {

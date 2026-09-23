@@ -131,7 +131,7 @@ export default function Stage() {
           onAnswer={() => flag(`did:answered-${call.id}`, ...(call.sets ?? []))}
           onDecline={call.insists ? undefined : () => flag(`did:declined-${call.id}`)}
           onSay={(option) => {
-            say(story, option);
+            say(option);
             flag(`did:done-${call.id}`);
           }}
         />
@@ -139,5 +139,5 @@ export default function Stage() {
     }
   }
 
-  return <Table story={story} meta={meta} state={state} />;
+  return <Table story={story} meta={meta} state={state} replay={replay} />;
 }

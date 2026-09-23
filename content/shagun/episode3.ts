@@ -1,4 +1,4 @@
-import type { Evidence, Exposure, LiveEvent, Question } from "../types";
+import type { Evidence, LiveEvent, Question } from "../types";
 
 /* ===========================================================================
    Episode 3 — "The Cancelled Rescue". A stub until ROADMAP S8 writes CHAPTER1.md
@@ -11,10 +11,8 @@ export const episode3: {
   evidence: readonly Evidence[];
   questions: readonly Question[];
   events: readonly LiveEvent[];
-  exposures: readonly Exposure[];
 } = {
   evidence: [],
   questions: [],
   events: [],
-  exposures: [],
 };

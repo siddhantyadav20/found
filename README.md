@@ -52,16 +52,16 @@ app/
   api/drop/[code]/       how far a passed-on case has got
   api/shelf/             POST: a new case number · [number]: GET its saves, POST one
 components/
-  stage/                 the playthrough: Stage (scenes), Table (the phones), CaseFile,
+  stage/                 the playthrough: Stage (scenes), Table (the phones), CaseFile (the record),
                          Ringing, Charge, TitleCard, PassItOn, ending/
-  her/                   the found phone's iOS and its apps (renamed owner/ in S2)
+  owner/                 the found phone's iOS and its apps
   yours/                 the player's own phone
   found/                 Desk, KeepCase, Restore, StoryContext, shareCards
 content/
   types.ts               the story schema
   cases.ts · stories.ts  every case, light and in full
   <case>/                a chapter as typed data, no CMS
-lib/game/                the engine: flags, evidence, questions, scenes, endings
+lib/game/                the engine: flags, evidence, questions and claims, the chain, scenes, endings
 lib/found/               saves, drops, shelf, events, result, battery, platform, buzz
 tests/                   Vitest: the engine, the chapter's laws, keeping, sharing
 ```

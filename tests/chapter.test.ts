@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
+import type { Flag } from "@/content/types";
 import { homeIcons } from "@/lib/game/engine";
 
 /**
@@ -9,6 +10,7 @@ import { homeIcons } from "@/lib/game/engine";
  * - every question has at least two ways in and exactly three hints
  * - every piece of evidence lives in exactly one place on the phone
  * - nothing points at evidence that doesn't exist
+ * - the chain is eleven links, and every one of them can be traced
  *
  * *Shagun* is a stub since ROADMAP S1, so these hold vacuously until S6–S8
  * write its episodes. S12 adds the solver runs CHAPTER1.md promises: the full
@@ -35,8 +37,27 @@ describe("every question", () => {
             ? q.accepts.length
             : q.kind === "timeline"
               ? new Set(q.rows.map((r) => r.evidence)).size
-              : q.claims.length;
+              : q.kind === "file"
+                ? // The traced answer, not the owner's version, is the one that must be reachable twice.
+                  Math.min(...q.claims.filter((c) => !c.version).map((c) => 1 + (c.orProof?.length ?? 0)))
+                : q.claims.length;
       expect(ways, q.id).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("that accepts the owner's version also accepts the truth, and says when it comes back", () => {
+    for (const q of ep.questions) {
+      if (q.kind !== "file" || !q.claims.some((c) => c.version)) continue;
+      expect(q.claims.some((c) => !c.version), q.id).toBe(true);
+      expect(q.reopenWhen?.length, `${q.id} can never be revisited`).toBeGreaterThan(0);
+    }
+  });
+
+  it("puts every timeline row in a lane the board has", () => {
+    for (const q of ep.questions) {
+      if (q.kind !== "timeline") continue;
+      const lanes = new Set(q.lanes.map((l) => l.id));
+      for (const r of q.rows) expect(lanes.has(r.lane), `${q.id}: ${r.id}`).toBe(true);
     }
   });
 
@@ -82,10 +103,46 @@ describe("every piece of evidence", () => {
   });
 });
 
+describe("the chain", () => {
+  /** Every flag an answer can set: a question's own, and each of its claims'. */
+  const setters = ep.questions.flatMap((q) => [
+    ...(q.sets ?? []).map((f) => ({ f, q, version: false })),
+    ...(q.kind === "file" ? q.claims.flatMap((c) => (c.sets ?? []).map((f) => ({ f, q, version: Boolean(c.version) }))) : []),
+  ]);
+
+  it("is the eleven links of CHAPTER1.md D, seven spine and four deep", () => {
+    expect(ep.chain.map((l) => l.id)).toEqual([
+      "reel", "kunals-gun", "two-firings", "shot", "alive", "kept", "car", "lie", "fire", "price", "edit",
+    ]);
+    expect(ep.chain.filter((l) => l.kind === "spine")).toHaveLength(7);
+  });
+
+  it("gives every deep link the owner's own version, with English under it", () => {
+    for (const l of ep.chain.filter((x) => x.kind === "deep")) {
+      expect(l.version, l.id).toBeTruthy();
+      expect(l.english, l.id).toBeTruthy();
+    }
+  });
+
+  it("is only ever traced by an answer that isn't his version", () => {
+    for (const { f, q, version } of setters)
+      if (f.startsWith("link:")) expect(version, `${q.id} traces ${f} with the owner's version`).toBe(false);
+  });
+
+  // Holds once the episodes are written (ROADMAP S6–S8); a stub has nothing to trace with.
+  it.skipIf(ep.questions.length === 0)("can trace every link, and every spine link from a question nobody can skip", () => {
+    for (const l of ep.chain) {
+      const by = setters.filter((x) => x.f === (`link:${l.id}` as Flag));
+      expect(by.length, `nothing traces ${l.id}`).toBeGreaterThan(0);
+      if (l.kind === "spine") expect(by.some((x) => !x.q.optional), `${l.id} is spine but only optional`).toBe(true);
+    }
+  });
+});
+
 describe("the phone itself", () => {
   it("is its owner's, with the case file in the dock", () => {
     expect(ep.owner.name).toBe("Sameer Khurana");
-    expect(ep.hersHome.dock.map((i) => i.app)).toContain("casefile");
+    expect(ep.home.dock.map((i) => i.app)).toContain("casefile");
   });
 
   it("opens each episode on the minute CHAPTER1.md gives it", () => {

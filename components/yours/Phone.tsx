@@ -1,6 +1,6 @@
 "use client";
 
-import phone from "@/components/her/ios/Screen.module.css";
+import phone from "@/components/owner/ios/Screen.module.css";
 import { useDevice } from "@/lib/found/platform";
 import styles from "./Phone.module.css";
 

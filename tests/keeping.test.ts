@@ -71,9 +71,9 @@ describe("two devices, one case", () => {
   });
 
   it("keeps the first finish of the furthest episode", () => {
-    const one: Solved = { episode: 1, minutes: 31, held: 2, at: 1 };
+    const one: Solved = { episode: 1, minutes: 31, traced: 2, at: 1 };
     const again: Solved = { ...one, minutes: 20, at: 2 };
-    const two: Solved = { episode: 2, minutes: 40, held: 2, at: 3 };
+    const two: Solved = { episode: 2, minutes: 40, traced: 2, at: 3 };
     expect(betterSolved(one, again)).toBe(one);
     expect(betterSolved(one, two)).toBe(two);
     expect(betterSolved(two, one)).toBe(two);
@@ -81,7 +81,7 @@ describe("two devices, one case", () => {
     expect(isSolved(one)).toBe(true);
     expect(isSolved({ ...one, episode: 3 })).toBe(true);
     expect(isSolved({ ...one, episode: 4 })).toBe(false);
-    expect(isSolved({ ...one, held: -1 })).toBe(false);
+    expect(isSolved({ ...one, traced: -1 })).toBe(false);
     expect(isSolved(null)).toBe(false);
   });
 });
@@ -102,9 +102,9 @@ describe("your cases, in a line", () => {
   });
 
   it("keeps a finish on the desk after the save is gone", () => {
-    const line = describeCase(null, { episode: 1, minutes: 31, held: 2, at: 0 }, 0);
+    const line = describeCase(null, { episode: 1, minutes: 31, traced: 2, at: 0 }, 0);
     expect(line.status).toBe("Back in its parcel");
-    expect(line.result).toBe("Solved Episode 1 in 31 min");
+    expect(line.result).toBe("Solved Episode 1 in 31 min · 2 links traced");
   });
 
   it("says how long ago in words a person would use", () => {
@@ -117,7 +117,7 @@ describe("your cases, in a line", () => {
 
 describe("the desk remembers", () => {
   const s = fresh();
-  const one: Solved = { episode: 1, minutes: 31, held: 2, at: 0 };
+  const one: Solved = { episode: 1, minutes: 31, traced: 2, at: 0 };
 
   it("draws the phone as it was left", () => {
     expect(deskState(null, null)).toEqual({ kind: "new" });
@@ -148,7 +148,7 @@ describe("the shelf", () => {
     const n = await createShelf();
     expect(n).toMatch(SHAPE);
     const s = add(fresh(), "did:unlock");
-    expect(await putShelf(n, "shagun", { save: s, solved: { episode: 1, minutes: 31, held: 2, at: 1 } })).toBe(true);
+    expect(await putShelf(n, "shagun", { save: s, solved: { episode: 1, minutes: 31, traced: 2, at: 1 } })).toBe(true);
 
     const shelf = await readShelf(n);
     expect(shelf?.saves["shagun"]?.flags).toEqual(s.flags);
@@ -158,7 +158,7 @@ describe("the shelf", () => {
     await putShelf(n, "shagun", { save: null });
     const after = await readShelf(n);
     expect(after?.saves["shagun"]).toBeUndefined();
-    expect(after?.solved["shagun"]?.held).toBe(2);
+    expect(after?.solved["shagun"]?.traced).toBe(2);
 
     expect(await putShelf("2222-2222-2222", "shagun", { save: s })).toBe(false);
     expect(await readShelf("2222-2222-2222")).toBeNull();

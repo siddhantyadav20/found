@@ -59,8 +59,8 @@ const isRecord = (x: unknown): x is Record<string, unknown> => !!x && typeof x =
 
 /**
  * A stored value, as today's shape — or null if it isn't one. Saves from the
- * two retired chapters are dropped rather than upgraded: their cases don't
- * exist any more, so there is nothing for them to resume into.
+ * retired chapters are dropped rather than upgraded: their cases don't exist
+ * any more, so there is nothing for them to resume into.
  */
 export function upgrade(x: unknown): CaseState | null {
   if (!isRecord(x)) return null;
@@ -69,13 +69,14 @@ export function upgrade(x: unknown): CaseState | null {
     typeof x.run === "string" &&
     Array.isArray(x.flags) &&
     x.flags.every((f) => typeof f === "string") &&
-    Array.isArray(x.ledger) &&
-    x.ledger.every((f) => typeof f === "string") &&
     typeof x.started === "number" &&
     isRecord(x.at);
   if (!ok) return null;
+  // A version-4 save from before the chain still carries the old ledger: let it go.
+  const { ledger: _ledger, ...rest } = x;
+  void _ledger;
   return {
-    ...(x as unknown as CaseState),
+    ...(rest as unknown as CaseState),
     via: typeof x.via === "string" ? x.via : undefined,
     began: isRecord(x.began) && Object.values(x.began).every((n) => typeof n === "number") ? (x.began as Record<string, number>) : undefined,
   };

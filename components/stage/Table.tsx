@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import AppView from "@/components/her/AppView";
-import Home from "@/components/her/Home";
-import LockScreen from "@/components/her/LockScreen";
-import Phone, { type Notice, type Origin } from "@/components/her/Phone";
-import phoneStyles from "@/components/her/ios/Screen.module.css";
+import AppView from "@/components/owner/AppView";
+import Home from "@/components/owner/Home";
+import LockScreen from "@/components/owner/LockScreen";
+import Phone, { type Notice, type Origin } from "@/components/owner/Phone";
+import phoneStyles from "@/components/owner/ios/Screen.module.css";
 import YourPhone from "@/components/yours/Phone";
 import type { CaseMeta } from "@/content/cases";
 import type { AppId, Story } from "@/content/types";
@@ -22,6 +22,7 @@ import {
   has,
   openApp as findIn,
   openQuestion,
+  traced,
   whereToLook,
   type CaseState,
 } from "@/lib/game/engine";
@@ -58,10 +59,13 @@ export default function Table({
   story,
   meta,
   state,
+  replay,
 }: {
   story: Story;
   meta: CaseMeta;
   state: CaseState;
+  /** Finished before: the chain is counted live, so eleven of eleven is a goal. */
+  replay?: boolean;
 }) {
   const now = useNow(60_000);
   const [openApp, setOpenApp] = useState<AppId | null>(null);
@@ -168,6 +172,11 @@ export default function Table({
 
   return (
     <div className={phoneStyles.surface}>
+      {replay && (
+        <p className={phoneStyles.ledgerCount} aria-live="polite">
+          {traced(story, state).length} of {story.chain.length} links
+        </p>
+      )}
       <div className={styles.table}>
         <Phone
           time={phoneClock(clock)}

@@ -61,7 +61,7 @@ describe("between episodes", () => {
 describe("a call arriving", () => {
   const ringing: Story = {
     ...ep,
-    incoming: [{ id: "raju", device: "hers", from: "+91 62…", at: "23:41", after: ["did:past-lock"], lines: [] }],
+    incoming: [{ id: "raju", device: "owner", from: "+91 62…", at: "23:41", after: ["did:past-lock"], lines: [] }],
   };
   const past = () => add(opened(), "did:unlock", "did:past-lock");
 

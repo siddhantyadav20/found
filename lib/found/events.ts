@@ -9,6 +9,9 @@ import type { Flag, Story } from "@/content/types";
      open → unlock → past-lock → ep2-start → ep3-start →
        choice → end                                               the chapter
      solved:<id>, wrong:<id>, hint:<id>:<tier>, nudge:<id>        where it's too hard
+     claim:<question>:<claim>                                     which reading they filed
+     link:<link>                                                  how much of the chain they traced
+     <choice>                                                     the chapter's own choices
      end:<ending>                                                 what they did with it
      resume                                                       whether they come back
      share:open|whatsapp|native|copy, drop:create                 whether they pass it on
@@ -96,6 +99,11 @@ export function eventsFor(ep: Story): readonly string[] {
         // Offered rather than asked for: where the game noticed a player was stuck.
         `nudge:${id}`,
       ]),
+      // Which reading each claim was filed as, the owner's version or not.
+      ...ep.questions.flatMap((q) => (q.kind === "file" ? q.claims.map((c) => `claim:${q.id}:${c.id}`) : [])),
+      // The chain: how far past the version they were handed people get.
+      ...ep.chain.map((l) => `link:${l.id}`),
+      ...(ep.choices ?? []).map(choiceEvent),
       // Which ending: one counter per ending the chapter has.
       ...ep.endings.map((e) => `end:${e.id}`),
       ...SHARING,
@@ -120,14 +128,19 @@ export const MILESTONE_OF: Partial<Record<Flag, (typeof MILESTONES)[number]>> = 
   "did:chose": "end",
 };
 
+/** A chapter's own choice, as the funnel names it: "did:raju-answered" → "raju-answered". */
+const choiceEvent = (flag: Flag): string => flag.replace(/^did:/, "");
+
 /**
  * What the funnel hears when a flag lands, if anything. A solved question, an
- * asked-for hint and a finished ending are flags already; everything else is
- * looked up. (A chapter's own choices join this in ROADMAP S2.)
+ * asked-for hint, a filed claim, a traced link and a finished ending are
+ * flags already; a chapter's own choices are named by the story; everything
+ * else is looked up.
  */
-export function reportFlag(flag: Flag): string | null {
+export function reportFlag(flag: Flag, story?: Story): string | null {
   if (flag.startsWith("ask:")) return `solved:${flag.slice(4)}`;
-  if (flag.startsWith("hint:")) return flag;
+  if (flag.startsWith("hint:") || flag.startsWith("claim:") || flag.startsWith("link:")) return flag;
   if (flag.startsWith("did:end-")) return `end:${flag.slice(8)}`;
+  if (story?.choices?.includes(flag)) return choiceEvent(flag);
   return MILESTONE_OF[flag] ?? null;
 }

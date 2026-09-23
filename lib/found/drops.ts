@@ -18,15 +18,15 @@ const PER_HOUR = 40;
 
 export type DropResult = { ok: true; code: string; to: string } | { ok: false; reason: "unavailable" | "throttled" | "failed" };
 
-export async function createDrop(caseId: string, rawName: string, rawHeld?: number): Promise<DropResult> {
+export async function createDrop(caseId: string, rawName: string, rawTraced?: number): Promise<DropResult> {
   if (!isCaseId(caseId) || !redisReady()) return { ok: false, reason: "unavailable" };
   const to = cleanDropName(rawName);
-  // Only ever a small whole number: it goes on a share image.
-  const held = typeof rawHeld === "number" && Number.isInteger(rawHeld) && rawHeld >= 0 && rawHeld <= 20 ? rawHeld : undefined;
+  // How many links the sender traced: only ever a small whole number, for a share image.
+  const traced = typeof rawTraced === "number" && Number.isInteger(rawTraced) && rawTraced >= 0 && rawTraced <= 20 ? rawTraced : undefined;
   try {
     const limit = await overLimit(`found:drop-rl:${await visitorId()}`, PER_HOUR, 3600);
     if (limit.over) return { ok: false, reason: "throttled" };
-    return { ok: true, code: await createDropRecord(caseId, to, held), to };
+    return { ok: true, code: await createDropRecord(caseId, to, traced), to };
   } catch (err) {
     console.error("[found] drop failed", err);
     return { ok: false, reason: "failed" };

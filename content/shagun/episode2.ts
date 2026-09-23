@@ -1,4 +1,4 @@
-import type { Evidence, Exposure, LiveEvent, Question } from "../types";
+import type { Evidence, LiveEvent, Question } from "../types";
 
 /* ===========================================================================
    Episode 2 — "The Second Shot". A stub until ROADMAP S7 writes CHAPTER1.md F,
@@ -11,10 +11,8 @@ export const episode2: {
   evidence: readonly Evidence[];
   questions: readonly Question[];
   events: readonly LiveEvent[];
-  exposures: readonly Exposure[];
 } = {
   evidence: [],
   questions: [],
   events: [],
-  exposures: [],
 };

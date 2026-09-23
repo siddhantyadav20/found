@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { CASES, CASE_IDS, isCaseId } from "@/content/cases";
 import { STORIES } from "@/content/stories";
-import type { Story } from "@/content/types";
-import { expose, newCase, type CaseState } from "@/lib/game/engine";
+import { add, newCase, type CaseState } from "@/lib/game/engine";
 import { cleanDropName, displayName, dropLabel, NAME_MAX } from "@/lib/found/dropName";
 import { SHARING, eventsFor, isFoundEvent } from "@/lib/found/events";
 import { saveKey } from "@/lib/found/progress";
@@ -14,44 +13,43 @@ import { MIN_ANSWERS, fasterThan, percentages } from "@/lib/found/store";
  * The loop that brings new players: the result a finisher shares, the
  * parcel a friend receives, and what everyone else did. None of it may
  * spoil the case, and none of it may say something about too few people.
- *
- * The result is still the ledger until ROADMAP S3 makes it the chain, so a
- * made-up ledger entry stands in for one here.
  */
 
-const ep: Story = { ...STORIES.shagun, exposures: [{ id: "voice", what: "Your voice", used: "We have your voice." }] };
+const ep = STORIES.shagun;
 const start = () => newCase("test", 0);
 
-/** A playthrough that handed one thing over, and then chose an ending. */
-function gaveOneAway(): CaseState {
-  const s = expose(ep, start(), "voice");
-  return { ...s, flags: [...s.flags, "did:chose"], at: { whatsapp: 42 * 60_000 } };
+/** A playthrough that traced two links, and then chose an ending. */
+function tracedTwo(): CaseState {
+  const s = add(start(), "link:shot", "link:reel", "did:chose");
+  return { ...s, at: { whatsapp: 42 * 60_000 } };
 }
 
 describe("the shared result", () => {
-  it("counts what was handed over, in order", () => {
-    expect(resultOf(ep, start()).held).toEqual([]);
-    expect(resultOf(ep, gaveOneAway()).held).toEqual(["Your voice"]);
+  it("counts the links traced, in the chain's own order", () => {
+    expect(resultOf(ep, start()).traced).toEqual([]);
+    expect(resultOf(ep, tracedTwo()).traced).toEqual(["reel", "shot"]);
+    expect(resultOf(ep, tracedTwo()).links).toBe(11);
   });
 
   it("says it in a line that gives nothing away", () => {
-    expect(resultLine(resultOf(ep, start()))).toBe("I gave nothing away.");
-    expect(resultLine(resultOf(ep, gaveOneAway()))).toBe("I gave 1 thing away.");
+    expect(resultLine(resultOf(ep, start()))).toBe("I traced 0 of 11 links.");
+    expect(resultLine(resultOf(ep, tracedTwo()))).toBe("I traced 2 of 11 links.");
   });
 
   it("times the chapter, and only once it has ended", () => {
-    expect(resultOf(ep, gaveOneAway()).minutes).toBe(42);
+    expect(resultOf(ep, tracedTwo()).minutes).toBe(42);
     expect(resultOf(ep, start()).minutes).toBeNull();
   });
 
   it("carries the case's own question, and names no answer", () => {
-    const text = shareText(ep.title, resultOf(ep, gaveOneAway()), "https://found.test/d/Abcd2345", CASES.shagun.ask);
-    expect(text).toContain("I gave 1 thing away.");
+    const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.shagun.ask);
+    expect(text).toContain("I traced 2 of 11 links.");
     expect(text).toContain(CASES.shagun.ask);
     expect(text).toContain("https://found.test/d/Abcd2345");
-    for (const q of ep.questions) {
-      expect(text).not.toContain(q.ask);
-      expect(text).not.toContain(q.reply);
+    // Nothing from the chain itself: not a label, not a line, not his words.
+    for (const l of ep.chain) {
+      expect(text).not.toContain(l.truth);
+      if (l.version) expect(text).not.toContain(l.version);
     }
   });
 });
@@ -95,6 +93,8 @@ describe("cases", () => {
     for (const id of CASE_IDS) {
       expect(STORIES[id].title, id).toBe(CASES[id].title);
       expect(CASES[id].ask.trim().length, id).toBeGreaterThan(0);
+      // The share images count links without loading a story, so the two must agree.
+      expect(CASES[id].links, id).toBe(STORIES[id].chain.length);
       for (const e of SHARING) expect(isFoundEvent(STORIES[id], e), e).toBe(true);
       expect(eventsFor(STORIES[id])).toContain("open");
     }

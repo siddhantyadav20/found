@@ -1,43 +1,45 @@
 import type { EpisodeNo, Story } from "@/content/types";
-import { episodeOf, type CaseState } from "@/lib/game/engine";
+import { episodeOf, traced, type CaseState } from "@/lib/game/engine";
 
 /* ===========================================================================
    How a playthrough went, in a form that spoils nothing.
 
-   Read off the save alone, and pure. Until ROADMAP S3 it is the ledger: one
-   line per thing the player handed over, and the count. S3 replaces it with
-   the chain ("I traced 9 of 11 links"), which is *Shagun*'s thesis in a line.
+   Not a count of hints, and not a verdict: **how much of the chain the
+   player traced**, past the version they were handed. "I traced 9 of 11
+   links" names nothing in the story, gives no answer away, and is the
+   chapter's thesis in a line, so it can go in a group chat before anyone
+   else has played (CHAPTER1.md J).
+
+   Pure, and read off the save alone.
    =========================================================================== */
 
 export type Result = {
   readonly episode: EpisodeNo;
-  /** What the end card lists, in the order it was handed over. */
-  readonly held: readonly string[];
+  /** The ids of the links traced, in the chain's order. */
+  readonly traced: readonly string[];
+  /** How many links the chain has. */
+  readonly links: number;
   /** Wall-clock minutes, breaks included. Null until the chapter has ended. */
   readonly minutes: number | null;
   readonly title: string;
 };
 
 export function resultOf(story: Story, s: CaseState, now?: number): Result {
-  const held = s.ledger
-    .map((id) => story.exposures.find((e) => e.id === id)?.what)
-    .filter((x): x is string => Boolean(x));
   const last = Math.max(s.started, ...Object.values(s.at), now ?? 0);
   const ended = s.flags.includes("did:chose");
   return {
     episode: episodeOf(s),
-    held,
+    traced: traced(story, s).map((l) => l.id),
+    links: story.chain.length,
     minutes: ended ? Math.max(1, Math.round((last - s.started) / 60_000)) : null,
     title: story.title,
   };
 }
 
-/** The result in one line, for the share. Spoils nothing. */
-export function resultLine(r: Result): string {
-  if (r.held.length === 0) return "I gave nothing away.";
-  if (r.held.length === 1) return "I gave 1 thing away.";
-  return `I gave ${r.held.length} things away.`;
-}
+/** "I traced 9 of 11 links." The brag is eleven. */
+export const tracedLine = (n: number, of: number): string => `I traced ${n} of ${of} link${of === 1 ? "" : "s"}.`;
+
+export const resultLine = (r: Result): string => tracedLine(r.traced.length, r.links);
 
 /** What goes in the chat when someone passes the phone on. The case's question is the hook. */
 export function shareText(title: string, result: Result | null, url: string, ask: string): string {

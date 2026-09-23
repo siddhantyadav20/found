@@ -45,7 +45,7 @@ describe("the choice", () => {
   });
 
   it("tells the funnel which ending, and that it ended, and only for endings the case has", () => {
-    expect(finish("complete").map(reportFlag)).toEqual(["end:complete", "end"]);
+    expect(finish("complete").map((f) => reportFlag(f))).toEqual(["end:complete", "end"]);
     expect(eventsFor(ep)).toContain("end:complete");
     expect(eventsFor(ep)).toContain("end:wrong");
     expect(eventsFor(ep)).not.toContain("end:police");

@@ -1,10 +1,11 @@
-import type { AppId, EpisodeNo, Evidence, Flag, Hints, LiveEvent, Question, Story } from "@/content/types";
+import type { AppId, EpisodeNo, Evidence, FileClaim, Flag, Hints, Link, LiveEvent, Question, Story } from "@/content/types";
 
 /* ===========================================================================
    The engine: one playthrough, as data.
 
-   It knows about flags, evidence, questions, hints, live events and the
-   ledger. It knows nothing about any one story. Every function here is pure:
+   It knows about flags, evidence, questions, the claims a player files, the
+   chain those claims trace, hints and live events. It knows nothing about
+   any one story. Every function here is pure:
    the store (lib/found/progress.ts) owns the saving, and React owns the
    rendering.
 
@@ -18,8 +19,6 @@ export type CaseState = {
   readonly version: number;
   /** In the order they happened. The order is the playthrough. */
   readonly flags: readonly Flag[];
-  /** Exposure ids, in the order the player handed them over. */
-  readonly ledger: readonly string[];
   /** A run id, so one save's events can't be replayed into another. */
   readonly run: string;
   readonly started: number;
@@ -32,7 +31,7 @@ export type CaseState = {
 };
 
 export function newCase(run: string, now: number, via?: string): CaseState {
-  return { version: SAVE_VERSION, flags: [], ledger: [], run, started: now, at: {}, via };
+  return { version: SAVE_VERSION, flags: [], run, started: now, at: {}, via };
 }
 
 export const has = (s: CaseState, flag: Flag): boolean => s.flags.includes(flag);
@@ -71,7 +70,7 @@ export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
   story.evidence.filter((e) => e.app === app && !e.manual).reduce((acc, e) => see(story, acc, e.id), s);
 
 /** Every icon on the found phone's home screen, pages and dock together. */
-export const homeIcons = (story: Story) => [...story.hersHome.pages.flat(), ...story.hersHome.dock];
+export const homeIcons = (story: Story) => [...story.home.pages.flat(), ...story.home.dock];
 
 /** What the owner's phone calls an app. The dock and the pages are the only source. */
 export const appLabel = (story: Story, app: AppId): string =>
@@ -81,12 +80,47 @@ export const appLabel = (story: Story, app: AppId): string =>
 
 export const answered = (s: CaseState, id: string): boolean => has(s, `ask:${id}`);
 
-/** The one question in front of the player: first unanswered, this episode. */
+/** Every claim filed for a question, oldest first. The last one stands; the rest are struck. */
+export function filedClaims(q: Question, s: CaseState): FileClaim[] {
+  if (q.kind !== "file") return [];
+  const prefix = `claim:${q.id}:`;
+  return s.flags
+    .filter((f) => f.startsWith(prefix))
+    .map((f) => q.claims.find((c) => c.id === f.slice(prefix.length)))
+    .filter((c): c is FileClaim => Boolean(c));
+}
+
+/** The claim on file for a question now, if it's the kind that files one. */
+export const filedClaim = (q: Question, s: CaseState): FileClaim | undefined => filedClaims(q, s).at(-1);
+
+/** Filed as the owner's version, and something found since says otherwise. */
+export const needsRevisit = (q: Question, s: CaseState): boolean =>
+  q.kind === "file" &&
+  answered(s, q.id) &&
+  Boolean(q.reopenWhen?.length) &&
+  all(s, q.reopenWhen) &&
+  Boolean(filedClaim(q, s)?.version);
+
+/**
+ * The one question in front of the player. A Revisit that must be done comes
+ * first, whatever episode it was asked in; then the first unanswered
+ * question of this episode that isn't optional. It waits for its moment
+ * rather than being skipped past.
+ */
 export function openQuestion(story: Story, s: CaseState): Question | undefined {
-  const q = story.questions.find((x) => x.episode === episodeOf(s) && !answered(s, x.id));
-  // The next question waits for its moment rather than being skipped past.
+  const revisit = story.questions.find((q) => q.kind === "file" && q.mustRevisit && needsRevisit(q, s));
+  if (revisit) return revisit;
+  const q = story.questions.find((x) => x.episode === episodeOf(s) && !x.optional && !answered(s, x.id));
   return q && all(s, q.requires) ? q : undefined;
 }
+
+/** What the case file offers on the side: optional questions, and Revisits nobody has to do. */
+export const sideQuestions = (story: Story, s: CaseState): Question[] =>
+  story.questions.filter(
+    (q) =>
+      (q.optional && q.episode <= episodeOf(s) && all(s, q.requires) && !answered(s, q.id)) ||
+      (q.kind === "file" && !q.mustRevisit && needsRevisit(q, s)),
+  );
 
 export const normalise = (t: string): string =>
   t
@@ -96,75 +130,95 @@ export const normalise = (t: string): string =>
     .replace(/\s+/g, " ")
     .trim();
 
-/** The claims on a board: those whose ledger entry is held, plus those that need none. */
-export const claimsFor = (q: Extract<Question, { kind: "claims" }>, s: CaseState) =>
-  q.claims.filter((c) => !c.needs || exposed(s, c.needs));
-
 export type Answer = { readonly state: CaseState; readonly ok: boolean; readonly reply: string };
+
+/** What a player gives: evidence ids, typed text, "row@lane" placements, claim ids, or a claim with its proof. */
+export type Given = readonly string[] | string | { readonly claim: string; readonly proof: readonly string[] };
 
 export const WRONG = "Not quite. Look again.";
 export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
 export const UNCHECKED = "Check each of them on the phone before you decide.";
+export const STRUCK = "That's the line you struck. What you found since says otherwise.";
+
+/** Exactly one of the routes, and nothing that wasn't found. */
+function judgeProof(s: CaseState, routes: readonly (readonly string[])[], picked: readonly string[]): { ok: boolean; reply: string } {
+  // You cannot put something on the table that you have not found.
+  if (!picked.length || !picked.every((id) => seen(s, id))) return { ok: false, reply: WRONG };
+  const ok = routes.some((route) => picked.length === route.length && picked.every((p) => route.includes(p)));
+  // Something in there proves it, and something else doesn't.
+  if (!ok && routes.some((route) => picked.some((p) => route.includes(p)))) return { ok, reply: TOO_MUCH };
+  return { ok, reply: WRONG };
+}
 
 /**
- * Judge an answer. `given` is evidence ids for a pick, text for a type, row
- * ids in the "phone" lane for a timeline, and claim ids marked true for
- * claims. Getting it wrong costs nothing but the truth of having been wrong.
+ * Judge an answer. Getting it wrong costs nothing but the truth of having
+ * been wrong. Filing the owner's version is not getting it wrong.
  */
-export function answer(story: Story, s: CaseState, id: string, given: readonly string[] | string): Answer {
+export function answer(story: Story, s: CaseState, id: string, given: Given): Answer {
   const q = story.questions.find((x) => x.id === id);
-  if (!q || answered(s, id)) return { state: s, ok: false, reply: WRONG };
+  const revisiting = q ? needsRevisit(q, s) : false;
+  if (!q || (answered(s, id) && !revisiting)) return { state: s, ok: false, reply: WRONG };
 
-  const picked = Array.isArray(given) ? given : [];
+  const picked = Array.isArray(given) ? (given as readonly string[]) : [];
   const text = typeof given === "string" ? normalise(given) : "";
   let ok = false;
   let reply = WRONG;
 
   switch (q.kind) {
-    case "pick": {
-      // You cannot put something on the table that you have not found.
-      if (!picked.every((id) => seen(s, id))) return { state: s, ok: false, reply: WRONG };
-      const routes = [q.proof, ...(q.orProof ?? [])];
-      ok = routes.some((route) => picked.length === route.length && picked.every((p) => route.includes(p)));
-      // Something in there proves it, and something else doesn't.
-      if (!ok && routes.some((route) => picked.some((p) => route.includes(p)))) reply = TOO_MUCH;
+    case "pick":
+      ({ ok, reply } = judgeProof(s, [q.proof, ...(q.orProof ?? [])], picked));
       break;
-    }
     case "type":
       ok = q.accepts.some((a) => normalise(a) === text);
       break;
     case "timeline": {
       /* The board only holds what the player has found, so the answer is
-         judged against that and not against the whole script. */
-      const known = q.rows.filter((r) => seen(s, r.evidence));
-      const want = new Set(known.filter((r) => r.lane === "phone").map((r) => r.id));
-      ok =
-        want.size > 0 &&
-        picked.length === want.size &&
-        picked.every((p) => want.has(p)) &&
-        // Nothing can be put on the board that isn't on it.
-        picked.every((p) => known.some((r) => r.id === p));
+         judged against that and not against the whole script: every known
+         row in its own lane, and nothing else. */
+      const want = q.rows.filter((r) => seen(s, r.evidence)).map((r) => `${r.id}@${r.lane}`);
+      ok = want.length > 0 && picked.length === want.length && want.every((w) => picked.includes(w));
       break;
     }
     case "claims": {
       /* A claim is only judged once what settles it has been looked at, so
          the board can't be passed by guessing. What can't be reached needs
          no checking. */
-      const claims = claimsFor(q, s);
-      const unchecked = claims.some((c) => {
+      const unchecked = q.claims.some((c) => {
         const e = c.proof ? story.evidence.find((x) => x.id === c.proof) : undefined;
         return e !== undefined && reachable(s, e) && !seen(s, e.id);
       });
       if (unchecked) return { state: s, ok: false, reply: UNCHECKED };
-      const want = new Set(claims.filter((c) => c.trueWhen && all(s, c.trueWhen)).map((c) => c.id));
+      const want = new Set(q.claims.filter((c) => c.trueWhen && all(s, c.trueWhen)).map((c) => c.id));
       ok = picked.length === want.size && picked.every((p) => want.has(p));
       break;
+    }
+    case "file": {
+      if (typeof given !== "object" || Array.isArray(given)) return { state: s, ok: false, reply: WRONG };
+      const { claim: cid, proof } = given as { claim: string; proof: readonly string[] };
+      const c = q.claims.find((x) => x.id === cid);
+      if (!c) return { state: s, ok: false, reply: WRONG };
+      // A Revisit moves on from the version on file; it can't file a version again.
+      if (revisiting && c.version) return { state: s, ok: false, reply: STRUCK };
+      ({ ok, reply } = judgeProof(s, [c.proof, ...(c.orProof ?? [])], proof));
+      if (!ok) return { state: s, ok, reply };
+      return {
+        state: add(s, `ask:${id}`, `claim:${id}:${c.id}`, ...(c.sets ?? []), ...(revisiting ? [] : (q.sets ?? []))),
+        ok: true,
+        reply: c.reply,
+      };
     }
   }
 
   if (!ok) return { state: s, ok: false, reply };
   return { state: add(s, `ask:${id}`, ...(q.sets ?? [])), ok: true, reply: q.reply };
 }
+
+/* --- the chain ---------------------------------------------------------- */
+
+export const isTraced = (s: CaseState, link: Link): boolean => has(s, `link:${link.id}`);
+
+/** The links the player has traced, in the chain's own order. */
+export const traced = (story: Story, s: CaseState): Link[] => story.chain.filter((l) => isTraced(s, l));
 
 export type Hint = { readonly state: CaseState; readonly tier: 1 | 2 | 3; readonly text: string };
 
@@ -193,20 +247,6 @@ export const fire = (story: Story, s: CaseState, id: string): CaseState => {
   const e = story.events.find((x) => x.id === id);
   return e ? add(s, `fired:${id}`, ...(e.sets ?? [])) : s;
 };
-
-/* --- the ledger --------------------------------------------------------- */
-
-export const exposed = (s: CaseState, id: string): boolean => s.ledger.includes(id);
-
-/** Something the player handed over. Recorded once, and never announced. */
-export function expose(story: Story, s: CaseState, id: string): CaseState {
-  if (exposed(s, id) || !story.exposures.some((e) => e.id === id)) return s;
-  return { ...s, ledger: [...s.ledger, id] };
-}
-
-/** What the ledger holds, in the order it was collected. */
-export const against = (story: Story, s: CaseState) =>
-  s.ledger.flatMap((id) => story.exposures.filter((e) => e.id === id));
 
 /* --- time --------------------------------------------------------------- */
 

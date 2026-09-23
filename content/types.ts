@@ -11,9 +11,8 @@
 
 export type EpisodeNo = 1 | 2 | 3;
 
-/** Whose phone a thing lives on. "hers" is the found phone, whoever owns it
- *  (renamed in ROADMAP S2); yours is yours. */
-export type DeviceId = "hers" | "yours";
+/** Whose phone a thing lives on: the found phone's owner's, or yours. */
+export type DeviceId = "owner" | "yours";
 
 export type AppId =
   // The found phone
@@ -35,12 +34,14 @@ export type AppId =
  * What the save remembers. Free-form on purpose, but every flag belongs to one
  * of these families, so a test can hold the script to them:
  *
- *   ep:2 / ep:3        the episode the player has reached
- *   saw:<evidence>     a piece of evidence has been opened
- *   did:<thing>        the player did something the story cares about
- *   ask:<question>     a question has been answered
- *   hint:<question>    a hint was taken (never counted against the player)
- *   fired:<event>      a live event has played, so it never plays twice
+ *   ep:2 / ep:3            the episode the player has reached
+ *   saw:<evidence>         a piece of evidence has been opened
+ *   did:<thing>            the player did something the story cares about
+ *   ask:<question>         a question has been answered
+ *   claim:<question>:<id>  the claim the player filed for it; the latest wins
+ *   link:<link>            a link in the chain has been traced
+ *   hint:<question>        a hint was taken (never counted against the player)
+ *   fired:<event>          a live event has played, so it never plays twice
  */
 export type Flag =
   | "ep:2"
@@ -48,6 +49,8 @@ export type Flag =
   | `saw:${string}`
   | `did:${string}`
   | `ask:${string}`
+  | `claim:${string}`
+  | `link:${string}`
   | `hint:${string}`
   | `fired:${string}`;
 
@@ -72,89 +75,117 @@ export type Evidence = {
 /** Three steps: a nudge, a push, and the answer. Never fewer. */
 export type Hints = readonly [string, string, string];
 
-/** A statement the player marks true or bluff, with what settles it. */
+/** A statement the player marks proven or not, with what settles it. */
 export type Claim = {
   readonly id: string;
   readonly text: string;
   readonly english?: string;
-  /** True when the player gave them this. Otherwise it's a bluff. */
+  /** Proven when these hold. Otherwise it isn't. */
   readonly trueWhen?: readonly Flag[];
   readonly proof: string;
-  /** Only on the board if he actually read it out: the ledger holds this. */
-  readonly needs?: string;
 };
 
-/** One row on the two-lane timeline: where she was, or what the phone did. */
+/**
+ * One answer a "file" question will accept: a line for the record and the
+ * proof that supports it. A question can accept more than one, because the
+ * evidence Sameer left supports his version too (CHAPTER1.md G): a claim
+ * marked `version` is filed like any other and never called wrong.
+ */
+export type FileClaim = {
+  readonly id: string;
+  /** The line as it goes into the record. */
+  readonly text: string;
+  readonly english?: string;
+  readonly proof: readonly string[];
+  readonly orProof?: readonly (readonly string[])[];
+  readonly reply: string;
+  readonly sets?: readonly Flag[];
+  /** The owner's own framing: accepted now, and reopened by `reopenWhen`. */
+  readonly version?: boolean;
+};
+
+/** One row on a timeline: an event, the lane it belongs in, and what shows it. */
 export type TimelineRow = {
   readonly id: string;
   readonly at: string;
   readonly text: string;
-  readonly lane: "her" | "phone";
+  readonly lane: string;
   readonly evidence: string;
 };
 
+/** What every question has, whatever kind it is. */
+type Asked = {
+  readonly id: string;
+  readonly ask: string;
+  readonly episode: EpisodeNo;
+  readonly whereToLook: readonly AppId[];
+  readonly hints: Hints;
+  /** Not asked until these are true: nobody is asked about a call that hasn't come. */
+  readonly requires?: readonly Flag[];
+  /** Doesn't hold the episode up: the case file offers it on the side. */
+  readonly optional?: boolean;
+  readonly reply: string;
+  readonly sets?: readonly Flag[];
+};
+
+/**
+ * A link in the night's chain of responsibility (CHAPTER1.md D). Traced when
+ * `link:<id>` is set, which a question's answer does. An untraced link is
+ * shown on the end card in the owner's own words.
+ */
+export type Link = {
+  readonly id: string;
+  /** Its name: "The shot". */
+  readonly label: string;
+  /** What the record says once it is traced. */
+  readonly truth: string;
+  /** Whose link it is. */
+  readonly owner: string;
+  /** Spine links every finisher traces; deep links are optional. */
+  readonly kind: "spine" | "deep";
+  /** The owner's version of it, in his words, if he has one. */
+  readonly version?: string;
+  readonly english?: string;
+};
+
 export type Question =
-  | {
+  | (Asked & {
       readonly kind: "pick";
-      readonly id: string;
-      readonly ask: string;
-      readonly episode: EpisodeNo;
-      readonly whereToLook: readonly AppId[];
-      readonly hints: Hints;
-      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
-      readonly requires?: readonly Flag[];
       /** Evidence ids that prove it. Picking anything else is wrong, not fatal. */
       readonly proof: readonly string[];
       /**
-       * The other ways to prove the same thing. Every question in this
-       * chapter has at least two routes in, and a player who found the second
-       * one is not wrong (PLAYER-JOURNEY law 3).
+       * The other ways to prove the same thing. Every question has at least
+       * two routes in, and a player who found the second one is not wrong
+       * (PLAYER-JOURNEY law 3).
        */
       readonly orProof?: readonly (readonly string[])[];
-      readonly reply: string;
-      readonly sets?: readonly Flag[];
-    }
-  | {
-      readonly kind: "type";
-      readonly id: string;
-      readonly ask: string;
-      readonly episode: EpisodeNo;
-      readonly whereToLook: readonly AppId[];
-      readonly hints: Hints;
-      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
-      readonly requires?: readonly Flag[];
-      readonly accepts: readonly string[];
-      readonly reply: string;
-      readonly sets?: readonly Flag[];
-    }
-  | {
+    })
+  | (Asked & { readonly kind: "type"; readonly accepts: readonly string[] })
+  | (Asked & {
       readonly kind: "timeline";
-      readonly id: string;
-      readonly ask: string;
-      readonly episode: EpisodeNo;
-      readonly whereToLook: readonly AppId[];
-      readonly hints: Hints;
-      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
-      readonly requires?: readonly Flag[];
+      /** The lanes, in the order the board shows them. */
+      readonly lanes: readonly { readonly id: string; readonly label: string }[];
       readonly rows: readonly TimelineRow[];
-      readonly reply: string;
-      readonly sets?: readonly Flag[];
-    }
-  | {
+    })
+  | (Asked & {
       readonly kind: "claims";
-      readonly id: string;
-      readonly ask: string;
-      readonly episode: EpisodeNo;
-      readonly whereToLook: readonly AppId[];
-      readonly hints: Hints;
-      /** Not asked until these are true: nobody is asked about a call that hasn't come. */
-      readonly requires?: readonly Flag[];
       readonly claims: readonly Claim[];
-      /** What a marked and an unmarked claim are called: "true" / "bluff" by default. */
+      /** What a marked and an unmarked claim are called: "proven" / "not proven" by default. */
       readonly labels?: readonly [string, string];
-      readonly reply: string;
-      readonly sets?: readonly Flag[];
-    };
+    })
+  | (Asked & {
+      readonly kind: "file";
+      /** The answers it accepts, each a line for the record with its proof. */
+      readonly claims: readonly FileClaim[];
+      /**
+       * When these hold and the claim on file is a `version`, the question
+       * comes back as Revisit: the player strikes the old line and files the
+       * new one (CHAPTER1.md G).
+       */
+      readonly reopenWhen?: readonly Flag[];
+      /** A Revisit that holds everything up until it's done, not one offered on the side. */
+      readonly mustRevisit?: boolean;
+    });
 
 /** Something the story does to a phone on its own: a message, a notification. */
 export type LiveEvent = {
@@ -170,19 +201,6 @@ export type LiveEvent = {
   /** Something that arrived while nobody was looking: it goes into the list at this time, with no banner. */
   readonly at?: string;
   readonly sets?: readonly Flag[];
-};
-
-/**
- * Something the player hands over that the story keeps, in the order it
- * was handed over. ROADMAP S3 replaces it with the chain of links.
- */
-export type Exposure = {
-  readonly id: string;
-  /** How the end card names it. (Replaced by the chain in ROADMAP S3.) */
-  readonly what: string;
-  /** A line the story can say back once it has this. */
-  readonly used: string;
-  readonly english?: string;
 };
 
 /**
@@ -277,8 +295,8 @@ export type Attachment =
 
 export type Message = {
   readonly id: string;
-  /** The owner ("her" until ROADMAP S2 renames it), the other side, or the app itself. */
-  readonly from: "her" | "them" | "system";
+  /** The phone's owner, the other side, or the app itself. */
+  readonly from: "owner" | "them" | "system";
   readonly text?: string;
   /** The English under the Hinglish or Marathi. Never optional where it matters. */
   readonly english?: string;
@@ -301,8 +319,6 @@ export type ReplyOption = {
   readonly text: string;
   readonly english?: string;
   readonly sets?: readonly Flag[];
-  /** Saying this hands them something, and the ledger keeps it. */
-  readonly exposes?: string;
   /** What comes back, and when. */
   readonly then?: readonly Message[];
 };
@@ -331,8 +347,6 @@ export type IncomingCall = {
     readonly who: string;
     readonly line: string;
     readonly english?: string;
-    /** Only said when the ledger holds this. */
-    readonly needs?: string;
     /** Only said when this happened earlier in the night. */
     readonly when?: Flag;
   }[];
@@ -474,7 +488,7 @@ export type Story = {
   readonly gate: Gate;
   readonly lockScreen: readonly LockNotice[];
   /** The found phone's home screen, as its owner left it: pages, and the dock. */
-  readonly hersHome: {
+  readonly home: {
     readonly pages: readonly (readonly HomeIcon[])[];
     readonly dock: readonly HomeIcon[];
   };
@@ -488,6 +502,9 @@ export type Story = {
   readonly settings: readonly SettingsGroup[];
   readonly questions: readonly Question[];
   readonly events: readonly LiveEvent[];
-  readonly exposures: readonly Exposure[];
+  /** The night's chain of responsibility, in order: the score and what the endings read. */
+  readonly chain: readonly Link[];
+  /** Flags the funnel counts by name ("did:raju-answered" → "raju-answered"): the chapter's own choices. */
+  readonly choices?: readonly Flag[];
   readonly endings: readonly Ending[];
 };

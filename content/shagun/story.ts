@@ -1,5 +1,6 @@
 import type { Story } from "../types";
 
+import { chain } from "./chain";
 import { endings } from "./endings";
 import { episode1 } from "./episode1";
 import { episode2 } from "./episode2";
@@ -12,8 +13,8 @@ import { episode3 } from "./episode3";
    note meant for someone called M. The story is SCRIPT.md (canon, never
    edited); the game adaptation is CHAPTER1.md; this is where it becomes data.
 
-   A stub since ROADMAP S1: the arrival, the clocks and the home screen are
-   real, and the episodes are empty until S6–S8 write them.
+   A stub since ROADMAP S1: the arrival, the clocks, the home screen and the
+   chain are real, and the episodes are empty until S6–S8 write them.
    =========================================================================== */
 
 export const story: Story = {
@@ -49,7 +50,7 @@ export const story: Story = {
   ],
   /* What a wedding photographer keeps on the first page. Mail, Voice Memos
      and the payments app arrive with ROADMAP S4. */
-  hersHome: {
+  home: {
     pages: [
       [
         { app: "instagram", label: "Instagram" },
@@ -76,6 +77,6 @@ export const story: Story = {
   evidence: [...episode1.evidence, ...episode2.evidence, ...episode3.evidence],
   questions: [...episode1.questions, ...episode2.questions, ...episode3.questions],
   events: [...episode1.events, ...episode2.events, ...episode3.events],
-  exposures: [...episode1.exposures, ...episode2.exposures, ...episode3.exposures],
+  chain,
   endings,
 };

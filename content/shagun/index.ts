@@ -16,6 +16,7 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   tone: "Mystery · Delhi · 60 min",
   note: "16+ · death, gun violence, a body burned (not shown) · this game never asks for anything real",
   ask: "Where does it end?",
+  links: 11,
 };
 
 /** What keeps landing on his lock screen while the desk waits. */

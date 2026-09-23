@@ -36,7 +36,7 @@ export default function Home({
 }) {
   const [page, setPage] = useState(0);
   const open = openQuestion(story, state);
-  const { pages, dock } = story.hersHome;
+  const { pages, dock } = story.home;
 
   const icon = (app: AppId, label: string) => {
     const unseen = unseenIn(story, state, app);
