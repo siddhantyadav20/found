@@ -10,7 +10,7 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   hint: "A parcel at your door. A wedding envelope. A note to someone called M.",
   description:
     "A stranger's phone arrives with a wedding envelope and a note meant for someone else. A Delhi wedding, a shot, and a night that was arranged before it reached you.",
-  wallpaper: "/found/wallpaper.jpg",
+  wallpaper: "/found/shagun-wallpaper.jpg",
   time: "11:40",
   episodes: 3,
   tone: "Mystery · Delhi · 60 min",

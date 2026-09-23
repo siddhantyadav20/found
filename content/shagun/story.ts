@@ -33,7 +33,15 @@ export const story: Story = {
     note: ["M —", "Sab isme hai.", "Local thane mat le jaana.", "Bhasin ke log wahan baithe hain."],
     sign: "— S",
     english: "M — It's all in here. Don't take it to the local police station. Bhasin's people sit there.",
-    caption: "A phone with a cracked corner, face-down on a wedding envelope.",
+    caption: "His phone, face-down, cracked at one corner.",
+    /* The note is on the back of the Sehgal wedding's shagun envelope: the
+       title, made physical, and a clue from the first second (CHAPTER1.md
+       O2, proposed). */
+    envelope: {
+      front: "Ishita weds Rohan",
+      small: "Sehgal Parivar · 22.11",
+      caption: "Somebody else's wedding envelope. There's writing on the back.",
+    },
   },
   gate: {
     level: "2%",

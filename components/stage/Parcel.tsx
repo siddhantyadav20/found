@@ -32,16 +32,20 @@ export default function Parcel({
   meta: CaseMeta;
   to?: string;
   minutes?: number;
-  /** They have finished it before: the label carries a postmark now. */
+  /** They have finished it before: the parcel is already open, and the label carries a postmark. */
   replay?: boolean;
   onOpen: () => void;
 }) {
   const [pull, setPull] = useState(0);
-  const [torn, setTorn] = useState(false);
+  const [tearing, setTorn] = useState(false);
+  // A second time, it's already open: the phone just has to be taken out again.
+  // (Derived, because a finish is only known once the browser can read it.)
+  const torn = tearing || Boolean(replay);
   const from = useRef<number | null>(null);
   const done = useRef(false);
 
   const finish = () => {
+    if (replay) return onOpen();
     if (done.current) return;
     done.current = true;
     // Android's own haptic, where there is one: a tear, not a notification.
@@ -69,8 +73,10 @@ export default function Parcel({
         <div
           className={styles.parcel}
           data-torn={torn || undefined}
+          data-replay={replay || undefined}
           style={{ "--pull": pull } as React.CSSProperties}
           onPointerDown={(e) => {
+            if (replay) return;
             from.current = e.clientX;
             e.currentTarget.setPointerCapture(e.pointerId);
           }}
@@ -81,7 +87,7 @@ export default function Parcel({
           }}
         >
           <span className={styles.strip} aria-hidden="true">
-            PULL TO OPEN →
+            {replay ? "OPENED" : "PULL TO OPEN →"}
           </span>
           {/* The phone inside, which rises out as the parcel comes open. */}
           <span className={styles.inside} aria-hidden="true" />
@@ -112,7 +118,7 @@ export default function Parcel({
       {/* The drag is the way in. A pointer isn't always a hand, so keyboards
           and assistive tech get a quiet way too, never the loud one. */}
       <button type="button" className={styles.open} onClick={finish}>
-        Or open it here
+        {replay ? "Take it out again" : "Or open it here"}
       </button>
     </div>
   );

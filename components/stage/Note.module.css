@@ -114,3 +114,121 @@
   font-size: 0.7rem;
   color: #8d8781;
 }
+
+/* --- The envelope -------------------------------------------------------------
+   A shagun envelope from somebody else's wedding: maroon, a gold border, the
+   couple's names in foil. Turned over, the back flap and the cream panel where
+   people write who it's from, and where he wrote to M. Flipped in 3D, by hand. */
+
+.envelope {
+  width: min(19rem, 86vw);
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  border: 0;
+  background: none;
+  perspective: 900px;
+  cursor: pointer;
+}
+
+.envelope:disabled { cursor: default; }
+
+.card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+  rotate: -1.2deg;
+}
+
+.envelope[data-flipped] .card { transform: rotateY(180deg); }
+
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.35rem;
+  backface-visibility: hidden;
+  box-shadow: 0 1rem 2.2rem rgb(0 0 0 / 55%);
+  background:
+    radial-gradient(120% 90% at 30% 20%, rgb(255 255 255 / 7%), transparent 60%),
+    linear-gradient(160deg, #7a1424 0%, #5c0d1b 55%, #460914 100%);
+}
+
+/* The gold border, printed just inside the edge. */
+.front::before {
+  content: "";
+  position: absolute;
+  inset: 0.55rem;
+  border: 1.5px solid #c9a24c;
+  border-radius: 0.2rem;
+  box-shadow: inset 0 0 0 3px rgb(201 162 76 / 25%);
+}
+
+.foil {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-style: italic;
+  background: linear-gradient(100deg, #b8893a 0%, #f3d98c 45%, #c9a24c 70%, #9d7430 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.small {
+  position: relative;
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #d8bb72;
+}
+
+.back { transform: rotateY(180deg); justify-content: flex-end; padding: 0.8rem; }
+
+/* The back flap, folded down from the top edge. */
+.flap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 46%;
+  background: linear-gradient(180deg, #6a1020, #54101c);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 35%));
+}
+
+/* Where people write who it's from; he wrote to M instead. */
+.label {
+  position: relative;
+  width: 100%;
+  padding: 0.55rem 0.8rem 0.5rem;
+  border-radius: 0.2rem;
+  background: #f1ebdc;
+  text-align: left;
+  rotate: 0.6deg;
+}
+
+.label .hand { font-size: 1rem; line-height: 1.3; }
+.label .sign { margin-top: 0.2rem; font-size: 0.9rem; }
+
+.crack {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 30%;
+  fill: none;
+  stroke: rgb(255 255 255 / 35%);
+  stroke-width: 0.8;
+  stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+}

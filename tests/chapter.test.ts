@@ -158,6 +158,19 @@ describe("the chain", () => {
   });
 });
 
+describe("the arrival", () => {
+  // Script §8, beat 1: a note addressed to "M.", warning against the local
+  // police station, naming Bhasin. The envelope it's on is ours (O2).
+  it("holds the canon note, on the back of the Sehgal envelope", () => {
+    const words = ep.arrival.note.join(" ");
+    expect(ep.arrival.note[0]).toMatch(/^M\b/);
+    expect(words).toMatch(/thane/i);
+    expect(words).toContain("Bhasin");
+    expect(ep.arrival.english).toMatch(/police station/);
+    expect(ep.arrival.envelope?.front).toBe("Ishita weds Rohan");
+  });
+});
+
 describe("the phone itself", () => {
   it("is its owner's, with the case file in the dock", () => {
     expect(ep.owner.name).toBe("Sameer Khurana");

@@ -256,15 +256,27 @@ export type LockNotice = {
   readonly time: string;
 };
 
-/** What the player finds with the phone, before they turn it on (ROADMAP S5 rebuilds this). */
+/** What the player finds with the phone, before they turn it on. */
 export type Arrival = {
   /** The note, in the writer's own hand, a line at a time. */
   readonly note: readonly string[];
   readonly sign?: string;
   /** Ours, never written on the note. */
   readonly english: string;
-  /** What lies beside it, in a line. */
+  /** What lies beside it, in a line, once the note has been read. */
   readonly caption: string;
+  /**
+   * The note is on the back of an envelope: the player sees its front first,
+   * and turns it over by hand to read what's written there.
+   */
+  readonly envelope?: {
+    /** The front, in foil: "Ishita weds Rohan". */
+    readonly front: string;
+    /** Under it, small: "Sehgal Parivar · 22.11". */
+    readonly small?: string;
+    /** What the player is told before turning it over. */
+    readonly caption: string;
+  };
 };
 
 /** The charger gate between Episodes 1 and 2: asked once, warmly. */

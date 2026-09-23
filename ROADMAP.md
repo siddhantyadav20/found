@@ -24,7 +24,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S2** ✔ | Story-agnostic engine | No call, courier, charger or ending ids baked in (mostly in S1, the rest folded into S3) |
 | **S3** ✔ | The chain and the record | Links, claims, Sameer's version, Revisit, the multi-lane board |
 | **S4** ✔ | His phone | Photos with media, Voice Memos, WhatsApp's archive, Mail, Paytap |
-| **S5** | Arrival | Parcel, envelope, the note, the phone waking, the charger |
+| **S5** ✔ | Arrival | Parcel, envelope, the note, the phone waking, the charger |
 | **S6** | Episode 1 | *Missed Calls* as data |
 | **S7** | Episode 2 | *The Second Shot* as data |
 | **S8** | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
@@ -189,13 +189,42 @@ memos, rupees). `/c/[case]` 624KB of 700KB.
 **Left for S6–S8:** the content itself, and what airplane mode changes (which
 people go quiet) is written with the routes in S8.
 
-## S5 — Arrival
+## S5 — Arrival · **done (2026-09-24)**
 
-The desk's parcel; tear, lift, **turn the envelope over**; the note as a
-photograph with English beneath; the label with the content note and the
-promise; the phone waking to 47 missed calls; the charger gate re-skinned
-(*keep his phone alive*); resume; "You put it down" after a real gap; the
-replay state. **The label's addressee waits on O1.**
+**Built:**
+- **The envelope.** `Arrival.envelope` in the schema; Shagun's is the Sehgal
+  shagun envelope (CHAPTER1.md O2, proposed). It's drawn in maroon with a gold
+  border and the names in foil ("Ishita weds Rohan · Sehgal Parivar ·
+  22.11").
+- **Turning it over.** The player turns it over by hand (tap, or a sideways
+  drag), a 3D flip, and the note is on the back: the flap, and the cream
+  panel where people write who it's from, in a ballpoint-style hand. The
+  English sits beneath, never on the note.
+- **The phone.** Only then the phone: face-down, cracked at one corner, the
+  ring/silent switch on its side. Turning it over buzzes it awake onto the
+  lock screen with its missed calls.
+- **The lock screen.** Sameer's placeholder wallpaper
+  (`public/found/shagun-wallpaper.jpg`, fairy lights at night, 51KB). It
+  replaces the retired chapter's Mumbai picture, which is deleted.
+- **A replay.** The parcel sits already open ("OPENED", the postmark, the
+  phone waiting) and "Take it out again" goes straight to the envelope
+  (PLAYER-JOURNEY Stage 10).
+- **Unchanged, already right since S1:** the label with the content note and
+  the promise, the charger gate on `story.gate`, resume, and "You put it
+  down" after a real gap.
+
+**Still open:** the label's addressee ("TO —") waits on O1.
+
+**Tests:** 75. `chapter.test.ts` now guards the canon note: addressed to M,
+the local thana, Bhasin (script §8 beat 1).
+
+**Walked** at 375 × 812 in dev:
+- parcel, then envelope front, then flip
+- the note on its back, then the cracked phone
+- lock screen on the new wallpaper
+- a replay's open parcel, then the envelope
+
+No console errors.
 
 ## S6 · S7 · S8 — The episodes as data
 

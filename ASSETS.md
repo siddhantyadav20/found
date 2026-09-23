@@ -40,6 +40,7 @@ dance-floor lawn and a back lawn with trees. One evening, a small cast.
 | **Kunal's frame** (the family's evidence): Sameer's arm coming down, a flash, Dilip behind the light. **The frame stops before anything happens to him.** Screenshotted, with the WhatsApp chrome | Ep 3 Hidden | Titled card | ⬜ |
 | **SK Films' Instagram grid**: 12 of his best, plus 3 selfies with the kada | Ep 1 Q1 | Titled cards | ⬜ |
 | **Raju's profile photo** at Chhath, Samastipur, and **Dilip at home** (Raju sends it in A) | Ep 1; A | Titled cards | ⬜ |
+| **Sameer's lock-screen wallpaper**: one of his own night shots from a wedding, the kind a photographer keeps as his best | Every screen of his phone | Generated fairy lights (`public/found/shagun-wallpaper.jpg`) | 🟨 |
 
 ## 2. Video — short clips, not a call
 
@@ -68,7 +69,7 @@ CHAPTER1; keep delivery to the words written there.
 
 | Asset | Beat | Placeholder | Status |
 |---|---|---|---|
-| **The Sehgal shagun envelope**: maroon and gold foil, *"Ishita weds Rohan · Sehgal Parivar · 22.11"*, and on the back, in Sameer's quick ballpoint: *"M — Sab isme hai. Local thane mat le jaana. Bhasin ke log wahan baithe hain. — S"* Photographed front and back | Arrival (CHAPTER1 O2) | Styled text | ⬜ |
+| **The Sehgal shagun envelope**: maroon and gold foil, *"Ishita weds Rohan · Sehgal Parivar · 22.11"*, and on the back, in Sameer's quick ballpoint: *"M — Sab isme hai. Local thane mat le jaana. Bhasin ke log wahan baithe hain. — S"* Photographed front and back | Arrival (CHAPTER1 O2) | Drawn envelope (maroon, gold foil, a cream panel on the back) and a ballpoint-style hand | ⬜ |
 | **The LAPATA poster**: a phone-made missing-person poster, Hindi and English, Dilip's photo, Raju's number, *"last seen Sat 22 Nov, Chhattarpur"* | Ep 1 beat 7 | Styled card | ⬜ |
 
 ## 5. Documents
@@ -89,5 +90,7 @@ the board, the endings' acts and the end card, the share images.
 
 *Retired with the pivot:* every asset row for *Don't Cut the Call* (the
 Crime Branch shoot, Vasu's voices, her diary). See git history at `1de34a2`.
-The placeholder wallpaper `public/found/wallpaper.jpg` stays until S5
-replaces it.
+The old wallpaper went with S5: Sameer's lock screen is now a generated
+placeholder, `public/found/shagun-wallpaper.jpg` (fairy lights at night),
+until his real one is shot. `scripts/prep-photos.mjs` is the retired
+chapters' photo pipeline and still names the old file; S11 re-points it.
