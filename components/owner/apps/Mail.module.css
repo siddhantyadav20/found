@@ -1,0 +1,65 @@
+/* Mail: a letter as the app sets it, and its attachment as pages. */
+
+.link {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-accent);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.rowSubject { font-weight: 600; color: var(--os-text); }
+
+.letter { display: flex; flex-direction: column; gap: 6px; padding: 0 4px; }
+.from { margin: 0; font-size: 17px; font-weight: 600; }
+.address { margin: 0; font-size: 13px; color: var(--os-dim); }
+.subject { margin: 8px 0 0; font-size: 20px; line-height: 1.3; }
+.date { margin: 0 0 10px; font-size: 13px; color: var(--os-dim); }
+.para { margin: 0 0 8px; font-size: 16px; line-height: 1.5; }
+
+.attachment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--os-panel);
+  color: var(--os-text);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.docIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 42px;
+  border-radius: 4px;
+  background: #e5484d;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.docName { margin: 0 0 10px; font-size: 13px; color: var(--os-dim); }
+
+.pages { display: flex; flex-direction: column; gap: 10px; }
+
+/* A page of a document, white on the dark, the way Quick Look shows one. */
+.page {
+  margin: 0;
+  padding: 16px 14px;
+  border-radius: 6px;
+  background: #f7f7f5;
+  color: #1c1c1e;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-line;
+}

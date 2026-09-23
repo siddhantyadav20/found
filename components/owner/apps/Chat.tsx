@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
@@ -7,6 +8,7 @@ import { all, dayNow, seen, type CaseState } from "@/lib/game/engine";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { Chevron } from "../ios/AppBar";
+import Clip from "../ios/Clip";
 import styles from "../ios/Chats.module.css";
 import local from "./Chat.module.css";
 
@@ -16,9 +18,18 @@ import local from "./Chat.module.css";
 
    Drawn on the pilot's WhatsApp (commit 8cc2907): a list with its own bar,
    a large "Chats" title and the tab bar; a conversation with the contact in
-   its header. A message can be a document, a voice note, a photograph,
-   somebody's handwriting, a message deleted for everyone, or a forward
-   (ROADMAP S4 adds video, archived chats and the one grey tick).
+   its header. A message can be a document, a voice note, a photograph, a
+   video with its words, somebody's handwriting, a message deleted for
+   everyone, a forward, or a reply quoting an earlier one. In a group, each
+   message says who sent it.
+
+   Three WhatsApp behaviours a chapter can rest on (CHAPTER1.md E):
+   - **Archived**: a chat moved out of the list sits one tap further, under
+     "Archived" at the top
+   - **one grey tick**: sent and never delivered, which is what a block
+     looks like from the other side
+   - a message deleted "for me" leaves nothing behind, so a reply to it is
+     a reply to a message that isn't there
 
    Somebody answering takes a moment, and says so ("typing…"): replies are
    revealed one at a time, never all at once (PLAYTEST.md #47).
@@ -51,7 +62,7 @@ function Avatar({ name, head }: { name: string; head?: boolean }) {
 function preview(m: Message | undefined): string {
   if (!m) return "";
   if (m.deleted) return "This message was deleted";
-  if (m.text) return m.text;
+  if (m.text) return m.who ? `${m.who}: ${m.text}` : m.text;
   switch (m.attachment?.kind) {
     case "voice":
       return `🎤 Voice message (0:${String(m.attachment.seconds).padStart(2, "0")})`;
@@ -61,7 +72,7 @@ function preview(m: Message | undefined): string {
     case "document":
       return `📄 ${m.attachment.label}`;
     case "video":
-      return "🎥 Video";
+      return `🎥 Video (${Math.floor(m.attachment.seconds / 60)}:${String(m.attachment.seconds % 60).padStart(2, "0")})`;
     default:
       return "";
   }
@@ -101,10 +112,18 @@ function Bubble({ m }: { m: Message }) {
 
   const out = m.from === "owner";
   const a = m.attachment;
-  const media = a?.kind === "photo" || a?.kind === "handwriting";
+  const media = a?.kind === "photo" || a?.kind === "handwriting" || a?.kind === "video";
+  const ticks = m.ticks ?? "read";
   return (
     <div className={styles.bubble} data-out={out || undefined} data-media={media || undefined}>
+      {!out && m.who && <span className={local.who}>{m.who}</span>}
       {m.forwarded && <span className={styles.forwarded}>Forwarded many times</span>}
+      {m.quote && (
+        <span className={local.quote}>
+          <b>{m.quote.who}</b>
+          <span>{m.quote.text}</span>
+        </span>
+      )}
 
       {m.deleted ? (
         <span className={styles.text} style={{ opacity: 0.55, fontStyle: "italic" }}>
@@ -124,10 +143,23 @@ function Bubble({ m }: { m: Message }) {
 
           {a?.kind === "voice" && <Voice seconds={a.seconds} transcript={a.transcript} english={a.english} />}
 
-          {/* A photograph, drawn until the shoot: a soft frame and what it shows. */}
+          {/* A photograph: the real one once it exists, and until then a soft frame and what it shows. */}
           {a?.kind === "photo" && (
             <span className={local.photo} role="img" aria-label={a.label}>
-              <span>{a.label}</span>
+              {a.src ? <Image src={a.src} alt={a.label} fill sizes="230px" className={local.image} /> : <span>{a.label}</span>}
+            </span>
+          )}
+
+          {/* A video: its poster, its length, and its words underneath once it plays. */}
+          {a?.kind === "video" && (
+            <span className={local.video}>
+              <span className={local.photo} role="img" aria-label={a.label}>
+                {a.src ? <Image src={a.src} alt={a.label} fill sizes="230px" className={local.image} /> : <span>{a.label}</span>}
+                <span className={local.play} aria-hidden="true">
+                  ▶
+                </span>
+              </span>
+              {a.captions?.length ? <Clip seconds={a.seconds} captions={a.captions} /> : null}
             </span>
           )}
 
@@ -155,7 +187,15 @@ function Bubble({ m }: { m: Message }) {
 
       <span className={styles.stamp}>
         {stamp(m.at)}
-        {out && !m.deleted && <span className={styles.ticks}>✓✓</span>}
+        {out && !m.deleted && (
+          <span
+            className={styles.ticks}
+            data-read={ticks === "read" || undefined}
+            aria-label={ticks === "sent" ? "Sent" : ticks === "delivered" ? "Delivered" : "Read"}
+          >
+            {ticks === "sent" ? "✓" : "✓✓"}
+          </span>
+        )}
       </span>
     </div>
   );
@@ -288,6 +328,7 @@ export default function Chat({
   onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
+  const [archive, setArchive] = useState(false);
   const live = story.threads.filter((t) => t.app === app && all(state, t.requires));
 
   /* Two entries with the same name are one chat: a later episode adds
@@ -303,9 +344,23 @@ export default function Chat({
   const here = threads.find((t) => t.id === open);
   if (here) return <Conversation key={here.id} thread={here} state={state} app={app} onBack={() => setOpen(null)} onRead={onRead} onSay={onSay} />;
 
+  const archived = threads.filter((t) => t.archived);
+  const inList = archive ? archived : threads.filter((t) => !t.archived);
+
   const list = (
     <ul className={styles.list}>
-      {[...threads]
+      {!archive && archived.length > 0 && (
+        <li>
+          <button type="button" className={local.archivedRow} onClick={() => setArchive(true)}>
+            <span className={local.archivedIcon} aria-hidden="true">
+              ▤
+            </span>
+            <span className={local.archivedLabel}>Archived</span>
+            <span className={local.archivedCount}>{archived.length}</span>
+          </button>
+        </li>
+      )}
+      {[...inList]
         .sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)))
         .map((t) => {
           const shown = t.messages.filter((m) => all(state, m.requires));
@@ -355,7 +410,17 @@ export default function Chat({
         <span />
       </header>
       <div className={styles.listBody}>
-        <h2 className={styles.big}>Chats</h2>
+        {archive ? (
+          <>
+            <button type="button" className={local.archivedBack} onClick={() => setArchive(false)} data-back>
+              ‹ Chats
+            </button>
+            <h2 className={styles.big}>Archived</h2>
+            <p className={local.archivedNote}>These chats stay archived when new messages are received.</p>
+          </>
+        ) : (
+          <h2 className={styles.big}>Chats</h2>
+        )}
         {list}
       </div>
       <nav className={styles.tabs} aria-hidden="true">

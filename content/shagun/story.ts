@@ -48,14 +48,19 @@ export const story: Story = {
     { key: "mummy", app: "whatsapp", from: "Mummy", text: "Beta, phone kyun nahi utha raha? Khana khaya?", time: "10:52 PM" },
     { key: "bhasin", app: "phone", from: "Bhasin Uncle", text: "2 missed calls", time: "Fri" },
   ],
-  /* What a wedding photographer keeps on the first page. Mail, Voice Memos
-     and the payments app arrive with ROADMAP S4. */
+  /* What a wedding photographer keeps on the first page. */
   home: {
     pages: [
       [
         { app: "instagram", label: "Instagram" },
         { app: "messages", label: "Messages" },
         { app: "notes", label: "Notes" },
+        { app: "mail", label: "Mail" },
+        { app: "paytap", label: "Paytap" },
+        { app: "voicememos", label: "Voice Memos" },
+        { app: "mail", label: "Mail" },
+        { app: "paytap", label: "Paytap" },
+        { app: "voicememos", label: "Voice Memos" },
         { app: "safari", label: "Safari" },
         { app: "settings", label: "Settings" },
       ],
@@ -70,6 +75,10 @@ export const story: Story = {
   threads: [],
   photos: [],
   notes: [],
+  memos: [],
+  mail: [],
+  payments: [],
+  profiles: [],
   incoming: [],
   searches: [],
   calls: [],

@@ -9,15 +9,11 @@ import styles from "../ios/Chats.module.css";
 import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
-   Phone › Recents: thirty-one hours of a woman trying to get someone to
-   listen.
+   Phone › Recents, newest first, as iOS lists them: in, out and missed, how
+   long, and several calls in a row from one number as one row, "(47)". A
+   recorded call opens into its transcript (iOS records calls now, for
+   anyone who turns it on).
 
-   The call log is the quietest evidence in the chapter. A helpline she held
-   for twenty-four minutes. Eight numbers she rang between 10:02 and 10:31 and
-   what happened on each. Her son, at 11:58, who did not pick up.
-
-   iOS records calls now and she had it on, so some rows open into a
-   transcript (CHAPTER1.md, Episode 2).
    =========================================================================== */
 
 const KIND: Record<CallEntry["kind"], string> = { in: "↙ Incoming", out: "↗ Outgoing", missed: "✕ Missed" };
@@ -72,7 +68,7 @@ export default function Recents({
         .map((c) => (
         <Row
           key={c.id}
-          title={c.name}
+          title={c.count ? `${c.name} (${c.count})` : c.name}
           sub={`${KIND[c.kind]} · ${c.day} ${stamp(c.at)}`}
           meta={c.ongoing ? "On call" : length(c.seconds)}
           onClick={

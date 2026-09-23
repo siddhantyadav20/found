@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { Flag, SettingsRow, Story } from "@/content/types";
 import { all, has, type CaseState } from "@/lib/game/engine";
+import Switch from "../ios/Switch";
 import app from "../ios/App.module.css";
 import { Chevron } from "../ios/AppBar";
 import Avatar from "../ios/Avatar";
@@ -33,7 +34,7 @@ function Tile({ bg, children }: { bg: string; children: React.ReactNode }) {
   );
 }
 
-/* The pilot's glyphs (c03aa03), and four new ones for rows it never had. */
+/* The pilot's glyphs (c03aa03), and the ones for rows it never had. */
 const FACE = (
   <>
     <path d="M8 4.5H6.5a2 2 0 0 0-2 2V8M16 4.5h1.5a2 2 0 0 1 2 2V8M8 19.5H6.5a2 2 0 0 1-2-2V16M16 19.5h1.5a2 2 0 0 0 2-2V16" />
@@ -85,9 +86,29 @@ const SOS = (
   </text>
 );
 
+/** Apps › Photos: the flower, small. */
+const FLOWER = (
+  <>
+    <circle cx="12" cy="8" r="2.6" className={s.solid} />
+    <circle cx="16" cy="12" r="2.6" className={s.solid} />
+    <circle cx="12" cy="16" r="2.6" className={s.solid} />
+    <circle cx="8" cy="12" r="2.6" className={s.solid} />
+  </>
+);
+const APPS = (
+  <>
+    <rect x="5" y="5" width="5.5" height="5.5" rx="1.4" />
+    <rect x="13.5" y="5" width="5.5" height="5.5" rx="1.4" />
+    <rect x="5" y="13.5" width="5.5" height="5.5" rx="1.4" />
+    <rect x="13.5" y="13.5" width="5.5" height="5.5" rx="1.4" />
+  </>
+);
+
 /** Which tile leads which row. A row nobody drew a tile for goes without. */
 const TILES: Record<string, { bg: string; glyph: React.ReactNode }> = {
   "Face ID & Passcode": { bg: GREEN, glyph: FACE },
+  Photos: { bg: "#ff9f0a", glyph: FLOWER },
+  Apps: { bg: PURPLE, glyph: APPS },
   "Screen Time": { bg: PURPLE, glyph: HOURGLASS },
   "Emergency SOS": { bg: RED, glyph: SOS },
   "Software Update": { bg: GREY, glyph: GEAR },
@@ -99,7 +120,13 @@ const TILES: Record<string, { bg: string; glyph: React.ReactNode }> = {
   "Low Power Mode": { bg: GREEN, glyph: BATTERY },
 };
 
-/** A page one level down: a profile, what it is, and the one thing you can do about it. */
+/** A switch that only goes one way: on, it sets its flags; this phone never turns it back off. */
+function OneWay({ sets, label, state, onAct }: { sets: readonly Flag[]; label: string; state: CaseState; onAct?: (sets: readonly Flag[]) => void }) {
+  const on = all(state, sets);
+  return <Switch on={on} disabled={on} label={label} onChange={() => onAct?.(sets)} />;
+}
+
+/** A page one level down: what it's about, its rows and switches, and the one thing you can do, if any. */
 function Detail({
   row,
   state,
@@ -121,14 +148,16 @@ function Detail({
       </button>
       <p className={app.groupLabel}>{row.detail.heading}</p>
       <ul className={app.group}>
-        <li>
-          <div className={app.row}>
-            <Tile bg={GREY}>{PROFILE}</Tile>
-            <span className={app.rowMain}>
-              <span className={app.rowTitle}>{done ? "No profile installed" : row.detail.title}</span>
-            </span>
-          </div>
-        </li>
+        {row.detail.title && (
+          <li>
+            <div className={app.row}>
+              {TILES[row.title] && <Tile bg={TILES[row.title].bg}>{TILES[row.title].glyph}</Tile>}
+              <span className={app.rowMain}>
+                <span className={app.rowTitle}>{done ? row.action?.done : row.detail.title}</span>
+              </span>
+            </div>
+          </li>
+        )}
         {!done &&
           row.detail.rows.map((r) => (
             <li key={r.label}>
@@ -136,7 +165,11 @@ function Detail({
                 <span className={app.rowMain}>
                   <span className={app.rowTitle}>{r.label}</span>
                 </span>
-                <span className={app.rowMeta}>{r.value}</span>
+                {r.toggle ? (
+                  <OneWay sets={r.toggle.sets} label={r.label} state={state} onAct={onAct} />
+                ) : (
+                  <span className={app.rowMeta}>{r.value}</span>
+                )}
               </div>
             </li>
           ))}
@@ -239,7 +272,11 @@ export default function Settings({
                       <span className={app.rowTitle}>{r.title}</span>
                       {r.sub && <span className={app.rowSub}>{r.sub}</span>}
                     </span>
-                    <span className={app.rowMeta}>{done ? r.action?.done : r.value}</span>
+                    {r.toggle ? (
+                      <OneWay sets={r.toggle.sets} label={r.title} state={state} onAct={onAct} />
+                    ) : (
+                      <span className={app.rowMeta}>{done ? r.action?.done : r.value}</span>
+                    )}
                   </>
                 );
                 return (

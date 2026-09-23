@@ -1,0 +1,36 @@
+/* Paytap: ours, in its own green. */
+
+.link {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #3ec79f;
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.balance { margin: -4px 4px 14px; font-size: 13px; color: var(--os-dim); }
+
+.rowAmount { font-variant-numeric: tabular-nums; color: var(--os-text); }
+.rowAmount[data-in] { color: #3ec79f; }
+
+.receipt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #123f35 0%, var(--os-panel) 70%);
+  text-align: center;
+}
+
+.status { margin: 0; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #3ec79f; }
+.status[data-failed] { color: var(--os-danger); }
+.amount { margin: 4px 0; font-size: 38px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.amount[data-in] { color: #3ec79f; }
+.who { margin: 0; font-size: 17px; }
+.handle { margin: 0; font-size: 13px; color: var(--os-dim); }
+.note { margin: 6px 0; font-size: 15px; font-style: italic; }

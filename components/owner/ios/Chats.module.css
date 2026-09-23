@@ -429,6 +429,10 @@
   stroke: var(--chat-tick);
 }
 
+/* Drawn as text: one grey tick (sent, never delivered), two grey, or two blue. */
+.ticks { width: auto; color: var(--chat-dim); letter-spacing: -0.2em; }
+.ticks[data-read] { color: var(--chat-tick); }
+
 .waiting {
   display: flex;
   align-items: flex-start;

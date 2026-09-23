@@ -26,6 +26,7 @@ import {
   whereToLook,
   type CaseState,
 } from "@/lib/game/engine";
+import { AIRPLANE } from "@/lib/game/phone";
 import { useNow } from "@/lib/found/now";
 import { phoneClock, stamp } from "@/lib/found/time";
 import { boundCase, readProgress } from "@/lib/found/progress";
@@ -195,7 +196,7 @@ export default function Table({
               <AppView
                 title={appLabel(story, openApp)}
                 onBack={() => setOpenApp(null)}
-                own={openApp === "messages"}
+                own={openApp === "messages" || openApp === "voicememos" || openApp === "mail" || openApp === "paytap"}
                 whole={openApp === "photos" || openApp === "whatsapp" || openApp === "instagram"}
               >
                 <AppBody app={openApp} story={story} state={state} onHome={() => setOpenApp(null)} />
@@ -211,6 +212,8 @@ export default function Table({
           onDismissBanner={dismissBanner}
           notices={notices}
           onNotice={(n) => onOpenApp(n.app)}
+          airplane={has(state, AIRPLANE)}
+          onAirplane={() => flag(AIRPLANE)}
         />
 
         <div className={styles.yours}>

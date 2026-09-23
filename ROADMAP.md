@@ -23,7 +23,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S1** ✔ | Retire | Remove *Don't Cut the Call*; one case, `shagun` |
 | **S2** ✔ | Story-agnostic engine | No call, courier, charger or ending ids baked in (mostly in S1, the rest folded into S3) |
 | **S3** ✔ | The chain and the record | Links, claims, Sameer's version, Revisit, the multi-lane board |
-| **S4** | His phone | Photos with media, Voice Memos, WhatsApp's archive, Mail, Paytap |
+| **S4** ✔ | His phone | Photos with media, Voice Memos, WhatsApp's archive, Mail, Paytap |
 | **S5** | Arrival | Parcel, envelope, the note, the phone waking, the charger |
 | **S6** | Episode 1 | *Missed Calls* as data |
 | **S7** | Episode 2 | *The Second Shot* as data |
@@ -149,24 +149,45 @@ share line.
 - end card: 2 of 11 in the right words
 - desk: "2 links traced"
 
-## S4 — His phone
+## S4 — His phone · **done (2026-09-24)**
 
-Current iOS, drawn by us, as before. Everything story-driven from `content/`.
+Current iOS, drawn by us, as before; everything story-driven from `content/`
+(new: `Story.memos`, `mail`, `payments`, `profiles`, and on `Photo`: `src`,
+`video`, `original`, `favorite`, `hidden`, `daysLeft`, `zoom`). The rules iOS
+keeps whatever the chapter (what's in the bin, what Hidden shows and when,
+what a clip plays before and after Revert) are pure, in `lib/game/phone.ts`.
 
-| App | Must do |
+| App | What it does now |
 |---|---|
-| **Photos** | Real images and video (with captions and a poster frame), zoom-that-counts on photos and paused frames (the zone logic from the retired `LiveCall.tsx:139-221`), albums (the Sehgal wedding, WhatsApp, Favorites, Hidden), Info with time and place, **Edit › Revert**, **Recently Deleted** with days left. Recover `PhotoFrame` and `Gallery` from `c03aa03`; their CSS is still in `ios/PhotoFrame.module.css:367-492` |
-| **Voice Memos** | A list and a player, and **Recently Deleted** (recover `Recorder`/`Memos` from `c03aa03`) |
-| **WhatsApp** | Video and real-photo bubbles, **Archived** chats, one grey tick (blocked), a reply to a missing message, "Message yourself", groups with many senders |
-| **Instagram** | SK Films' profile grid, and Kunal's profile |
-| **Phone** | A 47-missed-call flood, repeated rings, and Recents |
-| **Settings** | Face ID & Passcode (off, with its time), **Apps › Photos › Show Hidden Album**, Apple Account |
-| **Safari** | History with times (already there) |
-| **Mail** | New: the invoice, the offer letter, the venue's site plan |
-| **Paytap** | New, fictional: the ₹1,80,000, the flat deposit, the train |
-| **Notes** | Already there: "For M" and the shot list, with created and edited times |
-| **Control Centre** | Airplane mode, by hand (Meera's route) |
-| Remove | PikDrop, City Desk, the Instagram cat story, the `kyc` profile page |
+| **Photos** | Real images (`src`) or placeholders; video with captions (`components/owner/ios/Clip.tsx`, the pilot's player); Favorites and named albums; **Hidden** in Utilities once `SHOW_HIDDEN` is set; **Recently Deleted** with days left and Recover; Info with "Edited"; **Edit › Revert to Original** in a sheet, one way, and the original's evidence found by it; the pilot's **zoom that counts** on a photo with `zoom` |
+| **Voice Memos** | New. All Recordings and **Recently Deleted** (Recover); a waveform player with ±15 s and captions (the pilot's Recorder) |
+| **WhatsApp** | Group senders (`Message.who`); **one grey tick** (`ticks: "sent"`); quoted replies; video bubbles with captions; real photos; **Archived** at the top of Chats |
+| **Instagram** | Profiles in rings (the owner's first); a profile's bio and three-across grid; a post opens with its caption |
+| **Phone** | A run of calls as one row: "(47)" |
+| **Settings** | One-way switches (`toggle`), on a row or on a page one level down (Apps › Photos › Show Hidden Album); pages are generic now, not a management profile's |
+| **Mail** | New. Inbox, a letter, and its attachment as pages |
+| **Paytap** | New, fictional. History in and out, a receipt each; the balance asks for a PIN, so it stays hidden |
+| **Control Centre** | Pull from the top-right corner: airplane mode by hand (`AIRPLANE`), one way; the status bar shows the plane and data and Wi-Fi go dark |
+
+**A law found on the walk:** opening an app finds everything in it that isn't
+`manual`, so the fixture's deleted and hidden photos counted just by opening
+Photos. `chapter.test.ts` now requires every piece of evidence behind a hard
+route (the bin, Hidden, an original, a zoom, an archived chat) to be `manual`.
+
+**Tests:** 74 (new `tests/phone.test.ts`: albums, Hidden, Recover, Revert,
+memos, rupees). `/c/[case]` 624KB of 700KB.
+
+**Walked** at 375 × 812 in dev on a throwaway fixture (removed afterwards):
+- **Photos:** Collections before and after Settings showed Hidden; the fire
+  clip from 9 s to 31 s on Revert, with Sameer's line and "Noted"; the
+  portrait's zoom; the bin's "28 days" and Recover.
+- **WhatsApp:** one grey tick, group names, a video with captions, Archived
+  and a quoted reply.
+- **Everything else:** Instagram profiles, Mail's PDF, Paytap, Voice Memos'
+  bin, Recents' "(47)", and airplane mode.
+
+**Left for S6–S8:** the content itself, and what airplane mode changes (which
+people go quiet) is written with the routes in S8.
 
 ## S5 — Arrival
 

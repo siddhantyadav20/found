@@ -27,6 +27,8 @@
 .paper[data-big] .hand { font-size: 16px; line-height: 1.7; }
 
 .scene {
+  position: relative;
+  overflow: hidden;
   display: grid;
   place-items: center;
   width: 100%;
@@ -35,6 +37,8 @@
 }
 
 .scene[data-big] { min-height: 60%; }
+/* Footage is landscape: the frame fits the width and leaves room for the words. */
+.scene[data-big][data-video] { min-height: 0; aspect-ratio: 16 / 9; }
 .sceneTitle { font-size: 10px; color: rgba(255, 255, 255, 0.75); padding: 0 6px; text-align: center; }
 .scene[data-big] .sceneTitle { font-size: 15px; }
 
@@ -42,4 +46,16 @@
 .paper:not([data-big]),
 .scene:not([data-big]) {
   aspect-ratio: 1;
+}
+
+/* A video in the grid: its length, bottom right, as Photos marks one. */
+.duration {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  font-variant-numeric: tabular-nums;
 }

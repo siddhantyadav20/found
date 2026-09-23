@@ -97,6 +97,25 @@ describe("every piece of evidence", () => {
       expect(places.get(e.id) ?? 0, `${e.id} can never be seen`).toBeGreaterThanOrEqual(1);
   });
 
+  /**
+   * Opening an app finds everything in it that isn't `manual`. So anything
+   * behind one of the phone's hard routes (the bin, Hidden, an edit's
+   * original, a zoom, an archived chat) must be manual, or opening the app
+   * would find it for the player (found walking S4 with a fixture).
+   */
+  it("behind a hard route is found by taking the route, not by opening the app", () => {
+    const hard = [
+      ...ep.photos.flatMap((p) => [
+        ...(p.deletedAt || p.hidden ? [p.evidence] : []),
+        p.original?.evidence,
+        p.zoom?.evidence,
+      ]),
+      ...ep.memos.filter((m) => m.deletedAt).map((m) => m.evidence),
+      ...ep.threads.filter((t) => t.archived).flatMap((t) => t.messages.map((m) => m.evidence)),
+    ].filter((id): id is string => Boolean(id));
+    for (const id of hard) expect(ep.evidence.find((e) => e.id === id)?.manual, `${id} would be found just by opening its app`).toBe(true);
+  });
+
   it("points only at evidence that exists", () => {
     const ids = new Set(ep.evidence.map((e) => e.id));
     for (const id of places.keys()) expect(ids.has(id), id).toBe(true);

@@ -492,3 +492,42 @@
 .viewerImage[data-video] .frame[data-size="full"] {
   aspect-ratio: 16 / 9;
 }
+
+/* --- Edit › Revert ------------------------------------------------------------
+   iOS asks once, in a sheet, and the red button means it. */
+
+.sheet {
+  position: absolute;
+  z-index: 5;
+  left: 10px;
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(44, 44, 46, 0.96);
+  backdrop-filter: blur(20px);
+}
+
+.sheetText {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--os-dim);
+  text-align: center;
+}
+
+.sheetDanger,
+.sheetCancel {
+  padding: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sheetDanger { color: var(--os-danger); }
+.sheetCancel { color: #fff; font-weight: 600; }

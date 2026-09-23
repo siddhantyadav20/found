@@ -4,6 +4,9 @@ import { useCallback } from "react";
 
 import Chat from "@/components/owner/apps/Chat";
 import Instagram from "@/components/owner/apps/Instagram";
+import Mail from "@/components/owner/apps/Mail";
+import Paytap from "@/components/owner/apps/Paytap";
+import VoiceMemos from "@/components/owner/apps/VoiceMemos";
 import Messages from "@/components/owner/apps/Messages";
 import Notes from "@/components/owner/apps/Notes";
 import Photos from "@/components/owner/apps/Photos";
@@ -12,6 +15,7 @@ import Safari from "@/components/owner/apps/Safari";
 import Settings from "@/components/owner/apps/Settings";
 import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
+import { restored, reverted } from "@/lib/game/phone";
 import CaseFile from "./CaseFile";
 import { flag, read, save, say } from "./playthrough";
 
@@ -54,7 +58,8 @@ export default function AppBody({
           state={state}
           onBack={onHome}
           onRead={onRead}
-          onRestore={(id) => flag(`did:restored-${id}`)}
+          onRestore={(id) => flag(restored(id))}
+          onRevert={(id) => flag(reverted(id))}
         />
       );
     case "notes":
@@ -68,6 +73,12 @@ export default function AppBody({
       );
     case "settings":
       return <Settings story={story} state={state} onAct={(sets) => flag(...sets)} onRead={onRead} />;
+    case "voicememos":
+      return <VoiceMemos story={story} state={state} onRead={onRead} onRestore={(id) => flag(restored(id))} />;
+    case "mail":
+      return <Mail story={story} state={state} onRead={onRead} />;
+    case "paytap":
+      return <Paytap story={story} state={state} onRead={onRead} />;
     case "safari":
       return <Safari story={story} state={state} onRead={onRead} />;
     default:

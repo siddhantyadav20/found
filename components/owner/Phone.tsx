@@ -20,7 +20,8 @@ import styles from "./ios/Screen.module.css";
      the container query lives on `.surface`, which the stage renders
    - an app zooms out of the icon it was opened from, and back into it
    - swipe right from anywhere with a back button; swipe up from the home bar
-   - pull down from the top edge for Notification Centre
+   - pull down from the top edge for Notification Centre, or from the
+     top-right corner for Control Centre (airplane mode, by hand)
    - banners arrive with the buzz, flick up to dismiss, hold to read
 
    Every gesture follows the finger by styling the element directly while it
@@ -60,16 +61,22 @@ function zoomOver(o: Origin, width: number, height: number) {
   };
 }
 
+/** The aeroplane iOS draws for airplane mode. */
+const PLANE =
+  "M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z";
+
 function StatusBar({
   time,
   battery,
   recording,
   charging,
+  airplane,
 }: {
   time: string;
   battery: number;
   recording?: boolean;
   charging?: boolean;
+  airplane?: boolean;
 }) {
   // At 4–7% a true-width fill is a hairline, so the low end is drawn generously.
   const width = Math.max(8, Math.min(100, battery < 20 ? battery * 6 : battery));
@@ -77,6 +84,12 @@ function StatusBar({
     <div className={styles.status} aria-hidden="true">
       <span className={recording ? styles.recording : undefined}>{time}</span>
       <span className={styles.statusIcons}>
+        {airplane ? (
+          <svg viewBox="0 0 24 24" className={styles.plane}>
+            <path d={PLANE} />
+          </svg>
+        ) : (
+          <>
         <svg viewBox="0 0 18 12" className={styles.signal}>
           {[0, 1, 2, 3].map((i) => (
             <rect key={i} x={i * 4.6} y={9 - i * 3} width="3.2" height={3 + i * 3} rx="0.9" opacity={i < 3 ? 1 : 0.3} />
@@ -87,6 +100,8 @@ function StatusBar({
           <path d="M3.6 6.8a6.2 6.2 0 0 1 8.8 0l-1.3 1.3a4.4 4.4 0 0 0-6.2 0L3.6 6.8Z" />
           <path d="M1.4 4.6a9.3 9.3 0 0 1 13.2 0l-1.3 1.3a7.5 7.5 0 0 0-10.6 0L1.4 4.6Z" />
         </svg>
+          </>
+        )}
         <span className={styles.battery} data-low={(battery <= 7 && !charging) || undefined} data-charging={charging || undefined}>
           <span className={styles.cell}>
             <span className={styles.fill} style={{ width: `${width}%` }} />
@@ -119,6 +134,8 @@ export default function Phone({
   notices,
   onNotice,
   overlay,
+  airplane,
+  onAirplane,
 }: {
   time: string;
   day: string;
@@ -141,9 +158,13 @@ export default function Phone({
   onDismissBanner?: () => void;
   notices: readonly Notice[];
   onNotice: (n: Notice) => void;
-  /** Drawn over everything on the screen: the call. */
+  /** Drawn over everything on the screen. */
   overlay?: ReactNode;
+  /** Airplane mode, and turning it on by hand in Control Centre. It doesn't go back off. */
+  airplane?: boolean;
+  onAirplane?: () => void;
 }) {
+  const [control, setControl] = useState(false);
   const screenRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<HTMLDivElement>(null);
   const shadeRef = useRef<HTMLDivElement>(null);
@@ -333,7 +354,7 @@ export default function Phone({
         onPointerDown={swipeBack}
       >
         <span className={styles.osIsland} aria-hidden="true" />
-        <StatusBar time={time} battery={battery} recording={recording} charging={charging} />
+        <StatusBar time={time} battery={battery} recording={recording} charging={charging} airplane={airplane} />
 
         {lock ?? (
           <>
@@ -358,6 +379,62 @@ export default function Phone({
               onClick={() => setShade("open")}
               onPointerDown={pullShade}
             />
+            {/* The top-right corner is Control Centre's, as on every iPhone without a home button. */}
+            <button
+              type="button"
+              className={styles.controlZone}
+              aria-label="Control Centre"
+              onClick={() => setControl(true)}
+              onPointerDown={(e) =>
+                drag(e, {
+                  engage: (dx, dy) => dy > 0 && dy > Math.abs(dx),
+                  move: () => {},
+                  end: ({ dy, vy }) => (dy > 50 || vy > 0.4) && setControl(true),
+                })
+              }
+            />
+            <div
+              className={styles.control}
+              data-open={control || undefined}
+              role="dialog"
+              aria-label="Control Centre"
+              aria-hidden={!control || undefined}
+              inert={!control}
+              data-no-swipe
+              onClick={(e) => e.target === e.currentTarget && setControl(false)}
+            >
+              <div className={styles.controlBlock}>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={Boolean(airplane)}
+                  aria-label="Airplane Mode"
+                  className={styles.controlTile}
+                  data-on={airplane || undefined}
+                  data-tone="orange"
+                  onClick={() => !airplane && onAirplane?.()}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d={PLANE} />
+                  </svg>
+                </button>
+                <span className={styles.controlTile} data-on={!airplane || undefined} data-tone="green" aria-label={airplane ? "Mobile data off" : "Mobile data on"} role="img">
+                  <svg viewBox="0 0 18 12" aria-hidden="true">
+                    {[0, 1, 2, 3].map((i) => (
+                      <rect key={i} x={i * 4.6} y={9 - i * 3} width="3.2" height={3 + i * 3} rx="0.9" />
+                    ))}
+                  </svg>
+                </span>
+                <span className={styles.controlTile} data-on={!airplane || undefined} data-tone="blue" aria-label={airplane ? "Wi-Fi off" : "Wi-Fi on"} role="img">
+                  <svg viewBox="0 0 16 12" aria-hidden="true">
+                    <path d="M8 11.2 5.7 8.9a3.3 3.3 0 0 1 4.6 0L8 11.2Z" />
+                    <path d="M3.6 6.8a6.2 6.2 0 0 1 8.8 0l-1.3 1.3a4.4 4.4 0 0 0-6.2 0L3.6 6.8Z" />
+                    <path d="M1.4 4.6a9.3 9.3 0 0 1 13.2 0l-1.3 1.3a7.5 7.5 0 0 0-10.6 0L1.4 4.6Z" />
+                  </svg>
+                </span>
+              </div>
+              <p className={styles.controlNote}>{airplane ? "Airplane Mode. Nothing can reach this phone." : "Tap outside to close."}</p>
+            </div>
             <div
               ref={shadeRef}
               className={styles.shade}

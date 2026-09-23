@@ -17,6 +17,10 @@ const TILE: Record<AppId, string> = {
   messages: "linear-gradient(180deg, #67f77c 0%, #0ebd2f 100%)",
   notes: "linear-gradient(180deg, #ffd84a 0%, #f8c81c 23%, #ffffff 23.5%, #f8f8f4 100%)",
   safari: "linear-gradient(180deg, #f3f5f8 0%, #dfe6ef 100%)",
+  voicememos: "linear-gradient(180deg, #2c2c2e 0%, #0b0b0c 100%)",
+  mail: "linear-gradient(180deg, #5ab6ff 0%, #1573f0 100%)",
+  // Ours outright: a payments app that is part of the story's money.
+  paytap: "linear-gradient(160deg, #1f7a64 0%, #0d4a3d 100%)",
   settings: "linear-gradient(180deg, #e3e3e8 0%, #a1a1a8 100%)",
   // A manila case folder: the one icon on the found phone that is the player's own.
   casefile: "linear-gradient(180deg, #3a3f4b 0%, #1d2027 100%)",
@@ -115,6 +119,32 @@ function Glyph({ app }: { app: AppId }) {
         <g fill="none" stroke="#5a5a60" strokeWidth="1.6">
           <circle cx="12" cy="12" r="3" />
           <path d="M12 4.6v2.2M12 17.2v2.2M4.6 12h2.2M17.2 12h2.2M6.8 6.8l1.6 1.6M15.6 15.6l1.6 1.6M17.2 6.8l-1.6 1.6M8.4 15.6l-1.6 1.6" />
+        </g>
+      );
+    case "voicememos":
+      // A waveform: short and tall bars, red where it's recording.
+      return (
+        <g stroke="#ff453a" strokeWidth="1.5" strokeLinecap="round">
+          {[
+            [5, 3], [7.5, 6], [10, 9], [12.5, 5], [15, 8], [17.5, 4], [20, 2],
+          ].map(([x, h]) => (
+            <path key={x} d={`M${x - 1} ${12 - h} V${12 + h}`} />
+          ))}
+        </g>
+      );
+    case "mail":
+      return (
+        <g fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round">
+          <rect x="4" y="6.5" width="16" height="11" rx="1.8" />
+          <path d="m4.6 7.4 7.4 5.6 7.4-5.6" />
+        </g>
+      );
+    case "paytap":
+      // A rupee inside a tap ring: our mark, nobody's logo.
+      return (
+        <g fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="7" strokeOpacity="0.55" />
+          <path d="M9.2 8.6h5.6M9.2 11h5.6M10.2 8.6c2.6 0 3.4 1.2 3.4 2.4s-1 2.4-3.4 2.4l3.6 3.4" />
         </g>
       );
     case "yours:share":

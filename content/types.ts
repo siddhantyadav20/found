@@ -24,6 +24,9 @@ export type AppId =
   | "messages"
   | "notes"
   | "safari"
+  | "voicememos"
+  | "mail"
+  | "paytap"
   | "casefile"
   // Your phone
   | "yours:chats"
@@ -278,11 +281,27 @@ export type HomeIcon = { readonly app: AppId; readonly label: string };
    call is a row in Recents, a setting is a line in a grouped list. Anything
    that can be *found* names an `evidence` id, and the engine does the rest. */
 
+/** A line in a clip or a recording, at its second, with who says it and the English under it. */
+export type Caption = {
+  readonly at: number;
+  readonly who?: string;
+  /** "[dhol]" for a sound: shown as a sound, not as words. */
+  readonly line: string;
+  readonly english?: string;
+};
+
 export type Attachment =
   | { readonly kind: "document"; readonly label: string; readonly meta?: string }
   | { readonly kind: "photo"; readonly label: string; readonly src?: string }
   | { readonly kind: "voice"; readonly seconds: number; readonly transcript: string; readonly english?: string }
-  | { readonly kind: "video"; readonly label: string; readonly seconds: number }
+  | {
+      readonly kind: "video";
+      readonly label: string;
+      readonly seconds: number;
+      /** The poster frame, once the footage exists. */
+      readonly src?: string;
+      readonly captions?: readonly Caption[];
+    }
   /** A page in someone's own hand, photographed: drawn as paper, in cursive. */
   | {
       readonly kind: "handwriting";
@@ -297,6 +316,16 @@ export type Message = {
   readonly id: string;
   /** The phone's owner, the other side, or the app itself. */
   readonly from: "owner" | "them" | "system";
+  /** In a group, who on the other side sent it. */
+  readonly who?: string;
+  /**
+   * The owner's message, as WhatsApp marks it: one grey tick (sent, never
+   * delivered, which is what a block looks like), two grey, or two blue.
+   * Read, by default.
+   */
+  readonly ticks?: "sent" | "delivered" | "read";
+  /** A reply to an earlier message, quoted above it. */
+  readonly quote?: { readonly who: string; readonly text: string };
   readonly text?: string;
   /** The English under the Hinglish or Marathi. Never optional where it matters. */
   readonly english?: string;
@@ -368,6 +397,8 @@ export type Thread = {
   readonly pinned?: boolean;
   /** Unsaved numbers show as numbers, which is how two of them get confused. */
   readonly number?: string;
+  /** Moved out of the list into Archived, which is one tap further than most people look. */
+  readonly archived?: boolean;
   readonly messages: readonly Message[];
   /** What the player may say back, once they have something to say. */
   readonly reply?: Reply;
@@ -375,11 +406,13 @@ export type Thread = {
 };
 
 /**
- * A photograph on the found phone. Until the shoot (ROADMAP S11) these are
- * drawn: `paper` is a page in somebody's hand, `scene` a titled card.
+ * A photograph or a video on the found phone. Until the shoot (ROADMAP S11)
+ * `paper` draws a page in somebody's hand and `scene` a titled card; `src`
+ * swaps in the real image, or a video's poster frame.
  */
 export type Photo = {
   readonly id: string;
+  /** The album it belongs to besides Recents: "Sehgal wedding", "WhatsApp". */
   readonly album?: string;
   readonly at: string;
   readonly day: string;
@@ -387,13 +420,92 @@ export type Photo = {
   /** `paper` draws a page; `scene` draws a photograph. */
   readonly kind: "paper" | "scene";
   readonly title: string;
+  readonly src?: string;
   /** What is written on the page, in the writer's hand. */
   readonly lines?: readonly string[];
   readonly caption?: string;
   /** What Info says took it: "iPhone 14 Pro — Back Camera". */
   readonly camera?: string;
-  /** In Recently Deleted, with the time it was deleted on it. */
+  /** A video: its length and its words. */
+  readonly video?: { readonly seconds: number; readonly captions: readonly Caption[] };
+  /**
+   * Edited on the phone, and iOS kept the original: Edit › Revert brings it
+   * back, and with it whatever the edit cut (`evidence`).
+   */
+  readonly original?: { readonly seconds: number; readonly captions: readonly Caption[]; readonly evidence?: string };
+  readonly favorite?: boolean;
+  /** In the Hidden album, which Photos shows only once Settings says to (`SHOW_HIDDEN`). */
+  readonly hidden?: boolean;
+  /** In Recently Deleted, with the time it was deleted and the days it has left. */
   readonly deletedAt?: string;
+  readonly daysLeft?: number;
+  /**
+   * Something at the edge of the frame that only leaning in finds: past
+   * double size, with the spot (percent across, down) on screen.
+   */
+  readonly zoom?: { readonly at: { readonly x: number; readonly y: number }; readonly reveal: string; readonly evidence: string };
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** A recording in Voice Memos. */
+export type Memo = {
+  readonly id: string;
+  readonly title: string;
+  readonly at: string;
+  readonly day: string;
+  readonly seconds: number;
+  readonly lines: readonly Caption[];
+  /** In Recently Deleted, with the time it was deleted and the days it has left. */
+  readonly deletedAt?: string;
+  readonly daysLeft?: number;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** A letter in Mail, and the document attached to it, if any. */
+export type Mail = {
+  readonly id: string;
+  readonly from: string;
+  readonly address?: string;
+  readonly subject: string;
+  readonly at: string;
+  readonly day: string;
+  readonly body: readonly string[];
+  readonly attachment?: { readonly name: string; readonly pages: readonly string[]; readonly evidence?: string };
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** A line in the payments app: money in (+) or out (−), in rupees. */
+export type Payment = {
+  readonly id: string;
+  readonly who: string;
+  /** The UPI id, as the receipt shows it. */
+  readonly handle?: string;
+  readonly amount: number;
+  readonly note?: string;
+  readonly at: string;
+  readonly day: string;
+  readonly failed?: boolean;
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
+/** An Instagram profile: the owner's, or anybody's the story needs. */
+export type Profile = {
+  readonly handle: string;
+  readonly name: string;
+  readonly bio?: string;
+  /** The owner's own: its ring says "Your story". */
+  readonly own?: boolean;
+  readonly posts: readonly {
+    readonly id: string;
+    readonly title: string;
+    readonly src?: string;
+    readonly caption?: string;
+    readonly evidence?: string;
+  }[];
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
@@ -439,6 +551,8 @@ export type CallEntry = {
   readonly at: string;
   readonly day: string;
   readonly seconds?: number;
+  /** One row for several calls in a row, as Recents shows it: "(47)". */
+  readonly count?: number;
   /** Still connected: Recents shows it as live, not as a length. */
   readonly ongoing?: boolean;
   /** iOS records calls now, for anyone who turns it on. */
@@ -452,14 +566,22 @@ export type SettingsRow = {
   readonly sub?: string;
   readonly value?: string;
   /** A page one level down, as iOS keeps a profile: tapping the row opens it. */
+  /** A page one level down: tapping the row opens it. */
   readonly detail?: {
     readonly heading: string;
-    readonly title: string;
-    readonly rows: readonly { readonly label: string; readonly value: string }[];
+    /** A first row carrying the row's own tile, as iOS heads a page about one thing. */
+    readonly title?: string;
+    readonly rows: readonly {
+      readonly label: string;
+      readonly value?: string;
+      readonly toggle?: { readonly sets: readonly Flag[] };
+    }[];
     readonly footer?: string;
   };
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
+  /** A switch. Turning it on sets these; on this phone, nobody turns it back off. */
+  readonly toggle?: { readonly sets: readonly Flag[] };
   /** A row that does something, once, and cannot be undone. */
   readonly action?: {
     readonly label: string;
@@ -496,6 +618,10 @@ export type Story = {
   readonly threads: readonly Thread[];
   readonly photos: readonly Photo[];
   readonly notes: readonly Note[];
+  readonly memos: readonly Memo[];
+  readonly mail: readonly Mail[];
+  readonly payments: readonly Payment[];
+  readonly profiles: readonly Profile[];
   readonly incoming: readonly IncomingCall[];
   readonly searches: readonly Search[];
   readonly calls: readonly CallEntry[];
