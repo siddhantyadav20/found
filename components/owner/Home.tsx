@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { AppId, Story } from "@/content/types";
-import { answered, openQuestion, unseenIn, type CaseState } from "@/lib/game/engine";
+import { answered, needsRevisit, openQuestion, unseenIn, type CaseState } from "@/lib/game/engine";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Home.module.css";
 
@@ -68,7 +68,7 @@ export default function Home({
   return (
     <div className={styles.home} data-covered={covered || undefined} inert={covered} aria-hidden={covered || undefined}>
       <button type="button" className={styles.widget} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
-        <span className={styles.widgetLabel}>{open ? "Open question" : "Case file"}</span>
+        <span className={styles.widgetLabel}>{open ? (needsRevisit(open, state) ? "Revisit" : "Open question") : "Case file"}</span>
         <span className={styles.widgetText}>
           {open ? open.ask : allAsked ? "Everything's asked. What you do with it is on your phone." : "Look around. What you open, you keep."}
         </span>

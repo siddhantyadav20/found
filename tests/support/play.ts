@@ -10,6 +10,7 @@ import {
   openApp,
   openQuestion,
   see,
+  sideQuestions,
   seen,
   settle,
   type CaseState,
@@ -35,8 +36,16 @@ export function look(s: CaseState): CaseState {
 
 const has = (s: CaseState) => (route: readonly string[]) => route.every((id) => seen(s, id));
 
-/** Answer a question with the first route the player can table: the truth if it can be proved. */
-export function solve(s: CaseState, q: Question): CaseState {
+/**
+ * How a solver plays: `truth` files the traced answer whenever it can be
+ * proved; `version` is the reader Sameer was counting on, filing his version
+ * whenever it's on offer. `side` also answers what the case file offers on
+ * the side (the money, Revisits nobody has to do).
+ */
+export type Style = { readonly prefer?: "truth" | "version"; readonly side?: boolean };
+
+/** Answer a question with the first route the player can table: the truth if it can be proved, unless they prefer his version. */
+export function solve(s: CaseState, q: Question, style: Style = {}): CaseState {
   const can = has(s);
   switch (q.kind) {
     case "pick": {
@@ -45,7 +54,8 @@ export function solve(s: CaseState, q: Question): CaseState {
       return answer(ep, s, q.id, route).state;
     }
     case "file": {
-      for (const c of [...q.claims].sort((a, b) => Number(Boolean(a.version)) - Number(Boolean(b.version)))) {
+      const order = style.prefer === "version" ? -1 : 1;
+      for (const c of [...q.claims].sort((a, b) => order * (Number(Boolean(a.version)) - Number(Boolean(b.version))))) {
         const route = [c.proof, ...(c.orProof ?? [])].find(can);
         if (route) {
           const r = answer(ep, s, q.id, { claim: c.id, proof: route });
@@ -70,6 +80,7 @@ export function play(
   stop: (s: CaseState, scene: Scene) => boolean,
   say: readonly Flag[] = [],
   from: CaseState = add(newCase("solver", 0), "did:opened", "did:unlock", "saw:note", "did:past-lock"),
+  style: Style = {},
 ): CaseState {
   let s = from;
   for (let step = 0; step < 300; step++) {
@@ -97,7 +108,13 @@ export function play(
       continue;
     }
     const q = openQuestion(ep, s);
-    if (q) s = solve(look(s), q);
+    if (q) {
+      s = solve(look(s), q, style);
+      continue;
+    }
+    // Nothing in front: take up what's offered on the side, if this player does.
+    const aside = style.side ? sideQuestions(ep, look(s)).find((x) => canSolve(look(s), x, style)) : undefined;
+    if (aside) s = solve(look(s), aside, style);
   }
   throw new Error(`stuck at ${sceneOf(ep, s).kind}, question ${openQuestion(ep, s)?.id}`);
 }
@@ -116,4 +133,13 @@ function canSay(s: CaseState, f: Flag): boolean {
       !(r.unless ?? []).some((x) => s.flags.includes(x)) &&
       !r.options.some((x) => x.sets?.some((g) => s.flags.includes(g))),
   );
+}
+
+/** Whether a side question can be answered with what's been found. */
+function canSolve(s: CaseState, q: Question, style: Style): boolean {
+  try {
+    return solve(s, q, style) !== s;
+  } catch {
+    return false;
+  }
 }

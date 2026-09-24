@@ -12,9 +12,9 @@ import { homeIcons } from "@/lib/game/engine";
  * - nothing points at evidence that doesn't exist
  * - the chain is eleven links, and every one of them can be traced
  *
- * Episodes 1 and 2 are written (ROADMAP S6–S7); Episode 3 follows in S8. S12 adds the solver runs CHAPTER1.md promises: the full
- * chain (11 of 11, Ending A), Sameer's version (B), an early post (C) and
- * Return to Sender, and two sources per link that survive any closed route.
+ * The solver runs CHAPTER1.md promises (the full chain to A, Sameer's
+ * version to B, an early post to C, Return to Sender, and every link
+ * surviving any one closed route) are in tests/ship.test.ts.
  */
 
 const ep = STORIES.shagun;

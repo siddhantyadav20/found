@@ -23,8 +23,12 @@ import styles from "./Ringing.module.css";
 
    =========================================================================== */
 
-/** How long the answer to what was said stays before the call ends. */
-const REACTION_MS = 3400;
+/**
+ * How long the answer to what was said stays before the call ends: long
+ * enough to read it and its English, a beat per character, within limits.
+ */
+const reactionMs = (m: { text?: string; english?: string } | undefined): number =>
+  m ? Math.min(9000, Math.max(3400, 1600 + 55 * ((m.text?.length ?? 0) + (m.english?.length ?? 0)))) : 400;
 
 function Glyph({ kind }: { kind: "answer" | "decline" }) {
   return (
@@ -77,7 +81,7 @@ export default function Ringing({
         ended();
         onSay(chosen);
       },
-      chosen.then?.length ? REACTION_MS : 400,
+      reactionMs(chosen.then?.[0]),
     );
     return () => window.clearTimeout(t);
   }, [chosen, onSay]);

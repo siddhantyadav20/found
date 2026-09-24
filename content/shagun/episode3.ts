@@ -96,7 +96,7 @@ const questions: readonly Question[] = [
       ["no-112", "site-plan", "left-empty"],
     ],
     reply:
-      "Bhasin kept him there: from 12:38, in the service room, forty metres from a gate on Mandi Road, and awake at 1:14. At 1:59 a car was at that gate. At 2:04 it left without him.",
+      "Bhasin kept him there: from 12:38, in the service room, awake at 1:14. At 1:59 a car was at the service gate on Mandi Road, waiting for someone. At 2:04 it left without him.",
     sets: ["link:kept"],
   },
   {

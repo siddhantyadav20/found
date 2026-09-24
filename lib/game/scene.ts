@@ -1,6 +1,7 @@
 import type { Flag, IncomingCall, Story } from "@/content/types";
 import { all, episodeOf, has, type CaseState } from "./engine";
 import { ENDING_SEEN } from "./endings";
+import { AIRPLANE } from "./phone";
 
 /* ===========================================================================
    Where the player is.
@@ -38,7 +39,8 @@ export const titleShown = (episode: 2 | 3): Flag => `fired:title-${episode}`;
  * back; a call that insists can only be answered.
  */
 export const ringingNow = (story: Story, s: CaseState): IncomingCall | undefined =>
-  story.incoming.find(
+  // In airplane mode nothing rings.
+  has(s, AIRPLANE) ? undefined : story.incoming.find(
     (c) => all(s, c.after) && !has(s, `did:done-${c.id}`) && !(!c.insists && has(s, `did:declined-${c.id}`)),
   );
 

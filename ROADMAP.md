@@ -31,7 +31,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S9** ✔ | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
 | **S10** ✔ | Growth | Pass it on, drops, share images, The First Minute |
 | **S11** | The real assets | ASSETS.md: photographs, clips, voices, handwriting |
-| **S12** | Ship-ready | The chapter held to its laws, a budget, a human playtest |
+| **S12** ½ | Ship-ready | The chapter held to its laws, a budget, a human playtest |
 
 S1 was the only destructive phase; it ran on 2026-09-23, once Siddhant had
 read the adaptation.
@@ -552,7 +552,35 @@ images and OG routes, and **The First Minute**, redesigned for this chapter
 [ASSETS.md](ASSETS.md): the photographs and clips (a cast wedding shoot), the
 voices, the handwriting, the documents.
 
-## S12 — Ship-ready
+## S12 — Ship-ready · **automated half done (2026-09-24); the human playtest is open**
+
+**Done:**
+- **`tests/ship.test.ts`** plays the chapter to its end every way CHAPTER1
+  promises:
+  - **11 of 11 → The Complete Record**
+  - **Sameer's reader → his version** (the spine traced, nothing deeper)
+  - **an early post → The Wrong Story**
+  - **Return to Sender** from any point
+- **Fair play:** every link is still traced with any single route closed:
+  - nobody answered
+  - Nitin protected, pressed, or handed to Kunal
+  - Kunal confronted
+  - airplane mode from Episode 2, or from the first minute
+- **Every piece of evidence is reachable** by some way of playing.
+- The solver (`tests/support/play.ts`) now plays as Sameer's reader too, and
+  takes what's offered on the side.
+- **Airplane mode in Episode 1** now silences Raju's call, Find My, Mummy
+  and Sameer. The phone still dies, on Q4's clock.
+- **A full, unseeded play** in the browser, desk to end card, 11 of 11:
+  `PLAYTEST-SHAGUN.md`. Ten findings, seven fixed, three kept on purpose.
+- **Edge cases:** storage refused warns, and reduced motion is honoured
+  site-wide. Sound is off until the ringer switch.
+- 144 tests; the case page at 682 of 700 KB.
+
+**Open, for a person:** a full playthrough on a real phone (the questions at
+the foot of `PLAYTEST-SHAGUN.md`), and performance on a mid-range Android.
+The video-dead path waits on S11's footage.
+
 
 - `tests/chapter.test.ts` rewritten for this chapter's laws: three hints per
   question; two sources per link that survive **any single closed route**;

@@ -13,6 +13,9 @@ import { RAJU } from "./phone";
    End belief (canon): Sameer witnessed a murder and is being hunted.
    =========================================================================== */
 
+/** Airplane mode, turned on by hand (lib/game/phone.ts): after it, nothing reaches the phone. */
+const OFFLINE = "did:airplane";
+
 /** Sameer's new number, writing to his own phone. Masked, like every number here. */
 export const SAMEER_NEW = "+91 70••• •2290";
 
@@ -98,7 +101,7 @@ const questions: readonly Question[] = [
         text: "A worker was shot while Kunal Sehgal was firing. Nobody took him to a hospital, and his body was burned.",
         proof: ["vn-kunal", "fire-clip"],
         orProof: [["vn-kunal", "vn-burned"]],
-        reply: "On the record, as his voice notes tell it.",
+        reply: "On the record.",
         version: true,
         link: "two-firings",
       },
@@ -252,23 +255,24 @@ const events: readonly LiveEvent[] = [
   // Seconds after the phone wakes, over its lock screen, the number that called 47 times calls again.
   { id: "raju-rings", device: "owner", after: ["did:unlock"], delay: 6, app: "phone" },
   // Once his version is filed, someone plays a sound on the phone to find it.
-  { id: "find-my", device: "owner", after: ["did:heard-him"], delay: 6, app: "settings", icon: "settings", banner: "Find My · A sound was played on this iPhone." },
+  { id: "find-my", device: "owner", after: ["did:heard-him"], unless: [OFFLINE], delay: 6, app: "settings", icon: "settings", banner: "Find My · A sound was played on this iPhone." },
   {
     id: "mummy-where",
     device: "owner",
     after: ["fired:find-my"],
+    unless: [OFFLINE],
     delay: 8,
     app: "whatsapp",
     banner: "Mummy · Beta, phone ki location kahin aur dikha rahi hai. Tu kahan hai?",
   },
   // Once the phone is known to have been prepared, the man who prepared it writes.
-  { id: "sameer-writes", device: "owner", after: ["did:prepared"], delay: 5, app: "whatsapp", banner: `${SAMEER_NEW} · M? Tu hai?` },
-  // And then it dies, unless someone keeps it alive.
+  { id: "sameer-writes", device: "owner", after: ["did:prepared"], unless: [OFFLINE], delay: 5, app: "whatsapp", banner: `${SAMEER_NEW} · M? Tu hai?` },
+  // And then it dies, unless someone keeps it alive: online or not, half a minute after Sameer's first message would come.
   {
     id: "dying",
     device: "owner",
-    after: ["fired:sameer-writes"],
-    delay: 30,
+    after: ["did:prepared"],
+    delay: 35,
     app: "settings",
     icon: "settings",
     banner: "Low Battery · 2% battery remaining",
