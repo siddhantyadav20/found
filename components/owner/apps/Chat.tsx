@@ -369,7 +369,7 @@ export default function Chat({
   chrome?: boolean;
   /** Opening a chat is how what's in it gets found. */
   onRead: (evidenceIds: readonly string[]) => void;
-  /** The player, saying something on a dead woman's phone. */
+  /** The player, saying something on somebody else's phone. */
   onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);

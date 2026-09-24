@@ -42,9 +42,9 @@ describe("the shared result", () => {
   });
 
   it("carries the case's own question, and names no answer", () => {
-    const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.shagun.ask);
+    const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.shagun.ask, CASES.shagun.hook);
     expect(text).toContain("I traced 2 of 11 links.");
-    expect(text).toContain(CASES.shagun.ask);
+    expect(text).toContain("A photographer's phone. A wedding. Where does it end?");
     expect(text).toContain("https://found.test/d/Abcd2345");
     // Nothing from the chain itself: not a label, not a line, not his words.
     for (const l of ep.chain) {

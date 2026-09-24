@@ -187,7 +187,7 @@ export default function Table({
   return (
     <div className={phoneStyles.surface}>
       {replay && (
-        <p className={phoneStyles.ledgerCount} aria-live="polite">
+        <p className={phoneStyles.chainCount} aria-live="polite">
           {traced(story, state).length} of {story.chain.length} links
         </p>
       )}

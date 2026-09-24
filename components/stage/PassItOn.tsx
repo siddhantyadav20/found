@@ -55,7 +55,7 @@ function progress(st: DropStatus | undefined): string {
   if (!st) return "…";
   if (st.finished) return st.seconds ? `got to the end in ${Math.max(1, Math.round(st.seconds / 60))} min` : "got to the end";
   if (st.unlocked) return "unlocked the phone";
-  if (st.opened) return "opened the envelope";
+  if (st.opened) return "opened the parcel";
   if (st.arrived) return "has it in their hands";
   return "hasn't opened it yet";
 }
@@ -137,7 +137,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
     setPhase("sealed");
   };
 
-  const text = link ? shareText(meta.title, result, link.url, meta.ask) : "";
+  const text = link ? shareText(meta.title, result, link.url, meta.ask, meta.hook) : "";
 
   const nativeShare = async () => {
     try {

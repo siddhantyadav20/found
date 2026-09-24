@@ -26,6 +26,13 @@ export type CaseMeta = {
   readonly note: string;
   /** The question that goes with a share, under the result line. */
   readonly ask: string;
+  /** What comes before the question in a share: the premise, in a breath, naming nothing that happens. */
+  readonly hook?: string;
+  /**
+   * Something besides the phone in the parcel, drawn on the passed-on
+   * parcel's share image: Shagun's wedding envelope.
+   */
+  readonly envelope?: { readonly front: string; readonly small: string };
   /** How many links the chain has, for the share images (which never load a story). */
   readonly links: number;
   /** What keeps landing on this case's lock screen. The desk cycles it. */

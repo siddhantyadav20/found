@@ -16,6 +16,9 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   tone: "Mystery · Delhi · 60 min",
   note: "16+ · death, gun violence, a body burned (not shown) · this game never asks for anything real",
   ask: "Where does it end?",
+  // CHAPTER1.md J's preset message, less its question.
+  hook: "A photographer's phone. A wedding.",
+  envelope: { front: "Ishita weds Rohan", small: "Sehgal Parivar · 22.11" },
   links: 11,
 };
 

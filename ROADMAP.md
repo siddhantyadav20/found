@@ -29,7 +29,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S7** ✔ | Episode 2 | *The Second Shot* as data |
 | **S8** ✔ | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
 | **S9** ✔ | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
-| **S10** | Growth | Pass it on, drops, share images, The First Minute |
+| **S10** ✔ | Growth | Pass it on, drops, share images, The First Minute |
 | **S11** | The real assets | ASSETS.md: photographs, clips, voices, handwriting |
 | **S12** | Ship-ready | The chapter held to its laws, a budget, a human playtest |
 
@@ -521,7 +521,27 @@ No console errors.
 | End card | The chain (untraced rows in Sameer's words), the count, one line only this ending shows, the "4. Nitin —" image, Pass it on, the case number |
 | Outside the fiction | Celebratory firing is a crime; any hospital must treat first; 112; Tele-MANAS 14416. **Every fact checked against the source before the copy lands** |
 
-## S10 — Growth
+## S10 — Growth · **done (2026-09-24)**
+
+Most of the growth loop was already Shagun's since S3 (the links-traced
+result, drops carrying it, the share images reading the case's meta). S10
+finished it:
+- **The share text** carries CHAPTER1 J's preset: *"Shagun — Found / I
+  traced 9 of 11 links. / A photographer's phone. A wedding. Where does it
+  end? / link"* (`CaseMeta.hook`). It names nothing that happens.
+- **The passed-on parcel's image** has Shagun's wedding envelope,
+  maroon and gold, *"Ishita weds Rohan"*, leaning out beside the phone
+  (`CaseMeta.envelope`): the title, in the preview.
+- **The case card's hint** breaks evenly, not with "M." alone on a line.
+- **Pass it on's progress** says "opened the parcel", not "the envelope".
+- **The retired chapter's names are gone** from code: `chainCount`, not
+  `ledgerCount`, and "his phone" in the comments.
+- **Checked on a production build** (port 3002): all three share images
+  return 200 as PNG and read right; the drop page and the desk read as
+  Shagun; no console errors.
+- **The First Minute stays out** until O5 is designed (CHAPTER1 M). The
+  route was removed with the retired chapter in S1.
+
 
 Pass it on (*"I traced 9 of 11 links"*), drops and the label, the share
 images and OG routes, and **The First Minute**, redesigned for this chapter

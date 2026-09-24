@@ -9,7 +9,7 @@ import { track } from "@/lib/found/track";
 /* ===========================================================================
    Every write to the playthrough, in one place.
 
-   The stage, the case file and every app on her phone change the save the
+   The stage, the case file and every app on his phone change the save the
    same way: read the latest, add to it, write it back. Doing it here means
    three things happen on every save without anybody remembering to:
 

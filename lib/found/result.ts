@@ -41,8 +41,11 @@ export const tracedLine = (n: number, of: number): string => `I traced ${n} of $
 
 export const resultLine = (r: Result): string => tracedLine(r.traced.length, r.links);
 
-/** What goes in the chat when someone passes the phone on. The case's question is the hook. */
-export function shareText(title: string, result: Result | null, url: string, ask: string): string {
-  const lines = [`${title} — Found`, ...(result ? [resultLine(result)] : []), ask, url];
+/**
+ * What goes in the chat when someone passes the phone on: the title, the
+ * brag, the premise in a breath, the case's question, and the link.
+ */
+export function shareText(title: string, result: Result | null, url: string, ask: string, hook?: string): string {
+  const lines = [`${title} — Found`, ...(result ? [resultLine(result)] : []), hook ? `${hook} ${ask}` : ask, url];
   return lines.join("\n");
 }

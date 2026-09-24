@@ -769,8 +769,8 @@
 .notice[data-look]:hover .noticeIcon,
 .notice[data-look]:active .noticeIcon { scale: 2.4; position: relative; z-index: 2; }
 
-/* The ledger, counted live on a replay: outside the fiction, and small. */
-.ledgerCount {
+/* The chain, counted live on a replay: outside the fiction, and small. */
+.chainCount {
   position: fixed;
   left: 50%;
   bottom: calc(26px + env(safe-area-inset-bottom));

@@ -36,7 +36,8 @@ export function CaseCard({ meta }: { meta: CaseMeta }) {
           A thriller in one sitting
         </div>
         <div style={{ fontSize: 108, fontWeight: 700, lineHeight: 1 }}>{meta.title}</div>
-        <div style={{ fontSize: 38, lineHeight: 1.35, color: "rgba(242,237,230,0.72)" }}>{meta.hint}</div>
+        {/* Narrower than the title, so a short last word ("M.") isn't left alone on a line. */}
+        <div style={{ maxWidth: 560, fontSize: 38, lineHeight: 1.35, color: "rgba(242,237,230,0.72)" }}>{meta.hint}</div>
       </div>
       <div
         style={{
@@ -76,8 +77,19 @@ export function CaseCard({ meta }: { meta: CaseMeta }) {
   );
 }
 
-/** A passed-on phone: a parcel addressed by hand, a phone lit inside it. */
-export function EnvelopeCard({ label, said, ask }: { label: readonly string[]; said?: string; ask: string }) {
+/** A passed-on phone: a parcel addressed by hand, a phone lit inside it, and whatever came with it. */
+export function EnvelopeCard({
+  label,
+  said,
+  ask,
+  envelope,
+}: {
+  label: readonly string[];
+  said?: string;
+  ask: string;
+  /** Something else in the parcel, leaning out beside the phone: Shagun's wedding envelope. */
+  envelope?: { readonly front: string; readonly small: string };
+}) {
   return (
     <div
       style={{
@@ -107,6 +119,32 @@ export function EnvelopeCard({ label, said, ask }: { label: readonly string[]; s
           transform: "rotate(-3deg)",
         }}
       >
+        {envelope && (
+          /* Maroon and gold, somebody else's wedding, tucked in beside the phone. */
+          <div
+            style={{
+              position: "absolute",
+              top: -64,
+              left: 316,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              width: 172,
+              height: 112,
+              borderRadius: 4,
+              backgroundColor: "#6b1624",
+              border: "3px solid #c9a25a",
+              color: "#e6c878",
+              transform: "rotate(-11deg)",
+              boxShadow: "0 12px 30px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div style={{ display: "flex", fontSize: 19, fontWeight: 700 }}>{envelope.front}</div>
+            <div style={{ display: "flex", fontSize: 12, letterSpacing: 2 }}>{envelope.small}</div>
+          </div>
+        )}
         <div
           style={{
             position: "absolute",

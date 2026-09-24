@@ -13,7 +13,7 @@ export const runtime = "edge";
 
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = "A courier parcel addressed to you, with a phone inside it";
+export const alt = "A parcel addressed to you, with a phone inside it, and a wedding envelope";
 
 /**
  * The preview a friend sees in the chat: their own name on the parcel.
@@ -31,5 +31,5 @@ export default async function Image({ params }: { params: Promise<{ code: string
   // The sender's result, if they finished: the spoiler-free brag.
   const meta = CASES[drop?.case ?? FEATURED];
   const said = drop?.traced === undefined ? undefined : tracedLine(drop.traced, meta.links);
-  return new ImageResponse(<EnvelopeCard label={[drawable ? `TO ${to}` : "TO YOU", "BY HAND"]} said={said} ask={meta.ask} />, size);
+  return new ImageResponse(<EnvelopeCard label={[drawable ? `TO ${to}` : "TO YOU", "BY HAND"]} said={said} ask={meta.ask} envelope={meta.envelope} />, size);
 }
