@@ -105,8 +105,10 @@ export default function DeskPhone({ minutes }: { minutes?: number }) {
                 <span className={styles.parcel} aria-hidden="true">
                   <span className={styles.parcelStrip}>TAP TO PICK UP</span>
                   <span className={styles.sticker}>
-                    <b>TO —</b>
+                    <b>{meta.label ? `TO ${meta.label.to.toUpperCase()}` : "TO —"}</b>
                     <span>{meta.note}</span>
+                    {/* The courier's stamp: this came back. */}
+                    {meta.label && <span className={styles.stickerStamp}>{meta.label.stamp[0]}</span>}
                   </span>
                 </span>
               ) : (

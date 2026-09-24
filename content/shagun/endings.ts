@@ -66,10 +66,11 @@ export const endings: readonly Ending[] = [
     row: "Return to Sender",
     when: { acts: ["return"] },
     lines: [
-      { text: "You put the phone back in the parcel with the envelope, and send it back the way it came." },
+      { text: "In the morning you tape the parcel shut, with the envelope inside, and write across the label: not the sender." },
+      { text: "The courier takes it back. It goes to the hub, onto a shelf of parcels nobody will claim." },
       { text: "Whatever happened in Chhattarpur stays on it." },
     ],
     last: [{ text: "Four voice notes to M. One grey tick each.", needs: ["saw:vn-kunal"] }],
-    onlyHere: "The parcel, closed again.",
+    onlyHere: "A shelf of parcels nobody will claim.",
   },
 ];

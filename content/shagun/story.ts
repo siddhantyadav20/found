@@ -114,6 +114,13 @@ export const story: Story = {
     intro: "What happened at the Sehgal wedding · Banyan Farms, Chhattarpur · 22 Nov",
     sendTo: "Meera",
     sendRequires: ["saw:meera"],
+    /* Return to Sender, where the sender on paper is you (O1): the
+       legitimate channel for a parcel that isn't yours is the courier. */
+    parcel: {
+      note: "It came back to this address as the sender's. You didn't send it. The courier takes a parcel back as “not the sender”, and keeps it.",
+      act: "Give it back to the courier",
+      ask: "Hand his phone back to the courier, as not yours? You won't see it again.",
+    },
   },
   // The replay image (CHAPTER1.md J): the note whose last line stops at "4. Nitin —".
   replay: { note: "for-m", caption: "He started to tell you." },

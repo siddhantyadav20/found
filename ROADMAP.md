@@ -213,7 +213,7 @@ people go quiet) is written with the routes in S8.
   the promise, the charger gate on `story.gate`, resume, and "You put it
   down" after a real gap.
 
-**Still open:** the label's addressee ("TO —") waits on O1.
+**Since resolved:** the label's addressee ("TO —") was waiting on O1. Decided 2026-09-24: returned to origin (see *O1 — decided*, below).
 
 **Tests:** 75. `chapter.test.ts` now guards the canon note: addressed to M,
 the local thana, Bhasin (script §8 beat 1).
@@ -452,7 +452,8 @@ question answerable two ways, three hints each, and a solver run through it.
   - On it: Messages, Pulse (the draft), the record, and the parcel.
 - **Meera** (`content/shagun/yours.ts`) is found through WhatsApp's contact
   info on the pinned M chat (`Thread.contact`): her number, and her About
-  line, *"Meera Arora · Advocate, Saket Courts"*. That works whatever O1
+  line, *"Meera Arora · Advocate, Saket Courts"*. (O1 has since been
+  decided, as returned to origin; her name is on the label too.) That works whatever O1
   decides.
   - Her first line doesn't say whether she expected the phone.
   - She says airplane mode. If it's done (`did:meera-preserved`), she reads
@@ -472,6 +473,7 @@ question answerable two ways, three hints each, and a solver run through it.
   - **A:** the lie and the edit in, and no untraced link stated as fact.
   - **B:** any other send or post.
   - **Return to Sender:** "send it back the way it came", which is O1-neutral.
+    Since O1: given back to the courier as not the sender.
   - Lines read NITIN, RAJU, MEERA, SAMEER, PUBLIC and what was left out.
     No verdicts.
 - **The end card:**
@@ -552,6 +554,24 @@ images and OG routes, and **The First Minute**, redesigned for this chapter
 [ASSETS.md](ASSETS.md): the photographs and clips (a cast wedding shoot), the
 voices, the handwriting, the documents.
 
+## O1 — decided (2026-09-24): returned to origin
+
+Sameer couriered the phone to Meera at Saket Courts, writing a made-up
+sender's address. It was the player's. She was away at a wedding, so the
+courier returned it "to origin". Built:
+- **The label**, on the desk and on the parcel (`CaseMeta.label`): *TO MEERA
+  ARORA · Advocate · Lawyers' Chambers, Saket Courts*, stamped *RETURN TO
+  ORIGIN · Addressee not available*. A passed-on parcel keeps the friend's
+  name on top: *"By hand, over a courier's label to Meera Arora."*
+- **Sameer**, told *"Main M nahi hoon"*: *"Kaun hai? …Parcel wapas aa gaya?"*,
+  then, after a pause, *"Usne liya hi nahi."*, then *"Woh bhejne wala address
+  maine aise hi likh diya tha."*
+- **Meera**: *"Courier wale ka phone aaya tha. Main ek shaadi mein thi, shehar
+  se bahar."*
+- **Return to Sender** (`story.yours.parcel`): give it back to the courier as
+  *not the sender*. It goes onto a shelf of parcels nobody will claim.
+- A test holds the label and the four beats to the decision.
+
 ## S12 — Ship-ready · **automated half done (2026-09-24); the human playtest is open**
 
 **Done:**
@@ -599,7 +619,7 @@ The video-dead path waits on S11's footage.
 | | |
 |---|---|
 | Review the adaptation | CHAPTER1.md, before S1 |
-| O1 | Why the phone reaches the player |
+| ~~O1~~ | ~~Why the phone reaches the player~~: decided 2026-09-24, returned to origin |
 | The shoot | Cast Sameer, Dilip, Kunal and wedding extras; the reel; the fire clip |
 | The voices | Sameer's four voice notes and the memo; Dilip (one message's worth); Raju; Nitin; Mummy |
 | Handwriting | Sameer's note on the shagun envelope; the "For M" note is typed |

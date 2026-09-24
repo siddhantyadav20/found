@@ -116,7 +116,7 @@ silhouettes. No headline, no "Play", no sign-up, no cookie banner.
 - **In-app browsers get a note, not a wall.**
 - **Returning players** see the parcel already open and the phone as they
   left it. Resume is the default; "Start over" asks twice.
-- **The label's addressee** depends on open decision O1 (CHAPTER1 M).
+- **The label** is a courier's, to **Meera Arora, Advocate, Saket Courts**, with **RETURN TO ORIGIN · Addressee not available** stamped across it (O1, decided 2026-09-24). The first thing the player reads says this was meant for someone else and came back to them by mistake.
 
 ## Stage 2 · The envelope (0:40–1:30)
 

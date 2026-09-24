@@ -29,6 +29,12 @@ export type CaseMeta = {
   /** What comes before the question in a share: the premise, in a breath, naming nothing that happens. */
   readonly hook?: string;
   /**
+   * The courier's label on the parcel: who it was sent to, where, and the
+   * courier's stamp over it. It's how the phone came to the player
+   * (CHAPTER1.md O1).
+   */
+  readonly label?: { readonly to: string; readonly address: string; readonly stamp: readonly [string, string] };
+  /**
    * Something besides the phone in the parcel, drawn on the passed-on
    * parcel's share image: Shagun's wedding envelope.
    */

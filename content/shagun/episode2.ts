@@ -226,9 +226,13 @@ const sameer: Thread = {
           text: "Main M nahi hoon.",
           english: "I'm not M.",
           sets: ["did:sameer-not-m"],
+          /* It came back (CHAPTER1.md O1): he works out that Meera never took
+             it, and that the sender's address he made up was somebody's. */
           then: [
-            { id: "sn-7", from: "them", at: "00:34", text: "Kaun hai?", english: "Who is it?" },
-            { id: "sn-8", from: "them", at: "00:34", text: "…Jo bhi hai. Phone band mat karna. Bhasin ka group dekh. Sab wahan hai.", english: "…Whoever you are. Don't switch the phone off. Look at Bhasin's group. It's all there." },
+            { id: "sn-7", from: "them", at: "00:34", text: "Kaun hai? …Parcel wapas aa gaya?", english: "Who is it? …Did the parcel come back?" },
+            { id: "sn-7a", from: "them", at: "00:34", typing: 6, text: "Usne liya hi nahi.", english: "She never even took it." },
+            { id: "sn-7b", from: "them", at: "00:35", text: "Woh bhejne wala address maine aise hi likh diya tha.", english: "I'd just made up the sender's address." },
+            { id: "sn-8", from: "them", at: "00:35", text: "…Jo bhi hai. Phone band mat karna. Bhasin ka group dekh. Sab wahan hai.", english: "…Whoever you are. Don't switch the phone off. Look at Bhasin's group. It's all there." },
           ],
         },
         {

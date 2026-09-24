@@ -91,22 +91,35 @@ export default function Parcel({
           </span>
           {/* The phone inside, which rises out as the parcel comes open. */}
           <span className={styles.inside} aria-hidden="true" />
-          {/* A courier's delivery label: who it's for, where it came from, and
-              the declaration line, which is where the content note and the
-              promise live (PLAYER-JOURNEY Stage 1). */}
+          {/* A courier's delivery label: who it was for, where, the courier's
+              stamp over it, and the declaration line, which is where the
+              content note and the promise live (PLAYER-JOURNEY Stage 1).
+              Passed on by a friend, their name goes over it by hand. */}
           <span className={styles.label}>
-            {/* Who it was addressed to is still to be decided (CHAPTER1 O1). */}
-            <span className={styles.to}>{to ? `TO ${to}` : "TO —"}</span>
+            <span className={styles.to}>{to ? `TO ${to}` : meta.label ? `TO ${meta.label.to.toUpperCase()}` : "TO —"}</span>
+            {meta.label && (
+              <span className={styles.from}>
+                {to ? `By hand, over a courier's label to ${meta.label.to}` : meta.label.address}
+              </span>
+            )}
             <span className={styles.note}>
               <b>Contains:</b> {meta.note.split(" · ").slice(0, 2).join(" · ")}
             </span>
             <span className={styles.note}>
               <b>Declared:</b> {meta.note.split(" · ").slice(2).join(" · ")}
             </span>
-            {replay && (
-              <span className={styles.postmark} aria-label="Postmarked: delivered">
-                DELIVERED
+            {/* What the courier did with it: the reason it's in your hands. */}
+            {meta.label ? (
+              <span className={styles.postmark} aria-label={`Stamped: ${meta.label.stamp.join(". ")}`}>
+                {meta.label.stamp[0]}
+                <span className={styles.postmarkSmall}>{meta.label.stamp[1]}</span>
               </span>
+            ) : (
+              replay && (
+                <span className={styles.postmark} aria-label="Postmarked: delivered">
+                  DELIVERED
+                </span>
+              )
             )}
           </span>
         </div>

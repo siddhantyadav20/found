@@ -19,6 +19,14 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   // CHAPTER1.md J's preset message, less its question.
   hook: "A photographer's phone. A wedding.",
   envelope: { front: "Ishita weds Rohan", small: "Sehgal Parivar · 22.11" },
+  /* O1, decided 2026-09-24: returned to origin. He sent it to Meera at the
+     courts; she was away; it came back to the sender's address he'd made up,
+     which is yours. No chamber number: a real one could be a real lawyer's. */
+  label: {
+    to: "Meera Arora",
+    address: "Advocate · Lawyers' Chambers, Saket Courts, New Delhi",
+    stamp: ["RETURN TO ORIGIN", "Addressee not available"],
+  },
   links: 11,
 };
 

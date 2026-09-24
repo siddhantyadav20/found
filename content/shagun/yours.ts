@@ -3,9 +3,10 @@ import type { LiveEvent, Thread } from "../types";
 /* ===========================================================================
    Your phone (CHAPTER1.md H: preserve evidence first).
 
-   Meera, written to from your own phone once her contact info on his has
-   been found. Her first line works whatever brought the phone to the player
-   (O1): she doesn't say whether she expected it. She tells the player to
+   Meera, written to from your own phone once her number is found, on his,
+   in M's contact info (her name is on the parcel's label already). She was
+   away at a wedding when the courier tried her (CHAPTER1.md O1: returned to
+   origin), which is why it's in the player's hands. She tells the player to
    put his phone on airplane mode; if they do, she reads Sameer's habits for
    them, and her bias shows, until the lie is traced and she takes it back.
    =========================================================================== */
@@ -35,6 +36,7 @@ const meera: Thread = {
           sets: ["did:wrote-meera"],
           then: [
             { id: "me-1", from: "them", at: "01:00", text: "Sameer ka phone?", english: "Sameer's phone?" },
+            { id: "me-1a", from: "them", at: "01:00", text: "Courier wale ka phone aaya tha. Main ek shaadi mein thi, shehar se bahar.", english: "The courier did call. I was at a wedding, out of town." },
             { id: "me-2", from: "them", at: "01:00", typing: 6, text: "…Theek hai. Pehle ek kaam karo.", english: "…All right. First, do one thing." },
             {
               id: "me-3",

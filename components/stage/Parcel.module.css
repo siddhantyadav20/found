@@ -141,6 +141,16 @@
   opacity: 0.85;
 }
 
+/* Under the stamp's words, what the courier wrote: smaller, not shouted. */
+.postmarkSmall {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .strip { animation: none; }
 }

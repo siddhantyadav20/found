@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { CASES } from "@/content/cases";
 import { STORIES } from "@/content/stories";
 import type { Flag } from "@/content/types";
 import { homeIcons } from "@/lib/game/engine";
@@ -184,6 +185,24 @@ describe("the arrival", () => {
     expect(words).toContain("Bhasin");
     expect(ep.arrival.english).toMatch(/police station/);
     expect(ep.arrival.envelope?.front).toBe("Ishita weds Rohan");
+  });
+});
+
+describe("how the phone came to the player (O1: returned to origin)", () => {
+  it("wears a courier's label to Meera, stamped as returned", () => {
+    const label = CASES.shagun.label!;
+    expect(label.to).toBe("Meera Arora");
+    expect(label.address).toMatch(/Saket Courts/);
+    // No chamber number: a real one could be a real lawyer's.
+    expect(label.address).not.toMatch(/\d/);
+    expect(label.stamp[0]).toBe("RETURN TO ORIGIN");
+  });
+
+  it("is what Sameer works out when he's told it isn't M, and what giving it back means", () => {
+    const told = ep.threads.flatMap((t) => t.replies ?? []).flatMap((r) => r.options).find((o) => o.id === "not-m")!;
+    expect(told.then?.map((m) => m.text).join(" ")).toMatch(/Parcel wapas aa gaya\?/);
+    expect(ep.yours.parcel.act).toMatch(/courier/i);
+    expect(ep.endings.find((e) => e.id === "returned")?.lines.map((l) => l.text).join(" ")).toMatch(/not the sender/);
   });
 });
 

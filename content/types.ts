@@ -739,5 +739,7 @@ export type Story = {
     readonly intro: string;
     readonly sendTo: string;
     readonly sendRequires: readonly Flag[];
+    /** The parcel, and giving the phone back: what it says, what the act is called, and what it asks first. */
+    readonly parcel: { readonly note: string; readonly act: string; readonly ask: string };
   };
 };

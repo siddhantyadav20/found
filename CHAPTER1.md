@@ -17,8 +17,9 @@ meets it.
 
 Decided with Siddhant on 2026-09-22: **~20 minutes per episode** (a 60-minute
 chapter, one sitting); ***Don't Cut the Call* is retired** to git history; the
-score and share line is **links traced** ("I traced 9 of 11 links"); **why the
-phone reaches the player is still open** (M, O1).
+score and share line is **links traced** ("I traced 9 of 11 links"). On
+2026-09-24, **why the phone reaches the player** (O1) was decided: **returned to
+origin** (M).
 
 ---
 
@@ -30,6 +31,12 @@ man's quick handwriting: **"M — Sab isme hai. Local thane mat le jaana. Bhasin
 ke log wahan baithe hain."** *(M — It's all in here. Don't take it to the local
 police station. Bhasin's people sit there.)* You are not M. **(game: the
 envelope)**
+
+The courier's label says who M is: **Meera Arora, Advocate, Saket Courts**.
+Across it, a stamp: **RETURN TO ORIGIN · Addressee not available**. She was away
+when it came. So the courier brought it back to the sender's address, and
+Sameer, who couldn't use his own, made that address up. It's yours. Nobody
+chose you. **(game: O1)**
 
 The phone has no passcode. It wakes to **47 missed calls** from a number
 nobody saved, and while you're still reading the list, that number rings in
@@ -143,7 +150,9 @@ later.
 | Tue | Mumbai goes on: the offer letter from Rangmanch Productions (second-unit DOP, joining **Mon 1 Dec**), a flat deposit, and a train, **Sun 30 Nov**, New Delhi → Mumbai Central | Mail; Paytap |
 | Wed 10:15 PM | Voice note 4: *"Agar mujhe kuch hua… sab phone mein hai."* | M |
 | **Thu 27, 10:40–11:41 PM** | **He prepares the phone** (E below). The last act: passcode off, 11:41 PM | Settings; every "deleted", "edited", "archived" and "hidden" marker |
-| Fri 28 | The phone leaves him, with the envelope. **How it reaches the player is open (O1).** | — |
+| Fri 28 | **He books it at a courier counter** to Meera at her chamber in Saket Courts, with the envelope. Not daring to give his own address or his mother's, he writes **a sender's address he makes up**. It's a real flat: the player's. **(game: O1)** | The parcel's label |
+| Fri 28 – Sat 29 | **Two delivery attempts.** Meera is away at a wedding, out of town. *Addressee not available* → **return to origin.** **(game)** | The stamp across the label; Meera: *"Courier wale ka phone aaya tha. Main ek shaadi mein thi."* |
+| Sat 29, evening | It's delivered back to the address he made up. **(game)** | — |
 | **Sat 29, 11:40 PM** | **You open it.** | — |
 
 ---
@@ -391,12 +400,12 @@ the evidence can support*. Then
 | **A — The Complete Record** | Links **8 and 11 traced and left in**, and **no untraced link filed as fact**; sent or posted |
 | **B — Sameer's Version** | Everything else that reaches the record: the lie untraced, or traced and **ticked out** (script: *"never establishes or chooses to disclose"*), or Sameer's version of any link filed as fact |
 | **C — The Wrong Story** | The draft posted **before link 3** (two firings) |
-| **Early exit — Return to Sender** | Reseal the parcel, available from minute one (O1 decides where it goes) |
+| **Early exit — Return to Sender** | Reseal the parcel and give it back to the courier as **not the sender**, available from minute one |
 
 **Built in S9 (game):**
-- **How Meera is reached** without deciding O1: WhatsApp's contact info on the pinned M chat shows her number and her About line, *"Meera Arora · Advocate, Saket Courts"*. The player writes to her from their own phone, and her first reply doesn't say whether she expected it.
+- **How Meera is reached:** her name is on the parcel's label from minute one. Her number is on his phone: WhatsApp's contact info on the pinned M chat, with her About line, *"Meera Arora · Advocate, Saket Courts"*. The player writes to her from their own phone, and she explains why she never took it: *"Courier wale ka phone aaya tha. Main ek shaadi mein thi, shehar se bahar."*
 - **The record's defaults:** traced links in; a version the player filed, in as fact, in their own words; anything else out. The draft post is the record as posted.
-- **Return to Sender** sends the phone back *"the way it came"*, which stays true whatever O1 decides.
+- **Return to Sender** hands it back to the courier as *"not the sender"*. It goes to a shelf of parcels nobody will claim.
 
 **Variables:** `LINKS` (count), `LIE`, `FIRE`, `PRICE`, `EDIT`, `PUBLIC`
 (posted rather than sent), `NITIN` (protected / exposed / never),
@@ -440,7 +449,8 @@ publicly before separating the two firings (canon).
 
 ## Early exit — Return to Sender
 The player decides the phone isn't theirs to carry and hands it back through
-the proper channel (canon; *which* channel is O1). The Delhi story stays
+the proper channel (canon): **the courier, as not the sender (game: O1)**. It
+goes to the hub, onto a shelf of parcels nobody will claim. The Delhi story stays
 partly unresolved for them (canon). Lines vary with what they'd already seen:
 *if they'd heard the voice notes*, the last image is the M chat's grey ticks.
 
@@ -522,7 +532,7 @@ each other (H). No single play hears every voice.
 
 | # | Decision | What it touches | Status |
 |---|---|---|---|
-| **O1** | **Why the phone reaches the player** (the note is to M) | Sameer's reaction to *"Main M nahi hoon"*; Return to Sender's destination; how the player first reaches Meera; how *"he wanted an independent investigator"* lands | **Open.** The four beats are written to work either way. The earlier drafts in Downloads went both ways: the *Script Draft* sent the phone to Meera's old Malviya Nagar flat, with the player as the new tenant; the *Complete Narrative Design* and *Second Writers' Room* passes replaced that with Meera's intake arrangement, where the player catalogues phones for her. The Master Pass leaves it open (script §18: *"a bounded reason to catalogue the phone and a credible route to Meera"*). |
+| **O1** | **Why the phone reaches the player** (the note is to M) | Sameer's reaction to *"Main M nahi hoon"*; Return to Sender's destination; how the player first reaches Meera; how *"he wanted an independent investigator"* lands | **Decided 2026-09-24: returned to origin.** He couriered it to Meera at Saket Courts with a made-up sender's address, which turned out to be the player's. She was away at a wedding, so it came back to "the sender". Nobody chose the player. **The four beats:** (1) *"Kaun hai? …Parcel wapas aa gaya? Usne liya hi nahi. Woh bhejne wala address maine aise hi likh diya tha."*; (2) Return to Sender is the courier, as *not the sender* (the legitimate channel, per the script); (3) Meera's name is on the label and her number on his phone, which is the credible route; (4) the reveal lands as irony: he prepared it for someone who knew him, and it reached no one he'd chosen. Also considered: the new tenant (*Script Draft*), Meera's intake (*Complete Narrative Design*, *Second Writers' Room*), Meera recusing herself, a wrong wing, left in an auto, the rider, a stranger chosen on purpose. |
 | O2 | The shagun envelope as the note's paper | Arrival; the replay list; the title made physical | Proposed (game); no story fact depends on it |
 | O3 | Where Sameer is while he writes | His messages (*"Main Delhi mein nahi hoon"*?), the Mumbai hook | Open; not needed before the dialogue pass |
 | O4 | Age rating (16+ kept from the last chapter) | The label | Revisit once the fire clip's audio exists |
@@ -612,7 +622,7 @@ Every item in the script, and where the game delivers it.
 | Why does Dilip stay on the property? | Injured, dependent, and trusting Sameer: 1:07 *"Aap aa rahe ho na?"* / 1:08 *"aa raha hoon"* |
 | Why burn the body? | Treated as destructive and imperfect; the game never claims the fire erased anything |
 | Why doesn't the family destroy every record? | Different devices: Kunal's phone, Nitin's phone, the guards' group, Sameer's phone. The fight is over which version is believed |
-| Why is the player investigating? | O1 (open), and the evidence contradicts itself: the record is the player's own |
+| Why is the player investigating? | The parcel came back to them, and the phone rings in their hand (O1: returned to origin). Once they reach Meera, it becomes a bounded task. And the evidence contradicts itself: the record is the player's own |
 | Too many coincidences | Every event has a prior cause: the shot list, the promise, Kunal's message, the invoice, Vicky, the Thursday curation |
 | The drone as omniscient proof | There is no drone. The shot is proven from imperfect sources: a photo, a cut-off take, a memo, a group message, and the family's frame |
 | Too much legal certainty | No ending declares a verdict. The record is a factual reconstruction, with its uncertainty (no stated time of death) |

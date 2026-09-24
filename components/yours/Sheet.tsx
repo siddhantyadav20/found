@@ -15,8 +15,8 @@ import styles from "./Sheet.module.css";
    Your phone, picked up (CHAPTER1.md I).
 
    Where the chapter ends, by the player's hand: the record, link by link,
-   with what goes in and how; then send it, post it, or put his phone back
-   in the parcel. Also your messages (Meera, once she can be reached) and
+   with what goes in and how; then send it, post it, or give his phone back
+   to the courier as not yours. Also your messages (Meera, once she can be reached) and
    the draft post, which is the record as the world would read it.
 
    No signalling (PLAYER-JOURNEY Stage 8): one row style, the chain's own
@@ -59,7 +59,7 @@ export default function Sheet({ story, state, time, onClose }: { story: Story; s
   const ASK: Record<Act, { q: string; yes: string }> = {
     send: { q: `Send the record to ${story.yours.sendTo}, with his phone? You can't take it back.`, yes: "Send" },
     post: { q: `Post it on ${story.yours.social}? Anyone can see it. You can't take it back.`, yes: "Post" },
-    return: { q: "Send his phone back the way it came? You won't see it again.", yes: "Send it back" },
+    return: { q: story.yours.parcel.ask, yes: "Give it back" },
   };
 
   const back = view === "home" ? onClose : () => setView("home");
@@ -188,13 +188,10 @@ export default function Sheet({ story, state, time, onClose }: { story: Story; s
         {view === "parcel" && (
           <div className={styles.body}>
             <h2 className={styles.title}>The parcel</h2>
-            <p className={styles.note}>
-              It&apos;s still on the table: the padding, the tape, the address it came from. His phone would fit back in it, with
-              the envelope.
-            </p>
+            <p className={styles.note}>{story.yours.parcel.note}</p>
             <div className={styles.acts}>
               <button type="button" className={styles.act} onClick={() => setConfirm("return")}>
-                Send it back
+                {story.yours.parcel.act}
               </button>
             </div>
           </div>

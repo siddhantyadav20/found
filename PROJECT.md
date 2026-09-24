@@ -40,8 +40,9 @@ The Blue Room before it.
   arrives as messages from a new number.
 - **The standing temptation is a draft post** on your own phone. Posting
   before the two firings are separated is Ending C.
-- **Still open:** why the phone reaches the player, when the note is
-  addressed to "M" (CHAPTER1 O1).
+- **Why the phone reaches the player** (CHAPTER1 O1, decided 2026-09-24):
+  it was **returned to origin**. Sameer couriered it to Meera with a made-up
+  sender's address, which was the player's. She was away, so it came back.
 
 ## Decisions that survive (and have for three chapters)
 
@@ -74,7 +75,6 @@ The Blue Room before it.
 
 ## Still open
 
-- Why the phone reaches the player (CHAPTER1 O1).
 - The shoot: a cast wedding, the reel, the fire clip, the voices (ASSETS.md).
 - The First Minute for this chapter (CHAPTER1 O5).
 - A domain and a deploy, deliberately deferred.
