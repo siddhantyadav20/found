@@ -52,3 +52,69 @@ over from earlier servers in that tab.
 - whether the confrontation lands
 - whether 60 minutes is 60 minutes
 - performance on a mid-range Android
+
+---
+
+# Shagun — played as a mystery player, 2026-09-24
+
+> **Still not the human playtest.** Claude played it again in the in-app browser,
+> after O1, this time as someone who plays a lot of mystery thrillers: digging
+> where they dig, over-proving answers, and asking whether they'd come back for
+> Chapter 2.
+
+Played from a cleared browser at 375 × 812, from the desk, unseeded, on a Mac
+on battery, so the charger gate waited and then offered its cable after 2
+minutes. The route:
+- Raju told the truth on the call.
+- Sameer answered as M ("Haan."), then confronted ("Goli tumne chalayi thi").
+- Raju told about the shot.
+- Nitin protected.
+- The ₹1,80,000 filed as his held balance.
+- Meera written to, and airplane mode on.
+- The record sent to Meera with every link in: **The Complete Record, 11 of 11.**
+
+It took **36 minutes**: Episode 1 ~14, the charger 2, Episode 2 ~8, Episode 3 ~12.
+Taps were driven faster than a thumb, so a person is likely nearer 50–60.
+
+| # | Where | Issue | Sev | Status |
+|---|---|---|---|---|
+| 11 | Episode 1 | **Every twist is reachable in the first ten minutes**, where genre players look first: the memo in Voice Memos › Recently Deleted, the reel take in Photos › Recently Deleted, Edit › Revert on the fire clip (his hands, the jerrycan), and Kunal's frame once Settings › Show Hidden Album is on. Q3 then only offers Sameer's version, the Revisit reads as bookkeeping, and Episode 2 is re-opening what was already seen. Either lock them in the fiction until their episode (e.g. restoring from iCloud once the phone is charged), or reward finding them early | M | ⬜ |
+| 12 | Case file | **Extra true proof is called wrong.** `judgeProof` ([engine.ts:187](lib/game/engine.ts:187)) wants the exact set, so tabling more valid proof than a route needs gets *"Some of that proves it. Take out what doesn't."* Hit four times: Q1 (Apple Account + @skfilms.delhi + invoice), Q3 (all three voice notes + the fire clip; "Usko hospital nahi le gaye" is half the claim), Q5 (12:29 photo + shot list + "Papa wali"), Q13 (Kunal's frame + the reverted clip + Nitin's 1:52 screenshot). Accept any route plus other items from the question's routes; keep refusing items outside them | M | ⬜ |
+| 13 | Q13 | Nitin's screenshot of Sameer's 1:52 message isn't in any route for "counter", though it's the most direct proof of what he cut; only Nitin's 1:53 "answering nothing" is | m | ⬜ |
+| 14 | Q2 | The LAPATA poster with the 9:48 PM portrait is refused (only the badge or Sethi counts). Right for placeholders; once Dilip's real face is in both, a player will match faces | m | ⬜ With S11 |
+| 15 | Photos viewer | **Full-screen photos collapse to a 20 px strip**: `.scene[data-big]` has `height: 100%` inside an auto-height `.zoomable` ([PhotoFrame.module.css:367](components/owner/ios/PhotoFrame.module.css:367), [Photos.module.css:39](components/owner/apps/Photos.module.css:39)). It also breaks the Q2 zoom: `onScreen` measures the 632 px viewer while the badge sits in the 20 px strip, so double-tapping the badge does nothing and double-tapping empty space below reveals it, near the top | M | ⬜ |
+| 16 | Photos, videos, voices | The evidence is still placeholder: grey cards with captions, silent voice notes and calls. "Two figures, one holding something up" can't read as Sameer with the gun, so the case file says what the picture doesn't show. The LAPATA poster is a blurred brown square | M | ⬜ S11 |
+| 17 | End card, desk | **Nothing asks a finisher to come back.** No Chapter 2 tease, date or notify-me on the end card; after a finish the desk shows only the bagged phone, and even "More are being found." is gone | M | ⬜ |
+| 18 | End of Episode 2 | `the-gap` fires 25 s after Q9 ([episode2.ts:437](content/shagun/episode2.ts:437)): Raju, Sameer and Bhasin's *"Jiske paas bhi ye phone hai — wapas kar do"* land and the Episode 3 card cuts over them. Their replies carry into Episode 3, but Bhasin's threat gets no beat | m | ⬜ |
+| 19 | Q6, Q10 | The boards solve themselves: each row's text names its lane ("Two shots… dance floor", "Gets Vicky's car"). Reading, not deduction | m | ⬜ Design |
+| 20 | Q7 | The player never names the shooter: they table proof and the reply says "Sameer." The accusation is the genre's payoff; let them make it | m | ⬜ Design |
+| 21 | Parcel, desk | M is solved on the label ("TO MEERA ARORA, Advocate, Saket Courts") while the desk teases "someone called M". Meera is still only reachable by opening M's contact info in WhatsApp | m | ⬜ O1's cost |
+| 22 | Meera | *"Kisi ko reply mat karo"* arrives after the game has had you reply to Raju, Sameer and Nitin | p | ⬜ |
+| 23 | `file` questions | With one claim offered, **File it** stays disabled until the claim card is tapped, and nothing says so | m | ⬜ |
+| 24 | Q10 | The instruction still says *"Tap each row until it sits in its lane"*; with five lanes a row opens chips | p | ⬜ |
+| 25 | WhatsApp | At an episode's start, chats already read get unread badges again (Banyan — Security 4, Sethi 1, Bhasin 1) with nothing new in them: the evidence nudge in [Chat.tsx:423](components/owner/apps/Chat.tsx:423). Reads as a glitch | p | ⬜ |
+| 26 | Your phone | On mobile it's a 12 px edge that went unnoticed until the widget pointed at it; inside, four glyph icons, much plainer than his iPhone | m | ⬜ |
+| 27 | The record | Nitin was promised *"Tumhara naam kahin nahi aayega"*, but THE CAR and THE LIE name him and can only be left out whole | p | ⬜ Intended? |
+| 28 | Mail | Addresses end in `.example` (`sameer@skfilms.example`) | p | ⬜ |
+| 29 | Notification Centre | Every item is stamped "now", including ones hours old in the story | p | ⬜ |
+| 30 | Instagram | No feed, and an empty Messages; it's a story ring on black (see #10) | p | ⬜ |
+| 31 | Raju's call | No call timer or controls, so it reads as a dialogue box rather than a call | p | ⬜ |
+| 32 | Charger | "Waiting for a charger…" doesn't say a cable will appear, and the 2 minutes feel long | p | ⬜ |
+| 33 | Lock screen | A mouse drag didn't open it, only its button did; untested with touch | p | ⬜ |
+
+**What held:**
+- The first minute: parcel, envelope, "Its ringer is on", 47 missed calls, Raju ringing.
+- The writing: the security group as a timeline, the archived Chhotu chat, Safari's history, Nitin's *"Maine check bhi nahi kiya"*, Meera's *"Maine galat kaha tha"*, and "He held the light."
+- The unreliable narrator: the struck version in the record, and 1:52 as the real turn.
+- The phone: Recently Deleted with days left, Revert, Hidden, airplane mode, "It isn't your phone."
+- The endgame: In / Leave out, Send / Post / Return, "Only this ending showed", and the facts and helplines on the end card.
+- The charger gate's cable after 2 minutes: no dead end without a charger.
+- No app errors in the console.
+
+**Would players come back for Chapter 2?** The story earns it. Right now the
+game doesn't ask: #17 leaves finishers with nothing to wait for, #12 teaches
+them the puzzles are arbitrary, and #11 spoils the middle hour for exactly
+the players most likely to return. Fix those three first.
+
+**Answers part of S12's list:** a genre player finds Archived, the bin, Revert
+and Hidden without any hint, and finds them in Episode 1.
