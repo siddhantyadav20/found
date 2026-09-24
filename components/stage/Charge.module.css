@@ -42,6 +42,16 @@
   color: #6d6862;
 }
 
+.nearby {
+  max-width: 30ch;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #57534e;
+  text-align: center;
+  text-wrap: balance;
+}
+
 .cable {
   font-family: var(--font-ui);
   font-size: 0.85rem;

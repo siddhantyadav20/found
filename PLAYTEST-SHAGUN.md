@@ -91,16 +91,16 @@ Taps were driven faster than a thumb, so a person is likely nearer 50–60.
 | 21 | Parcel, desk | M is solved on the label ("TO MEERA ARORA, Advocate, Saket Courts") while the desk teases "someone called M". Meera is still only reachable by opening M's contact info in WhatsApp | m | ⬜ O1's cost |
 | 22 | Meera | *"Kisi ko reply mat karo"* arrives after the game has had you reply to Raju, Sameer and Nitin | p | ⬜ |
 | 23 | `file` questions | With one claim offered, **File it** stays disabled until the claim card is tapped, and nothing says so | m | ✅ A lone claim is the one chosen, and shows selected |
-| 24 | Q10 | The instruction still says *"Tap each row until it sits in its lane"*; with five lanes a row opens chips | p | ⬜ |
-| 25 | WhatsApp | At an episode's start, chats already read get unread badges again (Banyan — Security 4, Sethi 1, Bhasin 1) with nothing new in them: the evidence nudge in [Chat.tsx:423](components/owner/apps/Chat.tsx:423). Reads as a glitch | p | ⬜ |
-| 26 | Your phone | On mobile it's a 12 px edge that went unnoticed until the widget pointed at it; inside, four glyph icons, much plainer than his iPhone | m | ⬜ |
+| 24 | Q10 | The instruction still says *"Tap each row until it sits in its lane"*; with five lanes a row opens chips | p | ✅ *"Tap a row, then choose its lane."* on a board with chips |
+| 25 | WhatsApp | At an episode's start, chats already read get unread badges again (Banyan — Security 4, Sethi 1, Bhasin 1) with nothing new in them: the evidence nudge in [Chat.tsx:423](components/owner/apps/Chat.tsx:423). Reads as a glitch | p | ⬜ With #11: the fix is letting a find made early count on its own once its episode opens, which is #11's call |
+| 26 | Your phone | On mobile it's a 12 px edge that went unnoticed until the widget pointed at it; inside, four glyph icons, much plainer than his iPhone | m | ✅ Whatever lands on yours slides out from the edge as a note for 6 s (*"Your phone · Pulse: Your draft is saved."*), and tapping it picks the phone up; its apps are drawn as tiles like his, Messages the same icon |
 | 27 | The record | Nitin was promised *"Tumhara naam kahin nahi aayega"*, but THE CAR and THE LIE name him and can only be left out whole | p | ⬜ Intended? |
-| 28 | Mail | Addresses end in `.example` (`sameer@skfilms.example`) | p | ⬜ |
-| 29 | Notification Centre | Every item is stamped "now", including ones hours old in the story | p | ⬜ |
-| 30 | Instagram | No feed, and an empty Messages; it's a story ring on black (see #10) | p | ⬜ |
-| 31 | Raju's call | No call timer or controls, so it reads as a dialogue box rather than a call | p | ⬜ |
-| 32 | Charger | "Waiting for a charger…" doesn't say a cable will appear, and the 2 minutes feel long | p | ⬜ |
-| 33 | Lock screen | A mouse drag didn't open it, only its button did; untested with touch | p | ⬜ |
+| 28 | Mail | Addresses end in `.example` (`sameer@skfilms.example`) | p | ✅ Kept `.example`, which can never be a real business, but behind the sender's name, as iOS Mail keeps it: tapping the name shows it |
+| 29 | Notification Centre | Every item is stamped "now", including ones hours old in the story | p | ✅ "now", then "39m ago", then the time it came, on the story's clock (`minutesSince`) |
+| 30 | Instagram | No feed, and an empty Messages; it's a story ring on black (see #10) | p | ✅ A feed of his posts under the rings, each name opening the profile; Messages only when there are any. A post that proves something stays out of the feed |
+| 31 | Raju's call | No call timer or controls, so it reads as a dialogue box rather than a call | p | ✅ The call's time runs under the number once it's picked up, as iOS shows it. No dead buttons added |
+| 32 | Charger | "Waiting for a charger…" doesn't say a cable will appear, and the 2 minutes feel long | p | ✅ *"No charger nearby? In two minutes you can plug it in here."* |
+| 33 | Lock screen | A mouse drag didn't open it, only its button did; untested with touch | p | ➖ Not a bug: the drag started off the screen (a screenshot at another scale). A swipe from mid-screen and from the bottom edge both open it |
 
 **What held:**
 - The first minute: parcel, envelope, "Its ringer is on", 47 missed calls, Raju ringing.

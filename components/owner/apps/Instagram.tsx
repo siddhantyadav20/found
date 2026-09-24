@@ -11,10 +11,10 @@ import styles from "./Instagram.module.css";
 
 /* ===========================================================================
    Instagram: the wordmark, a row of profiles in their gradient rings (the
-   owner's first, "Your story"), and the Direct messages underneath
-   (PLAYTEST.md #42). A ring opens its profile: the name, the bio, and the
-   grid, where a photographer keeps his best work and a groom's brother keeps
-   his wedding.
+   owner's first, "Your story"), the feed, and the Direct messages underneath
+   when there are any (PLAYTEST.md #42). A ring, or a name over a post, opens
+   its profile: the name, the bio, and the grid, where a photographer keeps
+   his best work and a groom's brother keeps his wedding.
    =========================================================================== */
 
 const initials = (name: string) =>
@@ -120,6 +120,14 @@ export default function Instagram({
   const [handle, setHandle] = useState<string | null>(null);
   const profiles = story.profiles.filter((p) => all(state, p.requires)).sort((a, b) => Number(Boolean(b.own)) - Number(Boolean(a.own)));
   const open = profiles.find((p) => p.handle === handle);
+  const visit = (p: Profile) => {
+    setHandle(p.handle);
+    if (p.evidence) onRead([p.evidence]);
+  };
+  /* The feed the app opens on. A post that proves something stays out of it:
+     that has to be opened in the grid, not scrolled past. */
+  const feed = profiles.flatMap((p) => p.posts.filter((post) => !post.evidence).map((post) => ({ p, post })));
+  const messages = story.threads.some((t) => t.app === "instagram" && all(state, t.requires));
 
   if (open) return <ProfileView key={open.handle} profile={open} onBack={() => setHandle(null)} onRead={onRead} />;
 
@@ -141,11 +149,7 @@ export default function Instagram({
                 type="button"
                 className={styles.ring}
                 data-own={p.own || undefined}
-                onClick={() => {
-                  if (!p.handle) return;
-                  setHandle(p.handle);
-                  if (p.evidence) onRead([p.evidence]);
-                }}
+                onClick={() => p.handle && visit(p as Profile)}
                 aria-label={p.own ? "Your profile" : `${p.name}'s profile`}
               >
                 <span className={styles.face}>{initials(p.name)}</span>
@@ -155,8 +159,29 @@ export default function Instagram({
           ))}
         </ul>
 
-        <h3 className={styles.section}>Messages</h3>
-        <Chat story={story} state={state} app="instagram" chrome={false} onRead={onRead} onSay={onSay} />
+        {feed.map(({ p, post }) => (
+          <article key={post.id} className={styles.feedPost}>
+            <button type="button" className={styles.postHead} onClick={() => visit(p)}>
+              <span className={styles.ring} data-own={p.own || undefined}>
+                <span className={styles.face}>{initials(p.name)}</span>
+              </span>
+              <b>{p.handle}</b>
+            </button>
+            <Tile post={post} big />
+            {post.caption && (
+              <p className={styles.caption}>
+                <b>{p.handle}</b> {post.caption}
+              </p>
+            )}
+          </article>
+        ))}
+
+        {messages && (
+          <>
+            <h3 className={styles.section}>Messages</h3>
+            <Chat story={story} state={state} app="instagram" chrome={false} onRead={onRead} onSay={onSay} />
+          </>
+        )}
       </div>
     </div>
   );

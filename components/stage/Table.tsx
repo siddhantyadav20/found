@@ -16,11 +16,13 @@ import {
   battery,
   caseFile,
   charging as onCharger,
+  clockAt,
   clockNow,
   dayNow,
   dueEvents,
   fire,
   has,
+  minutesSince,
   openApp as findIn,
   openQuestion,
   traced,
@@ -28,7 +30,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE } from "@/lib/game/phone";
-import { hasRecord, SAW_RECORD, somethingNew } from "@/lib/game/yours";
+import { hasRecord, SAW_RECORD, somethingNew, yourMessages } from "@/lib/game/yours";
 import { useNow } from "@/lib/found/now";
 import { phoneClock, stamp } from "@/lib/found/time";
 import { boundCase, readProgress } from "@/lib/found/progress";
@@ -86,6 +88,20 @@ export default function Table({
     : hasRecord(story, state) && !has(state, SAW_RECORD)
       ? `${story.yours.social} · Your draft is saved.`
       : "Messages · New message";
+  /* On a phone-sized screen yours is only its edge, so whatever lands on it
+     is said there, once each: a note that slides out from the edge. */
+  const newsKey = yoursNews && `${yoursNews}|${yourMessages(story, state)}`;
+  const [told, setTold] = useState<string | undefined>(undefined);
+  const telling = newsKey && newsKey !== told && !holding ? newsKey : undefined;
+  useEffect(() => {
+    if (!telling) return undefined;
+    const t = window.setTimeout(() => setTold(telling), 6000);
+    return () => window.clearTimeout(t);
+  }, [telling]);
+  const pickUp = () => {
+    setTold(newsKey);
+    setHolding(true);
+  };
 
   /* Live events: anything the story says is due, once whatever it waits for
      is true: a message, a missed call, the phone beginning to die. */
@@ -159,6 +175,15 @@ export default function Table({
     if (s) save(findIn(story, s, app));
   };
 
+  /* When a notification came, as iOS lists it: "now", then minutes ago, then
+     the time it came, on the story's clock. */
+  const cameAt = (id: string): string => {
+    const ago = minutesSince(story, state, id, now);
+    const when = state.at[`event:${id}`];
+    if (ago === undefined || when === undefined || ago < 1) return "now";
+    return ago < 60 ? `${ago}m ago` : stamp(clockAt(story, state, when));
+  };
+
   /* Everything that has arrived since the phone was opened, newest first,
      for Notification Centre and the lock screen, above what was waiting. */
   const arrived: Notice[] = story.events
@@ -169,7 +194,7 @@ export default function Table({
       icon: e.icon,
       from: bannerFrom(e.banner!),
       text: bannerText(e.banner!),
-      time: e.at ? stamp(e.at) : "now",
+      time: e.at ? stamp(e.at) : cameAt(e.id),
     }))
     .reverse();
   const notices: Notice[] = [...arrived, ...story.lockScreen];
@@ -240,7 +265,13 @@ export default function Table({
       </div>
 
       {/* On a phone-sized screen, yours is only its edge, at the side. */}
-      <button type="button" className={styles.edge} data-new={fresh || undefined} onClick={() => setHolding(true)} aria-label={fresh ? "Your phone: something new" : "Your phone"} />
+      <button type="button" className={styles.edge} data-new={fresh || undefined} onClick={pickUp} aria-label={fresh ? "Your phone: something new" : "Your phone"} />
+      {telling && yoursNews && (
+        <button type="button" className={styles.edgeNote} onClick={pickUp}>
+          <strong>Your phone</strong>
+          <span>{yoursNews.split(" · ").join(": ")}</span>
+        </button>
+      )}
 
       {holding && <YourSheet story={story} state={state} time={phoneClock(clock)} onClose={() => setHolding(false)} />}
     </div>

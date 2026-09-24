@@ -57,7 +57,11 @@ export default function Charge({ gate, onPlugged }: { gate: Gate; onPlugged: () 
           Plug it in
         </button>
       ) : (
-        <p className={styles.waiting}>Waiting for a charger…</p>
+        <>
+          <p className={styles.waiting}>Waiting for a charger…</p>
+          {/* Nobody should give up at a wall socket they aren't near. */}
+          <p className={styles.nearby}>No charger nearby? In two minutes you can plug it in here.</p>
+        </>
       )}
     </div>
   );

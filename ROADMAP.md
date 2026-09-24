@@ -596,6 +596,22 @@ courier returned it "to origin". Built:
 - **Edge cases:** storage refused warns, and reduced motion is honoured
   site-wide. Sound is off until the ringer switch.
 - 144 tests; the case page at 682 of 700 KB.
+- **A second play, as a mystery player** (2026-09-24, after O1):
+  `PLAYTEST-SHAGUN.md` #11–33.
+  - **Fixed** (2026-09-25):
+    - #12–13: extra true proof is accepted.
+    - #15: the photo frame and its zoom.
+    - #18: the gap waits for the phone to be put down.
+    - #23: a lone claim is chosen.
+    - #24, #26 and #28–32: polish, including your phone's edge note and icons, Notification Centre's times, and the Instagram feed.
+  - **Open, for Siddhant:**
+    - #11: every twist can be reached in Episode 1. #25 goes with it.
+    - #17: a hook for Chapter 2.
+    - #19–20: letting the player deduce.
+    - #21–22: Meera's timing.
+    - #27: Nitin's name.
+  - **With S11:** #14 and #16.
+  - 153 tests; the case page at 686 of 700 KB.
 
 **Open, for a person:** a full playthrough on a real phone (the questions at
 the foot of `PLAYTEST-SHAGUN.md`), and performance on a mid-range Android.

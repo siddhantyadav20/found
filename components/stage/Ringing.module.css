@@ -22,6 +22,7 @@
 .head { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .who { font-family: var(--font-ui); font-size: 2.1rem; font-weight: 500; line-height: 1.15; }
 .sub { font-family: var(--font-ui); font-size: 1rem; color: #a8a39c; }
+.sub[data-timer] { font-variant-numeric: tabular-nums; }
 
 .buttons { display: flex; justify-content: center; gap: 5.5rem; width: 100%; }
 .button { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; font-family: var(--font-ui); font-size: 0.85rem; color: #f1ede7; }

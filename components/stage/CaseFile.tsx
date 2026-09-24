@@ -463,7 +463,7 @@ function Board({
     const picker = q.lanes.length > 2;
     return (
       <>
-        <p className={styles.where}>Tap each row until it sits in its lane.</p>
+        <p className={styles.where}>{picker ? "Tap a row, then choose its lane." : "Tap each row until it sits in its lane."}</p>
         <p className={styles.lanes}>
           {q.lanes.map((l) => (
             <span key={l.id}>{l.label}</span>

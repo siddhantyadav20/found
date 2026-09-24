@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 
 import Chat from "@/components/owner/apps/Chat";
+import { AppGlyph } from "@/components/owner/ios/icons";
+import tile from "@/components/owner/ios/icons.module.css";
 import type { Act, Story } from "@/content/types";
 import { all, type CaseState, type RecordChoice } from "@/lib/game/engine";
 import { actFlags, recordRows, setRow } from "@/lib/game/record";
@@ -27,6 +29,41 @@ import styles from "./Sheet.module.css";
 type View = "home" | "messages" | "draft" | "record" | "parcel";
 
 const AS: Record<RecordChoice, string> = { in: "In", out: "Leave out", says: "As he says", fact: "As fact" };
+
+/* Your own apps, drawn like his: the same tile and edge light, so both
+   phones read as phones. Messages is the one app they have in common. */
+const TILES = {
+  social: "linear-gradient(160deg, #9a87ff 0%, #5a3fd6 100%)",
+  record: "linear-gradient(180deg, #f8f4ec 0%, #dcd3c2 100%)",
+  parcel: "linear-gradient(170deg, #c29466 0%, #8a6035 100%)",
+} as const;
+
+function Icon({ app }: { app: "messages" | keyof typeof TILES }) {
+  if (app === "messages")
+    return (
+      <span className={styles.icon} aria-hidden="true">
+        <AppGlyph app="yours:chats" />
+      </span>
+    );
+  return (
+    <span className={styles.icon} aria-hidden="true">
+      <span className={tile.tile} style={{ background: TILES[app] }}>
+        <svg viewBox="0 0 24 24" className={tile.glyph}>
+          {app === "social" && (
+            <path d="M3.5 12.5h4l2-5.5 4 11 2.2-5.5h4.8" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          )}
+          {app === "record" && <path d="M6.5 7h11M6.5 10.5h11M6.5 14h11M6.5 17.5h6" stroke="#3a3530" strokeWidth="1.5" strokeLinecap="round" />}
+          {app === "parcel" && (
+            <g fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round">
+              <path d="M4.5 8.5 12 5l7.5 3.5V16L12 19.5 4.5 16Z" />
+              <path d="M4.5 8.5 12 12l7.5-3.5M12 12v7.5M8.2 6.8l7.5 3.5" />
+            </g>
+          )}
+        </svg>
+      </span>
+    </span>
+  );
+}
 
 export default function Sheet({ story, state, time, onClose }: { story: Story; state: CaseState; time: string; onClose: () => void }) {
   const [view, setView] = useState<View>("home");
@@ -81,7 +118,7 @@ export default function Sheet({ story, state, time, onClose }: { story: Story; s
             <ul className={styles.apps}>
               <li>
                 <button type="button" className={styles.app} onClick={() => setView("messages")}>
-                  <span className={styles.icon} data-app="messages" aria-hidden="true">✉</span>
+                  <Icon app="messages" />
                   Messages
                 </button>
               </li>
@@ -89,13 +126,13 @@ export default function Sheet({ story, state, time, onClose }: { story: Story; s
                 <>
                   <li>
                     <button type="button" className={styles.app} onClick={() => setView("draft")}>
-                      <span className={styles.icon} data-app="social" aria-hidden="true">✦</span>
+                      <Icon app="social" />
                       {story.yours.social}
                     </button>
                   </li>
                   <li>
                     <button type="button" className={styles.app} onClick={() => setView("record")}>
-                      <span className={styles.icon} data-app="record" aria-hidden="true">≡</span>
+                      <Icon app="record" />
                       The record
                     </button>
                   </li>
@@ -103,7 +140,7 @@ export default function Sheet({ story, state, time, onClose }: { story: Story; s
               )}
               <li>
                 <button type="button" className={styles.app} onClick={() => setView("parcel")}>
-                  <span className={styles.icon} data-app="parcel" aria-hidden="true">▢</span>
+                  <Icon app="parcel" />
                   The parcel
                 </button>
               </li>

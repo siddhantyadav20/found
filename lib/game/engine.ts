@@ -357,6 +357,16 @@ export function clockAt(story: Story, s: CaseState, when: number): string {
   return hhmm((base + Math.max(0, Math.floor((when - start) / 60_000))) % (24 * 60));
 }
 
+/**
+ * How many minutes ago, on the story's clock, a live event arrived: what
+ * Notification Centre counts from. Undefined for one with no time kept.
+ */
+export function minutesSince(story: Story, s: CaseState, id: string, now: number): number | undefined {
+  const when = s.at[`event:${id}`];
+  if (when === undefined) return undefined;
+  return (minutesOf(clockNow(story, s, now)) - minutesOf(clockAt(story, s, when)) + 24 * 60) % (24 * 60);
+}
+
 export const dayNow = (story: Story, s: CaseState): string => story.clocks[episodeOf(s) - 1].day;
 
 /** Today's date on the story's calendar, "30/11". */

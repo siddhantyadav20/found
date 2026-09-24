@@ -58,7 +58,15 @@ export default function Ringing({
   const [answered, setAnswered] = useState(alreadyAnswered);
   const [said, setSaid] = useState(0);
   const [chosen, setChosen] = useState<ReplyOption | null>(null);
+  // How long the call has been going, where iOS puts it once it's picked up.
+  const [secs, setSecs] = useState(0);
   const lines = call.lines.filter((l) => !l.when || has(state, l.when));
+
+  useEffect(() => {
+    if (!answered) return undefined;
+    const t = window.setInterval(() => setSecs((n) => n + 1), 1000);
+    return () => window.clearInterval(t);
+  }, [answered]);
 
   // It rings until it's answered, or declined.
   useEffect(() => {
@@ -92,7 +100,13 @@ export default function Ringing({
     <div className={styles.screen} data-answered={answered || undefined}>
       <div className={styles.head}>
         <p className={styles.who}>{call.from}</p>
-        <p className={styles.sub}>{call.sub}</p>
+        {answered ? (
+          <p className={styles.sub} data-timer>
+            {String(Math.floor(secs / 60)).padStart(2, "0")}:{String(secs % 60).padStart(2, "0")}
+          </p>
+        ) : (
+          <p className={styles.sub}>{call.sub}</p>
+        )}
       </div>
 
       {answered ? (

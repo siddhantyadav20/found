@@ -29,6 +29,8 @@ export default function Mail({
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
+  // iOS keeps the sender's address behind their name, until the name is tapped.
+  const [details, setDetails] = useState<string | null>(null);
   const cal = calendarOf(story, state);
   const letters = story.mail.filter((m) => all(state, m.requires)).sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const letter = letters.find((m) => m.id === open);
@@ -57,8 +59,19 @@ export default function Mail({
           ‹ Inbox
         </button>
         <article className={styles.letter}>
-          <p className={styles.from}>{letter.from}</p>
-          {letter.address && <p className={styles.address}>{letter.address}</p>}
+          {letter.address ? (
+            <button
+              type="button"
+              className={styles.from}
+              onClick={() => setDetails(details === letter.id ? null : letter.id)}
+              aria-expanded={details === letter.id}
+            >
+              {letter.from}
+            </button>
+          ) : (
+            <p className={styles.from}>{letter.from}</p>
+          )}
+          {letter.address && details === letter.id && <p className={styles.address}>{letter.address}</p>}
           <h3 className={styles.subject}>{letter.subject}</h3>
           <p className={styles.date}>
             {cal.label(letter.day)} · {stamp(letter.at)}

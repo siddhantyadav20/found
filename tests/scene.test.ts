@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Story } from "@/content/types";
-import { add, battery, clockNow, dayNow, newCase, stamp, type CaseState } from "@/lib/game/engine";
+import { add, battery, clockNow, dayNow, minutesSince, newCase, stamp, type CaseState } from "@/lib/game/engine";
 import { ENDING_SEEN, finish } from "@/lib/game/endings";
 import { NEEDS_CHARGE, PLUGGED_IN, sceneOf, titleShown } from "@/lib/game/scene";
 
@@ -46,6 +46,16 @@ describe("between episodes", () => {
     expect(clockNow(ep, two, 100 * MIN)).toBe("00:42");
     expect(dayNow(ep, two)).toBe("Sunday");
     expect(clockNow(ep, unlocked(), 5 * MIN)).toBe("23:45");
+  });
+
+  it("counts how long ago a notification came on the story's clock, across an episode's jump", () => {
+    // Sameer writes at 23:53 in Episode 1; Episode 2 opens at 00:32.
+    const one: CaseState = { ...unlocked(), at: { "event:sameer-writes": 13 * MIN } };
+    expect(minutesSince(ep, one, "sameer-writes", 13 * MIN)).toBe(0);
+    expect(minutesSince(ep, one, "sameer-writes", 18 * MIN)).toBe(5);
+    const two = stamp(add(one, NEEDS_CHARGE, ...PLUGGED_IN), 90 * MIN);
+    expect(minutesSince(ep, two, "sameer-writes", 90 * MIN)).toBe(39);
+    expect(minutesSince(ep, two, "never-came", 90 * MIN)).toBeUndefined();
   });
 
   it("runs the battery down off the charger and up on it", () => {

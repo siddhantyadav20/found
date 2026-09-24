@@ -88,19 +88,10 @@
 }
 
 .icon {
-  display: grid;
-  place-items: center;
+  display: block;
   width: 60px;
   height: 60px;
-  border-radius: 15px;
-  font-size: 26px;
-  color: #fff;
 }
-
-.icon[data-app="messages"] { background: linear-gradient(#5bf675, #0cbd2a); }
-.icon[data-app="social"] { background: linear-gradient(#8f7bff, #5a3fd6); }
-.icon[data-app="record"] { background: linear-gradient(#f6f1e7, #d9d0bf); color: #3a3530; }
-.icon[data-app="parcel"] { background: linear-gradient(#b98b5e, #8a6035); }
 
 .post {
   display: flex;
