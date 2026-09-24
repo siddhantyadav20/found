@@ -100,7 +100,11 @@ const questions: readonly Question[] = [
         id: "his",
         text: "A worker was shot while Kunal Sehgal was firing. Nobody took him to a hospital, and his body was burned.",
         proof: ["vn-kunal", "fire-clip"],
-        orProof: [["vn-kunal", "vn-burned"]],
+        orProof: [
+          ["vn-kunal", "vn-burned"],
+          // All three in his own words: the shot, no hospital, the fire.
+          ["vn-kunal", "vn-hospital", "vn-burned"],
+        ],
         reply: "On the record.",
         version: true,
         link: "two-firings",

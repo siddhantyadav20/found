@@ -15,6 +15,7 @@ import {
   settle,
   unseenIn,
   openQuestion,
+  PARTLY,
   see,
   sideQuestions,
   STRUCK,
@@ -62,16 +63,63 @@ const found = (...ids: string[]): CaseState => ids.reduce((s, id) => see(ep, s, 
 const withQuestions = (questions: Question[]): Story => ({ ...ep, questions });
 
 describe("picking the proof", () => {
-  it("wants exactly what proves it, and says so when there's more", () => {
+  it("wants a whole route, and says what's wrong when it isn't one", () => {
     const q = ep.questions[0];
     const s = found("poster", "portrait", "invoice");
     expect(answer(ep, s, q.id, ["poster", "portrait"]).ok).toBe(true);
-    expect(answer(ep, s, q.id, ["poster"]).ok).toBe(false);
+    expect(answer(ep, s, q.id, ["poster"]).reply).toBe(PARTLY);
     expect(answer(ep, s, q.id, ["poster", "portrait", "invoice"]).reply).toBe(TOO_MUCH);
     expect(answer(ep, s, q.id, ["invoice"]).reply).toBe(WRONG);
 
     // And nothing can be tabled that was never found.
     expect(answer(ep, start(), q.id, ["poster", "portrait"]).ok).toBe(false);
+  });
+
+  it("takes more true proof than a route needs, but nothing that proves nothing", () => {
+    const story: Story = {
+      ...ep,
+      evidence: [...ep.evidence, { id: "caterer", device: "owner", app: "whatsapp", label: "The caterer: he hasn't come in" }],
+      questions: [{ ...(ep.questions[0] as Extract<Question, { kind: "pick" }>), orProof: [["poster", "caterer"]] }],
+    };
+    const s = ["poster", "portrait", "caterer", "invoice"].reduce((acc, id) => see(story, acc, id), start());
+    expect(answer(story, s, "who-is-he", ["poster", "caterer"]).ok).toBe(true);
+    // Both routes at once: everything on the table proves it.
+    expect(answer(story, s, "who-is-he", ["poster", "portrait", "caterer"]).ok).toBe(true);
+    // A whole route, beside something that proves nothing.
+    expect(answer(story, s, "who-is-he", ["poster", "caterer", "invoice"]).reply).toBe(TOO_MUCH);
+    // Nothing but true things, and still no whole route.
+    expect(answer(story, s, "who-is-he", ["portrait", "caterer"]).reply).toBe(PARTLY);
+  });
+
+  /* What a player tabled in the playtest of 2026-09-24 (PLAYTEST-SHAGUN.md
+     #12–13): every item true, and each once turned away. */
+  describe("in the chapter, proved more than it needs", () => {
+    const shagun = STORIES.shagun;
+    const has = (...ids: string[]): CaseState => {
+      for (const id of ids) expect(shagun.evidence.some((e) => e.id === id), id).toBe(true);
+      return add(start(), "ep:2", "ep:3", ...ids.map((id) => `saw:${id}` as const));
+    };
+
+    it("takes the Apple Account, his Instagram and the invoice for whose phone it is", () => {
+      const s = has("apple-account", "sk-films", "invoice", "poster");
+      expect(answer(shagun, s, "q1", ["apple-account", "sk-films", "invoice"]).ok).toBe(true);
+      expect(answer(shagun, s, "q1", ["apple-account", "sk-films", "poster"]).reply).toBe(TOO_MUCH);
+    });
+
+    it("takes all three voice notes with the fire for his version", () => {
+      const s = has("vn-kunal", "vn-hospital", "vn-burned", "fire-clip");
+      expect(answer(shagun, s, "q3", { claim: "his", proof: ["vn-kunal", "vn-hospital", "vn-burned", "fire-clip"] }).ok).toBe(true);
+    });
+
+    it("takes the 12:29 photo, the shot list and Kunal's promise for the back lawn", () => {
+      const s = has("bts", "shot-list", "kunal-papa");
+      expect(answer(shagun, s, "q5", ["bts", "shot-list", "kunal-papa"]).ok).toBe(true);
+    });
+
+    it("takes Nitin's copy of 1:52 as the edit it is", () => {
+      const s = has("frame", "fire-original", "nitin-shot-152");
+      expect(answer(shagun, s, "q13", { claim: "counter", proof: ["frame", "fire-original", "nitin-shot-152"] }).ok).toBe(true);
+    });
   });
 
   it("sets what the script says it sets, once", () => {

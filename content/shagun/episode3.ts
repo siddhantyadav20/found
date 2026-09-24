@@ -175,7 +175,7 @@ const questions: readonly Question[] = [
     hints: [
       "Somebody else has a picture of that night. Where would he keep something he didn't want seen?",
       "Settings › Apps › Photos › Show Hidden Album. Then set what's in Hidden beside what he cut and deleted.",
-      "Table Kunal's frame (Hidden, or Kunal's chat) with the reverted fire clip and Nitin's 1:53, or the frame with the deleted reel take and the deleted memo.",
+      "Table Kunal's frame (Hidden, or Kunal's chat) with the reverted fire clip and Nitin's 1:53 (or his copy of 1:52), or the frame with the deleted reel take and the deleted memo.",
     ],
     claims: [
       {
@@ -193,6 +193,9 @@ const questions: readonly Question[] = [
         proof: ["frame", "fire-original", "nitin-reply"],
         orProof: [
           ["kunal-frame", "fire-original", "nitin-reply"],
+          // Nitin's copy of the 1:52 message is the edit itself, not just its trace.
+          ["frame", "fire-original", "nitin-shot-152"],
+          ["kunal-frame", "fire-original", "nitin-shot-152"],
           ["frame", "reel-take", "memo"],
         ],
         reply: "On the record. Everything on this phone is true. The order is his, and so is what's missing: the reel, the second shot, 1:52, and his hands at the fire.",

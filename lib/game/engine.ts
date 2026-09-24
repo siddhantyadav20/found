@@ -172,6 +172,7 @@ export type Given = readonly string[] | string | { readonly claim: string; reado
 
 export const WRONG = "Not quite. Look again.";
 export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
+export const PARTLY = "That's part of it. Something's missing.";
 export const UNCHECKED = "Check each of them on the phone before you decide.";
 export const STRUCK = "That's the line you struck. What you found since says otherwise.";
 export const THIN = "The board can't show that yet. Something's missing from it.";
@@ -180,14 +181,22 @@ export const THIN = "The board can't show that yet. Something's missing from it.
 export const boardReady = (q: Question, s: CaseState): boolean =>
   q.kind !== "timeline" || !q.enough?.length || q.enough.some((r) => r.every((id) => seen(s, id)));
 
-/** Exactly one of the routes, and nothing that wasn't found. */
+/**
+ * All of one route, and nothing that wasn't found. More true proof is still
+ * proof: anything that belongs to one of the routes can sit beside it, and
+ * only what proves nothing here has to come off the table.
+ */
 function judgeProof(s: CaseState, routes: readonly (readonly string[])[], picked: readonly string[]): { ok: boolean; reply: string } {
   // You cannot put something on the table that you have not found.
   if (!picked.length || !picked.every((id) => seen(s, id))) return { ok: false, reply: WRONG };
-  const ok = routes.some((route) => picked.length === route.length && picked.every((p) => route.includes(p)));
+  const proves = (id: string) => routes.some((route) => route.includes(id));
+  const stray = picked.filter((p) => !proves(p)).length;
+  if (!stray && routes.some((route) => route.every((id) => picked.includes(id)))) return { ok: true, reply: "" };
   // Something in there proves it, and something else doesn't.
-  if (!ok && routes.some((route) => picked.some((p) => route.includes(p)))) return { ok, reply: TOO_MUCH };
-  return { ok, reply: WRONG };
+  if (stray && stray < picked.length) return { ok: false, reply: TOO_MUCH };
+  // Everything on the table counts, but no route is whole yet.
+  if (!stray) return { ok: false, reply: PARTLY };
+  return { ok: false, reply: WRONG };
 }
 
 /**
