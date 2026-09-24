@@ -90,8 +90,10 @@ export default function Table({
   /* Live events: anything the story says is due, once whatever it waits for
      is true: a message, a missed call, the phone beginning to die. */
   const next = dueEvents(story, state)[0];
+  // A quiet event waits while the player is reading something.
+  const held = Boolean(next?.quiet && (openApp || holding));
   useEffect(() => {
-    if (!next) return undefined;
+    if (!next || held) return undefined;
     const t = window.setTimeout(
       () => {
         const s = readProgress();
@@ -106,7 +108,7 @@ export default function Table({
       (next.delay ?? 0) * 1000,
     );
     return () => window.clearTimeout(t);
-  }, [next, story]);
+  }, [next, held, story]);
 
   /* Forty-five seconds with nothing new found, and the case file says where
      to look. Once per question, never counted as a hint (PLAYER-JOURNEY

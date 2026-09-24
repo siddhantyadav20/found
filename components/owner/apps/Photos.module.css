@@ -36,9 +36,17 @@
   background: radial-gradient(80% 60% at 40% 30%, #4b5a49, #1d241f);
 }
 
-.scene[data-big] { min-height: 60%; }
+/* Full size, a photograph is portrait, as the phone took it: as wide as the
+   viewer (its container) allows and never taller than it. It has to be its
+   own box, or the zoom and a real photo's `fill` have nothing to measure. */
+.scene[data-big] {
+  width: min(100cqw, 75cqh);
+  height: auto;
+  aspect-ratio: 3 / 4;
+  margin-inline: auto;
+}
 /* Footage is landscape: the frame fits the width and leaves room for the words. */
-.scene[data-big][data-video] { min-height: 0; aspect-ratio: 16 / 9; }
+.scene[data-big][data-video] { width: 100%; aspect-ratio: 16 / 9; }
 .sceneTitle { font-size: 10px; color: rgba(255, 255, 255, 0.75); padding: 0 6px; text-align: center; }
 .scene[data-big] .sceneTitle { font-size: 15px; }
 

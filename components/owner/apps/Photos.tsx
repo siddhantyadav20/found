@@ -103,19 +103,21 @@ const REVEAL_AT = 2.2;
 const MAX_ZOOM = 4;
 const TAP_ZOOM = 3;
 
-type Zoom = { scale: number; x: number; y: number; w: number; h: number };
+/** The zoom, with the window it's seen through (`w`, `h`) and the photo's own size in it (`pw`, `ph`). */
+type Zoom = { scale: number; x: number; y: number; w: number; h: number; pw: number; ph: number };
 
-/** Is a point of the photo (percent) near enough the middle of the frame, at this zoom, to read? */
+/** Is a point of the photo (percent) near enough the middle of the window, at this zoom, to read? */
 function onScreen(spot: { x: number; y: number }, z: Zoom): boolean {
   if (!z.w || !z.h) return false;
-  const px = (spot.x / 100 - 0.5) * z.w * z.scale + z.x;
-  const py = (spot.y / 100 - 0.5) * z.h * z.scale + z.y;
+  const px = (spot.x / 100 - 0.5) * z.pw * z.scale + z.x;
+  const py = (spot.y / 100 - 0.5) * z.ph * z.scale + z.y;
   return Math.abs(px) <= z.w * 0.3 && Math.abs(py) <= z.h * 0.3;
 }
 
 function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo["zoom"]> }; onFound: () => void }) {
   const box = useRef<HTMLDivElement>(null);
-  const [zoom, setZoom] = useState<Zoom>({ scale: 1, x: 0, y: 0, w: 0, h: 0 });
+  const pic = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState<Zoom>({ scale: 1, x: 0, y: 0, w: 0, h: 0, pw: 0, ph: 0 });
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; scale: number } | null>(null);
   const revealed = zoom.scale >= REVEAL_AT && onScreen(photo.zoom.at, zoom);
@@ -128,9 +130,13 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
     const s = Math.min(MAX_ZOOM, Math.max(1, scale));
     const fw = box.current?.clientWidth ?? 0;
     const fh = box.current?.clientHeight ?? 0;
-    const w = (fw * (s - 1)) / 2;
-    const h = (fh * (s - 1)) / 2;
-    return { scale: s, x: Math.min(w, Math.max(-w, x)), y: Math.min(h, Math.max(-h, y)), w: fw, h: fh };
+    // Untransformed, so the size of the photo itself whatever the zoom.
+    const pw = pic.current?.offsetWidth ?? fw;
+    const ph = pic.current?.offsetHeight ?? fh;
+    // As far as the photo reaches past the window, and no further into the black.
+    const w = Math.max(0, (pw * s - fw) / 2);
+    const h = Math.max(0, (ph * s - fh) / 2);
+    return { scale: s, x: Math.min(w, Math.max(-w, x)), y: Math.min(h, Math.max(-h, y)), w: fw, h: fh, pw, ph };
   };
 
   return (
@@ -162,7 +168,7 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
         if (pointers.current.size < 2) pinch.current = null;
       }}
       onDoubleClick={(e) => {
-        if (zoom.scale > 1) return setZoom({ scale: 1, x: 0, y: 0, w: zoom.w, h: zoom.h });
+        if (zoom.scale > 1) return setZoom({ ...zoom, scale: 1, x: 0, y: 0 });
         // Bring what was tapped to the middle, as far as the photo's edges allow.
         const r = e.currentTarget.getBoundingClientRect();
         setZoom(clamp(TAP_ZOOM, -(e.clientX - (r.left + r.width / 2)) * TAP_ZOOM, -(e.clientY - (r.top + r.height / 2)) * TAP_ZOOM));
@@ -170,6 +176,7 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
       onWheel={(e) => setZoom((z) => clamp(z.scale * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), z.x, z.y))}
     >
       <div
+        ref={pic}
         className={frame.zoomable}
         data-zoomed={zoom.scale > 1 || undefined}
         style={{ transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})` }}

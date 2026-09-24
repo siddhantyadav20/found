@@ -229,6 +229,12 @@ export type LiveEvent = {
   readonly unless?: readonly Flag[];
   /** Seconds after the last flag in `after` landed. */
   readonly delay?: number;
+  /**
+   * Waits for the phone to be put down: its `delay` only runs on the home
+   * screen, with no app open and nothing in the player's hand. For a turn of
+   * the night, so an episode never ends under someone reading.
+   */
+  readonly quiet?: boolean;
   readonly app: AppId;
   readonly banner?: string;
   /** Whose icon the banner wears, when it isn't the app's own. */

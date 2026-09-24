@@ -55,6 +55,12 @@ describe("Episode 2", () => {
   it("ends on the gap: Episode 3 opens only once the car is known to have left empty", () => {
     expect(s.flags.indexOf("ep:3")).toBeGreaterThan(s.flags.indexOf("ask:q9"));
   });
+
+  it("turns to Episode 3 only once Raju, Sameer and Bhasin have had their say, and the phone is put down", () => {
+    const order = ep.events.map((e) => e.id);
+    for (const last of ["sameer-asks", "raju-writes", "bhasin-writes"]) expect(order.indexOf(last), last).toBeLessThan(order.indexOf("the-gap"));
+    expect(ep.events.find((e) => e.id === "the-gap")?.quiet).toBe(true);
+  });
 });
 
 describe("the two firings", () => {

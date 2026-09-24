@@ -433,8 +433,10 @@ const events: readonly LiveEvent[] = [
   // Once Dilip is known to have been alive, his brother writes.
   { id: "raju-writes", device: "owner", after: ["ask:q8"], unless: [OFFLINE], delay: 10, app: "whatsapp", banner: `${RAJU} · Aap jo bhi ho… Dilip ke baare mein kuch pata chala?` },
   { id: "bhasin-writes", device: "owner", after: ["ask:q8"], unless: ["did:mummy-stranger", OFFLINE], delay: 40, app: "whatsapp", banner: "Bhasin Uncle · Jiske paas bhi ye phone hai — wapas kar do." },
-  // The episode ends on the gap: once the car is known to have left empty, the night turns to 1:52.
-  { id: "the-gap", device: "owner", after: ["ask:q9"], delay: 25, app: "whatsapp", sets: ["ep:3"] },
+  /* The episode ends on the gap: once the car is known to have left empty, the
+     night turns to 1:52. Not under someone reading Raju, Sameer or Bhasin's
+     last word, though: only once the phone has been put down a while. */
+  { id: "the-gap", device: "owner", after: ["ask:q9"], delay: 15, quiet: true, app: "whatsapp", sets: ["ep:3"] },
 ];
 
 export const episode2 = { evidence, questions, events, threads };

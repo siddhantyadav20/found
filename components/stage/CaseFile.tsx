@@ -165,8 +165,12 @@ export default function CaseFile({
     } else wrong(q.id);
   };
 
+  // With only one thing to say, there's nothing to choose: it's the one being filed.
+  const sayable = q.kind === "file" ? stillOffered(q, state) : [];
+  const chosen = claim ?? (sayable.length === 1 ? sayable[0].id : null);
+
   const ready =
-    q.kind === "type" ? typed.trim().length > 0 : q.kind === "file" ? Boolean(claim) && picked.length > 0 : picked.length > 0;
+    q.kind === "type" ? typed.trim().length > 0 : q.kind === "file" ? Boolean(chosen) && picked.length > 0 : picked.length > 0;
 
   return (
     <div className={styles.file}>
@@ -199,7 +203,7 @@ export default function CaseFile({
               found={found}
               picked={picked}
               setPicked={setPicked}
-              claim={claim}
+              claim={chosen}
               setClaim={setClaim}
               typed={typed}
               setTyped={setTyped}
@@ -212,7 +216,7 @@ export default function CaseFile({
                 className={note.primary}
                 disabled={!ready}
                 onClick={() =>
-                  give(q.kind === "type" ? typed : q.kind === "file" ? { claim: claim ?? "", proof: picked } : picked)
+                  give(q.kind === "type" ? typed : q.kind === "file" ? { claim: chosen ?? "", proof: picked } : picked)
                 }
               >
                 {q.kind === "file" ? "File it" : "Answer"}
@@ -245,6 +249,12 @@ export default function CaseFile({
       {record}
     </div>
   );
+}
+
+/** The claims a player can file now: what they could prove, less any line already struck. */
+function stillOffered(q: Question, s: CaseState) {
+  const struck = new Set(filedClaims(q, s).map((c) => c.id));
+  return offeredClaims(q, s).filter((c) => !struck.has(c.id));
 }
 
 /** Where a claim's sources come from: the first of its routes the player has all of. */
@@ -409,8 +419,7 @@ function Board({
      for all of it: nothing says which is the owner's. A line already struck
      isn't offered again. */
   if (q.kind === "file") {
-    const struck = new Set(filedClaims(q, state).map((c) => c.id));
-    const offered = offeredClaims(q, state).filter((c) => !struck.has(c.id));
+    const offered = stillOffered(q, state);
     if (!offered.length) return <p className={styles.empty}>Nothing you&apos;ve found says yet. Keep looking.</p>;
     return (
       <>

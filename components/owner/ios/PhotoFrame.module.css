@@ -176,6 +176,8 @@
   overflow: hidden;
   /* The photo can be pulled down to put it away; the browser mustn't scroll instead. */
   touch-action: none;
+  /* What a full-size photo sizes itself against. */
+  container-type: size;
 }
 
 /* Live Text: a glass button in the photo's corner, as iOS puts it. */
@@ -366,6 +368,8 @@
 
 .zoomable {
   position: relative;
+  /* Exactly the photo's box, so what's placed on it in percent lands on the photo. */
+  justify-self: center;
   transform-origin: 50% 50%;
   transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
