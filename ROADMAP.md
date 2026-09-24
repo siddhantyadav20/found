@@ -25,7 +25,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S3** ✔ | The chain and the record | Links, claims, Sameer's version, Revisit, the multi-lane board |
 | **S4** ✔ | His phone | Photos with media, Voice Memos, WhatsApp's archive, Mail, Paytap |
 | **S5** ✔ | Arrival | Parcel, envelope, the note, the phone waking, the charger |
-| **S6** | Episode 1 | *Missed Calls* as data |
+| **S6** ✔ | Episode 1 | *Missed Calls* as data |
 | **S7** | Episode 2 | *The Second Shot* as data |
 | **S8** | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
 | **S9** | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
@@ -225,6 +225,62 @@ the local thana, Bhasin (script §8 beat 1).
 - a replay's open parcel, then the envelope
 
 No console errors.
+
+## S6 — Episode 1 · **done (2026-09-24)**
+
+**Decided with Siddhant: paced, with a hybrid.** What Sameer pointed M at is
+in plain view from minute one (`content/shagun/phone.ts`: the pinned M chat,
+Favorites, "For M", the security group). What he tucked away sits behind the
+hard routes and only counts in its own episode (`requires: ["ep:2"]` and so
+on). A player who digs early sees it but can't file it yet.
+
+**Built:**
+- **The phone as he prepared it** (`phone.ts`): threads (M with four voice
+  notes on one grey tick, Mummy, Raju's poster, Kunal's clip, Banyan —
+  Security, Sethi Caterers, Bhasin Uncle, ZipEMI), the Sehgal album and the
+  9:48 PM portrait with a zoom on the CHHOTU badge, the fire clip and its
+  original, "For M", the shot list, Mail (the invoice, the offer, the ticket,
+  the site plan), Paytap, the SK Films profile, Recents, Safari searches and
+  Settings.
+- **Episode 1** (`episode1.ts`): Q1–Q4, three hints each, two routes each.
+  Q3 is a `file` question: only Sameer's version can be filed now. Its truth
+  claim waits on `link:two-firings`, and Q3 comes back as a Revisit in S7.
+- **Raju rings over the lock screen** six seconds after it's unlocked, with
+  three replies. Then Find My, then Mummy's *"phone ki location kahin aur
+  dikha rahi hai"* with her own replies, then *"M? Tu hai?"* from a new
+  number once Q4 is filed, then the phone dies to 2% and the charger.
+- **Engine, for the pacing:**
+  - `within`: evidence found by opening what it's inside (the voice notes
+    by opening M's chat, not WhatsApp), which still badges.
+  - `foundBy` and `settle()`: a one-way act done early (showing Hidden,
+    Revert) counts once its episode opens.
+  - `offeredClaims()`: a claim the player can't prove yet isn't offered.
+    Before this, Q3's board showed the truth in Episode 1.
+  - `arrivedAt()`: a message that arrives with an event carries the time it
+    arrived on the story's clock, not a time written in advance.
+- **Chat:** a reply the player picks shows as the owner's message, followed
+  by its answer. The chat list is newest first after the pinned chat, sorted
+  around the story's own day (`recency()` in `lib/found/time.ts`).
+- **Fixes:** Mail, Paytap and Voice Memos were on the home screen twice (from
+  S4); `chapter.test.ts` now checks the icons are unique. A reply was
+  labelled with the caller's masked number; now with their name.
+
+**Tests:** 89 and 1 skipped (every link traceable, which waits on Episode 3's
+questions). `episode1.test.ts` is a solver: it plays Episode 1 from the
+envelope to the charger, through each question's first route.
+
+**Walked** at 375 × 812 in dev:
+- the envelope, then Raju ringing over the lock screen (answered; the truth told)
+- Q1 via Instagram, Q2 via the poster and the zoomed badge
+- Q3 with only Sameer's version on the board, filed
+- Find My and Mummy; replied "a stranger has it", and her answer shows
+- Q4 via the passcode page and "For M"
+- Sameer's messages, the phone dying, and the charger at 2%
+
+No console errors.
+
+**Left for S7:** the second-episode layer (the archived Nitin chat, the memo
+in the bin, the reel take), and Q3's Revisit.
 
 ## S6 · S7 · S8 — The episodes as data
 

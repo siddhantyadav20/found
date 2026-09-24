@@ -10,6 +10,10 @@ import {
   hint,
   needsRevisit,
   newCase,
+  offeredClaims,
+  openApp,
+  settle,
+  unseenIn,
   openQuestion,
   see,
   sideQuestions,
@@ -276,5 +280,57 @@ describe("help", () => {
       expect(q.whereToLook.length, q.id).toBeGreaterThan(0);
       expect(new Set(q.hints).size, q.id).toBe(3);
     }
+  });
+});
+
+describe("finding things", () => {
+  const phone: Story = {
+    ...STORIES.shagun,
+    evidence: [
+      { id: "on-screen", device: "owner", app: "settings", label: "Seen on opening" },
+      { id: "in-a-chat", device: "owner", app: "whatsapp", label: "Inside a chat", within: true },
+      { id: "by-hand", device: "owner", app: "photos", label: "Found by doing", manual: true },
+      { id: "reverted", device: "owner", app: "photos", label: "The original", manual: true, foundBy: ["did:reverted-fire"], requires: ["ep:3"] },
+    ],
+  };
+
+  it("finds on opening an app only what's on its surface", () => {
+    expect(openApp(phone, start(), "settings").flags).toContain("saw:on-screen");
+    expect(openApp(phone, start(), "whatsapp").flags).not.toContain("saw:in-a-chat");
+    expect(see(phone, start(), "in-a-chat").flags).toContain("saw:in-a-chat");
+  });
+
+  it("badges what's inside something, never what has to be done by hand", () => {
+    expect(unseenIn(phone, start(), "whatsapp")).toBe(1);
+    expect(unseenIn(phone, start(), "photos")).toBe(0);
+  });
+
+  it("counts an act done in an earlier episode once its own episode comes", () => {
+    const early = add(start(), "did:reverted-fire");
+    expect(settle(phone, early).flags).not.toContain("saw:reverted");
+    expect(settle(phone, add(early, "ep:2", "ep:3")).flags).toContain("saw:reverted");
+  });
+});
+
+describe("what the player is offered to file", () => {
+  const car = {
+    kind: "file",
+    id: "car",
+    ask: "Why did the car leave empty?",
+    episode: 1,
+    whereToLook: ["whatsapp"],
+    hints: ["a", "b", "c"],
+    claims: [
+      { id: "his", text: "Bhasin's people turned it away.", proof: ["poster"], reply: "Filed.", version: true },
+      { id: "true", text: "Sameer told Nitin.", proof: ["portrait", "invoice"], reply: "Filed." },
+    ],
+    reply: "Filed.",
+  } as const satisfies Question;
+
+  it("is only what they could prove with what they've found, so no claim gives the next one away", () => {
+    expect(offeredClaims(car, start()).map((c) => c.id)).toEqual([]);
+    expect(offeredClaims(car, found("poster")).map((c) => c.id)).toEqual(["his"]);
+    expect(offeredClaims(car, found("poster", "portrait")).map((c) => c.id)).toEqual(["his"]);
+    expect(offeredClaims(car, found("poster", "portrait", "invoice")).map((c) => c.id)).toEqual(["his", "true"]);
   });
 });

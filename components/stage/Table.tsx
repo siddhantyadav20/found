@@ -83,7 +83,7 @@ export default function Table({
       () => {
         const s = readProgress();
         if (!s) return;
-        save(fire(story, s, next.id));
+        save(fire(story, s, next.id, Date.now()));
         // Arrived while nobody was looking: into the list, no banner.
         // On the lock screen it lands in the list; it doesn't pop again after unlocking.
         if (next.banner && !next.at && s.flags.includes("did:past-lock")) {

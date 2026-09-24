@@ -1,5 +1,5 @@
 import type { Flag, ReplyOption, Story } from "@/content/types";
-import { add, see, stamp, type CaseState } from "@/lib/game/engine";
+import { add, see, settle, stamp, type CaseState } from "@/lib/game/engine";
 import { STORIES } from "@/content/stories";
 import type { CaseId } from "@/content/cases";
 import { reportFlag } from "@/lib/found/events";
@@ -14,6 +14,7 @@ import { track } from "@/lib/found/track";
    three things happen on every save without anybody remembering to:
 
    - the episode's start is stamped, so its clock begins at its own base
+   - evidence found by an act done earlier counts once its episode opens
    - the moment is kept as `at.last`, so coming back after a gap is noticed
    - each flag that means something is reported to the funnel, once
    - nothing works from a stale copy of the save
@@ -21,8 +22,11 @@ import { track } from "@/lib/found/track";
    Nothing here renders; it is the store's front door.
    =========================================================================== */
 
-export function save(next: CaseState): void {
+export function save(given: CaseState): void {
   const before = readProgress();
+  const bound = boundCase();
+  // Anything found by an act already done counts as soon as it can.
+  const next = bound ? settle(STORIES[bound as CaseId], given) : given;
   // Nothing changed: writing anyway would stamp a new time, re-render every
   // reader, and let an effect that marks things read loop forever.
   if (before && next === before) return;

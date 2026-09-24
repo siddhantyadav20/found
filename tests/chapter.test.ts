@@ -12,8 +12,7 @@ import { homeIcons } from "@/lib/game/engine";
  * - nothing points at evidence that doesn't exist
  * - the chain is eleven links, and every one of them can be traced
  *
- * *Shagun* is a stub since ROADMAP S1, so these hold vacuously until S6–S8
- * write its episodes. S12 adds the solver runs CHAPTER1.md promises: the full
+ * Episode 1 is written (ROADMAP S6); Episodes 2 and 3 follow in S7–S8. S12 adds the solver runs CHAPTER1.md promises: the full
  * chain (11 of 11, Ending A), Sameer's version (B), an early post (C) and
  * Return to Sender, and two sources per link that survive any closed route.
  */
@@ -116,6 +115,23 @@ describe("every piece of evidence", () => {
     for (const id of hard) expect(ep.evidence.find((e) => e.id === id)?.manual, `${id} would be found just by opening its app`).toBe(true);
   });
 
+  it("is what every question's proof is made of", () => {
+    const ids = new Set(ep.evidence.map((e) => e.id));
+    for (const q of ep.questions) {
+      const proofs =
+        q.kind === "pick"
+          ? [q.proof, ...(q.orProof ?? [])].flat()
+          : q.kind === "file"
+            ? q.claims.flatMap((c) => [c.proof, ...(c.orProof ?? [])].flat())
+            : q.kind === "timeline"
+              ? q.rows.map((r) => r.evidence)
+              : q.kind === "claims"
+                ? q.claims.map((c) => c.proof).filter((p) => p !== "none")
+                : [];
+      for (const id of proofs) expect(ids.has(id), `${q.id} needs ${id}`).toBe(true);
+    }
+  });
+
   it("points only at evidence that exists", () => {
     const ids = new Set(ep.evidence.map((e) => e.id));
     for (const id of places.keys()) expect(ids.has(id), id).toBe(true);
@@ -148,8 +164,8 @@ describe("the chain", () => {
       if (f.startsWith("link:")) expect(version, `${q.id} traces ${f} with the owner's version`).toBe(false);
   });
 
-  // Holds once the episodes are written (ROADMAP S6–S8); a stub has nothing to trace with.
-  it.skipIf(ep.questions.length === 0)("can trace every link, and every spine link from a question nobody can skip", () => {
+  // Holds once the last episode is written (ROADMAP S8): until then, later links have nothing to trace them.
+  it.skipIf(!ep.questions.some((q) => q.episode === 3))("can trace every link, and every spine link from a question nobody can skip", () => {
     for (const l of ep.chain) {
       const by = setters.filter((x) => x.f === (`link:${l.id}` as Flag));
       expect(by.length, `nothing traces ${l.id}`).toBeGreaterThan(0);
@@ -172,6 +188,11 @@ describe("the arrival", () => {
 });
 
 describe("the phone itself", () => {
+  it("puts each app on the home screen once", () => {
+    const apps = homeIcons(ep).map((i) => i.app);
+    expect(apps).toEqual([...new Set(apps)]);
+  });
+
   it("is its owner's, with the case file in the dock", () => {
     expect(ep.owner.name).toBe("Sameer Khurana");
     expect(ep.home.dock.map((i) => i.app)).toContain("casefile");

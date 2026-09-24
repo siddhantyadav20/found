@@ -57,6 +57,15 @@ export function see(story: Story, s: CaseState, id: string): CaseState {
   return e && reachable(s, e) ? add(s, `saw:${id}`) : s;
 }
 
+/**
+ * Everything whose finding act has already happened, now that it can count.
+ * Run on every save, so an act done early counts the moment its episode opens.
+ */
+export const settle = (story: Story, s: CaseState): CaseState =>
+  story.evidence
+    .filter((e) => e.foundBy?.length && all(s, e.foundBy) && reachable(s, e) && !seen(s, e.id))
+    .reduce((acc, e) => add(acc, `saw:${e.id}`), s);
+
 /** What the case file lists: everything reachable, in the order it was found. */
 export const caseFile = (story: Story, s: CaseState): Evidence[] =>
   story.evidence.filter((e) => reachable(s, e) && seen(s, e.id));
@@ -65,9 +74,9 @@ export const caseFile = (story: Story, s: CaseState): Evidence[] =>
 export const unseenIn = (story: Story, s: CaseState, app: AppId): number =>
   story.evidence.filter((e) => e.app === app && !e.manual && reachable(s, e) && !seen(s, e.id)).length;
 
-/** What opening one app finds on its own: everything in it but the manual. */
+/** What opening one app finds on its own: everything in it but the manual, and what is inside something. */
 export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
-  story.evidence.filter((e) => e.app === app && !e.manual).reduce((acc, e) => see(story, acc, e.id), s);
+  story.evidence.filter((e) => e.app === app && !e.manual && !e.within).reduce((acc, e) => see(story, acc, e.id), s);
 
 /** Every icon on the found phone's home screen, pages and dock together. */
 export const homeIcons = (story: Story) => [...story.home.pages.flat(), ...story.home.dock];
@@ -92,6 +101,15 @@ export function filedClaims(q: Question, s: CaseState): FileClaim[] {
 
 /** The claim on file for a question now, if it's the kind that files one. */
 export const filedClaim = (q: Question, s: CaseState): FileClaim | undefined => filedClaims(q, s).at(-1);
+
+/**
+ * The claims a player is offered: only those they could prove with what they
+ * have found. A claim the phone can't yet support is never put in front of
+ * them, because its words alone would give the next episode away. What they
+ * can say grows with what they've found.
+ */
+export const offeredClaims = (q: Question, s: CaseState): FileClaim[] =>
+  q.kind === "file" ? q.claims.filter((c) => [c.proof, ...(c.orProof ?? [])].some((r) => r.every((id) => seen(s, id)))) : [];
 
 /** Filed as the owner's version, and something found since says otherwise. */
 export const needsRevisit = (q: Question, s: CaseState): boolean =>
@@ -243,9 +261,18 @@ export const fired = (s: CaseState, id: string): boolean => has(s, `fired:${id}`
 export const dueEvents = (story: Story, s: CaseState): LiveEvent[] =>
   story.events.filter((e) => !fired(s, e.id) && all(s, e.after));
 
-export const fire = (story: Story, s: CaseState, id: string): CaseState => {
+/** Play a live event, once; given `now`, it also remembers when, for what arrives with it. */
+export const fire = (story: Story, s: CaseState, id: string, now?: number): CaseState => {
   const e = story.events.find((x) => x.id === id);
-  return e ? add(s, `fired:${id}`, ...(e.sets ?? [])) : s;
+  if (!e) return s;
+  const next = add(s, `fired:${id}`, ...(e.sets ?? []));
+  return now === undefined ? next : { ...next, at: { ...next.at, [`event:${id}`]: now } };
+};
+
+/** When something arriving with a live event arrived, on the story's clock; else its own time. */
+export const arrivedAt = (story: Story, s: CaseState, m: { readonly at: string; readonly with?: string }): string => {
+  const when = m.with ? s.at[`event:${m.with}`] : undefined;
+  return when === undefined ? m.at : clockNow(story, s, when);
 };
 
 /* --- time --------------------------------------------------------------- */

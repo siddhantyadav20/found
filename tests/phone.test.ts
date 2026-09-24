@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Photo, Story } from "@/content/types";
-import { add, newCase } from "@/lib/game/engine";
+import { add, arrivedAt, fire, newCase } from "@/lib/game/engine";
+import { recency } from "@/lib/found/time";
 import { SHOW_HIDDEN, clipOf, inBin, library, memos, mmss, restored, reverted, revertible, rupees } from "@/lib/game/phone";
 
 /**
@@ -91,5 +92,29 @@ describe("how the phone writes things", () => {
     expect(mmss(125)).toBe("2:05");
     expect(rupees(180000)).toBe("₹1,80,000");
     expect(rupees(-14200)).toBe("₹14,200");
+  });
+});
+
+describe("what arrives during the night", () => {
+  it("is stamped when it arrived, on the story's clock, never in the future", () => {
+    const s = fire(STORIES.shagun, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
+    // The chapter opens at 11:40 PM; six minutes in, that's 11:46, whatever the script's own guess.
+    expect(arrivedAt(STORIES.shagun, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
+    expect(arrivedAt(STORIES.shagun, s, { at: "00:06" })).toBe("00:06");
+    expect(arrivedAt(STORIES.shagun, s, { at: "00:06", with: "never-fired" })).toBe("00:06");
+  });
+});
+
+describe("newest first", () => {
+  it("orders a week of days the way a chat list does, around the story's own today", () => {
+    const today = "Saturday";
+    const order = [
+      ["Saturday", "23:31"],
+      ["Saturday", "22:52"],
+      ["Friday", "09:00"],
+      ["Sunday", "09:40"],
+      ["22/11", "23:58"],
+    ].map(([d, a]) => recency(d, a, today));
+    expect([...order].sort((a, b) => b - a)).toEqual(order);
   });
 });

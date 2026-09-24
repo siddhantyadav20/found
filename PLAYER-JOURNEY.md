@@ -153,6 +153,11 @@ this?*), because question one teaches that the case file exists.
   look*, three hints, the 45-second idle nudge, and badges only for
   reachable-but-unseen evidence. *(carried over)*
 - **Answers are filed as claims, with their sources beside them.**
+- **Only what can be proven now is offered.** A claim the phone can't yet
+  support isn't on the board, so the board never gives away what comes
+  later.
+- **Digging early is never wasted.** Something found behind a hard route
+  before its episode counts the moment that episode opens.
 - **Sameer's version is accepted without comment.** No buzzer, no "are you
   sure?", no hint that it's his. Law 1 depends on it.
 

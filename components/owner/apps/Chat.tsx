@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
-import { all, dayNow, seen, type CaseState } from "@/lib/game/engine";
-import { stamp } from "@/lib/found/time";
+import { all, arrivedAt, dayNow, seen, type CaseState } from "@/lib/game/engine";
+import { recency, stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { Chevron } from "../ios/AppBar";
 import Clip from "../ios/Clip";
@@ -107,7 +107,7 @@ function Voice({ seconds, transcript, english }: { seconds: number; transcript: 
   );
 }
 
-function Bubble({ m }: { m: Message }) {
+function Bubble({ m, at }: { m: Message; at: string }) {
   if (m.from === "system") return <p className={styles.service}>{m.text}</p>;
 
   const out = m.from === "owner";
@@ -186,7 +186,7 @@ function Bubble({ m }: { m: Message }) {
       )}
 
       <span className={styles.stamp}>
-        {stamp(m.at)}
+        {stamp(at)}
         {out && !m.deleted && (
           <span
             className={styles.ticks}
@@ -202,6 +202,7 @@ function Bubble({ m }: { m: Message }) {
 }
 
 function Conversation({
+  story,
   thread,
   state,
   app,
@@ -209,6 +210,7 @@ function Conversation({
   onRead,
   onSay,
 }: {
+  story: Story;
   thread: Thread;
   app: Thread["app"];
   state: CaseState;
@@ -216,7 +218,25 @@ function Conversation({
   onRead: (evidenceIds: readonly string[]) => void;
   onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
-  const messages = thread.messages.filter((m) => all(state, m.requires));
+  /* What was said back, once said: the player's line, then whatever comes
+     back (the option's `then`), revealed with "typing…" like anything new. */
+  const chosen = thread.reply?.options.find((o) => o.sets?.some((f) => state.flags.includes(f)));
+  const base = thread.messages.filter((m) => all(state, m.requires));
+  const messages: Message[] = chosen
+    ? [
+        ...base,
+        {
+          id: `said-${chosen.id}`,
+          from: "owner",
+          text: chosen.text,
+          english: chosen.english,
+          at: chosen.then?.[0]?.at ?? base.at(-1)?.at ?? "00:00",
+          day: chosen.then?.[0]?.day ?? base.at(-1)?.day,
+          with: chosen.then?.[0]?.with,
+        },
+        ...(chosen.then ?? []),
+      ]
+    : base;
   /* What is on screen. Everything already there shows at once; what arrives
      while the chat is open is revealed one message at a time. */
   const [shown, setShown] = useState(messages.length);
@@ -275,7 +295,7 @@ function Conversation({
         {messages.slice(0, shown).map((m, i) => (
           <div key={m.id}>
             {m.day && m.day !== messages[i - 1]?.day && <p className={styles.day}>{m.day}</p>}
-            <Bubble m={m} />
+            <Bubble m={m} at={arrivedAt(story, state, m)} />
           </div>
         ))}
       </div>
@@ -342,7 +362,7 @@ export default function Chat({
   }, []);
 
   const here = threads.find((t) => t.id === open);
-  if (here) return <Conversation key={here.id} thread={here} state={state} app={app} onBack={() => setOpen(null)} onRead={onRead} onSay={onSay} />;
+  if (here) return <Conversation key={here.id} story={story} thread={here} state={state} app={app} onBack={() => setOpen(null)} onRead={onRead} onSay={onSay} />;
 
   const archived = threads.filter((t) => t.archived);
   const inList = archive ? archived : threads.filter((t) => !t.archived);
@@ -361,7 +381,15 @@ export default function Chat({
         </li>
       )}
       {[...inList]
-        .sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)))
+        // Pinned first, then newest first, as WhatsApp keeps its list.
+        .sort((a, b) => {
+          if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
+          const last = (t: Thread) => t.messages.filter((m) => all(state, m.requires)).at(-1);
+          const la = last(a);
+          const lb = last(b);
+          const today = dayNow(story, state);
+          return recency(lb?.day, lb && arrivedAt(story, state, lb), today) - recency(la?.day, la && arrivedAt(story, state, la), today);
+        })
         .map((t) => {
           const shown = t.messages.filter((m) => all(state, m.requires));
           const last = shown[shown.length - 1];
@@ -374,7 +402,7 @@ export default function Chat({
                   <span className={styles.rowTop}>
                     <span className={styles.rowName}>{t.name}</span>
                     <span className={styles.rowTime} data-unread={unread > 0 || undefined}>
-                      {last?.day && last.day !== dayNow(story, state) ? last.day : stamp(last?.at)}
+                      {last?.day && last.day !== dayNow(story, state) ? last.day : stamp(last && arrivedAt(story, state, last))}
                     </span>
                   </span>
                   <span className={styles.rowBottom}>

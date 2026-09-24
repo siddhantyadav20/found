@@ -109,7 +109,8 @@ export default function Ringing({
           )}
           {reaction && (
             <p className={styles.line}>
-              <span className={styles.speaker}>{call.from.replace(/\s*❤️/, "")}</span>
+              {/* Whoever has been speaking answers, by name, however the phone listed them. */}
+              <span className={styles.speaker}>{call.lines[0]?.who ?? call.from}</span>
               <span lang={reaction.english ? "hi-Latn" : undefined}>{reaction.text}</span>
               {reaction.english && <span className={styles.english}>{reaction.english}</span>}
             </p>

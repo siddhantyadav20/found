@@ -227,6 +227,12 @@ questions, and each question sits on a stage of the mystery ladder (script
 the engine already enforces. Hints and full dialogue come in S6–S8; key lines
 are drafted here. **English sits under every Hinglish line in the game.**
 
+**Pacing (game, decided 2026-09-24): paced, with a hybrid.** The whole
+phone is there from minute one, as he left it. What he pointed M at counts
+from Episode 1. What he tucked away (the bin, Hidden, the original, the
+archive) can be found early but is only filed in its own episode, so a
+player who digs is never punished and never skips ahead.
+
 **Question types.** *Pick* (table the proof, name the answer), *type*,
 *timeline* (multi-lane, ordered), and *claims* (proven / not proven). New in
 this chapter **(game):** a question can accept **Sameer's version** as a claim,

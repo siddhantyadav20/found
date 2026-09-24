@@ -22,3 +22,20 @@ export function stamp(hhmm: string | undefined): string {
   const h = Number(m[1]);
   return `${h % 12 || 12}:${m[2]} ${h < 12 ? "AM" : "PM"}`;
 }
+
+const WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+/**
+ * How recent something is, for sorting newest first: minutes since the start
+ * of the week before `today`. A day is a weekday name within the last week, or
+ * a date ("22/11") for anything older, which sorts below all of them.
+ */
+export function recency(day: string | undefined, at: string | undefined, today: string): number {
+  const m = HHMM.exec(at ?? "");
+  const minutes = m ? Number(m[1]) * 60 + Number(m[2]) : 0;
+  const d = WEEK.indexOf(day ?? today);
+  const t = WEEK.indexOf(today);
+  if (d < 0 || t < 0) return minutes - 8 * 1440;
+  const back = (t - d + 7) % 7;
+  return (7 - back) * 1440 + minutes;
+}

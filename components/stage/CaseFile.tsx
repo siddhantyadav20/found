@@ -11,6 +11,7 @@ import {
   filedClaim,
   filedClaims,
   hint,
+  offeredClaims,
   needsRevisit,
   openQuestion,
   seen,
@@ -388,18 +389,19 @@ function Board({
       />
     );
 
-  /* Say what you think, then prove it. The claims are in the chapter's own
-     order, one style for all of them: nothing says which is the owner's. A
-     line already struck isn't offered again. */
+  /* Say what you think, then prove it. Only what the player could prove with
+     what they've found is offered, in the chapter's own order and one style
+     for all of it: nothing says which is the owner's. A line already struck
+     isn't offered again. */
   if (q.kind === "file") {
     const struck = new Set(filedClaims(q, state).map((c) => c.id));
+    const offered = offeredClaims(q, state).filter((c) => !struck.has(c.id));
+    if (!offered.length) return <p className={styles.empty}>Nothing you&apos;ve found says yet. Keep looking.</p>;
     return (
       <>
         <p className={note.choose}>What do you think happened?</p>
         <ul className={styles.list}>
-          {q.claims
-            .filter((c) => !struck.has(c.id))
-            .map((c) => (
+          {offered.map((c) => (
               <li key={c.id}>
                 <button
                   type="button"

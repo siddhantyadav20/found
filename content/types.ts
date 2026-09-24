@@ -73,6 +73,20 @@ export type Evidence = {
    * doing away.
    */
   readonly manual?: boolean;
+  /**
+   * Found by opening the thing it's in (a chat, a photo, a note, a letter),
+   * not just the app: on a phone this full, opening WhatsApp shouldn't find
+   * every voice note unheard. Unlike `manual`, it still counts in the app's
+   * badge, because there is something to open.
+   */
+  readonly within?: boolean;
+  /**
+   * Found by something the player did, once it holds, whenever that was: a
+   * clip reverted, a recording recovered. Such acts can't be done twice, so
+   * one done in an earlier episode still counts once this evidence's own
+   * episode comes (the hybrid pacing: CHAPTER1.md F).
+   */
+  readonly foundBy?: readonly Flag[];
 };
 
 /** Three steps: a nudge, a push, and the answer. Never fewer. */
@@ -336,6 +350,12 @@ export type Message = {
    * Read, by default.
    */
   readonly ticks?: "sent" | "delivered" | "read";
+  /**
+   * Arrives with this live event, during the player's night: shown at the
+   * story's time when it arrived, not at `at`, so nothing is ever stamped in
+   * the future (PLAYTEST.md #46).
+   */
+  readonly with?: string;
   /** A reply to an earlier message, quoted above it. */
   readonly quote?: { readonly who: string; readonly text: string };
   readonly text?: string;
