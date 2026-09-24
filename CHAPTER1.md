@@ -312,6 +312,13 @@ happened afterwards. **Doesn't know:** what was said at 1:52, or by whom.
 | 8 | **Sameer, one last time.** **Give him the rescuer:** *"Tumne bachane ki koshish ki thi."* He takes it gratefully and keeps talking. **Or confront him with the full chain** (only with links 4, 5, 7 and 8 traced): *"1:52 pe tumne Nitin ko bola Dilip chala gaya. 1:56 pe tum ambulance dhoond rahe the."* Typing… for a long time. Then: ***"Maine usko bola Dilip nikal gaya hai. Mujhe pata tha woh nahi nikla tha."*** *(I told him Dilip had already left. I knew he hadn't.)* **He never writes again.** *L10* | WhatsApp | The chapter's last choice before the record |
 | 9 | **The record.** Your phone. **(I.)** | Your phone | The ending |
 
+**Built in S8 (game), beyond the table:**
+- **Nitin** can also be **pressed** (*"Tumne gaadi wapas kyun bheji?"*), and he shuts the door: *"Mujhe is sab mein mat daal."*
+- **Kunal**, once Q7 is answered, can be asked for the truth or handed Nitin's name. Either way he names Nitin to Bhasin (*"Bhai tune Kunal ko mera naam de diya?"*), and Nitin's route closes. Exposing Nitin is also the second route to the frame.
+- **Raju**, told it was Kunal, goes to the Sehgals' and hears otherwise: *"Aapne jhooth bola. Aap log sab ek jaise ho."*
+- **The board's three odd rows** (1:49, 1:53, 1:56) light when it's filed, unexplained.
+- **Airplane mode**, from Episode 2 on, silences Raju, Nitin, Kunal, Bhasin and Sameer, and nothing can be sent. Every link keeps its route on the phone.
+
 **Believes (canon):** Sameer and the family are both responsible, but not in
 the same way. **The key reveal (canon):** the deepest lie on this phone isn't
 a made-up event. It's a true sequence, arranged so his responsibility seems

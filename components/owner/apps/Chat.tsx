@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
-import { conversation, openReply } from "@/lib/game/chat";
+import { conversation, offeredOptions, openReply } from "@/lib/game/chat";
 import { all, arrivedAt, dateNow, reachable, seen, type CaseState } from "@/lib/game/engine";
-import { calendarOf } from "@/lib/game/phone";
+import { AIRPLANE, calendarOf } from "@/lib/game/phone";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { Chevron } from "../ios/AppBar";
@@ -230,15 +230,17 @@ function Conversation({
   const body = useRef<HTMLDivElement>(null);
   const pending = shown < messages.length;
   const nextFromThem = pending && messages[shown]?.from !== "owner";
+  // Some things take someone longer to write.
+  const typingMs = (messages[shown]?.typing ?? TYPING_MS / 1000) * 1000;
 
   useEffect(() => {
     if (!pending) return undefined;
     const t = window.setTimeout(() => {
       if (nextFromThem) received();
       setShown((n) => n + 1);
-    }, nextFromThem ? TYPING_MS : 250);
+    }, nextFromThem ? typingMs : 250);
     return () => window.clearTimeout(t);
-  }, [pending, nextFromThem, shown]);
+  }, [pending, nextFromThem, shown, typingMs]);
 
   // New messages scroll into view, the way a chat does.
   useEffect(() => {
@@ -257,7 +259,9 @@ function Conversation({
     if (visible) onRead(visible.split(","));
   }, [visible, onRead]);
 
-  const reply = openReply(state, thread);
+  // In airplane mode nothing leaves the phone either.
+  const offline = state.flags.includes(AIRPLANE);
+  const reply = offline ? undefined : openReply(state, thread);
 
   return (
     <section className={styles.chats} data-app={app} data-wall={app === "whatsapp" || undefined}>
@@ -289,7 +293,7 @@ function Conversation({
       {reply && !pending ? (
         <div className={styles.replies}>
           {reply.prompt && <p className={styles.replyPrompt}>{reply.prompt}</p>}
-          {reply.options.map((o) => (
+          {offeredOptions(state, reply).map((o) => (
             <button
               key={o.id}
               type="button"
@@ -306,7 +310,7 @@ function Conversation({
         </div>
       ) : (
         <footer className={styles.composer}>
-          <span className={styles.field}>It isn&apos;t your phone.</span>
+          <span className={styles.field}>{offline && openReply(state, thread) ? "Airplane Mode is on." : "It isn't your phone."}</span>
         </footer>
       )}
     </section>

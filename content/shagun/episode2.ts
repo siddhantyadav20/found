@@ -22,6 +22,9 @@ import { RAJU } from "./phone";
 
 const now: readonly ["ep:2"] = ["ep:2"];
 
+/** Airplane mode, turned on by hand (lib/game/phone.ts): after it, nobody's messages reach the phone. */
+const OFFLINE = "did:airplane";
+
 const evidence: readonly Evidence[] = [
   // Q5: the reel.
   { id: "kunal-papa", device: "owner", app: "whatsapp", label: "Kunal, Thursday before: “reel mein Papa wali le aaunga”", within: true, requires: now },
@@ -48,6 +51,11 @@ const evidence: readonly Evidence[] = [
   { id: "balance", device: "owner", app: "paytap", label: "+₹1,80,000 from Sehgal Enterprises, Sunday 11:04 AM", within: true, requires: now },
   { id: "bhasin-balance", device: "owner", app: "whatsapp", label: "Bhasin, Sunday 9:10 AM: “Balance aaj aa jayega. Tab tak kisi se baat nahi.”", within: true, requires: now },
   { id: "sethi-list", device: "owner", app: "whatsapp", label: "Mr Sethi: “Chhotu ka hisaab Bhasin sir ne kar diya. List se naam hata diya.”", within: true, requires: now },
+
+  /* Sameer, in his own words, once the player has given him something to
+     reshape (CHAPTER1.md H, tell Sameer your theory): sources for his version. */
+  { id: "sameer-mistake", device: "owner", app: "whatsapp", label: "Sameer: “Galti thi. Par uske baad jo hua, woh Bhasin ne kiya.”", within: true, requires: ["ep:2", "did:told-sameer-shot"] },
+  { id: "sameer-tried", device: "owner", app: "whatsapp", label: "Sameer: “Maine koshish ki thi. Sach mein.”", within: true, requires: ["ep:2", "did:asked-sameer-after"] },
 
   // Q9: the car.
   { id: "nitin-car", device: "owner", app: "whatsapp", label: "Nitin, 1:22 AM: Vicky's car, to the service gate", manual: true, requires: now },
@@ -257,7 +265,7 @@ const sameer: Thread = {
           sets: ["did:told-sameer-shot"],
           then: [
             { id: "sn-13", from: "them", at: "00:51", text: "Mujhe laga khaali hai.", english: "I thought it was empty." },
-            { id: "sn-14", from: "them", at: "00:52", text: "Galti thi. Par uske baad jo hua, woh Bhasin ne kiya. Main kuch nahi kar sakta tha.", english: "It was a mistake. But what happened after, Bhasin did. I couldn't do anything." },
+            { id: "sn-14", from: "them", at: "00:52", text: "Galti thi. Par uske baad jo hua, woh Bhasin ne kiya. Main kuch nahi kar sakta tha.", english: "It was a mistake. But what happened after, Bhasin did. I couldn't do anything.", evidence: "sameer-mistake" },
           ],
         },
         {
@@ -277,7 +285,7 @@ const sameer: Thread = {
           sets: ["did:asked-sameer-after"],
           then: [
             { id: "sn-17", from: "them", at: "00:52", text: "Bhasin aa gaya. Sab usne sambhaala.", english: "Bhasin came. He handled everything." },
-            { id: "sn-18", from: "them", at: "00:52", text: "Maine koshish ki thi. Sach mein.", english: "I tried. Really." },
+            { id: "sn-18", from: "them", at: "00:52", text: "Maine koshish ki thi. Sach mein.", english: "I tried. Really.", evidence: "sameer-tried" },
           ],
         },
       ],
@@ -404,21 +412,22 @@ export const threads: readonly Thread[] = [sameer, raju, bhasin];
 
 const events: readonly LiveEvent[] = [
   // The phone comes back on, on the player's charger, and the man who sent it sees it online.
-  { id: "sameer-online", device: "owner", after: ["fired:title-2"], delay: 6, app: "whatsapp", banner: `${SAMEER_NEW} · Online dikh raha hai. M?` },
+  { id: "sameer-online", device: "owner", after: ["fired:title-2"], unless: [OFFLINE], delay: 6, app: "whatsapp", banner: `${SAMEER_NEW} · Online dikh raha hai. M?` },
   // Told a stranger has the phone, his mother told Bhasin, and Bhasin writes early (CHAPTER1.md H).
   {
     id: "bhasin-knows",
     device: "owner",
     after: ["did:mummy-stranger", "fired:title-2"],
+    unless: [OFFLINE],
     delay: 45,
     app: "whatsapp",
     banner: "Bhasin Uncle · Jiske paas bhi ye phone hai — wapas kar do.",
   },
   // Once the player knows who fired, Sameer wants to know what they've seen.
-  { id: "sameer-asks", device: "owner", after: ["ask:q7"], delay: 20, app: "whatsapp", banner: `${SAMEER_NEW} · Group dekha?` },
+  { id: "sameer-asks", device: "owner", after: ["ask:q7"], unless: [OFFLINE], delay: 20, app: "whatsapp", banner: `${SAMEER_NEW} · Group dekha?` },
   // Once Dilip is known to have been alive, his brother writes.
-  { id: "raju-writes", device: "owner", after: ["ask:q8"], delay: 10, app: "whatsapp", banner: `${RAJU} · Aap jo bhi ho… Dilip ke baare mein kuch pata chala?` },
-  { id: "bhasin-writes", device: "owner", after: ["ask:q8"], unless: ["did:mummy-stranger"], delay: 40, app: "whatsapp", banner: "Bhasin Uncle · Jiske paas bhi ye phone hai — wapas kar do." },
+  { id: "raju-writes", device: "owner", after: ["ask:q8"], unless: [OFFLINE], delay: 10, app: "whatsapp", banner: `${RAJU} · Aap jo bhi ho… Dilip ke baare mein kuch pata chala?` },
+  { id: "bhasin-writes", device: "owner", after: ["ask:q8"], unless: ["did:mummy-stranger", OFFLINE], delay: 40, app: "whatsapp", banner: "Bhasin Uncle · Jiske paas bhi ye phone hai — wapas kar do." },
   // The episode ends on the gap: once the car is known to have left empty, the night turns to 1:52.
   { id: "the-gap", device: "owner", after: ["ask:q9"], delay: 25, app: "whatsapp", sets: ["ep:3"] },
 ];

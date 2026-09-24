@@ -14,6 +14,7 @@ import {
   settle,
   type CaseState,
 } from "@/lib/game/engine";
+import { AIRPLANE } from "@/lib/game/phone";
 import { PLUGGED_IN, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
 
 /**
@@ -65,9 +66,15 @@ export function solve(s: CaseState, q: Question): CaseState {
 }
 
 /** Play from the parcel until `stop` says so, choosing what the player says with `say`. */
-export function play(stop: (s: CaseState, scene: Scene) => boolean, say: readonly Flag[] = []): CaseState {
-  let s = add(newCase("solver", 0), "did:opened", "did:unlock", "saw:note", "did:past-lock");
+export function play(
+  stop: (s: CaseState, scene: Scene) => boolean,
+  say: readonly Flag[] = [],
+  from: CaseState = add(newCase("solver", 0), "did:opened", "did:unlock", "saw:note", "did:past-lock"),
+): CaseState {
+  let s = from;
   for (let step = 0; step < 300; step++) {
+    // What the player chose to say, as soon as there's someone to say it to.
+    s = add(s, ...say.filter((f) => !s.flags.includes(f) && canSay(s, f)));
     const scene = sceneOf(ep, s);
     if (stop(s, scene)) return s;
     if (scene.kind === "charge") {
@@ -84,18 +91,29 @@ export function play(stop: (s: CaseState, scene: Scene) => boolean, say: readonl
     }
     s = look(s);
     const due = dueEvents(ep, s)[0];
-    if (due) s = fire(ep, s, due.id);
-    // What the player chose to say, once there's someone to say it to.
-    s = add(s, ...say.filter((f) => !s.flags.includes(f) && canSay(s, f)));
+    if (due) {
+      // An event can change the scene (a new episode, a call): look again before answering anything.
+      s = fire(ep, s, due.id);
+      continue;
+    }
     const q = openQuestion(ep, s);
     if (q) s = solve(look(s), q);
   }
   throw new Error(`stuck at ${sceneOf(ep, s).kind}, question ${openQuestion(ep, s)?.id}`);
 }
 
-/** Only say what's on offer: the option's exchange has to be open. */
+/** Only say what's on offer: the option's exchange has to be open, and the phone online. */
 function canSay(s: CaseState, f: Flag): boolean {
+  if (s.flags.includes(AIRPLANE)) return false;
   const replies = [...ep.threads.flatMap((t) => t.replies ?? []), ...ep.incoming.flatMap((c) => (c.reply ? [c.reply] : []))];
   const r = replies.find((x) => x.options.some((o) => o.sets?.includes(f)));
-  return Boolean(r && (r.requires ?? []).every((x) => s.flags.includes(x)) && !r.options.some((o) => o.sets?.some((g) => s.flags.includes(g))));
+  const o = r?.options.find((x) => x.sets?.includes(f));
+  const holds = (flags: readonly Flag[] = []) => flags.every((x) => s.flags.includes(x));
+  return Boolean(
+    r &&
+      holds(r.requires) &&
+      holds(o?.requires) &&
+      !(r.unless ?? []).some((x) => s.flags.includes(x)) &&
+      !r.options.some((x) => x.sets?.some((g) => s.flags.includes(g))),
+  );
 }

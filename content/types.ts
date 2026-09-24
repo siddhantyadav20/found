@@ -128,6 +128,11 @@ export type TimelineRow = {
   readonly text: string;
   readonly lane: string;
   readonly evidence: string;
+  /**
+   * Doesn't fit the story somebody told: once the board is filed, the row
+   * lights, and nothing says why (PLAYER-JOURNEY Stage 7).
+   */
+  readonly odd?: boolean;
 };
 
 /** What every question has, whatever kind it is. */
@@ -381,6 +386,8 @@ export type Message = {
   /** WhatsApp leaves the hole behind: "This message was deleted." */
   readonly deleted?: boolean;
   readonly forwarded?: boolean;
+  /** How long "typing…" shows before it arrives, in seconds, when it takes someone longer than usual. */
+  readonly typing?: number;
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
@@ -393,6 +400,8 @@ export type ReplyOption = {
   readonly id: string;
   readonly text: string;
   readonly english?: string;
+  /** Only on offer once these hold: nobody says what they can't yet back up. */
+  readonly requires?: readonly Flag[];
   readonly sets?: readonly Flag[];
   /** What comes back, and when. */
   readonly then?: readonly Message[];
@@ -401,6 +410,8 @@ export type ReplyOption = {
 export type Reply = {
   readonly id: string;
   readonly requires?: readonly Flag[];
+  /** Closed for good once any of these holds: the other side has stopped talking. */
+  readonly unless?: readonly Flag[];
   readonly prompt?: string;
   readonly options: readonly ReplyOption[];
 };

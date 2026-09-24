@@ -95,10 +95,42 @@
   background: rgba(232, 132, 60, 0.1);
 }
 
+/* A row that doesn't fit, lit on a filed board. */
+.lane[data-lit] {
+  border-color: #e0b04a;
+  background: rgba(224, 176, 74, 0.12);
+  box-shadow: 0 0 0 1px rgba(224, 176, 74, 0.35), 0 0 18px rgba(224, 176, 74, 0.18);
+}
+
 .at { flex: none; min-width: 3.9rem; white-space: nowrap; color: #9a948c; font-variant-numeric: tabular-nums; }
 .laneText { flex: 1; display: flex; flex-direction: column; gap: 3px; line-height: 1.4; }
 .english { font-size: 12px; color: #9a948c; }
 .tag { flex: none; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #9a948c; }
+
+/* A row's lanes, opened under it on a board with more than two. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 2px 4px;
+}
+
+.chip {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #3a3d44;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  border-color: #e8843c;
+  background: rgba(232, 132, 60, 0.14);
+}
 
 .groupHead {
   margin: 12px 0 4px;

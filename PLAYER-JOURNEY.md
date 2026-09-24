@@ -198,6 +198,8 @@ The board, Nitin, 1:56, Revert, Hidden, the line.
 
 **UX rules**
 - **The five-lane board** lights contradictions; it never states them.
+  A row's lane is picked from chips under it, one tap each: cycling through
+  five lanes one-handed is a fight.
 - **Choices that close routes say nothing about closing them.** A route that
   closes simply goes quiet. The fallback is always on the phone.
 - **The line is typed out at reading speed**, after a long "typing…", and

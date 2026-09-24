@@ -27,7 +27,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S5** ✔ | Arrival | Parcel, envelope, the note, the phone waking, the charger |
 | **S6** ✔ | Episode 1 | *Missed Calls* as data |
 | **S7** ✔ | Episode 2 | *The Second Shot* as data |
-| **S8** | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
+| **S8** ✔ | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
 | **S9** | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
 | **S10** | Growth | Pass it on, drops, share images, The First Minute |
 | **S11** | The real assets | ASSETS.md: photographs, clips, voices, handwriting |
@@ -350,6 +350,85 @@ A fresh tab showed no console errors.
 **Left for S8:** the Kunal route (messaged as Sameer), Raju withdrawing if
 told a lie he later hears taken back, and the second Sameer exchange's
 answers as sources for his version (CHAPTER1 H).
+
+## S8 — Episode 3 and the routes · **done (2026-09-24)**
+
+**Built:**
+- **Episode 3** (`episode3.ts`):
+  - **Q10:** the five-lane board, with 13 rows from 12:38 to 2:41. It needs
+    Bhasin's 12:38 order, Dilip alive, and the car leaving before it proves
+    anything.
+  - **Q11–Q13** are `file` questions, each accepting Sameer's version
+    beside the truth: *turned away at the gate* or *the lie*; *proof against
+    them* or *he took part*; *to confess* or *a counter-file*.
+  - Each question reopens on the side if its decisive find (Nitin's copy,
+    the reverted clip, the frame) turns up after filing.
+- **Also on his phone:**
+  - Kunal's frame, in the Hidden album, screenshotted with WhatsApp's
+    chrome.
+  - The fire clip's original, found by Revert (`foundBy`, so a Revert done
+    earlier counts now).
+  - The site plan, the group's other lines, and two Safari searches, tagged
+    for Episode 3.
+- **The routes** (CHAPTER1 H):
+  - **Nitin**, in his archived chat. Protect him, and he sends the 1:52
+    screenshot, Vicky's live location and *"Maine check bhi nahi kiya"*.
+    Press him, and he shuts the door.
+  - **Kunal**, messaged as Sameer once Q7 is answered. Confront him: *"Maine
+    sirf gun di thi"* and *"Lakdi tu khud dhoke laaya tha"*. Hand him Nitin:
+    *"Tera Nitin bhi andar hai"*, and the frame. Either way he names Nitin to
+    Bhasin, and Nitin's route closes.
+  - **Raju**, if told it was Kunal, hears otherwise at the Sehgals' and
+    withdraws: *"Aap log sab ek jaise ho."*
+  - **Sameer, one last time.** Give him the rescuer, and he takes it
+    (*"Maine koshish ki thi"*, a source for his version). Or confront him,
+    offered only with the shot, alive, the car and the lie traced: 14
+    seconds of "typing…", then the line, and he never writes again.
+  - **Sameer's own words from Episode 2** are sources for his version:
+    *"Galti thi… woh Bhasin ne kiya"*, *"Maine koshish ki thi."*
+  - **Airplane mode** silences everyone from Episode 2 on, and nothing can
+    be sent. Episode 1's events carry the story, so they still arrive.
+- **Engine and UI:**
+  - A reply can lapse (`Reply.unless`).
+  - An option can wait on what's traced (`ReplyOption.requires`).
+  - A message can take longer to type (`Message.typing`).
+  - A board with more than two lanes picks lanes from chips: about 26 taps
+    for Q10, not 37.
+  - A filed board lights the rows that don't fit (`TimelineRow.odd`), with
+    nothing said about them (PLAYER-JOURNEY Stage 7).
+
+**Tests:** 121.
+- The chain law ("every link traceable, spine from a question nobody can
+  skip") now runs.
+- `episode3.test.ts` covers:
+  - 10 of 11 traced for a full player (the price is on the side)
+  - the confrontation's gate
+  - the rescuer
+  - Kunal closing Nitin, with the lie still traced on this phone
+  - the exposed player's frame
+  - the protected player's screenshot
+  - Raju withdrawing
+  - airplane mode
+  - Q11 accepting his version, then reopening
+- The solver now re-looks after every event, and never "sends" while
+  offline.
+
+**Walked** at 375 × 812 in dev, from a solver-made save at 1:52:
+- the finds for the board, then the board by chips
+- Raju's *"Aapne jhooth bola"*
+- Nitin protected, then Q11 filed with his screenshot
+- Revert to 0:31, then Show Hidden Album and the frame
+- Q12 and Q13
+- Sameer's last message, confronted, with the line after a long "typing…"
+- the filed board's three lit rows
+
+A fresh tab showed no console errors.
+
+**Budget:** `/c/[case]` is at 685 of its 700 KB. S9 (the record, your
+phone, the endings) needs to be lean, or the budget revisited.
+
+**Left for S9:** Meera, the draft post, the record and the endings;
+where airplane mode came from (Meera's advice).
 
 ## S6 · S7 · S8 — The episodes as data
 

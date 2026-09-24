@@ -79,7 +79,7 @@ export default function CaseFile({
   const [claim, setClaim] = useState<string | null>(null);
   const [struck, setStruck] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
-  const [said, setSaid] = useState<{ text: string; ok: boolean; ask: string; filed: boolean } | null>(null);
+  const [said, setSaid] = useState<{ text: string; ok: boolean; ask: string; filed: boolean; lit?: readonly { at: string; text: string }[] } | null>(null);
   const [helped, setHelped] = useState<string | null>(null);
 
   const reset = () => {
@@ -100,6 +100,17 @@ export default function CaseFile({
         <p className={note.eyebrow}>{said.filed ? "Filed" : "Answered"}</p>
         <h3 className={note.question}>{said.ask}</h3>
         <p className={note.solvedA}>{said.text}</p>
+        {/* What doesn't fit, lit and left unexplained. */}
+        {said.lit?.length ? (
+          <ul className={styles.list}>
+            {said.lit.map((r) => (
+              <li key={r.at} className={styles.lane} data-lit>
+                <span className={styles.at}>{stamp(r.at)}</span>
+                <span className={styles.laneText}>{r.text}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <button type="button" className={note.primary} onClick={reset}>
           Keep going
         </button>
@@ -146,7 +157,8 @@ export default function CaseFile({
 
   const give = (given: Given) => {
     const r = answer(story, state, q.id, given);
-    setSaid({ text: r.reply, ok: r.ok, ask: q.ask, filed: q.kind === "file" });
+    const lit = q.kind === "timeline" ? q.rows.filter((row) => row.odd && seen(state, row.evidence)) : undefined;
+    setSaid({ text: r.reply, ok: r.ok, ask: q.ask, filed: q.kind === "file", lit });
     if (r.ok) {
       save(r.state);
       onTable.delete(q.id);
@@ -378,6 +390,8 @@ function Board({
   setTyped: (v: string) => void;
 }) {
   const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  // The timeline row whose lanes are open, on a board with more than two.
+  const [choosing, setChoosing] = useState<string | null>(null);
 
   if (q.kind === "type")
     return (
@@ -429,14 +443,15 @@ function Board({
   if (q.kind === "timeline") {
     if (!boardReady(q, state)) return <p className={styles.empty}>Nothing you&apos;ve found shows it yet. Keep looking.</p>;
     const laneOf = (row: string) => picked.find((p) => p.startsWith(`${row}@`))?.split("@")[1];
-    const cycle = (row: string) =>
-      setPicked((p) => {
-        const now = p.find((x) => x.startsWith(`${row}@`))?.split("@")[1];
-        const at = q.lanes.findIndex((l) => l.id === now);
-        const next = q.lanes[at + 1];
-        const rest = p.filter((x) => !x.startsWith(`${row}@`));
-        return next ? [...rest, `${row}@${next.id}`] : rest;
-      });
+    const place = (row: string, lane: string | undefined) =>
+      setPicked((p) => [...p.filter((x) => !x.startsWith(`${row}@`)), ...(lane ? [`${row}@${lane}`] : [])]);
+    const cycle = (row: string) => {
+      const at = q.lanes.findIndex((l) => l.id === laneOf(row));
+      place(row, q.lanes[at + 1]?.id);
+    };
+    /* Two lanes: a tap moves a row across. More than that, and cycling
+       through them is a fight, so a tap opens the row's lanes to pick from. */
+    const picker = q.lanes.length > 2;
     return (
       <>
         <p className={styles.where}>Tap each row until it sits in its lane.</p>
@@ -457,12 +472,31 @@ function Board({
                     type="button"
                     className={styles.lane}
                     data-on={lane !== undefined || undefined}
-                    onClick={() => cycle(r.id)}
+                    aria-expanded={picker ? choosing === r.id : undefined}
+                    onClick={() => (picker ? setChoosing((c) => (c === r.id ? null : r.id)) : cycle(r.id))}
                   >
                     <span className={styles.at}>{stamp(r.at)}</span>
                     <span className={styles.laneText}>{r.text}</span>
                     <span className={styles.tag}>{q.lanes.find((l) => l.id === lane)?.label ?? "—"}</span>
                   </button>
+                  {picker && choosing === r.id && (
+                    <span className={styles.chips} role="group" aria-label={`Lane for ${stamp(r.at)}`}>
+                      {q.lanes.map((l) => (
+                        <button
+                          key={l.id}
+                          type="button"
+                          className={styles.chip}
+                          aria-pressed={lane === l.id}
+                          onClick={() => {
+                            place(r.id, lane === l.id ? undefined : l.id);
+                            setChoosing(null);
+                          }}
+                        >
+                          {l.label}
+                        </button>
+                      ))}
+                    </span>
+                  )}
                 </li>
               );
             })}

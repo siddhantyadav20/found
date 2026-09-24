@@ -1,5 +1,5 @@
-import type { Message, Reply, Thread } from "@/content/types";
-import { all, type CaseState } from "./engine";
+import type { Message, Reply, ReplyOption, Thread } from "@/content/types";
+import { all, has, type CaseState } from "./engine";
 
 /* ===========================================================================
    What a chat holds, in the order it happened.
@@ -48,5 +48,8 @@ export function conversation(s: CaseState, t: Thread, today: string): Message[] 
 export function openReply(s: CaseState, t: Thread): Reply | undefined {
   const ready = (t.replies ?? []).filter((r) => all(s, r.requires));
   const r = ready.at(-1);
-  return r && !chosenIn(s, r) ? r : undefined;
+  return r && !chosenIn(s, r) && !(r.unless ?? []).some((f) => has(s, f)) ? r : undefined;
 }
+
+/** What the player can say in an exchange now: the options whose `requires` hold. */
+export const offeredOptions = (s: CaseState, r: Reply): ReplyOption[] => r.options.filter((o) => all(s, o.requires));

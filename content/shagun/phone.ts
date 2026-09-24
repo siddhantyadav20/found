@@ -193,15 +193,15 @@ export const threads: readonly Thread[] = [
     messages: [
       { id: "s-0", from: "system", at: "00:36", day: "Sunday", text: "Vinod Bhasin created group “Banyan — Security”" },
       { id: "s-1", from: "them", who: "Bhasin", at: "00:36", day: "Sunday", text: "Sameer, gun Kunal ko do. Abhi.", english: "Sameer, give the gun to Kunal. Now.", evidence: "gun-to-kunal" },
-      { id: "s-2", from: "them", who: "Bhasin", at: "00:38", day: "Sunday", text: "Koi 112 nahi karega. Ladke ko service room le jao. Main sambhaal raha hoon.", english: "Nobody calls 112. Take the boy to the service room. I'm handling it." },
-      { id: "s-3", from: "them", who: "Bhasin", at: "00:52", day: "Sunday", text: "Doctor ka intezaam ho raha hai.", english: "A doctor is being arranged." },
+      { id: "s-2", from: "them", who: "Bhasin", at: "00:38", day: "Sunday", text: "Koi 112 nahi karega. Ladke ko service room le jao. Main sambhaal raha hoon.", english: "Nobody calls 112. Take the boy to the service room. I'm handling it.", evidence: "no-112" },
+      { id: "s-3", from: "them", who: "Bhasin", at: "00:52", day: "Sunday", text: "Doctor ka intezaam ho raha hai.", english: "A doctor is being arranged.", evidence: "doctor" },
       { id: "s-4", from: "them", who: "Pappu", at: "01:14", day: "Sunday", text: "Sir ladka hosh mein hai. Paani maang raha hai.", english: "Sir, the boy is conscious. He's asking for water.", evidence: "conscious" },
       { id: "s-5", from: "them", who: "Bhasin", at: "01:31", day: "Sunday", text: "Doctor aa raha hai. Sab shaant raho.", english: "The doctor's coming. Everyone stay calm." },
-      { id: "s-6", from: "them", who: "Ramesh", at: "01:49", day: "Sunday", text: "Sir, Sameer sir service room mein hain ladke ke paas.", english: "Sir, Sameer sir is in the service room with the boy." },
+      { id: "s-6", from: "them", who: "Ramesh", at: "01:49", day: "Sunday", text: "Sir, Sameer sir service room mein hain ladke ke paas.", english: "Sir, Sameer sir is in the service room with the boy.", evidence: "sameer-room" },
       { id: "s-7", from: "them", who: "Pappu", at: "01:59", day: "Sunday", text: "Sir service gate pe ek Swift aayi hai, kisi ko lene.", english: "Sir, a Swift has come to the service gate, to pick someone up.", evidence: "swift" },
       { id: "s-8", from: "them", who: "Bhasin", at: "02:00", day: "Sunday", text: "Kaun? Pata karo.", english: "Who? Find out." },
       { id: "s-9", from: "them", who: "Pappu", at: "02:04", day: "Sunday", text: "Chali gayi sir. Driver bol raha tha cancel ho gaya.", english: "It's gone, sir. The driver said it was cancelled.", evidence: "left-empty" },
-      { id: "s-10", from: "them", who: "Pappu", at: "02:41", day: "Sunday", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking." },
+      { id: "s-10", from: "them", who: "Pappu", at: "02:41", day: "Sunday", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking.", evidence: "not-speaking" },
       { id: "s-11", from: "them", who: "Bhasin", at: "02:42", day: "Sunday", text: "Call karo mujhe.", english: "Call me." },
     ],
   },
@@ -398,8 +398,24 @@ export const photos: readonly Photo[] = [
         { at: 26, line: "[wind, smoke]" },
         { at: 29, who: "A man, off camera", line: "Jaldi karo.", english: "Hurry up." },
       ],
+      evidence: "fire-original",
     },
     evidence: "fire-clip",
+  },
+  /* Kunal's frame of the second discharge, sent on Monday at 3:10 PM with
+     "Humare paas bhi hai": Sameer screenshotted it, deleted the message, hid
+     the screenshot and turned off Show Hidden Album (CHAPTER1.md E). It stops
+     before anything happens to Dilip. */
+  {
+    id: "frame",
+    hidden: true,
+    at: "15:11",
+    day: "Monday",
+    kind: "scene",
+    // Screenshotted with WhatsApp's chrome: Kunal's words are in the picture (ASSETS.md §1).
+    title: "WhatsApp, Kunal: a video frame (an arm coming down, a flash, a boy behind a light) and “Humare paas bhi hai. Soch samajh ke.”",
+    camera: "Screenshot",
+    evidence: "frame",
   },
 ];
 
@@ -489,6 +505,7 @@ export const mail: readonly Mail[] = [
       pages: [
         "BANYAN FARMS · CHHATTARPUR · SITE PLAN\n\nMain gate — driveway — dance-floor lawn\nStage and mandap — east\nBack lawn (mango trees) — behind the stage\nService room — beside the kitchen, 40 m from the service gate\nService gate — Mandi Road\nBack plot, old tube well — beyond the service lane (no guests)",
       ],
+      evidence: "site-plan",
     },
   },
 ];
@@ -561,10 +578,10 @@ export const calls: readonly CallEntry[] = [
 
 /* Safari, which he never thought to tidy: he believed it showed a man trying to help. */
 export const searches: readonly Search[] = [
-  { id: "q-1", text: "goli lagne pe kya karein", at: "00:44", day: "Sunday" },
+  { id: "q-1", text: "goli lagne pe kya karein", at: "00:44", day: "Sunday", evidence: "search-1244" },
   { id: "q-2", text: "gunshot hospital without police case delhi", at: "00:47", day: "Sunday" },
   { id: "q-3", text: "lifeline hospital mehrauli emergency number", at: "00:52", day: "Sunday" },
-  { id: "q-4", text: "private ambulance chhattarpur 24 hours", at: "01:56", day: "Sunday" },
+  { id: "q-4", text: "private ambulance chhattarpur 24 hours", at: "01:56", day: "Sunday", evidence: "search-156" },
   { id: "q-5", text: "goli lagne ke baad kitne ghante", at: "01:57", day: "Sunday" },
   { id: "q-6", text: "andheri west 1rk rent", at: "13:40", day: "Tuesday" },
 ];
