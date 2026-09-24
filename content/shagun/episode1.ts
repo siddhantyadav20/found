@@ -208,30 +208,32 @@ export const threads: readonly Thread[] = [
     app: "whatsapp",
     name: "Mummy",
     messages: [mummyWhere],
-    reply: {
-      id: "mummy-where",
-      requires: ["fired:mummy-where"],
-      options: [
-        {
-          id: "stranger",
-          text: "Aunty, main Sameer nahi hoon. Ye phone mere paas aaya hai.",
-          english: "Aunty, I'm not Sameer. This phone came to me.",
-          sets: ["did:mummy-stranger"],
-          then: [
-            { id: "mu-7", from: "them", at: "00:01", day: "Saturday", with: "mummy-where", text: "Kaun ho aap?? Sameer kahan hai? Main Bhasin uncle ko batati hoon.", english: "Who are you?? Where is Sameer? I'm telling Bhasin uncle." },
-          ],
-        },
-        {
-          id: "as-sameer",
-          text: "Main theek hoon mummy. Baad mein baat karta hoon.",
-          english: "I'm fine, Mummy. I'll talk later.",
-          sets: ["did:mummy-as-sameer"],
-          then: [
-            { id: "mu-8", from: "them", at: "00:01", day: "Saturday", with: "mummy-where", text: "Theek hai beta. Bhasin uncle ko bol deti hoon tu theek hai. Khana kha lena 🙏", english: "All right. I'll tell Bhasin uncle you're fine. Do eat something." },
-          ],
-        },
-      ],
-    },
+    replies: [
+      {
+        id: "mummy-reply",
+        requires: ["fired:mummy-where"],
+        options: [
+          {
+            id: "stranger",
+            text: "Aunty, main Sameer nahi hoon. Ye phone mere paas aaya hai.",
+            english: "Aunty, I'm not Sameer. This phone came to me.",
+            sets: ["did:mummy-stranger"],
+            then: [
+              { id: "mu-7", from: "them", at: "00:01", day: "Saturday", text: "Kaun ho aap?? Sameer kahan hai? Main Bhasin uncle ko batati hoon.", english: "Who are you?? Where is Sameer? I'm telling Bhasin uncle." },
+            ],
+          },
+          {
+            id: "as-sameer",
+            text: "Main theek hoon mummy. Baad mein baat karta hoon.",
+            english: "I'm fine, Mummy. I'll talk later.",
+            sets: ["did:mummy-as-sameer"],
+            then: [
+              { id: "mu-8", from: "them", at: "00:01", day: "Saturday", text: "Theek hai beta. Bhasin uncle ko bol deti hoon tu theek hai. Khana kha lena 🙏", english: "All right. I'll tell Bhasin uncle you're fine. Do eat something." },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     id: "sameer-new",

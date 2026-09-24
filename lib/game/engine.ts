@@ -111,13 +111,18 @@ export const filedClaim = (q: Question, s: CaseState): FileClaim | undefined => 
 export const offeredClaims = (q: Question, s: CaseState): FileClaim[] =>
   q.kind === "file" ? q.claims.filter((c) => [c.proof, ...(c.orProof ?? [])].some((r) => r.every((id) => seen(s, id)))) : [];
 
-/** Filed as the owner's version, and something found since says otherwise. */
-export const needsRevisit = (q: Question, s: CaseState): boolean =>
-  q.kind === "file" &&
-  answered(s, q.id) &&
-  Boolean(q.reopenWhen?.length) &&
-  all(s, q.reopenWhen) &&
-  Boolean(filedClaim(q, s)?.version);
+/**
+ * Filed as the owner's version, and something found *since* says otherwise.
+ * A player who filed his version with the contradiction already in hand
+ * chose it, and isn't asked again: that would be a buzzer by another name.
+ */
+export function needsRevisit(q: Question, s: CaseState): boolean {
+  if (q.kind !== "file" || !answered(s, q.id) || !q.reopenWhen?.length || !all(s, q.reopenWhen)) return false;
+  const c = filedClaim(q, s);
+  if (!c?.version) return false;
+  const filedAt = s.flags.indexOf(`claim:${q.id}:${c.id}`);
+  return q.reopenWhen.some((f) => s.flags.indexOf(f) > filedAt);
+}
 
 /**
  * The one question in front of the player. A Revisit that must be done comes
@@ -157,6 +162,11 @@ export const WRONG = "Not quite. Look again.";
 export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
 export const UNCHECKED = "Check each of them on the phone before you decide.";
 export const STRUCK = "That's the line you struck. What you found since says otherwise.";
+export const THIN = "The board can't show that yet. Something's missing from it.";
+
+/** A timeline with enough on it to prove anything: one of its `enough` routes is all found. */
+export const boardReady = (q: Question, s: CaseState): boolean =>
+  q.kind !== "timeline" || !q.enough?.length || q.enough.some((r) => r.every((id) => seen(s, id)));
 
 /** Exactly one of the routes, and nothing that wasn't found. */
 function judgeProof(s: CaseState, routes: readonly (readonly string[])[], picked: readonly string[]): { ok: boolean; reply: string } {
@@ -190,6 +200,7 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
       ok = q.accepts.some((a) => normalise(a) === text);
       break;
     case "timeline": {
+      if (!boardReady(q, s)) return { state: s, ok: false, reply: THIN };
       /* The board only holds what the player has found, so the answer is
          judged against that and not against the whole script: every known
          row in its own lane, and nothing else. */
@@ -259,7 +270,7 @@ export const whereToLook = (story: Story, id: string): readonly AppId[] =>
 export const fired = (s: CaseState, id: string): boolean => has(s, `fired:${id}`);
 
 export const dueEvents = (story: Story, s: CaseState): LiveEvent[] =>
-  story.events.filter((e) => !fired(s, e.id) && all(s, e.after));
+  story.events.filter((e) => !fired(s, e.id) && all(s, e.after) && !(e.unless ?? []).some((f) => has(s, f)));
 
 /** Play a live event, once; given `now`, it also remembers when, for what arrives with it. */
 export const fire = (story: Story, s: CaseState, id: string, now?: number): CaseState => {
@@ -269,10 +280,10 @@ export const fire = (story: Story, s: CaseState, id: string, now?: number): Case
   return now === undefined ? next : { ...next, at: { ...next.at, [`event:${id}`]: now } };
 };
 
-/** When something arriving with a live event arrived, on the story's clock; else its own time. */
+/** When something arriving with a live event (or a reply, by its id) arrived, on the story's clock; else its own time. */
 export const arrivedAt = (story: Story, s: CaseState, m: { readonly at: string; readonly with?: string }): string => {
   const when = m.with ? s.at[`event:${m.with}`] : undefined;
-  return when === undefined ? m.at : clockNow(story, s, when);
+  return when === undefined ? m.at : clockAt(story, s, when);
 };
 
 /* --- time --------------------------------------------------------------- */
@@ -304,15 +315,31 @@ export function storySeconds(story: Story, s: CaseState, now: number): number {
   return gap + Math.max(0, Math.floor((now - episodeStart(s)) / 1000));
 }
 
+const hhmm = (t: number): string => `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+
 /** The story's own clock: this episode's base time plus how long it has run. */
 export function clockNow(story: Story, s: CaseState, now: number): string {
   const base = minutesOf(story.clocks[episodeOf(s) - 1].base);
   const minutes = Math.max(0, Math.floor((now - episodeStart(s)) / 60_000));
-  const t = (base + minutes) % (24 * 60);
-  return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+  return hhmm((base + minutes) % (24 * 60));
+}
+
+/**
+ * What the story's clock said at a moment already past: by the clock of the
+ * episode that moment fell in, so a message that arrived in Episode 1 keeps
+ * its Episode 1 time once Episode 2 has begun.
+ */
+export function clockAt(story: Story, s: CaseState, when: number): string {
+  const ep = ([3, 2] as const).find((n) => s.began?.[n] !== undefined && when >= (s.began?.[n] ?? Infinity)) ?? 1;
+  const start = ep === 1 ? s.started : (s.began?.[ep] ?? s.started);
+  const base = minutesOf(story.clocks[ep - 1].base);
+  return hhmm((base + Math.max(0, Math.floor((when - start) / 60_000))) % (24 * 60));
 }
 
 export const dayNow = (story: Story, s: CaseState): string => story.clocks[episodeOf(s) - 1].day;
+
+/** Today's date on the story's calendar, "30/11". */
+export const dateNow = (story: Story, s: CaseState): string => story.clocks[episodeOf(s) - 1].date;
 
 /**
  * The found phone's battery. Off the charger it falls with the beats, not

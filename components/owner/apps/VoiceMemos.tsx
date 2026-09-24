@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { Memo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { memos, mmss } from "@/lib/game/phone";
+import { calendarOf, memos, mmss } from "@/lib/game/phone";
 import app from "../ios/App.module.css";
 import styles from "./VoiceMemos.module.css";
 import { stamp } from "@/lib/found/time";
@@ -156,6 +156,7 @@ export default function VoiceMemos({
   const [folder, setFolder] = useState<"all" | "deleted">("all");
   const [open, setOpen] = useState<string | null>(null);
   const { recordings, bin } = memos(story, state);
+  const cal = calendarOf(story, state);
   const list = folder === "all" ? recordings : bin;
 
   return (
@@ -196,7 +197,7 @@ export default function VoiceMemos({
                 <span className={styles.title}>{m.title}</span>
                 <span className={styles.meta}>
                   <span>
-                    {folder === "deleted" ? `${m.daysLeft ?? 30} days` : `${m.day} · ${stamp(m.at)}`}
+                    {folder === "deleted" ? `${m.daysLeft ?? 30} days` : `${cal.label(m.day)} · ${stamp(m.at)}`}
                   </span>
                   <span>{mmss(m.seconds)}</span>
                 </span>

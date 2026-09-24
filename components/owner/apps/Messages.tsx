@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 
 import type { Story, Thread } from "@/content/types";
-import { all, dayNow, type CaseState } from "@/lib/game/engine";
+import { all, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import AppBar from "../ios/AppBar";
 import Avatar from "../ios/Avatar";
 import app from "../ios/App.module.css";
@@ -28,11 +29,14 @@ type Folder = "inbox" | "junk";
 function ThreadView({
   thread,
   state,
+  label,
   onBack,
   onRead,
 }: {
   thread: Thread;
   state: CaseState;
+  /** How the phone names a day. */
+  label: (day: string | undefined) => string;
   onBack: () => void;
   onRead: (ids: readonly string[]) => void;
 }) {
@@ -55,13 +59,13 @@ function ThreadView({
         {shown.map((m, i) => {
           const prev = shown[i - 1];
           const next = shown[i + 1];
-          const newDay = !prev || prev.day !== m.day;
-          const endOfRun = !next || next.from !== m.from || next.day !== m.day;
+          const newDay = !prev || label(prev.day) !== label(m.day);
+          const endOfRun = !next || next.from !== m.from || label(next.day) !== label(m.day);
           return (
             <div key={m.id}>
               {newDay && (
                 <p className={styles.stamp}>
-                  <b>{m.day}</b> {stamp(m.at)}
+                  <b>{label(m.day)}</b> {stamp(m.at)}
                 </p>
               )}
               <div className={styles.row} data-from={m.from === "owner" ? "owner" : "them"} data-tail={endOfRun || undefined}>
@@ -90,9 +94,10 @@ export default function Messages({
   const threads = story.threads.filter(
     (t) => t.app === "messages" && all(state, t.requires) && t.messages.some((m) => all(state, m.requires)),
   );
+  const cal = calendarOf(story, state);
   const here = threads.find((t) => t.id === open);
 
-  if (here) return <ThreadView thread={here} state={state} onBack={() => setOpen(null)} onRead={onRead} />;
+  if (here) return <ThreadView thread={here} state={state} label={cal.label} onBack={() => setOpen(null)} onRead={onRead} />;
 
   const inFolder = threads.filter((t) => (t.folder ?? "inbox") === folder);
   const junk = threads.filter((t) => t.folder === "junk").reduce((n, t) => n + t.messages.filter((m) => all(state, m.requires)).length, 0);
@@ -112,7 +117,7 @@ export default function Messages({
                 <span className={list.main}>
                   <span className={list.top}>
                     <span className={list.name}>{t.name}</span>
-                    <span className={list.when}>{last?.day && last.day !== dayNow(story, state) ? last.day : stamp(last?.at)}</span>
+                    <span className={list.when}>{cal.isToday(last?.day) ? stamp(last?.at) : cal.label(last?.day)}</span>
                   </span>
                   <span className={list.preview}>{last?.text}</span>
                 </span>

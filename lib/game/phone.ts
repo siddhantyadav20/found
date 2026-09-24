@@ -1,5 +1,6 @@
 import type { Caption, Flag, Memo, Photo, Story } from "@/content/types";
-import { all, has, type CaseState } from "./engine";
+import { calendar, type Calendar } from "@/lib/found/time";
+import { all, episodeOf, has, type CaseState } from "./engine";
 
 /* ===========================================================================
    How the found phone's own apps behave, as far as that can be decided
@@ -37,7 +38,9 @@ export type Library = {
 };
 
 export function library(story: Story, s: CaseState): Library {
-  const visible = story.photos.filter((p) => all(s, p.requires));
+  // Oldest first, by when each was taken, as the Library grid is.
+  const cal = calendarOf(story, s);
+  const visible = story.photos.filter((p) => all(s, p.requires)).toSorted((a, b) => cal.when(a.day, a.at) - cal.when(b.day, b.at));
   const bin = visible.filter((p) => inBin(s, p));
   const kept = visible.filter((p) => !inBin(s, p));
   const recents = kept.filter((p) => !p.hidden);
@@ -71,3 +74,7 @@ export const mmss = (seconds: number): string =>
 
 /** "₹1,80,000", the Indian way. */
 export const rupees = (n: number): string => `₹${Math.abs(n).toLocaleString("en-IN")}`;
+
+/** The phone's calendar now: days labelled from the date of the episode the player is in. */
+export const calendarOf = (story: Story, s: CaseState): Calendar =>
+  calendar(story.clocks[0], story.clocks[episodeOf(s) - 1].date);

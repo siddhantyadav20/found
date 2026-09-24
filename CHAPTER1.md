@@ -209,7 +209,8 @@ true about phones.
 | 10:52 PM | Deleted the "Doosri… main pose kar raha tha" memo | **Voice Memos › Recently Deleted** | Voice Memos has its own 30-day bin |
 | 11:02 PM | Trimmed the fire clip from 0:31 to 0:09 and favourited it | **Edit › Revert** restores the first 22 seconds: his voice, *"Bhasin sir, yahan?"*, and his hands with a jerrycan, the silver kada from his Instagram selfies on his wrist. **No body, ever.** | iOS keeps the original of an edited video |
 | 11:06 PM | Deleted Kunal's 12:29 photo from their chat | The copy WhatsApp **auto-saved to Photos** | Deleting a WhatsApp message doesn't delete the saved photo |
-| 11:10 PM | Deleted his 1:52 message to Nitin "for me", then **archived** Nitin's chat | **Chats › Archived (1)**, and Nitin's 1:53 reply to a message that isn't there | "Delete for me" removes nothing from the other phone |
+| 11:08 PM | **Archived** Dilip's chat ("Chhotu"), which ends on his 1:08 *"aa raha hoon. hospital le jayenge"* **(game, S7)** | **Chats › Archived**: the promise at 7:10 PM, and Dilip alive at 1:07 | Archiving hides a chat from the list and deletes nothing |
+| 11:10 PM | Deleted his 1:52 message to Nitin "for me", then **archived** Nitin's chat | **Chats › Archived (2)**, and Nitin's 1:53 reply to a message that isn't there | "Delete for me" removes nothing from the other phone |
 | 11:14 PM | Hid the screenshot of Kunal's frame, and turned off **Show Hidden Album** | **Settings › Apps › Photos › Show Hidden Album** | With no passcode, the Hidden album opens once it's shown |
 | 11:20 PM | Wrote "For M" | The unfinished "4. Nitin —" | — |
 
@@ -271,14 +272,14 @@ Sameer's thread is waiting.
 
 | # | Beat | Where | Interaction |
 |---|---|---|---|
-| 1 | **Sameer.** Reply to *"M? Tu hai?"*: *"Main M nahi hoon."* / *"Haan."* / *"Tum kahan ho?"* / nothing. From here he can be messaged, and he steers: *"Bhasin ka group dekh. Sab wahan hai."* (H: *the Sameer route*) | WhatsApp › unknown number | Choice (O1 affects only his reaction) |
+| 1 | **Sameer.** The phone comes back online on the player's charger, and he sees it: *"Online dikh raha hai. M?"* **(game)** Reply to *"M? Tu hai?"*: *"Main M nahi hoon."* / *"Haan."* / *"Tum kahan ho?"* / nothing. From here he can be messaged, and he steers: *"Bhasin ka group dekh. Sab wahan hai."* (H: *the Sameer route*) | WhatsApp › unknown number | Choice (O1 affects only his reaction) |
 | 2 | **The reel.** Photos › WhatsApp: Kunal's 12:29 AM photo, **Sameer holding the revolver**, Dilip beside him with the light. It isn't in their chat any more. Notes › shot list: *"12:15 — KS reel… Dilip — light."* Kunal, Thursday: *"reel mein Papa wali le aaunga."* | Photos, Notes, WhatsApp | Finding (*suspicion*) |
 | 3 | **Q5 — What was Sameer doing at 12:15?** Shooting his own reel with Kunal's father's real revolver, which Kunal brought. *(links 1, 2)* *L2 → L4* | Case file | Pick |
 | 4 | **Two firings.** Kunal's 11:52 clip (dance floor, two shots up, cheering) against the 12:29 photo and a clip in **Recently Deleted**: the reel take, 12:31, one shot up for the camera, Sameer laughing, 14 seconds, cut off. | WhatsApp, Photos › Recently Deleted | Watching; the timestamps |
 | 5 | **Q6 — Was it one firing or two?** A timeline of the lawns: dance floor at 11:52, back lawn at 12:31. **Two**, forty minutes and a lawn apart. **The Episode 1 claim cracks: *Revisit Q3*.** The player strikes *"while Kunal was firing"* by hand. *(link 3)* *L2's complication* | Case file | Timeline, then Revisit |
 | 6 | **The memo.** Voice Memos › Recently Deleted, Mon 4:58 PM: *"Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai."* | Voice Memos | Listening (*cold*) |
 | 7 | **Q7 — Who fired the shot that hit Dilip?** **Sameer.** Route 1: the memo plus the reel take (the gun in his hand at 12:31). Route 2: the security group's first line, 12:36, *"Sameer, gun Kunal ko do. Abhi."* (Third, if taken: Kunal, messaged as Sameer, *"Tu khud jaanta hai goli kisne chalayi."*) **The first reveal. It should feel like the answer, and it isn't the end.** *(link 4)* *L4* | Case file | Pick |
-| 8 | **Alive.** The Chhotu chat, 1:07 AM: *"Bhaiya dard ho raha hai. Aap aa rahe ho na?"* Sameer, 1:08: *"aa raha hoon. hospital le jayenge. bas thodi der."* The group, 1:14: *"Sir ladka hosh mein hai."* | WhatsApp | Reading (*the crash*) |
+| 8 | **Alive.** The Chhotu chat (**archived**, E), 1:07 AM: *"Bhaiya dard ho raha hai. Aap aa rahe ho na?"* Sameer, 1:08: *"aa raha hoon. hospital le jayenge. bas thodi der."* The group, 1:14: *"Sir ladka hosh mein hai."* | WhatsApp | Reading (*the crash*) |
 | 9 | **Q8 — Did the shot kill Dilip?** No. He was alive and conscious at 1:07 and at 1:14. **The window.** Safari's 12:44–12:52 hospital searches now mean something else. *(link 5)* *L5* | Case file | Pick; the searches recontextualise |
 | 10 | **Raju.** If you reply to him and keep his trust (H), he tells you what Dilip told him: *"Sameer bhaiya usko Mumbai le jaane wale the. Assistant banayenge bole the. Woh unko bhaiya bolta tha."* And about that night: *"Usko bharosa tha. Sameer bhaiya hain na, sab sambhaal lenge."* *(He trusted him. Sameer bhaiya's there, he'll handle it.)* **The promise, and the expectation.** Fallback: the Chhotu chat, Sat 7:10 PM, *"Mumbai wali baat pakki na?"* *L3 (second half)* | WhatsApp | Trust; reply list |
 | 11 | **QM — What was the ₹1,80,000?** *Optional* (it doesn't block). Claims to mark **proven / not proven**: *"It was hush money"* (not proven: it matches his own invoice); *"The balance was held until he agreed to stay quiet"* (proven: Bhasin, Sun 9:10); *"The family paid to take Dilip off the records"* (proven: Mr Sethi, Mon 10:12). *(link 10)* **Sameer's version is accepted:** *"unka paisa, chup rehne ka"*. | Paytap, Mail, WhatsApp | Claims |
@@ -286,6 +287,13 @@ Sameer's thread is waiting.
 | 13 | **Nitin.** Chats › **Archived (1)**. Nitin at 12:58, *"sab bhaag rahe hain"*; at 1:22, **the car**; at 1:40, *"service gate — Mandi Road wala na?"*; the group at 1:59, *"service gate pe ek Swift aayi hai"*; at 2:04, *"Chali gayi sir."* | WhatsApp (Archived), the group | Finding (*hope*) |
 | 14 | **Q9 — Did anyone try to get him out?** Yes: **Nitin got a car to the service gate. It left empty at 2:04.** *(link 7)* *L6* | Case file | Pick |
 | 15 | **Cliffhanger.** In Nitin's chat, between 1:40 and his 1:53: **nothing**. Then Nitin: *"theek hai bhai. agar le gaye hain toh main Vicky ko wapas bhej deta hoon."* *(OK. If they've taken him, I'll send Vicky back.)* **A reply to a message that isn't there.** Someone told Nitin that Dilip was already on his way. | WhatsApp (Archived) | The episode ends on the gap |
+
+**Built in S7 (game), beyond the table:**
+- **Sameer asks what you've seen**, once Q7 is answered (*"Group dekha? Ab samajh aaya Bhasin kya cheez hai?"*). Whatever the player gives him, he reshapes: *"Goli tumne chalayi"* gets *"Mujhe laga khaali hai… Par uske baad jo hua, woh Bhasin ne kiya"*; *"Kunal ne chalayi na?"* gets *"Haan. Uski gun thi"*; an open question gets *"Maine koshish ki thi."* (H: tell Sameer your theory.)
+- **Raju writes** once Dilip is known to have been alive. Asking about Dilip earns the promise; telling him *"Kunal Sehgal ne goli chalayi"* sends him to the Sehgals' house (S8 has him withdraw once that's taken back).
+- **Q6's board needs Kunal's clip and one back-lawn find** before it proves anything: a board holding one row can't say "two".
+- **QM reopens only on a later find.** Filing *hush money* before seeing Bhasin's 9:10 AM message brings QM back on the side once it's seen; a player who filed it with that message in hand chose it, and isn't asked again.
+- **The Kunal route** (messaged as Sameer) is written with the other routes in S8.
 
 **Believes (canon):** Sameer fired the shot, but the family controlled what
 happened afterwards. **Doesn't know:** what was said at 1:52, or by whom.

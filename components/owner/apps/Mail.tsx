@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 
-import type { Mail as Letter, Story } from "@/content/types";
-import { all, dayNow, type CaseState } from "@/lib/game/engine";
+import type { Story } from "@/content/types";
+import { all, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import { Group, Row } from "../AppView";
 import app from "../ios/App.module.css";
 import styles from "./Mail.module.css";
@@ -16,8 +17,6 @@ import { stamp } from "@/lib/found/time";
    venue's site plan.
    =========================================================================== */
 
-const DAY: Record<string, number> = { Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6, Sunday: 7 };
-const order = (m: Letter) => (DAY[m.day] ?? 0) * 10_000 + Number(m.at.replace(":", ""));
 
 export default function Mail({
   story,
@@ -30,8 +29,8 @@ export default function Mail({
 }) {
   const [open, setOpen] = useState<string | null>(null);
   const [reading, setReading] = useState(false);
-  const letters = story.mail.filter((m) => all(state, m.requires)).sort((a, b) => order(b) - order(a));
-  const today = dayNow(story, state);
+  const cal = calendarOf(story, state);
+  const letters = story.mail.filter((m) => all(state, m.requires)).sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const letter = letters.find((m) => m.id === open);
 
   if (letter && reading && letter.attachment)
@@ -62,7 +61,7 @@ export default function Mail({
           {letter.address && <p className={styles.address}>{letter.address}</p>}
           <h3 className={styles.subject}>{letter.subject}</h3>
           <p className={styles.date}>
-            {letter.day} · {stamp(letter.at)}
+            {cal.label(letter.day)} · {stamp(letter.at)}
           </p>
           {letter.body.map((p, i) => (
             <p key={i} className={styles.para}>
@@ -104,7 +103,7 @@ export default function Mail({
                   {m.body[0]}
                 </>
               }
-              meta={m.day === today ? stamp(m.at) : m.day}
+              meta={cal.isToday(m.day) ? stamp(m.at) : cal.label(m.day)}
               onClick={() => {
                 setOpen(m.id);
                 if (m.evidence) onRead([m.evidence]);

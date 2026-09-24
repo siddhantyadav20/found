@@ -26,7 +26,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S4** ✔ | His phone | Photos with media, Voice Memos, WhatsApp's archive, Mail, Paytap |
 | **S5** ✔ | Arrival | Parcel, envelope, the note, the phone waking, the charger |
 | **S6** ✔ | Episode 1 | *Missed Calls* as data |
-| **S7** | Episode 2 | *The Second Shot* as data |
+| **S7** ✔ | Episode 2 | *The Second Shot* as data |
 | **S8** | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
 | **S9** | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
 | **S10** | Growth | Pass it on, drops, share images, The First Minute |
@@ -281,6 +281,75 @@ No console errors.
 
 **Left for S7:** the second-episode layer (the archived Nitin chat, the memo
 in the bin, the reel take), and Q3's Revisit.
+
+## S7 — Episode 2 · **done (2026-09-24)**
+
+**Built:**
+- **Episode 2** (`episode2.ts`): Q5–Q9, three hints and two routes each, and
+  QM on the side (a `file` question: *hush money* is his version, *his own
+  balance, held back* traces the price). Q6 is a two-lane board (dance
+  floor, back lawn), and tracing the two firings brings Q3 back as a Revisit
+  that has to be done before anything else.
+- **What he tucked away** is on the phone from minute one and counts only
+  now: the reel take in Photos › Recently Deleted, the memo in Voice Memos ›
+  Recently Deleted, and two archived chats, Chhotu (new, CHAPTER1 E) and
+  Nitin, whose 1:52 is simply missing.
+- **Who writes:**
+  - Sameer, seeing the phone back online, with three replies.
+  - Sameer again once Q7 is answered, reshaping whatever the player gives
+    him.
+  - Raju once Q8 is answered: trust earns the promise.
+  - Bhasin: early if Mummy was told a stranger has the phone, and otherwise
+    after Q8.
+  - The gap after Q9 opens Episode 3 at 1:52.
+- **Engine:**
+  - A chat holds several exchanges (`Thread.replies`), shown in the order
+    they happened (`lib/game/chat.ts`); an unanswered older one lapses.
+  - What's said back is timed when it was said.
+  - Events can say `unless`.
+  - A timeline can need `enough` on the board before it proves anything.
+  - A Revisit reopens only on a find made *after* the version was filed.
+- **The phone's calendar** (`calendar()` in `lib/found/time.ts`): a story
+  writes a weekday (meaning that week, up to the first night) or a date, and
+  every app labels it from the story's own date, as iOS does: Today,
+  Yesterday, a weekday, then a date. Every clock now has a `date`.
+  - Walking Episode 2 found last Sunday's messages reading as "today"
+    (Bhasin's 9:10 AM at the top of the list).
+  - Mail, Paytap and Recents had sorted Sunday after Saturday.
+  - The shot list and Kunal's "Papa wali" were dated a week late.
+- **Fixes found walking:**
+  - Messages that arrived in an earlier episode kept its clock only until
+    the next episode began (`clockAt`).
+  - The Photos Library wasn't in date order.
+  - A chat's unread badge counted a later episode's finds, which nobody
+    could clear.
+
+**Tests:** 109 and 1 skipped.
+- The solver moved to `tests/support/play.ts`, and now also answers
+  timelines and says things.
+- `episode2.test.ts` plays from the charger to 1:52, and covers the Revisit,
+  the thin board, QM's reopening, Bhasin's two timings, Raju's trust and
+  Sameer's chat order.
+- `chat.test.ts` covers conversation order.
+- `phone.test.ts` adds the calendar, arrival times across episodes and the
+  Library's order.
+
+**Walked** at 375 × 812 in dev, from a seeded save at the charger, crossing
+into Episode 2 through the real charger gate:
+- Sameer online, then replied to
+- Bhasin writing early, because this seed told Mummy a stranger has the phone
+- Q5 via Kunal's chat and the shot list
+- the thin board refusing, then the reel take in Recently Deleted, and Q6
+- the Revisit struck and refiled
+- Q7 via the deleted memo
+- the archived chats, then Q8 and Q9
+- Raju and Sameer writing, and the gap opening Episode 3 at 1:52 with 64%
+
+A fresh tab showed no console errors.
+
+**Left for S8:** the Kunal route (messaged as Sameer), Raju withdrawing if
+told a lie he later hears taken back, and the second Sameer exchange's
+answers as sources for his version (CHAPTER1 H).
 
 ## S6 · S7 · S8 — The episodes as data
 

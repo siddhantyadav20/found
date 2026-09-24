@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { Note, Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import styles from "./Notes.module.css";
 import { stamp } from "@/lib/found/time";
 
@@ -14,7 +15,7 @@ import { stamp } from "@/lib/found/time";
 
    =========================================================================== */
 
-function Open({ note, onOpened }: { note: Note; onOpened: (id: string) => void }) {
+function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id: string) => void }) {
   const [typed, setTyped] = useState("");
   const [open, setOpen] = useState(!note.locked);
 
@@ -46,7 +47,7 @@ function Open({ note, onOpened }: { note: Note; onOpened: (id: string) => void }
     <article className={styles.note}>
       <h3 className={styles.noteTitle}>{note.title}</h3>
       <p className={styles.noteMeta}>
-        {note.day} {stamp(note.at)}
+        {day} {stamp(note.at)}
         {note.edited && ` · Edited ${note.edited}`}
         {note.sharedWith && ` · Shared with ${note.sharedWith}`}
       </p>
@@ -71,6 +72,7 @@ export default function Notes({
   /** Opening a locked note is a thing the player did, and the save keeps it. */
   onPassword: (id: string) => void;
 }) {
+  const cal = calendarOf(story, state);
   const [open, setOpen] = useState<string | null>(null);
   const notes = story.notes.filter((n) => all(state, n.requires));
   const here = notes.find((n) => n.id === open);
@@ -83,6 +85,7 @@ export default function Notes({
         </button>
         <Open
           note={here}
+          day={cal.label(here.day)}
           onOpened={() => {
             onPassword(here.id);
             if (here.evidence) onRead([here.evidence]);
@@ -112,7 +115,7 @@ export default function Notes({
                 {n.title}
               </span>
               <span className={styles.rowSub}>
-                <span className={styles.rowWhen}>{n.edited ? stamp(n.edited) : n.day}</span>
+                <span className={styles.rowWhen}>{n.edited ? stamp(n.edited) : cal.label(n.day)}</span>
                 <span className={styles.rowPreview}>{n.locked ? "Locked" : n.body[0]}</span>
               </span>
             </button>

@@ -1,6 +1,7 @@
 import type {
   CallEntry,
   Mail,
+  Memo,
   Note,
   Payment,
   Photo,
@@ -16,9 +17,9 @@ import type {
 
    It is all here from the first minute, because it's his phone (the hybrid
    pacing, decided 2026-09-24). What he tucked away (the archived chats,
-   Recently Deleted, the Hidden album, the deleted memo) arrives with the
-   episodes that need it, behind the hard routes. Evidence is tagged for
-   Episode 1 here; S7 and S8 tag what later episodes use.
+   Recently Deleted, the Hidden album, the deleted memo) is here too, behind
+   the hard routes, and counts only in the episode that needs it: each
+   evidence id says which, in episode1.ts, episode2.ts and episode3.ts.
 
    Days: the wedding was Saturday 22/11, and the player's night is Saturday
    29/11, so last Saturday is written as a date the way WhatsApp would.
@@ -154,11 +155,12 @@ export const threads: readonly Thread[] = [
         id: "k-1",
         from: "them",
         at: "16:18",
-        day: "Thursday",
+        day: "20/11",
         text: "Bhai reel mein Papa wali le aaunga. Asli feel aayegi 🔥",
         english: "Bro, I'll bring Papa's one for the reel. It'll feel real.",
+        evidence: "kunal-papa",
       },
-      { id: "k-2", from: "owner", at: "16:21", day: "Thursday", text: "😂 done. back lawn, 12:15" },
+      { id: "k-2", from: "owner", at: "16:21", day: "20/11", text: "😂 done. back lawn, 12:15" },
       {
         id: "k-3",
         from: "them",
@@ -190,15 +192,15 @@ export const threads: readonly Thread[] = [
     sub: "Bhasin, Kunal, Pappu, Ramesh, You",
     messages: [
       { id: "s-0", from: "system", at: "00:36", day: "Sunday", text: "Vinod Bhasin created group “Banyan — Security”" },
-      { id: "s-1", from: "them", who: "Bhasin", at: "00:36", day: "Sunday", text: "Sameer, gun Kunal ko do. Abhi.", english: "Sameer, give the gun to Kunal. Now." },
+      { id: "s-1", from: "them", who: "Bhasin", at: "00:36", day: "Sunday", text: "Sameer, gun Kunal ko do. Abhi.", english: "Sameer, give the gun to Kunal. Now.", evidence: "gun-to-kunal" },
       { id: "s-2", from: "them", who: "Bhasin", at: "00:38", day: "Sunday", text: "Koi 112 nahi karega. Ladke ko service room le jao. Main sambhaal raha hoon.", english: "Nobody calls 112. Take the boy to the service room. I'm handling it." },
       { id: "s-3", from: "them", who: "Bhasin", at: "00:52", day: "Sunday", text: "Doctor ka intezaam ho raha hai.", english: "A doctor is being arranged." },
-      { id: "s-4", from: "them", who: "Pappu", at: "01:14", day: "Sunday", text: "Sir ladka hosh mein hai. Paani maang raha hai.", english: "Sir, the boy is conscious. He's asking for water." },
+      { id: "s-4", from: "them", who: "Pappu", at: "01:14", day: "Sunday", text: "Sir ladka hosh mein hai. Paani maang raha hai.", english: "Sir, the boy is conscious. He's asking for water.", evidence: "conscious" },
       { id: "s-5", from: "them", who: "Bhasin", at: "01:31", day: "Sunday", text: "Doctor aa raha hai. Sab shaant raho.", english: "The doctor's coming. Everyone stay calm." },
       { id: "s-6", from: "them", who: "Ramesh", at: "01:49", day: "Sunday", text: "Sir, Sameer sir service room mein hain ladke ke paas.", english: "Sir, Sameer sir is in the service room with the boy." },
-      { id: "s-7", from: "them", who: "Pappu", at: "01:59", day: "Sunday", text: "Sir service gate pe ek Swift aayi hai, kisi ko lene.", english: "Sir, a Swift has come to the service gate, to pick someone up." },
+      { id: "s-7", from: "them", who: "Pappu", at: "01:59", day: "Sunday", text: "Sir service gate pe ek Swift aayi hai, kisi ko lene.", english: "Sir, a Swift has come to the service gate, to pick someone up.", evidence: "swift" },
       { id: "s-8", from: "them", who: "Bhasin", at: "02:00", day: "Sunday", text: "Kaun? Pata karo.", english: "Who? Find out." },
-      { id: "s-9", from: "them", who: "Pappu", at: "02:04", day: "Sunday", text: "Chali gayi sir. Driver bol raha tha cancel ho gaya.", english: "It's gone, sir. The driver said it was cancelled." },
+      { id: "s-9", from: "them", who: "Pappu", at: "02:04", day: "Sunday", text: "Chali gayi sir. Driver bol raha tha cancel ho gaya.", english: "It's gone, sir. The driver said it was cancelled.", evidence: "left-empty" },
       { id: "s-10", from: "them", who: "Pappu", at: "02:41", day: "Sunday", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking." },
       { id: "s-11", from: "them", who: "Bhasin", at: "02:42", day: "Sunday", text: "Call karo mujhe.", english: "Call me." },
     ],
@@ -224,6 +226,7 @@ export const threads: readonly Thread[] = [
         day: "Monday",
         text: "Chhotu ka hisaab Bhasin sir ne kar diya. List se naam hata diya. Aap bhi kuch mat bolna.",
         english: "Bhasin sir has settled Chhotu's account. His name is off the list. Don't you say anything either.",
+        evidence: "sethi-list",
       },
     ],
   },
@@ -239,7 +242,66 @@ export const threads: readonly Thread[] = [
         day: "Sunday",
         text: "Balance aaj aa jayega. Tab tak kisi se baat nahi. Nitin se bhi nahi.",
         english: "The balance will come today. Until then, you talk to no one. Not even Nitin.",
+        evidence: "bhasin-balance",
       },
+    ],
+  },
+  /* Archived on Thursday, at 11:08 PM: the boy's own chat, which ends on a
+     promise Sameer made at 1:08 AM (CHAPTER1.md E). */
+  {
+    id: "chhotu",
+    app: "whatsapp",
+    name: "Chhotu",
+    archived: true,
+    messages: [
+      {
+        id: "d-1",
+        from: "them",
+        at: "17:20",
+        day: "18/11",
+        text: "Bhaiya Saturday ko main aaunga na light ke liye? Sethi sir se baat kar li hai",
+        english: "Bhaiya, I'm coming on Saturday for the light, right? I've talked to Sethi sir.",
+      },
+      { id: "d-2", from: "owner", at: "17:31", day: "18/11", text: "haan. waistcoat mein hi aa jaana, tere candid bhi lenge 😄", english: "Yes. Come in the waistcoat, I'll take some candids of you too." },
+      { id: "d-3", from: "them", at: "19:10", day: "22/11", text: "Bhaiya Mumbai wali baat pakki na? 🙏", english: "Bhaiya, the Mumbai thing is for sure, right?", evidence: "promise" },
+      { id: "d-4", from: "owner", at: "19:12", day: "22/11", text: "pakki. shaadi ke baad baat karte hain. aaj light tu pakdega", english: "For sure. We'll talk after the wedding. Tonight you're holding the light." },
+      { id: "d-5", from: "them", at: "01:07", day: "Sunday", text: "Bhaiya dard ho raha hai. Aap aa rahe ho na?", english: "Bhaiya, it hurts. You're coming, aren't you?", evidence: "chhotu-107" },
+      { id: "d-6", from: "owner", at: "01:08", day: "Sunday", text: "aa raha hoon. hospital le jayenge. bas thodi der", english: "I'm coming. We'll take you to hospital. Just a little longer." },
+    ],
+  },
+  /* Archived on Thursday at 11:10 PM, after his 1:52 message was deleted "for
+     me": nothing marks the hole, and Nitin's 1:53 answers a message that
+     isn't there (CHAPTER1.md C3). */
+  {
+    id: "nitin",
+    app: "whatsapp",
+    name: "Nitin",
+    archived: true,
+    messages: [
+      { id: "n-1", from: "owner", at: "22:40", day: "21/11", text: "kal 5 baje van. batteries sab charge kar lena. B cam tu", english: "Van at 5 tomorrow. Charge all the batteries. You're on B cam." },
+      { id: "n-2", from: "them", at: "22:41", day: "21/11", text: "done bhai 👍" },
+      { id: "n-3", from: "them", at: "00:58", day: "Sunday", text: "Bhai kya hua? andar se awaaz aayi. sab bhaag rahe hain", english: "Bro, what happened? There was a sound from inside. Everyone's running." },
+      {
+        id: "n-4",
+        from: "them",
+        at: "01:22",
+        day: "Sunday",
+        text: "maine Vicky ko bola hai, uski gaadi hai. 20 min. service gate pe laata hoon. Dilip ko wahan le aao",
+        english: "I've told Vicky, he has a car. 20 minutes. I'll bring it to the service gate. Get Dilip there.",
+        evidence: "nitin-car",
+      },
+      { id: "n-5", from: "them", at: "01:40", day: "Sunday", text: "Vicky 10 min. service gate — Mandi Road wala na?", english: "Vicky, 10 minutes. The service gate on Mandi Road, right?", evidence: "nitin-gate" },
+      {
+        id: "n-6",
+        from: "them",
+        at: "01:53",
+        day: "Sunday",
+        text: "theek hai bhai. agar le gaye hain toh main Vicky ko wapas bhej deta hoon",
+        english: "OK bro. If they've taken him, I'll send Vicky back.",
+        evidence: "nitin-reply",
+      },
+      { id: "n-7", from: "them", at: "02:04", day: "Sunday", text: "Vicky wapas aa gaya. bhai sab theek hai na?", english: "Vicky's back. Bro, everything's OK, right?", evidence: "nitin-back" },
+      { id: "n-8", from: "them", at: "09:31", day: "Sunday", text: "bhai?" },
     ],
   },
   /* Messages is mostly the lender. */
@@ -355,7 +417,7 @@ export const notes: readonly Note[] = [
     id: "shot-list",
     title: "Sehgal — shot list",
     at: "23:02",
-    day: "Friday",
+    day: "21/11",
     body: [
       "19:30 baraat — gate, drone off (venue said no)",
       "20:00 varmala — 2 angles",
@@ -364,6 +426,7 @@ export const notes: readonly Note[] = [
       "12:15 — KS reel. back lawn, mango trees. Dilip — light. Nitin — van/batteries.",
       "01:00 pheras",
     ],
+    evidence: "shot-list",
   },
   {
     id: "flats",
@@ -431,10 +494,43 @@ export const mail: readonly Mail[] = [
 ];
 
 export const payments: readonly Payment[] = [
-  { id: "p-balance", who: "SEHGAL ENTERPRISES", handle: "sehgalent@paytap", amount: 180000, note: "Final balance – wedding coverage", at: "11:04", day: "Sunday" },
+  { id: "p-balance", who: "SEHGAL ENTERPRISES", handle: "sehgalent@paytap", amount: 180000, note: "Final balance – wedding coverage", at: "11:04", day: "Sunday", evidence: "balance" },
   { id: "p-deposit", who: "Anjali Mehra", handle: "anjali.m@paytap", amount: -35000, note: "Deposit, Andheri 1RK", at: "14:22", day: "Tuesday", evidence: "deposit" },
   { id: "p-emi", who: "ZipEMI", amount: -14200, note: "EMI · Sony A7 IV", at: "09:00", day: "Friday", failed: true },
   { id: "p-nitin", who: "Nitin", handle: "nitin.cam@paytap", amount: -3000, note: "B cam day rate", at: "12:30", day: "Sunday" },
+];
+
+/* Voice Memos: what he rehearsed, and, in Recently Deleted, what he said to
+   nobody on Monday afternoon and deleted on Thursday at 10:52 PM. */
+export const memos: readonly Memo[] = [
+  {
+    id: "memo-rangmanch",
+    title: "Rangmanch — interview",
+    at: "11:05",
+    day: "17/11",
+    seconds: 16,
+    lines: [
+      { at: 1, who: "Sameer", line: "Main wedding films karta hoon, par mera frame cinema ka hai.", english: "I make wedding films, but my frame is cinema's." },
+      { at: 7, who: "Sameer", line: "Nahi. Phir se. …Main shaadiyon mein kahaniyan dhoondhta hoon.", english: "No. Again. …I find stories at weddings." },
+      { at: 13, line: "[a laugh]" },
+    ],
+  },
+  {
+    id: "memo-458",
+    title: "New Recording 14",
+    at: "16:58",
+    day: "Monday",
+    seconds: 14,
+    lines: [
+      { at: 1, line: "[a long breath]" },
+      { at: 3, who: "Sameer", line: "Pehli camera ke liye thi.", english: "The first was for the camera." },
+      { at: 7, who: "Sameer", line: "Doosri… main pose kar raha tha.", english: "The second… I was posing." },
+      { at: 11, who: "Sameer", line: "Mujhe laga khaali hai.", english: "I thought it was empty." },
+    ],
+    deletedAt: "22:52",
+    daysLeft: 28,
+    evidence: "memo",
+  },
 ];
 
 export const profiles: readonly Profile[] = [

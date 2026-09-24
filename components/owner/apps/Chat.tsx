@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
-import { all, arrivedAt, dayNow, seen, type CaseState } from "@/lib/game/engine";
-import { recency, stamp } from "@/lib/found/time";
+import { conversation, openReply } from "@/lib/game/chat";
+import { all, arrivedAt, dateNow, reachable, seen, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
+import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { Chevron } from "../ios/AppBar";
 import Clip from "../ios/Clip";
@@ -220,23 +222,8 @@ function Conversation({
 }) {
   /* What was said back, once said: the player's line, then whatever comes
      back (the option's `then`), revealed with "typing…" like anything new. */
-  const chosen = thread.reply?.options.find((o) => o.sets?.some((f) => state.flags.includes(f)));
-  const base = thread.messages.filter((m) => all(state, m.requires));
-  const messages: Message[] = chosen
-    ? [
-        ...base,
-        {
-          id: `said-${chosen.id}`,
-          from: "owner",
-          text: chosen.text,
-          english: chosen.english,
-          at: chosen.then?.[0]?.at ?? base.at(-1)?.at ?? "00:00",
-          day: chosen.then?.[0]?.day ?? base.at(-1)?.day,
-          with: chosen.then?.[0]?.with,
-        },
-        ...(chosen.then ?? []),
-      ]
-    : base;
+  const messages: Message[] = conversation(state, thread, dateNow(story, state));
+  const cal = calendarOf(story, state);
   /* What is on screen. Everything already there shows at once; what arrives
      while the chat is open is revealed one message at a time. */
   const [shown, setShown] = useState(messages.length);
@@ -270,8 +257,7 @@ function Conversation({
     if (visible) onRead(visible.split(","));
   }, [visible, onRead]);
 
-  const said = (o: ReplyOption) => o.sets?.some((f) => state.flags.includes(f));
-  const reply = thread.reply && all(state, thread.reply.requires) && !thread.reply.options.some(said) ? thread.reply : null;
+  const reply = openReply(state, thread);
 
   return (
     <section className={styles.chats} data-app={app} data-wall={app === "whatsapp" || undefined}>
@@ -294,7 +280,7 @@ function Conversation({
       <div ref={body} className={styles.messages}>
         {messages.slice(0, shown).map((m, i) => (
           <div key={m.id}>
-            {m.day && m.day !== messages[i - 1]?.day && <p className={styles.day}>{m.day}</p>}
+            {m.day && cal.dayOf(m.day) !== cal.dayOf(messages[i - 1]?.day ?? "01/01") && <p className={styles.day}>{cal.label(m.day)}</p>}
             <Bubble m={m} at={arrivedAt(story, state, m)} />
           </div>
         ))}
@@ -357,7 +343,7 @@ export default function Chat({
     const same = acc.find((x) => x.name === t.name);
     if (!same) return [...acc, t];
     return acc.map((x) =>
-      x === same ? { ...x, messages: [...x.messages, ...t.messages], reply: t.reply ?? x.reply } : x,
+      x === same ? { ...x, messages: [...x.messages, ...t.messages], replies: [...(x.replies ?? []), ...(t.replies ?? [])] } : x,
     );
   }, []);
 
@@ -365,6 +351,8 @@ export default function Chat({
   if (here) return <Conversation key={here.id} story={story} thread={here} state={state} app={app} onBack={() => setOpen(null)} onRead={onRead} onSay={onSay} />;
 
   const archived = threads.filter((t) => t.archived);
+  const today = dateNow(story, state);
+  const cal = calendarOf(story, state);
   const inList = archive ? archived : threads.filter((t) => !t.archived);
 
   const list = (
@@ -384,16 +372,19 @@ export default function Chat({
         // Pinned first, then newest first, as WhatsApp keeps its list.
         .sort((a, b) => {
           if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
-          const last = (t: Thread) => t.messages.filter((m) => all(state, m.requires)).at(-1);
+          const last = (t: Thread) => conversation(state, t, today).at(-1);
           const la = last(a);
           const lb = last(b);
-          const today = dayNow(story, state);
-          return recency(lb?.day, lb && arrivedAt(story, state, lb), today) - recency(la?.day, la && arrivedAt(story, state, la), today);
+          return cal.when(lb?.day, lb && arrivedAt(story, state, lb)) - cal.when(la?.day, la && arrivedAt(story, state, la));
         })
         .map((t) => {
-          const shown = t.messages.filter((m) => all(state, m.requires));
+          const shown = conversation(state, t, today);
           const last = shown[shown.length - 1];
-          const unread = shown.filter((m) => m.evidence && !seen(state, m.evidence)).length;
+          // Only what can count now: a later episode's find doesn't sit there as a badge nobody can clear.
+          const unread = shown.filter((m) => {
+            const e = m.evidence ? story.evidence.find((x) => x.id === m.evidence) : undefined;
+            return e && reachable(state, e) && !seen(state, e.id);
+          }).length;
           return (
             <li key={t.id}>
               <button type="button" className={styles.row} onClick={() => setOpen(t.id)}>
@@ -402,7 +393,7 @@ export default function Chat({
                   <span className={styles.rowTop}>
                     <span className={styles.rowName}>{t.name}</span>
                     <span className={styles.rowTime} data-unread={unread > 0 || undefined}>
-                      {last?.day && last.day !== dayNow(story, state) ? last.day : stamp(last && arrivedAt(story, state, last))}
+                      {cal.isToday(last?.day) ? stamp(last && arrivedAt(story, state, last)) : cal.label(last?.day)}
                     </span>
                   </span>
                   <span className={styles.rowBottom}>

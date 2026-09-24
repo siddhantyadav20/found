@@ -2,6 +2,7 @@
 
 import type { Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import { Group, Row } from "../AppView";
 import { stamp } from "@/lib/found/time";
 
@@ -18,6 +19,7 @@ export default function Safari({
   state: CaseState;
   onRead: (ids: readonly string[]) => void;
 }) {
+  const cal = calendarOf(story, state);
   return (
     <Group label="History">
       {story.searches
@@ -26,7 +28,7 @@ export default function Safari({
           <Row
             key={s.id}
             title={s.text}
-            sub={`${s.day} ${stamp(s.at)}`}
+            sub={`${cal.label(s.day)} ${stamp(s.at)}`}
             onClick={s.evidence ? () => onRead([s.evidence as string]) : undefined}
           />
         ))}

@@ -1,79 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { STORIES } from "@/content/stories";
-import type { AppId, Question } from "@/content/types";
-import {
-  add,
-  answer,
-  battery,
-  dueEvents,
-  filedClaim,
-  fire,
-  homeIcons,
-  newCase,
-  openApp,
-  openQuestion,
-  see,
-  seen,
-  settle,
-  type CaseState,
-} from "@/lib/game/engine";
+import { battery, filedClaim, seen } from "@/lib/game/engine";
 import { sceneOf } from "@/lib/game/scene";
+import { ep, play } from "./support/play";
 
 /**
- * Episode 1, "Missed Calls", played the way a player can: open every app,
- * open what's inside them, lean in on a photo, answer what the case file
- * asks, and let the night happen (CHAPTER1.md F). It never sets a flag the
- * game itself wouldn't.
+ * Episode 1, "Missed Calls", played the way a player can (tests/support/play.ts):
+ * from the phone waking to the charger.
  */
 
-const ep = STORIES.shagun;
-const apps = [...new Set(homeIcons(ep).map((i) => i.app))] as AppId[];
-
-/** Everything a careful player opens: each app, and each chat, photo, note and letter in it. */
-function look(s: CaseState): CaseState {
-  const opened = apps.reduce((acc, app) => openApp(ep, acc, app), s);
-  return settle(ep, ep.evidence.reduce((acc, e) => see(ep, acc, e.id), opened));
-}
-
-function solve(s: CaseState, q: Question): CaseState {
-  const has = (route: readonly string[]) => route.every((id) => seen(s, id));
-  if (q.kind === "pick") {
-    const route = [q.proof, ...(q.orProof ?? [])].find(has);
-    if (!route) throw new Error(`${q.id}: nothing to table`);
-    return answer(ep, s, q.id, route).state;
-  }
-  if (q.kind === "file") {
-    // The truth if it can be proved; otherwise the version his phone supports.
-    for (const c of [...q.claims].sort((a, b) => Number(Boolean(a.version)) - Number(Boolean(b.version)))) {
-      const route = [c.proof, ...(c.orProof ?? [])].find(has);
-      if (route) return answer(ep, s, q.id, { claim: c.id, proof: route }).state;
-    }
-    throw new Error(`${q.id}: no claim can be filed`);
-  }
-  throw new Error(`${q.id}: Episode 1 asks nothing of kind ${q.kind}`);
-}
-
-function play(): CaseState {
-  let s = add(newCase("ep1", 0), "did:opened", "did:unlock", "saw:note", "did:past-lock");
-  for (let step = 0; step < 100; step++) {
-    const scene = sceneOf(ep, s);
-    if (scene.kind === "charge") return s;
-    if (scene.kind === "ringing") {
-      s = add(s, `did:declined-${scene.call.id}`);
-      continue;
-    }
-    s = look(s);
-    const due = dueEvents(ep, s)[0];
-    if (due) s = fire(ep, s, due.id);
-    const q = openQuestion(ep, s);
-    if (q) s = solve(look(s), q);
-  }
-  throw new Error(`stuck at ${sceneOf(ep, s).kind}, question ${openQuestion(ep, s)?.id}`);
-}
+const play1 = () => play((_, scene) => scene.kind === "charge");
 
 describe("Episode 1", () => {
-  const s = play();
+  const s = play1();
 
   it("plays from the phone waking to the charger, answering Q1–Q4", () => {
     for (const id of ["q1", "q2", "q3", "q4"]) expect(s.flags, id).toContain(`ask:${id}`);
@@ -88,7 +27,9 @@ describe("Episode 1", () => {
   });
 
   it("counts nothing that belongs to a later episode, however hard the player looked", () => {
-    for (const id of ["kunal-clip", "bts", "reel-take"]) expect(seen(s, id), id).toBe(false);
+    const later = ep.evidence.filter((e) => e.requires?.some((f) => f === "ep:2" || f === "ep:3"));
+    expect(later.length).toBeGreaterThan(10);
+    for (const e of later) expect(seen(s, e.id), e.id).toBe(false);
   });
 
   it("traces no link yet: Episode 1 is his version", () => {

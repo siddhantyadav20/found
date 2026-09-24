@@ -51,10 +51,12 @@ export function flag(...flags: Flag[]): void {
   if (s) save(add(s, ...flags));
 }
 
-/** Saying something: what it sets. */
-export function say(option: Pick<ReplyOption, "sets">): void {
+/** Saying something: what it sets, and when it was said, so what comes back arrives then. */
+export function say(option: Pick<ReplyOption, "sets">, replyId?: string): void {
   const s = readProgress();
-  if (s) save(add(s, ...(option.sets ?? [])));
+  if (!s) return;
+  const said = add(s, ...(option.sets ?? []));
+  save(replyId ? { ...said, at: { ...said.at, [`event:${replyId}`]: Date.now() } } : said);
 }
 
 /** Having looked at something: it goes into the case file, if it can. */

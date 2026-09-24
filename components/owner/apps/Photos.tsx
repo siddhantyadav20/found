@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { Photo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { clipOf, library, mmss, revertible } from "@/lib/game/phone";
+import { calendarOf, clipOf, library, mmss, revertible } from "@/lib/game/phone";
 import app from "../ios/App.module.css";
 import AppBar, { Chevron } from "../ios/AppBar";
 import Clip from "../ios/Clip";
@@ -199,6 +199,7 @@ function Glyph({ d, filled = false }: { d: string; filled?: boolean }) {
 
 function Viewer({
   photo,
+  day,
   state,
   onClose,
   onRead,
@@ -206,6 +207,8 @@ function Viewer({
   onRevert,
 }: {
   photo: Photo;
+  /** How the phone names the day it was taken. */
+  day: string;
   state: CaseState;
   onClose: () => void;
   onRead: (ids: readonly string[]) => void;
@@ -226,7 +229,7 @@ function Viewer({
         <span className={frame.viewerWhen}>
           {photo.place && <strong>{photo.place}</strong>}
           <span>
-            {photo.day} {stamp(photo.at)}
+            {day} {stamp(photo.at)}
           </span>
         </span>
         <span />
@@ -246,7 +249,7 @@ function Viewer({
       {info && (
         <div className={frame.info}>
           <p className={frame.infoDay}>
-            {photo.day} · {stamp(photo.at)}
+            {day} · {stamp(photo.at)}
           </p>
           {photo.camera && <p className={frame.infoCam}>{photo.camera}</p>}
           {revertible(state, photo) && <p className={frame.infoNote}>Edited</p>}
@@ -327,6 +330,7 @@ export default function Photos({
   const [viewing, setViewing] = useState<string | null>(null);
 
   const lib = library(story, state);
+  const cal = calendarOf(story, state);
   const albums: Album[] = [
     ...(lib.favorites.length ? [{ name: "Favorites", photos: lib.favorites }] : []),
     ...lib.albums,
@@ -342,6 +346,7 @@ export default function Photos({
   if (photo)
     return (
       <Viewer
+        day={cal.label(photo.day)}
         photo={photo}
         state={state}
         onClose={() => setViewing(null)}
@@ -373,7 +378,7 @@ export default function Photos({
             // Seen in the bin is seen: it counts from the moment it's opened (PLAYTEST.md #44).
             if (p.evidence) onRead([p.evidence]);
           }}
-          aria-label={`${p.title}, ${p.day} ${stamp(p.at)}`}
+          aria-label={`${p.title}, ${cal.label(p.day)} ${stamp(p.at)}`}
         >
           <Picture photo={p} seconds={clipOf(state, p)?.seconds} />
           {open?.bin && <span className={styles.days}>{p.daysLeft ?? 30} days</span>}

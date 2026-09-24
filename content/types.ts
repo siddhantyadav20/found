@@ -183,6 +183,12 @@ export type Question =
       /** The lanes, in the order the board shows them. */
       readonly lanes: readonly { readonly id: string; readonly label: string }[];
       readonly rows: readonly TimelineRow[];
+      /**
+       * What the board needs on it before it can prove anything: any one of
+       * these routes, all found. Without it, a board holding a single row
+       * would "prove" the whole question.
+       */
+      readonly enough?: readonly (readonly string[])[];
     })
   | (Asked & {
       readonly kind: "claims";
@@ -209,6 +215,8 @@ export type LiveEvent = {
   readonly id: string;
   readonly device: DeviceId;
   readonly after: readonly Flag[];
+  /** Never plays once any of these is true: what the player did made it someone else's moment. */
+  readonly unless?: readonly Flag[];
   /** Seconds after the last flag in `after` landed. */
   readonly delay?: number;
   readonly app: AppId;
@@ -252,6 +260,12 @@ export type Clock = {
   /** The story's own time when an episode opens, as "23:40". */
   readonly base: string;
   readonly day: string;
+  /**
+   * Its date, "29/11". The first clock's day and date anchor the phone's
+   * calendar: a weekday written anywhere in the story means that weekday in
+   * the week ending on the first night.
+   */
+  readonly date: string;
   /** The found phone's battery when it opens. */
   readonly battery: number;
   /** On the player's charger: the battery climbs a point a minute from `battery`. */
@@ -351,9 +365,9 @@ export type Message = {
    */
   readonly ticks?: "sent" | "delivered" | "read";
   /**
-   * Arrives with this live event, during the player's night: shown at the
-   * story's time when it arrived, not at `at`, so nothing is ever stamped in
-   * the future (PLAYTEST.md #46).
+   * Arrives with this live event (or the reply of this id), during the
+   * player's night: shown at the story's time when it arrived, not at `at`,
+   * so nothing is ever stamped in the future (PLAYTEST.md #46).
    */
   readonly with?: string;
   /** A reply to an earlier message, quoted above it. */
@@ -432,8 +446,12 @@ export type Thread = {
   /** Moved out of the list into Archived, which is one tap further than most people look. */
   readonly archived?: boolean;
   readonly messages: readonly Message[];
-  /** What the player may say back, once they have something to say. */
-  readonly reply?: Reply;
+  /**
+   * What the player may say back, once they have something to say: one
+   * exchange at a time, each opening when its `requires` hold. A newer one
+   * lets an unanswered older one lapse, as a conversation moves on.
+   */
+  readonly replies?: readonly Reply[];
   readonly requires?: readonly Flag[];
 };
 

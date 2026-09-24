@@ -38,7 +38,7 @@ export default function AppBody({
 }) {
   // Stable, because the apps mark things read from effects that depend on them.
   const onRead = useCallback((ids: readonly string[]) => read(story, ids), [story]);
-  const onSay = useCallback((option: Parameters<typeof say>[0]) => say(option), []);
+  const onSay = useCallback((option: Parameters<typeof say>[0], replyId?: string) => say(option, replyId), []);
 
   switch (app) {
     case "casefile":

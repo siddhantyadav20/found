@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 
-import type { Payment, Story } from "@/content/types";
+import type { Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import { rupees } from "@/lib/game/phone";
 import { Group, Row } from "../AppView";
 import app from "../ios/App.module.css";
@@ -17,8 +18,6 @@ import { stamp } from "@/lib/found/time";
    game never asks for anything real, so it stays hidden.
    =========================================================================== */
 
-const DAY: Record<string, number> = { Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6, Sunday: 7 };
-const order = (p: Payment) => (DAY[p.day] ?? 0) * 10_000 + Number(p.at.replace(":", ""));
 
 export default function Paytap({
   story,
@@ -30,7 +29,8 @@ export default function Paytap({
   onRead: (ids: readonly string[]) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
-  const history = story.payments.filter((p) => all(state, p.requires)).sort((a, b) => order(b) - order(a));
+  const cal = calendarOf(story, state);
+  const history = story.payments.filter((p) => all(state, p.requires)).sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const receipt = history.find((p) => p.id === open);
 
   if (receipt)
@@ -53,7 +53,7 @@ export default function Paytap({
           {receipt.handle && <p className={styles.handle}>{receipt.handle}</p>}
           {receipt.note && <p className={styles.note}>“{receipt.note}”</p>}
           <p className={styles.handle}>
-            {receipt.day} · {stamp(receipt.at)}
+            {cal.label(receipt.day)} · {stamp(receipt.at)}
           </p>
         </div>
       </div>
@@ -71,7 +71,7 @@ export default function Paytap({
             <Row
               key={p.id}
               title={p.who}
-              sub={`${p.failed ? "Failed · " : ""}${p.note ? `${p.note} · ` : ""}${p.day} ${stamp(p.at)}`}
+              sub={`${p.failed ? "Failed · " : ""}${p.note ? `${p.note} · ` : ""}${cal.label(p.day)} ${stamp(p.at)}`}
               meta={
                 <span className={styles.rowAmount} data-in={p.amount > 0 || undefined}>
                   {p.amount > 0 ? "+" : "−"}

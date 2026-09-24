@@ -12,7 +12,7 @@ import { homeIcons } from "@/lib/game/engine";
  * - nothing points at evidence that doesn't exist
  * - the chain is eleven links, and every one of them can be traced
  *
- * Episode 1 is written (ROADMAP S6); Episodes 2 and 3 follow in S7–S8. S12 adds the solver runs CHAPTER1.md promises: the full
+ * Episodes 1 and 2 are written (ROADMAP S6–S7); Episode 3 follows in S8. S12 adds the solver runs CHAPTER1.md promises: the full
  * chain (11 of 11, Ending A), Sameer's version (B), an early post (C) and
  * Return to Sender, and two sources per link that survive any closed route.
  */
@@ -124,7 +124,7 @@ describe("every piece of evidence", () => {
           : q.kind === "file"
             ? q.claims.flatMap((c) => [c.proof, ...(c.orProof ?? [])].flat())
             : q.kind === "timeline"
-              ? q.rows.map((r) => r.evidence)
+              ? [...q.rows.map((r) => r.evidence), ...(q.enough ?? []).flat()]
               : q.kind === "claims"
                 ? q.claims.map((c) => c.proof).filter((p) => p !== "none")
                 : [];

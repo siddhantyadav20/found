@@ -5,7 +5,7 @@ import { endings } from "./endings";
 import { episode1 } from "./episode1";
 import { episode2 } from "./episode2";
 import { episode3 } from "./episode3";
-import { calls, mail, notes, payments, photos, profiles, searches, settings, threads } from "./phone";
+import { calls, mail, memos, notes, payments, photos, profiles, searches, settings, threads } from "./phone";
 
 /* ===========================================================================
    Chapter One — "Shagun" · Delhi.
@@ -30,6 +30,7 @@ export const story: Story = {
     {
       base: "23:40",
       day: "Saturday",
+      date: "29/11",
       battery: 9,
       drain: [
         { after: "did:named-dilip", battery: 7 },
@@ -38,8 +39,8 @@ export const story: Story = {
         { after: "fired:dying", battery: 2 },
       ],
     },
-    { base: "00:32", day: "Sunday", battery: 2, charging: true },
-    { base: "01:52", day: "Sunday", battery: 64, charging: true },
+    { base: "00:32", day: "Sunday", date: "30/11", battery: 2, charging: true },
+    { base: "01:52", day: "Sunday", date: "30/11", battery: 64, charging: true },
   ],
   arrival: {
     note: ["M —", "Sab isme hai.", "Local thane mat le jaana.", "Bhasin ke log wahan baithe hain."],
@@ -89,10 +90,10 @@ export const story: Story = {
       { app: "casefile", label: "Case file" },
     ],
   },
-  threads: [...threads, ...episode1.threads],
+  threads: [...threads, ...episode1.threads, ...episode2.threads],
   photos,
   notes,
-  memos: [],
+  memos,
   mail,
   payments,
   profiles,
@@ -113,5 +114,14 @@ export const story: Story = {
     "did:raju-lied",
     "did:mummy-stranger",
     "did:mummy-as-sameer",
+    "did:sameer-not-m",
+    "did:sameer-as-m",
+    "did:sameer-where",
+    "did:told-sameer-shot",
+    "did:gave-sameer-kunal",
+    "did:asked-sameer-after",
+    "did:raju-trusts",
+    "did:raju-told-shot",
+    "did:raju-told-kunal",
   ],
 };

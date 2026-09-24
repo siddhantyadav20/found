@@ -13,6 +13,7 @@ import {
   hint,
   offeredClaims,
   needsRevisit,
+  boardReady,
   openQuestion,
   seen,
   sideQuestions,
@@ -23,7 +24,7 @@ import {
 import note from "@/components/owner/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
 import { wrong } from "./playthrough";
-import { stamp } from "@/lib/found/time";
+import { nightly, stamp } from "@/lib/found/time";
 
 /** The proof a player has laid out, per question, for as long as the page is open. */
 const onTable = new Map<string, string[]>();
@@ -426,6 +427,7 @@ function Board({
   /* Lanes. Nothing is dragged anywhere, because dragging on a phone in one
      hand is a fight: tapping a row moves it to the next lane, and round. */
   if (q.kind === "timeline") {
+    if (!boardReady(q, state)) return <p className={styles.empty}>Nothing you&apos;ve found shows it yet. Keep looking.</p>;
     const laneOf = (row: string) => picked.find((p) => p.startsWith(`${row}@`))?.split("@")[1];
     const cycle = (row: string) =>
       setPicked((p) => {
@@ -446,7 +448,7 @@ function Board({
         <ul className={styles.list}>
           {q.rows
             .filter((r) => seen(state, r.evidence))
-            .toSorted((a, b) => a.at.localeCompare(b.at))
+            .toSorted((a, b) => nightly(a.at) - nightly(b.at))
             .map((r) => {
               const lane = laneOf(r.id);
               return (

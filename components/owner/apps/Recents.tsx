@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { CallEntry, Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import { Group, Row } from "../AppView";
 import styles from "../ios/Chats.module.css";
 import { stamp } from "@/lib/found/time";
@@ -19,8 +20,6 @@ import { stamp } from "@/lib/found/time";
 const KIND: Record<CallEntry["kind"], string> = { in: "↙ Incoming", out: "↗ Outgoing", missed: "✕ Missed" };
 
 /** Newest first, as iOS lists them: by day, then by time. */
-const DAY: Record<string, number> = { Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6, Sunday: 7 };
-const when = (c: CallEntry) => (DAY[c.day] ?? 0) * 10_000 + Number(c.at.replace(":", ""));
 
 const length = (s?: number) => {
   if (!s) return "No answer";
@@ -39,13 +38,15 @@ export default function Recents({
   onRead: (evidenceIds: readonly string[]) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
+  const cal = calendarOf(story, state);
+  const when = (c: CallEntry) => cal.when(c.day, c.at);
   const call = story.calls.find((c) => c.id === open);
 
   if (call?.recording)
     return (
       <div className={styles.messages}>
         <p className={styles.day}>
-          {call.name} · {call.day} {stamp(call.at)} · {length(call.seconds)}
+          {call.name} · {cal.label(call.day)} {stamp(call.at)} · {length(call.seconds)}
         </p>
         {call.recording.lines.map((l, i) => (
           <div key={i} className={styles.bubble} data-out={l.who === story.owner.short || undefined}>
@@ -69,7 +70,7 @@ export default function Recents({
         <Row
           key={c.id}
           title={c.count ? `${c.name} (${c.count})` : c.name}
-          sub={`${KIND[c.kind]} · ${c.day} ${stamp(c.at)}`}
+          sub={`${KIND[c.kind]} · ${cal.label(c.day)} ${stamp(c.at)}`}
           meta={c.ongoing ? "On call" : length(c.seconds)}
           onClick={
             c.recording
