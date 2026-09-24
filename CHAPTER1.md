@@ -393,6 +393,11 @@ the evidence can support*. Then
 | **C — The Wrong Story** | The draft posted **before link 3** (two firings) |
 | **Early exit — Return to Sender** | Reseal the parcel, available from minute one (O1 decides where it goes) |
 
+**Built in S9 (game):**
+- **How Meera is reached** without deciding O1: WhatsApp's contact info on the pinned M chat shows her number and her About line, *"Meera Arora · Advocate, Saket Courts"*. The player writes to her from their own phone, and her first reply doesn't say whether she expected it.
+- **The record's defaults:** traced links in; a version the player filed, in as fact, in their own words; anything else out. The draft post is the record as posted.
+- **Return to Sender** sends the phone back *"the way it came"*, which stays true whatever O1 decides.
+
 **Variables:** `LINKS` (count), `LIE`, `FIRE`, `PRICE`, `EDIT`, `PUBLIC`
 (posted rather than sent), `NITIN` (protected / exposed / never),
 `RAJU` (trust kept / lost / never), `MEERA` (preserved), `SAMEER` (confronted

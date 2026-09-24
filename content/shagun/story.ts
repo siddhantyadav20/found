@@ -5,6 +5,7 @@ import { endings } from "./endings";
 import { episode1 } from "./episode1";
 import { episode2 } from "./episode2";
 import { episode3 } from "./episode3";
+import * as yours from "./yours";
 import { calls, mail, memos, notes, payments, photos, profiles, searches, settings, threads } from "./phone";
 
 /* ===========================================================================
@@ -90,7 +91,7 @@ export const story: Story = {
       { app: "casefile", label: "Case file" },
     ],
   },
-  threads: [...threads, ...episode1.threads, ...episode2.threads, ...episode3.threads],
+  threads: [...threads, ...episode1.threads, ...episode2.threads, ...episode3.threads, ...yours.threads],
   photos,
   notes,
   memos,
@@ -103,9 +104,35 @@ export const story: Story = {
   settings,
   evidence: [...episode1.evidence, ...episode2.evidence, ...episode3.evidence],
   questions: [...episode1.questions, ...episode2.questions, ...episode3.questions],
-  events: [...episode1.events, ...episode2.events, ...episode3.events],
+  events: [...episode1.events, ...episode2.events, ...episode3.events, ...yours.events],
   chain,
   endings,
+  /* Your phone (CHAPTER1.md I): a fictional social app for the draft, and
+     Meera, once her contact info on his phone has been found. */
+  yours: {
+    social: "Pulse",
+    intro: "What happened at the Sehgal wedding · Banyan Farms, Chhattarpur · 22 Nov",
+    sendTo: "Meera",
+    sendRequires: ["saw:meera"],
+  },
+  // The replay image (CHAPTER1.md J): the note whose last line stops at "4. Nitin —".
+  replay: { note: "for-m", caption: "He started to tell you." },
+  /* Checked at the source on 2026-09-24: the Arms Act, 1959, s.25(9) as
+     inserted by Act 48 of 2019 (indiankanoon.org/doc/26451110); Parmanand
+     Katara v. Union of India, AIR 1989 SC 2039 (indiankanoon.org/doc/498126);
+     Tele-MANAS, the Ministry of Health's line (telemanas.mohfw.gov.in). */
+  outside: [
+    {
+      text: "Celebratory gunfire is a crime in India: up to two years in prison, a fine of up to ₹1 lakh, or both.",
+      source: "Arms Act, 1959, s.25(9), added in 2019",
+    },
+    {
+      text: "Every doctor, at a government hospital or a private one, must treat an injured person to save their life. Police formalities can't come first.",
+      source: "Supreme Court, Parmanand Katara v. Union of India, 1989",
+    },
+    { text: "Emergency, anywhere in India: 112.", tel: "112" },
+    { text: "If any of this is close to home, Tele-MANAS is free, open all day, in English and 20 other languages: 14416.", tel: "14416" },
+  ],
   // Counted by name in the funnel: the chapter's own choices (CHAPTER1.md H).
   choices: [
     "did:answered-raju",
@@ -130,5 +157,7 @@ export const story: Story = {
     "did:gave-rescuer",
     "did:confronted-sameer",
     "did:airplane",
+    "did:wrote-meera",
+    "did:meera-preserved",
   ],
 };

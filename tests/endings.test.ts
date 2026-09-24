@@ -20,6 +20,7 @@ const ep: Story = {
     {
       id: "complete",
       row: "Send the record",
+      when: { acts: ["send"] },
       lines: [
         { text: "Everyone is named." },
         { text: "Nitin is named too.", needs: ["did:nitin-protected"] },
@@ -28,16 +29,18 @@ const ep: Story = {
       last: [],
       onlyHere: "What Nitin said.",
     },
-    { id: "wrong", row: "Post it", lines: [], last: [], onlyHere: "The frame." },
+    { id: "wrong", row: "Post it", when: { acts: ["post"] }, lines: [], last: [], onlyHere: "The frame." },
   ],
 };
 
-describe("the choice", () => {
-  it("draws every row with one style, so the layout has no opinion", () => {
-    const src = readFileSync("components/stage/ending/Choice.tsx", "utf8");
-    // One button, mapped over the endings: no row can be styled apart.
+describe("the record, and what ends the chapter", () => {
+  it("draws every link of the record with one style, and the acts alike, so the layout has no opinion", () => {
+    const src = readFileSync("components/yours/Sheet.tsx", "utf8");
+    // One row, mapped over the chain; one style for every act.
     expect(src.match(/className=\{styles\.row\}/g)).toHaveLength(1);
-    expect(src).toContain("story.endings.map");
+    expect(src).toContain("rows.map");
+    expect(src.match(/className=\{styles\.act\}/g)?.length).toBeGreaterThanOrEqual(3);
+    expect(src).not.toMatch(/styles\.(primary|recommended|danger)/);
   });
 
   it("knows which ending was chosen", () => {

@@ -73,3 +73,20 @@
 @media (prefers-reduced-motion: reduce) {
   .holder[data-ringing] { animation: none; }
 }
+
+/* Something waiting on your phone: one notification, as a lock screen has it. */
+.news {
+  position: absolute;
+  inset: auto 12px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  color: #f2f2f7;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-align: left;
+}

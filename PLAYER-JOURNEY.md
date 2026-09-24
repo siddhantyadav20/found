@@ -215,6 +215,15 @@ Send and post have identical weight, the order is fixed, the copy is flat,
 and there is **no "recommended", no colour coding, no praise**. Ticking the
 lie *out* is a choice the interface treats exactly like ticking it in.
 
+**Your phone is only its edge** on a phone-sized screen, at the right; tap
+it to pick it up. It lights only when something on it is new. On a desktop
+it's the phone lying beside his.
+
+**What you filed is what goes out.** A version of Sameer's that the player
+filed goes into the record as fact, in their own words, until they change
+it. The row offers "as he says" and "leave out" beside it, in the same
+style.
+
 **The draft post exists from the end of Q3.** It's the chapter's standing
 temptation, and posting it before the two firings are separated is Ending C.
 The phone never nudges toward it and never warns against it.

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import AppView from "@/components/owner/AppView";
@@ -27,6 +28,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE } from "@/lib/game/phone";
+import { hasRecord, SAW_RECORD, somethingNew } from "@/lib/game/yours";
 import { useNow } from "@/lib/found/now";
 import { phoneClock, stamp } from "@/lib/found/time";
 import { boundCase, readProgress } from "@/lib/found/progress";
@@ -46,6 +48,9 @@ import styles from "./Stage.module.css";
    It re-renders when the save changes and when the story's minute turns,
    never on the second.
    =========================================================================== */
+
+/** Your phone, picked up: loaded the first time it is, since most of a play never needs it. */
+const YourSheet = dynamic(() => import("@/components/yours/Sheet"), { ssr: false });
 
 /** A banner is written as "Who · what", the way a phone shows one. */
 const bannerFrom = (banner: string) => banner.split(" · ")[0];
@@ -72,7 +77,15 @@ export default function Table({
   const [openApp, setOpenApp] = useState<AppId | null>(null);
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [banner, setBanner] = useState<Banner | null>(null);
+  const [holding, setHolding] = useState(false);
   const clock = clockNow(story, state, now);
+  // What your phone would show on its lock screen, and whether its edge lights.
+  const fresh = somethingNew(story, state);
+  const yoursNews = !fresh
+    ? undefined
+    : hasRecord(story, state) && !has(state, SAW_RECORD)
+      ? `${story.yours.social} · Your draft is saved.`
+      : "Messages · New message";
 
   /* Live events: anything the story says is due, once whatever it waits for
      is true: a message, a missed call, the phone beginning to die. */
@@ -217,10 +230,17 @@ export default function Table({
         />
 
         <div className={styles.yours}>
-          <YourPhone time={phoneClock(clock)} day={dayNow(story, state)} />
+          <button type="button" className={styles.yoursButton} onClick={() => setHolding(true)} aria-label="Pick up your phone">
+            <YourPhone time={phoneClock(clock)} day={dayNow(story, state)} news={yoursNews} />
+          </button>
           <p className={styles.yoursNote}>Yours.</p>
         </div>
       </div>
+
+      {/* On a phone-sized screen, yours is only its edge, at the side. */}
+      <button type="button" className={styles.edge} data-new={fresh || undefined} onClick={() => setHolding(true)} aria-label={fresh ? "Your phone: something new" : "Your phone"} />
+
+      {holding && <YourSheet story={story} state={state} time={phoneClock(clock)} onClose={() => setHolding(false)} />}
     </div>
   );
 }

@@ -184,6 +184,7 @@ const questions: readonly Question[] = [
         proof: ["balance", "sethi-list"],
         reply: "On the record.",
         version: true,
+        link: "price",
       },
       {
         id: "held",

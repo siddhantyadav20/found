@@ -13,10 +13,8 @@ import { useReplay } from "@/lib/found/shelf";
 import type { CaseId } from "@/content/cases";
 import { track } from "@/lib/found/track";
 import Charge from "./Charge";
-import Aftermath from "./ending/Aftermath";
+import dynamic from "next/dynamic";
 import Away from "./Away";
-import Choice from "./ending/Choice";
-import EndCard from "./ending/EndCard";
 import InAppGuard from "./InAppGuard";
 import Note from "./Note";
 import Parcel from "./Parcel";
@@ -36,6 +34,10 @@ import styles from "./Stage.module.css";
    component state.
    =========================================================================== */
 
+/* The ending and its card: loaded only when a play gets there. */
+const Aftermath = dynamic(() => import("./ending/Aftermath"), { ssr: false });
+const EndCard = dynamic(() => import("./ending/EndCard"), { ssr: false });
+
 export default function Stage() {
   const { id, story, meta, to, minutes, via } = useCase();
   bindProgress(id);
@@ -52,7 +54,7 @@ export default function Stage() {
     const last = Math.max(s.started, ...Object.values(s.at));
     return Date.now() - last >= AWAY_MS ? last : null;
   });
-  const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "choice" || scene.kind === "charge";
+  const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "charge";
   if (state && away !== null && midCase)
     return (
       <Away
@@ -108,10 +110,6 @@ export default function Stage() {
         />
       );
     }
-
-    /* Everything has been asked. The rows, and nothing that says which. */
-    case "choice":
-      return <Choice story={story} />;
 
     /* The act is done. What it cost, the last image, and black. */
     case "ending":

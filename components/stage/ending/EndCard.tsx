@@ -22,9 +22,11 @@ import styles from "./Ending.module.css";
    1. The chain: every link, traced ones in the record's words and the rest
       in Sameer's, a line at a time; then the count, which is the share.
    2. The one thing only this ending showed, and what others chose.
-   3. Play again, Pass it on, and keep your case number.
-   4. Outside the fiction: what to do if any of this is close to home.
-      (ROADMAP S9 writes the chapter's own facts here, checked at the source.)
+   3. The replay image, the same for everyone: a note on his phone, its
+      cursor still blinking after the last line (CHAPTER1.md J).
+   4. Play again, Pass it on, and keep your case number.
+   5. Outside the fiction: the chapter's facts, each checked at its source,
+      and what to do if any of this is close to home.
    =========================================================================== */
 
 type Others = Record<string, number> | null;
@@ -37,6 +39,7 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
   const [others, setOthers] = useState<Others>(null);
   const done = result.traced;
   const episodes = story.episodes.length as EpisodeNo;
+  const replay = story.notes.find((n) => n.id === story.replay?.note);
 
   // A finish outlives "Play again", and goes on the shelf if they keep a number.
   useEffect(() => {
@@ -106,6 +109,21 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
         </section>
       )}
 
+      {replay && (
+        <section className={styles.section}>
+          <div className={styles.replay} aria-label={`The note “${replay.title}”`}>
+            <p className={styles.replayTitle}>{replay.title}</p>
+            {replay.body.map((line, i) => (
+              <p key={i}>
+                {line}
+                {i === replay.body.length - 1 && <span className={styles.cursor} aria-hidden="true" />}
+              </p>
+            ))}
+          </div>
+          <p className={styles.only}>{story.replay?.caption}</p>
+        </section>
+      )}
+
       <section className={styles.section}>
         <button type="button" className={styles.button} onClick={playAgain}>
           Play again
@@ -122,9 +140,20 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
       </section>
 
       <aside className={styles.outside} aria-label="Outside the story">
-        <p>
-          If any of this is close to home, Tele-MANAS is free and open all day: <a href="tel:14416">14416</a>.
-        </p>
+        {story.outside.map((f) => (
+          <p key={f.text}>
+            {f.tel ? (
+              <>
+                {f.text.slice(0, f.text.lastIndexOf(f.tel))}
+                <a href={`tel:${f.tel}`}>{f.tel}</a>
+                {f.text.slice(f.text.lastIndexOf(f.tel) + f.tel.length)}
+              </>
+            ) : (
+              f.text
+            )}
+            {f.source && <span className={styles.source}>{f.source}</span>}
+          </p>
+        ))}
       </aside>
     </div>
   );

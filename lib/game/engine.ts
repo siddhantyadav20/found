@@ -28,7 +28,19 @@ export type CaseState = {
   readonly via?: string;
   /** When Episodes 2 and 3 began, so each one's clock starts at its own base. */
   readonly began?: Readonly<Record<string, number>>;
+  /**
+   * How the player has set each link in the record they'll send or post,
+   * where they changed it from what they filed (lib/game/record.ts). Unlike
+   * flags, it can be changed back.
+   */
+  readonly record?: Readonly<Record<string, RecordChoice>>;
 };
+
+/**
+ * A link, as it goes into the record: a traced link `in` or `out`; an
+ * untraced one `out`, as what Sameer `says`, or as `fact`.
+ */
+export type RecordChoice = "in" | "out" | "says" | "fact";
 
 export function newCase(run: string, now: number, via?: string): CaseState {
   return { version: SAVE_VERSION, flags: [], run, started: now, at: {}, via };

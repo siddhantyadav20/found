@@ -1,5 +1,5 @@
 /* ===========================================================================
-   The end of the chapter: the choice, what follows, and the card. On a
+   The end of the chapter: what follows the act, and the card. On a
    handset it is the whole screen; on a desktop, a phone-width column.
 
    One rule shapes every style here: nothing may signal which ending is the
@@ -38,29 +38,6 @@
 }
 .english { display: block; margin-top: 0.2rem; font-size: 0.78rem; color: #8a847c; font-family: var(--font-ui); }
 
-/* --- the rows: identical, fixed, flat --------------------------------------- */
-
-.rows { list-style: none; margin: 0.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  width: 100%;
-  padding: 1rem 1.1rem;
-  border: 1px solid #2a2c31;
-  border-radius: 0.9rem;
-  background: #101114;
-  color: #efeae4;
-  font: inherit;
-  font-size: 1rem;
-  text-align: left;
-  cursor: pointer;
-}
-
-.row:focus-visible { outline: 2px solid #efeae4; outline-offset: 2px; }
-.n { font-size: 0.75rem; color: #7d7870; font-variant-numeric: tabular-nums; }
-.label { flex: 1; }
 
 /* --- buttons, all of one weight ------------------------------------------- */
 
@@ -133,8 +110,40 @@
 
 .outside { max-width: 24rem; padding: 1.2rem; border-top: 1px solid #1e1f23; font-size: 0.85rem; line-height: 1.6; color: #b8b2a9; }
 .outside a { color: #efeae4; }
+.outside p + p { margin-top: 0.7rem; }
 .others { font-size: 0.8rem; line-height: 1.5; color: #8a847c; }
 
 @media (prefers-reduced-motion: reduce) {
   .beat, .chain li, .count { animation-duration: 0.01s; animation-delay: 0s !important; }
 }
+
+/* The replay image: his note, still being written. */
+.replay {
+  padding: 1rem 1.1rem;
+  border-radius: 0.9rem;
+  background: #f4efe4;
+  color: #2d2924;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.replayTitle { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; }
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: #e0a02c;
+  animation: blink 1.05s steps(1) infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor { animation: none; }
+}
+
+.source { display: block; margin-top: 0.15rem; font-size: 0.72rem; color: #6f6a63; }

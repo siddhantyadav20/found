@@ -79,6 +79,10 @@ export function upgrade(x: unknown): CaseState | null {
     ...(rest as unknown as CaseState),
     via: typeof x.via === "string" ? x.via : undefined,
     began: isRecord(x.began) && Object.values(x.began).every((n) => typeof n === "number") ? (x.began as Record<string, number>) : undefined,
+    record:
+      isRecord(x.record) && Object.values(x.record).every((v) => v === "in" || v === "out" || v === "says" || v === "fact")
+        ? (x.record as CaseState["record"])
+        : undefined,
   };
 }
 

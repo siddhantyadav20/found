@@ -148,8 +148,53 @@
   text-align: center;
 }
 
+.yoursButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Your phone's edge, at the right of a phone-sized screen: tap to pick it up. */
+.edge {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 40;
+  width: 12px;
+  height: 88px;
+  margin-top: -44px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px 0 0 9px;
+  background: linear-gradient(90deg, #3b3f47, #1b1d22);
+  box-shadow: -1px 0 0 rgba(255, 255, 255, 0.12) inset, -4px 0 12px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+/* A bigger target than it looks. */
+.edge::before {
+  content: "";
+  position: absolute;
+  inset: -12px 0 -12px -20px;
+}
+
+/* Something new on it: the screen's light at the edge. */
+.edge[data-new] {
+  background: linear-gradient(90deg, #6f86b8, #1b1d22);
+  animation: glow 2.4s ease-in-out infinite;
+}
+
+@keyframes glow { 50% { box-shadow: -1px 0 0 rgba(255, 255, 255, 0.2) inset, -6px 0 18px rgba(111, 134, 184, 0.55); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .edge[data-new] { animation: none; }
+}
+
 @container found (width >= 900px) {
   .yours { display: flex; }
+  .edge { display: none; }
 }
 
 .overBanner {

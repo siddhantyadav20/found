@@ -124,7 +124,8 @@ export const MILESTONE_OF: Partial<Record<Flag, (typeof MILESTONES)[number]>> = 
   "did:past-lock": "past-lock",
   "ep:2": "ep2-start",
   "ep:3": "ep3-start",
-  "did:choice": "choice",
+  // The player has looked at the record they could send or post.
+  "did:saw-record": "choice",
   "did:chose": "end",
 };
 

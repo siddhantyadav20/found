@@ -28,7 +28,7 @@ browser at 375 × 812; tick this file; commit when Siddhant says.
 | **S6** ✔ | Episode 1 | *Missed Calls* as data |
 | **S7** ✔ | Episode 2 | *The Second Shot* as data |
 | **S8** ✔ | Episode 3 | *The Cancelled Rescue* as data, and the people's routes |
-| **S9** | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
+| **S9** ✔ | The record and the endings | Your phone, the draft, A/B/C/Return, the end card |
 | **S10** | Growth | Pass it on, drops, share images, The First Minute |
 | **S11** | The real assets | ASSETS.md: photographs, clips, voices, handwriting |
 | **S12** | Ship-ready | The chapter held to its laws, a budget, a human playtest |
@@ -441,7 +441,77 @@ where airplane mode came from (Meera's advice).
 Each phase ends with the episode playable end to end on placeholders, every
 question answerable two ways, three hints each, and a solver run through it.
 
-## S9 — The record and the endings
+## S9 — The record and the endings · **done (2026-09-24)**
+
+**Built:**
+- **Your phone** (`components/yours/Sheet.tsx`, loaded on first use).
+  - On a phone-sized screen it's only its edge, at the right: tap to pick
+    it up. The edge lights when something's new.
+  - On a desktop, it's the phone beside his, now clickable, and its lock
+    screen shows the one thing waiting.
+  - On it: Messages, Pulse (the draft), the record, and the parcel.
+- **Meera** (`content/shagun/yours.ts`) is found through WhatsApp's contact
+  info on the pinned M chat (`Thread.contact`): her number, and her About
+  line, *"Meera Arora · Advocate, Saket Courts"*. That works whatever O1
+  decides.
+  - Her first line doesn't say whether she expected the phone.
+  - She says airplane mode. If it's done (`did:meera-preserved`), she reads
+    his habits, then her bias shows (*"darpok hai, par jhooth nahi bolta"*),
+    and she takes it back once the lie is traced.
+- **The record** (`lib/game/record.ts`): one row per link, in the chain's
+  order.
+  - A traced link can be in or out.
+  - An untraced link can be out, in as he says, or in as fact.
+  - **A version the player filed goes in as fact by default, in their own
+    words** (`FileClaim.link`): claiming more than the evidence supports is
+    something the player did, not a trap.
+  - The draft post is the record as the world would read it.
+- **Endings** (`content/shagun/endings.ts`), each chosen by a declared rule
+  (`Ending.when`):
+  - **C:** posted with two firings untraced.
+  - **A:** the lie and the edit in, and no untraced link stated as fact.
+  - **B:** any other send or post.
+  - **Return to Sender:** "send it back the way it came", which is O1-neutral.
+  - Lines read NITIN, RAJU, MEERA, SAMEER, PUBLIC and what was left out.
+    No verdicts.
+- **The end card:**
+  - the "For M" replay image, its cursor blinking after *"4. Nitin —"*,
+    and *"He started to tell you."*
+  - the facts outside the fiction (`story.outside`), each checked at its
+    source on 2026-09-24:
+    - Arms Act, 1959, s.25(9), as inserted by Act 48 of 2019
+    - *Parmanand Katara v. Union of India*, AIR 1989 SC 2039
+    - 112
+    - Tele-MANAS 14416
+- **The Choice screen is gone:** the record is the choice. The funnel's
+  "choice" milestone is now reaching the record (`did:saw-record`).
+- **The case file**, once everything is asked, says what's left is on your
+  phone.
+
+**Budget:** `/c/[case]` fell to 681 of 700 KB. The ending screens and your
+phone now load on demand (`next/dynamic`), which paid for the new UI.
+
+**Tests:** 132. `record.test.ts` covers:
+- the rows and their defaults
+- each ending's rule
+- acts at every point
+- the flags an act leaves
+- the lines A and B read back
+
+The no-signalling test now holds the record to one row style and the acts
+to one.
+
+**Walked** at 375 × 812 in dev, from a solver-made save at the end:
+- M's contact info, then the edge, then Meera written to
+- airplane mode, then her reading and her retraction
+- the record, then sending to Meera, then A's aftermath, then the end card
+  with the chain, "For M" and the facts
+- desktop at 1280: your phone beside his, with "Pulse · Your draft is saved"
+- a fresh tab from Episode 1: the draft (his version in the player's words),
+  then posting it for C
+
+No console errors.
+
 
 | Module | Detail |
 |---|---|

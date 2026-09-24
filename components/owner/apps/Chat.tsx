@@ -224,6 +224,8 @@ function Conversation({
      back (the option's `then`), revealed with "typing…" like anything new. */
   const messages: Message[] = conversation(state, thread, dateNow(story, state));
   const cal = calendarOf(story, state);
+  // WhatsApp's contact info, opened by tapping the name at the top.
+  const [info, setInfo] = useState(false);
   /* What is on screen. Everything already there shows at once; what arrives
      while the chat is open is revealed one message at a time. */
   const [shown, setShown] = useState(messages.length);
@@ -259,8 +261,32 @@ function Conversation({
     if (visible) onRead(visible.split(","));
   }, [visible, onRead]);
 
-  // In airplane mode nothing leaves the phone either.
-  const offline = state.flags.includes(AIRPLANE);
+  // In airplane mode nothing leaves his phone either. Yours isn't in airplane mode.
+  const offline = app !== "yours:chats" && state.flags.includes(AIRPLANE);
+
+  if (info && thread.contact)
+    return (
+      <section className={styles.chats} data-app={app}>
+        <header className={styles.chatBar}>
+          <button type="button" className={styles.backButton} onClick={() => setInfo(false)} data-back aria-label={thread.name}>
+            <Chevron back />
+          </button>
+          <span />
+          <span />
+        </header>
+        <div className={local.contact}>
+          <Avatar name={thread.name} head />
+          <p className={local.contactName}>{thread.name}</p>
+          <p className={local.contactNumber}>{thread.contact.number}</p>
+          {thread.contact.about && (
+            <p className={local.contactAbout}>
+              <span className={local.contactLabel}>About</span>
+              {thread.contact.about}
+            </p>
+          )}
+        </div>
+      </section>
+    );
   const reply = offline ? undefined : openReply(state, thread);
 
   return (
@@ -269,7 +295,16 @@ function Conversation({
         <button type="button" className={styles.backButton} onClick={onBack} data-back aria-label="Chats">
           <Chevron back />
         </button>
-        <span className={styles.who}>
+        <button
+          type="button"
+          className={styles.who}
+          aria-label={thread.contact ? `${thread.name}: contact info` : undefined}
+          onClick={() => {
+            if (!thread.contact) return;
+            setInfo(true);
+            if (thread.contact.evidence) onRead([thread.contact.evidence]);
+          }}
+        >
           <Avatar name={thread.name} head />
           <span className={styles.whoText}>
             <span className={styles.whoName}>{thread.name}</span>
@@ -277,7 +312,7 @@ function Conversation({
               {pending && nextFromThem ? "typing…" : (thread.sub ?? thread.number ?? "")}
             </span>
           </span>
-        </span>
+        </button>
         <span />
       </header>
 
@@ -310,7 +345,7 @@ function Conversation({
         </div>
       ) : (
         <footer className={styles.composer}>
-          <span className={styles.field}>{offline && openReply(state, thread) ? "Airplane Mode is on." : "It isn't your phone."}</span>
+          <span className={styles.field}>{app === "yours:chats" ? "Message" : offline && openReply(state, thread) ? "Airplane Mode is on." : "It isn't your phone."}</span>
         </footer>
       )}
     </section>

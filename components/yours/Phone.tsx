@@ -17,7 +17,7 @@ import styles from "./Phone.module.css";
    two real phones on one table rather than one phone and a sketch.
    =========================================================================== */
 
-export default function YourPhone({ time, day, ringing }: { time: string; day: string; ringing?: boolean }) {
+export default function YourPhone({ time, day, ringing, news }: { time: string; day: string; ringing?: boolean; news?: string }) {
   const { os } = useDevice();
   const [h, m] = time.split(":");
 
@@ -40,7 +40,14 @@ export default function YourPhone({ time, day, ringing }: { time: string; day: s
               <p className={styles.date}>{day}</p>
             </div>
           )}
-          <p className={styles.nothing}>No notifications</p>
+          {news ? (
+            <p className={styles.news}>
+              <strong>{news.split(" · ")[0]}</strong>
+              <span>{news.split(" · ").slice(1).join(" · ")}</span>
+            </p>
+          ) : (
+            <p className={styles.nothing}>No notifications</p>
+          )}
         </div>
       </div>
     </div>

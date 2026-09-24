@@ -38,6 +38,10 @@ export const threads: readonly Thread[] = [
     name: "M",
     pinned: true,
     sub: "last seen a long time ago",
+    /* Who M is, as WhatsApp's contact info shows anyone: the number, and the
+       line she wrote about herself. Found this way whatever brought the
+       phone to the player (CHAPTER1.md O1). */
+    contact: { number: "+91 98••• •1206", about: "Meera Arora · Advocate, Saket Courts", evidence: "meera" },
     messages: [
       {
         id: "m-1",

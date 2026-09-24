@@ -119,6 +119,11 @@ export type FileClaim = {
   readonly sets?: readonly Flag[];
   /** The owner's own framing: accepted now, and reopened by `reopenWhen`. */
   readonly version?: boolean;
+  /**
+   * The link this version stands in for, in the record: filed, it goes in
+   * as fact, in the player's own words, until they say otherwise.
+   */
+  readonly link?: string;
 };
 
 /** One row on a timeline: an event, the lane it belongs in, and what shows it. */
@@ -249,10 +254,26 @@ export type EndingLine = {
   readonly unless?: readonly Flag[];
 };
 
+/** What the player does with the record: send it, post it, or give the phone back unread. */
+export type Act = "send" | "post" | "return";
+
 /** One of the things a player can do with what they know. */
 export type Ending = {
   readonly id: string;
   readonly row: string;
+  /**
+   * When it's the ending: the act, and what the record held. The first
+   * ending in the story's order whose rule fits is the one.
+   */
+  readonly when: {
+    readonly acts: readonly Act[];
+    /** Links that must be traced and left in. */
+    readonly in?: readonly string[];
+    /** Links that must still be untraced. */
+    readonly untraced?: readonly string[];
+    /** No untraced link may go in as fact. */
+    readonly noFacts?: boolean;
+  };
   /** What happens afterwards, a line at a time. */
   readonly lines: readonly EndingLine[];
   /** The last image: who says what, before the black. */
@@ -444,7 +465,8 @@ export type IncomingCall = {
 
 export type Thread = {
   readonly id: string;
-  readonly app: Extract<AppId, "whatsapp" | "messages" | "instagram">;
+  /** "yours:chats" is the player's own phone's messages. */
+  readonly app: Extract<AppId, "whatsapp" | "messages" | "instagram" | "yours:chats">;
   /** Messages keeps what it doesn't trust in another folder, out of sight. */
   readonly folder?: "inbox" | "junk";
   readonly name: string;
@@ -456,6 +478,13 @@ export type Thread = {
   readonly number?: string;
   /** Moved out of the list into Archived, which is one tap further than most people look. */
   readonly archived?: boolean;
+  /** What tapping the name at the top shows: WhatsApp's contact info. */
+  readonly contact?: {
+    readonly number: string;
+    /** The "About" line its owner wrote. */
+    readonly about?: string;
+    readonly evidence?: string;
+  };
   readonly messages: readonly Message[];
   /**
    * What the player may say back, once they have something to say: one
@@ -694,4 +723,21 @@ export type Story = {
   /** Flags the funnel counts by name ("did:raju-answered" → "raju-answered"): the chapter's own choices. */
   readonly choices?: readonly Flag[];
   readonly endings: readonly Ending[];
+  /**
+   * The end card's replay image, the same for everyone: a note on the phone,
+   * its cursor still blinking after the last line, and one line under it.
+   */
+  readonly replay?: { readonly note: string; readonly caption: string };
+  /**
+   * Outside the fiction: the end card's last, quiet screen. Every line
+   * checked at its source before it's written here (CHAPTER1.md L).
+   */
+  readonly outside: readonly { readonly text: string; readonly tel?: string; readonly source?: string }[];
+  /** Your phone: the app the draft post lives in, its first line, and who a record can be sent to, once they're known. */
+  readonly yours: {
+    readonly social: string;
+    readonly intro: string;
+    readonly sendTo: string;
+    readonly sendRequires: readonly Flag[];
+  };
 };

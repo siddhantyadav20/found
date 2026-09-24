@@ -19,6 +19,8 @@ export const SAMEER_NEW = "+91 70••• •2290";
 const evidence: readonly Evidence[] = [
   // Read before the phone is even turned over.
   { id: "note", device: "owner", app: "casefile", label: "The note on the envelope, to M", manual: true },
+  // Who M is: WhatsApp's contact info for the pinned chat.
+  { id: "meera", device: "owner", app: "whatsapp", label: "M: Meera Arora, an advocate at Saket Courts", manual: true },
 
   // Q1: whose phone.
   { id: "apple-account", device: "owner", app: "settings", label: "The Apple Account: Sameer Khurana" },
@@ -98,6 +100,7 @@ const questions: readonly Question[] = [
         orProof: [["vn-kunal", "vn-burned"]],
         reply: "On the record, as his voice notes tell it.",
         version: true,
+        link: "two-firings",
       },
       {
         id: "two",

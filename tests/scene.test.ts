@@ -9,7 +9,7 @@ import { NEEDS_CHARGE, PLUGGED_IN, sceneOf, titleShown } from "@/lib/game/scene"
 /**
  * Where the player is, decided by the save alone, so a reload always lands
  * in the same place: the parcel, the note, the table, the charger, a title
- * card, a call, the choice, the ending and the card.
+ * card, a call, the ending and the card.
  */
 
 const ep = STORIES.shagun;
@@ -75,12 +75,12 @@ describe("a call arriving", () => {
 describe("the end", () => {
   const ending: Story = {
     ...ep,
-    endings: [{ id: "a", row: "Send the record", lines: [], last: [], onlyHere: "—" }],
+    endings: [{ id: "a", row: "Send the record", when: { acts: ["send"] }, lines: [], last: [], onlyHere: "—" }],
   };
 
-  it("goes choice → ending → card", () => {
-    let s = add(opened(), "did:unlock", "did:choice");
-    expect(sceneOf(ending, s).kind).toBe("choice");
+  it("goes from the table, by an act on your phone, to the ending and then the card", () => {
+    let s = add(opened(), "did:unlock");
+    expect(sceneOf(ending, s).kind).toBe("table");
     s = add(s, ...finish("a"));
     expect(sceneOf(ending, s).kind).toBe("ending");
     expect(sceneOf(ending, add(s, ENDING_SEEN)).kind).toBe("end-card");

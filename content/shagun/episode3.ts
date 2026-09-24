@@ -118,6 +118,7 @@ const questions: readonly Question[] = [
         orProof: [["sameer-tried", "left-empty"]],
         reply: "On the record.",
         version: true,
+        link: "lie",
       },
       {
         id: "told",
@@ -151,6 +152,7 @@ const questions: readonly Question[] = [
         orProof: [["sameer-mistake", "fire-clip"]],
         reply: "On the record.",
         version: true,
+        link: "fire",
       },
       {
         id: "part",
@@ -183,6 +185,7 @@ const questions: readonly Question[] = [
         orProof: [["sameer-rescuer", "note"]],
         reply: "On the record.",
         version: true,
+        link: "edit",
       },
       {
         id: "counter",
