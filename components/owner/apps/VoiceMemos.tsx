@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import type { Memo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { calendarOf, memos, mmss } from "@/lib/game/phone";
+import { Page } from "../AppView";
 import app from "../ios/App.module.css";
+import { Chevron } from "../ios/AppBar";
 import styles from "./VoiceMemos.module.css";
 import { stamp } from "@/lib/found/time";
 
@@ -142,44 +144,67 @@ function Player({ memo }: { memo: Memo }) {
   );
 }
 
+/** The two folders, as Voice Memos lists them, with their SF glyphs. */
+const FOLDERS = [
+  { id: "all", label: "All Recordings", d: "M4 10v4M7.5 7v10M11 4.5v15M14.5 8v8M18 6v12M21 10.5v3" },
+  { id: "deleted", label: "Recently Deleted", d: "M4.5 6.5h15M9.5 6.5V4.5h5v2M6.5 6.5l1 13h9l1-13M10.5 10v6.5M13.5 10v6.5" },
+] as const;
+
 export default function VoiceMemos({
   story,
   state,
   onRead,
   onRestore,
+  onHome,
 }: {
   story: Story;
   state: CaseState;
   onRead: (ids: readonly string[]) => void;
   onRestore: (id: string) => void;
+  onHome?: () => void;
 }) {
-  const [folder, setFolder] = useState<"all" | "deleted">("all");
+  const [folder, setFolder] = useState<"all" | "deleted" | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const { recordings, bin } = memos(story, state);
   const cal = calendarOf(story, state);
-  const list = folder === "all" ? recordings : bin;
 
+  // Voice Memos' first screen: its folders, and how much is in each.
+  if (!folder)
+    return (
+      <Page title="Voice Memos" large root onBack={onHome} backLabel="Home" tint="#ff453a">
+        <ul className={app.group}>
+          {FOLDERS.map((f) => (
+            <li key={f.id}>
+              <button type="button" className={app.row} onClick={() => setFolder(f.id)}>
+                <svg viewBox="0 0 24 24" className={styles.folderIcon} aria-hidden="true">
+                  <path d={f.d} />
+                </svg>
+                <span className={app.rowMain}>
+                  <span className={app.rowTitle}>{f.label}</span>
+                </span>
+                <span className={app.rowMeta}>{(f.id === "all" ? recordings : bin).length}</span>
+                <Chevron />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Page>
+    );
+
+  const list = folder === "all" ? recordings : bin;
   return (
-    <div className={app.body}>
-      <h2 className={app.big}>{folder === "all" ? "All Recordings" : "Recently Deleted"}</h2>
-      <div className={styles.segments} role="tablist">
-        {(["all", "deleted"] as const).map((f) => (
-          <button
-            type="button"
-            key={f}
-            role="tab"
-            aria-selected={folder === f}
-            data-on={folder === f || undefined}
-            onClick={() => {
-              setFolder(f);
-              setOpen(null);
-            }}
-          >
-            {f === "all" ? "All Recordings" : "Recently Deleted"}
-          </button>
-        ))}
-      </div>
-      {folder === "deleted" && <p className={app.note}>Recordings are kept for 30 days before they&apos;re gone.</p>}
+    <Page
+      title={folder === "all" ? "All Recordings" : "Recently Deleted"}
+      large
+      onBack={() => {
+        setFolder(null);
+        setOpen(null);
+      }}
+      backLabel="Voice Memos"
+      tint="#ff453a"
+      tabbed={folder === "all"}
+    >
+      {folder === "deleted" && <p className={styles.keep}>Recordings are kept for 30 days before they&apos;re gone.</p>}
       {list.length === 0 ? (
         <p className={app.empty}>No recordings.</p>
       ) : (
@@ -219,6 +244,14 @@ export default function VoiceMemos({
           ))}
         </ul>
       )}
-    </div>
+      {/* The record button, in its well at the bottom, as the app always has it. */}
+      {folder === "all" && (
+        <div className={styles.recordBar} aria-hidden="true">
+          <span className={styles.record}>
+            <span />
+          </span>
+        </div>
+      )}
+    </Page>
   );
 }

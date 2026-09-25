@@ -24,7 +24,7 @@ const LET_GO = 90;
 
 function Corner({ kind }: { kind: "torch" | "camera" }) {
   return (
-    <span className={styles.round}>
+    <span className={`${styles.round} lg`}>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         {kind === "torch" ? (
           <path d="M8 3h8v3.2l-2 2.6V20a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V8.8L8 6.2Zm4 9.2a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" />
@@ -85,7 +85,7 @@ export default function LockScreen({
         </span>
         <span className={styles.notes}>
           {notes.map((n) => (
-            <span key={n.key} className={styles.note} data-look={n.look || undefined}>
+            <span key={n.key} className={`${styles.note} lg-thick`} data-look={n.look || undefined}>
               <span className={styles.noteIcon}>
                 <AppGlyph app={n.icon ?? n.app} />
               </span>

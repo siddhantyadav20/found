@@ -67,7 +67,7 @@ export default function Home({
 
   return (
     <div className={styles.home} data-covered={covered || undefined} inert={covered} aria-hidden={covered || undefined}>
-      <button type="button" className={styles.widget} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
+      <button type="button" className={`${styles.widget} lg-thick`} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
         <span className={styles.widgetLabel}>{open ? (needsRevisit(open, state) ? "Revisit" : "Open question") : "Case file"}</span>
         <span className={styles.widgetText}>
           {open ? open.ask : allAsked ? "Everything's asked. What you do with it is on your phone." : "Look around. What you open, you keep."}
@@ -88,13 +88,24 @@ export default function Home({
         ))}
       </div>
 
-      <div className={styles.dots} aria-hidden="true">
-        {pages.map((_, i) => (
-          <span key={i} className={styles.pageDot} data-on={i === page || undefined} />
-        ))}
-      </div>
+      {/* iOS 26 puts Search where the page dots were; the dots come back with a second page. */}
+      {pages.length > 1 ? (
+        <div className={`${styles.dots} lg`} aria-hidden="true">
+          {pages.map((_, i) => (
+            <span key={i} className={styles.pageDot} data-on={i === page || undefined} />
+          ))}
+        </div>
+      ) : (
+        <span className={`${styles.dots} ${styles.search} lg`} aria-hidden="true">
+          <svg viewBox="0 0 16 16">
+            <circle cx="6.8" cy="6.8" r="4.6" />
+            <path d="m10.3 10.3 3.6 3.6" />
+          </svg>
+          Search
+        </span>
+      )}
 
-      <div className={styles.dock}>{dock.map((a) => icon(a.app, a.label))}</div>
+      <div className={`${styles.dock} lg`}>{dock.map((a) => icon(a.app, a.label))}</div>
     </div>
   );
 }

@@ -88,13 +88,13 @@
   /* Liquid Glass, as current iOS draws its controls: a thin tinted fill over
      a strong blur, and a rim of light along the top edge. One recipe, used by
      the widget, the dock, the page dots, notifications, banners and keys. */
-  --glass-fill: rgba(255, 255, 255, 0.14);
-  --glass-fill-dark: rgba(42, 42, 48, 0.42);
-  --glass-blur: blur(28px) saturate(1.8);
+  --glass-fill: rgba(255, 255, 255, 0.1);
+  --glass-fill-dark: rgba(40, 40, 44, 0.42);
+  --glass-blur: blur(14px) saturate(1.9) brightness(1.04);
   --glass-edge:
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.55),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16),
-    inset 0 -0.5px 0 rgba(255, 255, 255, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.14),
+    inset 0 -0.5px 0 rgba(255, 255, 255, 0.1);
 
   position: relative;
   width: 100%;
@@ -103,11 +103,12 @@
   border-radius: 49px;
   background: var(--os-bg);
   color: var(--os-text);
-  /* Found's own type on the phone too: Outfit for the system, Canela where
-     iOS lets a person choose a face (the lock-screen clock, widgets). */
-  font-family: var(--font-ui), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* The phone speaks iOS's own type: San Francisco on an Apple device, Inter
+     anywhere else (app/ios.css). */
+  font-family: var(--font-ios);
   font-size: 15px;
-  line-height: 1.35;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   isolation: isolate;
   user-select: none;
@@ -167,11 +168,17 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0 28px 10px 36px;
-  font-size: 16px;
+  padding: 0 26px 12px 38px;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
   pointer-events: none;
+}
+
+.carrier {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .statusIcons {
@@ -274,11 +281,14 @@
 
 /* --- An open app ----------------------------------------------------------- */
 
-/* On its own layer, over the home screen, so it can shrink back into it. */
+/* On its own layer, over the home screen, so it can shrink back into it. The
+   layer is the app's own black, so a screen pushed on top slides in over the
+   app, never over the home screen. */
 .appLayer {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: var(--os-bg);
   transform-origin: 50% 70%;
 }
 
@@ -338,11 +348,13 @@
   z-index: 30;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
-  padding: calc(var(--os-top) + 20px) 18px 18px;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(24px) saturate(1.4);
+  align-items: center;
+  gap: 18px;
+  padding: calc(var(--os-top) + 26px) 18px 18px;
+  /* Whatever was on screen, dimmed and blurred under the modules. */
+  background: rgba(0, 0, 0, 0.32);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  backdrop-filter: blur(30px) saturate(1.5);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s;
@@ -350,34 +362,104 @@
 
 .control[data-open] { opacity: 1; pointer-events: auto; }
 
-.controlBlock {
+/* Four columns of square modules, 1×1 round, 2×2 and 1×2 and 2×1 as iOS 26
+   lays its first page out. */
+.ccGrid {
+  --cc: 70px;
   display: grid;
-  grid-template-columns: repeat(3, 58px);
-  gap: 12px;
-  padding: 14px;
-  border-radius: 28px;
-  background: rgba(40, 40, 42, 0.8);
+  grid-template-columns: repeat(4, var(--cc));
+  grid-auto-rows: var(--cc);
+  gap: 14px;
 }
 
-.controlTile {
+.ccModule {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 58px;
-  height: 58px;
+  border-radius: 50%;
+  color: #fff;
+}
+
+.ccModule svg { width: 26px; height: 26px; fill: currentColor; }
+.ccStroke { fill: none !important; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.ccConnect,
+.ccMedia {
+  grid-column: span 2;
+  grid-row: span 2;
+  border-radius: 34px;
+  corner-shape: superellipse(1.4);
+}
+
+.ccConnect {
+  grid-template-columns: repeat(2, 56px);
+  grid-template-rows: repeat(2, 56px);
+  gap: 12px;
+  place-content: center;
+}
+
+.ccRound {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.16);
   color: #fff;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.controlTile svg { width: 24px; height: 24px; fill: currentColor; }
-.controlTile[data-on][data-tone="orange"] { background: #ff9f0a; }
-.controlTile[data-on][data-tone="green"] { background: #30d158; }
-.controlTile[data-on][data-tone="blue"] { background: #0a84ff; }
+.ccRound svg { width: 24px; height: 24px; }
+.ccRound[data-on][data-tone="orange"] { background: #ff9f0a; }
+.ccRound[data-on][data-tone="green"] { background: #30d158; }
+.ccRound[data-on][data-tone="blue"] { background: #0a84ff; }
 
-.controlNote { margin: 0; font-size: 13px; color: rgba(255, 255, 255, 0.75); }
+.ccMedia {
+  align-content: space-between;
+  justify-items: stretch;
+  padding: 18px 18px 16px;
+}
+
+.ccMediaTitle { font-size: 15px; font-weight: 600; color: rgba(255, 255, 255, 0.5); }
+.ccMediaKeys { display: flex; justify-content: space-between; color: rgba(255, 255, 255, 0.4); }
+.ccMediaKeys svg { width: 22px; height: 22px; }
+
+.ccSlider {
+  grid-row: span 2;
+  align-items: end;
+  padding-bottom: 20px;
+  overflow: hidden;
+  border-radius: 35px;
+}
+
+/* The level, rising from the bottom in white; the glyph darkens over it. */
+.ccSlider::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--level, 50%);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.ccSlider svg { position: relative; z-index: 2; color: #6b6b70; }
+
+.ccFocus {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0 20px;
+  border-radius: 35px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ccFocus svg { width: 22px; height: 22px; }
+
+.controlNote { margin: 0; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
 
 .plane { width: 15px; height: 15px; fill: currentColor; }
 
@@ -404,7 +486,8 @@
   inset: -40px;
   z-index: -1;
   background: var(--wallpaper, linear-gradient(180deg, #0a0c1c 0%, #2a1a1c 100%)) center / cover no-repeat;
-  filter: blur(22px) brightness(0.55) saturate(1.3);
+  /* The Lock Screen, as Notification Centre is: the wallpaper, dimmed, not blurred. */
+  filter: brightness(0.62) saturate(1.1);
 }
 
 .shade[data-state="open"] {
@@ -416,25 +499,30 @@
   justify-items: center;
 }
 
+/* The Lock Screen's own date and clock, as Notification Centre shows it. */
 .shadeDay {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .shadeClock {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 64px;
-  font-weight: 500;
+  font-family: var(--font-ios-display);
+  font-size: 88px;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .shadeLabel {
-  margin: 22px 4px 8px;
-  font-size: 15px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  margin: 22px 6px 10px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
 }
 
 .shadeList {
@@ -454,19 +542,19 @@
   display: none;
 }
 
+/* A notification, as iOS 26 stacks them: a frosted glass platter with a
+   continuous corner, the app's icon, who and when on one line, then what. */
 .notice {
+  position: relative;
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr);
   gap: 11px;
   align-items: center;
   width: 100%;
-  padding: 11px 14px 11px 11px;
+  padding: 12px 15px 12px 12px;
   border: 0;
   border-radius: 24px;
-  background: var(--glass-fill-dark);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-edge);
+  corner-shape: superellipse(1.4);
   color: #fff;
   font: inherit;
   text-align: left;
@@ -480,28 +568,41 @@
 
 .noticeBody {
   display: grid;
+  gap: 1px;
   min-width: 0;
 }
 
 .noticeTop {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 8px;
   font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.noticeTop b {
+  overflow: hidden;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .noticeTop span {
   flex: none;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .noticeText {
+  display: -webkit-box;
   overflow: hidden;
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.82);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 /* The grabber at the bottom: tap it, or push the whole thing back up. */
@@ -563,20 +664,15 @@
   /* Just under the status bar, not over it: over it, the battery reading
      showed through the glass and collided with "now". */
   top: calc(var(--os-top) + 2px);
-  left: 9px;
-  right: 9px;
+  left: 8px;
+  right: 8px;
   display: flex;
   gap: 11px;
   align-items: center;
-  padding: 11px 14px 11px 11px;
+  padding: 12px 15px 12px 12px;
   border: 0;
   border-radius: 26px;
-  background: rgba(40, 40, 46, 0.62);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow:
-    var(--glass-edge),
-    0 14px 40px rgba(0, 0, 0, 0.45);
+  corner-shape: superellipse(1.4);
   color: var(--os-text);
   font: inherit;
   text-align: left;
@@ -595,27 +691,34 @@
 
 .bannerIcon {
   flex: none;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
 }
 
 .bannerText {
   flex: 1;
   min-width: 0;
   display: grid;
+  gap: 1px;
+  letter-spacing: -0.02em;
 }
 
 .bannerFrom {
-  font-size: 14px;
+  overflow: hidden;
+  font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .bannerBody {
+  display: -webkit-box;
   overflow: hidden;
-  font-size: 14px;
-  color: var(--os-dim);
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.9);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 /* Held: the whole message, and the banner stays until it's tapped or flicked. */
@@ -624,8 +727,7 @@
 }
 
 .banner[data-expanded] .bannerBody {
-  overflow: visible;
-  white-space: normal;
+  -webkit-line-clamp: unset;
 }
 
 .bannerHint {
@@ -636,8 +738,9 @@
 
 .bannerNow {
   align-self: flex-start;
-  font-size: 12px;
-  color: var(--os-faint);
+  margin-top: 1px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 /* --- The battery going ----------------------------------------------------- */

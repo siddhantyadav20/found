@@ -25,8 +25,8 @@
   color: #f2f2f7;
 }
 
-.day { font-family: var(--font-ui); font-size: 13px; font-weight: 600; opacity: 0.85; }
-.clock { font-family: var(--font-display); font-size: 58px; line-height: 1; letter-spacing: -0.02em; }
+.day { font-family: var(--font-ios); font-size: 13px; font-weight: 600; opacity: 0.85; }
+.clock { font-family: var(--font-ios-display); font-size: 58px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
 
 /* A Pixel's lock screen: the hours over the minutes, large and centred. */
 .android {
@@ -43,19 +43,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 64px;
   font-weight: 500;
   line-height: 0.92;
 }
 
-.date { font-family: var(--font-ui); font-size: 13px; opacity: 0.8; }
+.date { font-family: var(--font-ios); font-size: 13px; opacity: 0.8; }
 
 .nothing {
   position: absolute;
   inset: auto 0 44px;
   text-align: center;
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 11px;
   color: rgba(235, 235, 245, 0.35);
 }
@@ -86,7 +86,7 @@
   background: rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(12px);
   color: #f2f2f7;
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 12px;
   text-align: left;
 }

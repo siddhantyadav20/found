@@ -125,6 +125,8 @@ export default function Stage() {
         <Ringing
           call={call}
           state={state}
+          // The found phone's calls ring over its own wallpaper; yours, over nothing of his.
+          wallpaper={call.device === "owner" ? meta.wallpaper : undefined}
           answered={has(state, `did:answered-${call.id}`)}
           onAnswer={() => flag(`did:answered-${call.id}`, ...(call.sets ?? []))}
           onDecline={call.insists ? undefined : () => flag(`did:declined-${call.id}`)}

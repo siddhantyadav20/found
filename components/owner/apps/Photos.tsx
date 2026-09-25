@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import type { Photo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
@@ -62,6 +62,7 @@ const TRASH =
 const HIDDEN = "M3.5 12s3.2-5.5 8.5-5.5 8.5 5.5 8.5 5.5-3.2 5.5-8.5 5.5S3.5 12 3.5 12ZM4.5 4.5l15 15M12 9.5a2.5 2.5 0 0 1 2.5 2.5";
 const HEART = "M12 19.6s-7.2-4.3-7.2-9.5A4.1 4.1 0 0 1 12 7.7a4.1 4.1 0 0 1 7.2 2.4c0 5.2-7.2 9.5-7.2 9.5Z";
 const INFO = "M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM12 11v5.2M12 7.6v.2";
+const SHARE = "M12 14.5V3.5M12 3.5 8.5 7M12 3.5 15.5 7M7.5 10H6a1.5 1.5 0 0 0-1.5 1.5v8A1.5 1.5 0 0 0 6 21h12a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 18 10h-1.5";
 
 function RowGlyph({ d }: { d: string }) {
   return (
@@ -70,6 +71,17 @@ function RowGlyph({ d }: { d: string }) {
     </svg>
   );
 }
+
+/** Until the shoot, each photograph is a dark exposure in its own light: warm for most of a wedding night. */
+const HUES = [24, 34, 18, 42, 12, 205, 30, 300, 160, 38];
+const hueOf = (id: string) => HUES[[...id].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 7) % HUES.length];
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+/** A day number from the phone's calendar, as Photos heads the Library: "22 Nov". */
+const shortDay = (n: number) => {
+  const d = new Date(n * 86_400_000);
+  return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+};
 
 /** A photograph, a video's poster, or a handwritten page as a phone camera sees paper. */
 function Picture({ photo, big, seconds }: { photo: Photo; big?: boolean; seconds?: number }) {
@@ -85,7 +97,12 @@ function Picture({ photo, big, seconds }: { photo: Photo; big?: boolean; seconds
       </div>
     );
   return (
-    <div className={paper.scene} data-big={big || undefined} data-video={photo.video ? "" : undefined}>
+    <div
+      className={paper.scene}
+      data-big={big || undefined}
+      data-video={photo.video ? "" : undefined}
+      style={{ "--hue": hueOf(photo.id) } as CSSProperties}
+    >
       {photo.src ? (
         <Image src={photo.src} alt={photo.title} fill sizes={big ? "400px" : "140px"} className={frame.image} />
       ) : (
@@ -230,7 +247,7 @@ function Viewer({
   return (
     <div className={frame.viewer} data-no-swipe>
       <div className={frame.viewerBar}>
-        <button type="button" className={frame.round} onClick={onClose} aria-label="Back" data-back>
+        <button type="button" className={`${frame.round} lg`} onClick={onClose} aria-label="Back" data-back>
           <Chevron back />
         </button>
         <span className={frame.viewerWhen}>
@@ -290,7 +307,11 @@ function Viewer({
         </div>
       )}
 
-      <div className={frame.toolbar}>
+      {/* iOS 26's viewer toolbar: share, then favourite, info and edit, then delete, on one pane of glass. */}
+      <div className={`${frame.toolbar} lg`}>
+        <span className={frame.tool} aria-hidden="true">
+          <Glyph d={SHARE} />
+        </span>
         {onRecover ? (
           <span className={frame.toolText} />
         ) : (
@@ -312,6 +333,9 @@ function Viewer({
         ) : (
           <span className={frame.toolText} />
         )}
+        <span className={frame.tool} aria-hidden="true">
+          <Glyph d={TRASH} />
+        </span>
       </div>
     </div>
   );
@@ -407,12 +431,46 @@ export default function Photos({
     </li>
   );
 
+  // An album on the Collections shelf: its newest picture, big, and its name and count under it.
+  const card = (name: string, photos: readonly Photo[], onOpen: () => void) => (
+    <button key={name} type="button" className={styles.card} onClick={onOpen}>
+      <span className={styles.cardThumb}>{photos.at(-1) && <Picture photo={photos.at(-1)!} />}</span>
+      <span className={styles.cardName}>{name}</span>
+      <span className={styles.cardCount}>{photos.length}</span>
+    </button>
+  );
+
+  // The Library's heading: the days it covers, as Photos gives them.
+  const days = lib.recents.map((p) => cal.dayOf(p.day));
+  const range = days.length ? `${shortDay(Math.min(...days))} – ${shortDay(Math.max(...days))}` : "";
+  const videos = lib.recents.filter((p) => p.video).length;
+  const stills = lib.recents.length - videos;
+
   return (
     <section className={app.view} aria-label="Photos">
       {open ? (
         <AppBar title={open.name} onBack={() => setAlbum(null)} backLabel="Collections" />
       ) : (
-        <AppBar onBack={onBack} backLabel="Home" />
+        <AppBar
+          onBack={onBack}
+          backLabel="Home"
+          end={
+            tab === "library" && (
+              <>
+                <span className={app.pill} aria-hidden="true">
+                  Select
+                </span>
+                <span className={`${app.back} lg`} aria-hidden="true">
+                  <svg viewBox="0 0 24 24" className={styles.more}>
+                    <circle cx="6" cy="12" r="1.8" />
+                    <circle cx="12" cy="12" r="1.8" />
+                    <circle cx="18" cy="12" r="1.8" />
+                  </svg>
+                </span>
+              </>
+            )
+          }
+        />
       )}
 
       <div className={app.body} data-tabbed={!open || undefined}>
@@ -425,27 +483,24 @@ export default function Photos({
         ) : tab === "library" ? (
           <>
             <h2 className={app.big}>Library</h2>
-            <p className={styles.sub}>{lib.recents.length} Items</p>
+            <p className={styles.sub}>{range}</p>
             {grid}
+            <p className={styles.count}>
+              {stills} {stills === 1 ? "Photo" : "Photos"}
+              {videos > 0 && `, ${videos} ${videos === 1 ? "Video" : "Videos"}`}
+            </p>
           </>
         ) : (
           <>
             <h2 className={app.big}>Collections</h2>
-            <p className={app.groupLabel}>Albums</p>
-            <ul className={app.group}>
-              <li>
-                <button type="button" className={app.row} onClick={() => setTab("library")}>
-                  <span className={styles.albumThumb}>{lib.recents.at(-1) && <Picture photo={lib.recents.at(-1)!} />}</span>
-                  <span className={app.rowMain}>
-                    <span className={app.rowTitle}>Recents</span>
-                  </span>
-                  <span className={app.rowMeta}>{lib.recents.length}</span>
-                  <Chevron />
-                </button>
-              </li>
-              {albums.map((a) => row(a))}
-            </ul>
-            <p className={app.groupLabel}>Utilities</p>
+            <h3 className={styles.shelfTitle}>
+              Albums <Chevron />
+            </h3>
+            <div className={styles.shelf}>
+              {card("Recents", lib.recents, () => setTab("library"))}
+              {albums.map((a) => card(a.name, a.photos, () => setAlbum(a.name)))}
+            </div>
+            <h3 className={styles.shelfTitle}>Utilities</h3>
             <ul className={app.group}>{utilities.map((a) => row(a, a.bin ? TRASH : HIDDEN))}</ul>
           </>
         )}
@@ -453,7 +508,7 @@ export default function Photos({
 
       {!open && (
         <nav className={styles.tabs} aria-label="Photos">
-          <span className={styles.tabGroup}>
+          <span className={`${styles.tabGroup} lg`}>
             <button type="button" className={styles.tab} data-on={tab === "library" || undefined} onClick={() => setTab("library")}>
               <LibraryGlyph />
               Library
@@ -462,6 +517,12 @@ export default function Photos({
               <CollectionsGlyph />
               Collections
             </button>
+          </span>
+          <span className={`${styles.searchCircle} lg`} aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m15.5 15.5 5 5" />
+            </svg>
           </span>
         </nav>
       )}

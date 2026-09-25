@@ -5,15 +5,30 @@ import { useState } from "react";
 import type { Note, Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
 import { calendarOf } from "@/lib/game/phone";
+import { Page, SearchField } from "../AppView";
+import app from "../ios/App.module.css";
 import styles from "./Notes.module.css";
 import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
-   Notes, as iOS draws them: a title, a preview, when it was last edited,
-   who it's shared with. A locked note asks for a password, and whether it
-   holds anything is the chapter's business, never required.
-
+   Notes, as iOS 26 draws it: the folder's notes under when they were last
+   touched ("Previous 7 Days"), each a bold title over its time and first
+   line, the count in the toolbar at the foot and Notes' yellow on every
+   glass button; a note with its date over it. A locked note asks for a
+   password, and whether it holds anything is the chapter's business, never
+   required.
    =========================================================================== */
+
+const YELLOW = "#ffd60a";
+
+/** Where a note falls, as Notes heads its sections. */
+function section(back: number): string {
+  if (back <= 0) return "Today";
+  if (back === 1) return "Yesterday";
+  if (back < 7) return "Previous 7 Days";
+  if (back < 30) return "Previous 30 Days";
+  return "Earlier";
+}
 
 function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id: string) => void }) {
   const [typed, setTyped] = useState("");
@@ -22,13 +37,17 @@ function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id:
   if (!open)
     return (
       <div className={styles.locked}>
-        <p className={styles.lockTitle}>This note is locked</p>
+        <svg viewBox="0 0 24 24" className={styles.lock} aria-hidden="true">
+          <rect x="5" y="10.5" width="14" height="10" rx="2.5" />
+          <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+        </svg>
+        <p className={styles.lockTitle}>This note is locked.</p>
         <input
           className={styles.pin}
           inputMode="numeric"
           maxLength={4}
           value={typed}
-          placeholder="••••"
+          placeholder="Password"
           onChange={(e) => {
             const v = e.target.value.replace(/\D/g, "");
             setTyped(v);
@@ -45,12 +64,12 @@ function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id:
 
   return (
     <article className={styles.note}>
-      <h3 className={styles.noteTitle}>{note.title}</h3>
       <p className={styles.noteMeta}>
-        {day} {stamp(note.at)}
+        {day} at {stamp(note.at)}
         {note.edited && ` · Edited ${note.edited}`}
         {note.sharedWith && ` · Shared with ${note.sharedWith}`}
       </p>
+      <h3 className={styles.noteTitle}>{note.title}</h3>
       {(note.inside ?? note.body).map((line, i) => (
         <p key={i} className={styles.line}>
           {line}
@@ -65,24 +84,33 @@ export default function Notes({
   state,
   onRead,
   onPassword,
+  onHome,
 }: {
   story: Story;
   state: CaseState;
   onRead: (ids: readonly string[]) => void;
   /** Opening a locked note is a thing the player did, and the save keeps it. */
   onPassword: (id: string) => void;
+  onHome?: () => void;
 }) {
   const cal = calendarOf(story, state);
   const [open, setOpen] = useState<string | null>(null);
   const notes = story.notes.filter((n) => all(state, n.requires));
   const here = notes.find((n) => n.id === open);
 
+  const more = (
+    <span className={`${app.back} lg`} aria-hidden="true">
+      <svg viewBox="0 0 24 24" className={styles.more}>
+        <circle cx="6" cy="12" r="1.8" />
+        <circle cx="12" cy="12" r="1.8" />
+        <circle cx="18" cy="12" r="1.8" />
+      </svg>
+    </span>
+  );
+
   if (here)
     return (
-      <>
-        <button type="button" className={styles.link} onClick={() => setOpen(null)} data-back>
-          ‹ Notes
-        </button>
+      <Page title="" onBack={() => setOpen(null)} backLabel="Notes" tint={YELLOW} end={more}>
         <Open
           note={here}
           day={cal.label(here.day)}
@@ -91,38 +119,67 @@ export default function Notes({
             if (here.evidence) onRead([here.evidence]);
           }}
         />
-      </>
+      </Page>
     );
 
-  /* iOS Notes: one inset group, each row a bold title with the time and the
-     note's first line under it, and the count at the foot (PLAYTEST.md #18). */
+  // Newest first, under the heading Notes gives how long ago they were touched.
+  const today = cal.dayOf(undefined);
+  const sorted = [...notes].sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
+  const sections: { title: string; notes: Note[] }[] = [];
+  for (const n of sorted) {
+    const title = section(today - cal.dayOf(n.day));
+    const s = sections.find((x) => x.title === title);
+    if (s) s.notes.push(n);
+    else sections.push({ title, notes: [n] });
+  }
+
   return (
-    <>
-      <p className={styles.folder}>iCloud</p>
-      <ul className={styles.list}>
-        {notes.map((n) => (
-          <li key={n.id}>
-            <button
-              type="button"
-              className={styles.row}
-              onClick={() => {
-                setOpen(n.id);
-                if (n.evidence && !n.locked) onRead([n.evidence]);
-              }}
-            >
-              <span className={styles.rowTitle}>
-                {n.locked && "🔒 "}
-                {n.title}
-              </span>
-              <span className={styles.rowSub}>
-                <span className={styles.rowWhen}>{n.edited ? stamp(n.edited) : cal.label(n.day)}</span>
-                <span className={styles.rowPreview}>{n.locked ? "Locked" : n.body[0]}</span>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      <p className={styles.count}>{notes.length} Notes</p>
-    </>
+    <Page title="Notes" large root onBack={onHome} backLabel="Folders" tint={YELLOW} end={more} tabbed>
+      <SearchField />
+      {sections.map((s) => (
+        <div key={s.title}>
+          <h3 className={styles.section}>{s.title}</h3>
+          <ul className={styles.list}>
+            {s.notes.map((n) => (
+              <li key={n.id}>
+                <button
+                  type="button"
+                  className={styles.row}
+                  onClick={() => {
+                    setOpen(n.id);
+                    if (n.evidence && !n.locked) onRead([n.evidence]);
+                  }}
+                >
+                  <span className={styles.rowTitle}>
+                    {n.locked && (
+                      <svg viewBox="0 0 24 24" className={styles.rowLock} aria-label="Locked">
+                        <rect x="5" y="10.5" width="14" height="10" rx="2.5" />
+                        <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+                      </svg>
+                    )}
+                    {n.title}
+                  </span>
+                  <span className={styles.rowSub}>
+                    <span className={styles.rowWhen}>{n.edited ? stamp(n.edited) : cal.label(n.day)}</span>
+                    <span className={styles.rowPreview}>{n.locked ? "Locked" : n.body[0]}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {/* Notes' toolbar: how many, and a new one. */}
+      <div className={styles.toolbar} aria-hidden="true">
+        <span />
+        <span className={styles.count}>{notes.length} Notes</span>
+        <span className={`${styles.compose} lg`}>
+          <svg viewBox="0 0 24 24">
+            <path d="M12.5 5.5h-6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6M16.8 4.2l3 3-7.6 7.6-3.7.7.7-3.7Z" />
+          </svg>
+        </span>
+      </div>
+    </Page>
   );
 }

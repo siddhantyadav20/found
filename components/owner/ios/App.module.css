@@ -22,6 +22,18 @@
   }
 }
 
+/* A screen pushed on top of another slides in from the right, as iOS pushes it. */
+.view[data-push] {
+  animation: push 0.42s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  box-shadow: -12px 0 30px rgba(0, 0, 0, 0.35);
+}
+
+@keyframes push {
+  from {
+    translate: 100% 0;
+  }
+}
+
 .bar {
   flex: none;
   display: grid;
@@ -32,38 +44,41 @@
   padding: 2px 12px;
 }
 
-/* Back: a small glass circle with a chevron. */
+/* Back: iOS 26's glass circle with `chevron.backward` in it. */
 .back {
+  position: relative;
   justify-self: start;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   padding: 0 2px 0 0;
   border: 0;
   border-radius: 50%;
-  background: rgba(120, 120, 128, 0.24);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-edge);
-  color: var(--os-text);
+  color: var(--tint, var(--os-text));
   cursor: pointer;
 }
 
-.back svg {
+/* The chevron (it has no class); any other glyph in a glass circle sizes itself. */
+.back svg:not([class]) {
   width: 10px;
   height: 17px;
 }
 
-.back:active {
-  background: rgba(120, 120, 128, 0.42);
-}
-
 .title {
   margin: 0;
+  overflow: hidden;
   font-size: 17px;
   font-weight: 600;
+  letter-spacing: -0.02em;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: opacity 0.2s;
+}
+
+/* The large title is still showing: the bar keeps its own small one back. */
+.title[data-hidden] {
+  opacity: 0;
 }
 
 /* A title that opens something. */
@@ -91,25 +106,35 @@
   gap: 8px;
 }
 
-/* A glass pill: an action on a bar (Done, Recover All, Add Name). */
+/* A glass pill: an action on a bar (Edit, Done, Recover All, Add Name), as
+   iOS 26 puts text buttons in the bar: a capsule of the same glass. */
 .pill {
-  padding: 9px 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 17px;
   border: 0;
   border-radius: 99px;
-  background: rgba(120, 120, 128, 0.24);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-edge);
+  background: var(--lg-fill);
+  -webkit-backdrop-filter: var(--lg-filter);
+  backdrop-filter: var(--lg-filter);
+  box-shadow:
+    var(--lg-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.12);
   color: var(--os-text);
   font: inherit;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   cursor: pointer;
+  transition: scale 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.3);
 }
 
 .pill:active {
-  background: rgba(120, 120, 128, 0.42);
+  scale: 1.06;
 }
 
 .body {
@@ -120,6 +145,9 @@
   padding: 2px 16px 48px;
   touch-action: pan-y;
   scrollbar-width: none;
+  /* iOS 26's scroll edge: what scrolls up softens away under the bar. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 14px);
 }
 
 .body::-webkit-scrollbar {
@@ -139,16 +167,20 @@
 }
 
 .big {
-  margin: 0 4px 12px;
+  margin: 4px 4px 14px;
+  font-family: var(--font-ios-display);
   font-size: 34px;
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
+/* A section's header: small grey capitals over the group, as iOS sets them. */
 .groupLabel {
-  margin: 0 16px 7px;
+  margin: 0 20px 7px;
   font-size: 13px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
   color: var(--ios-grey);
 }
 
@@ -157,6 +189,7 @@
   padding: 0;
   overflow: hidden;
   border-radius: 26px;
+  corner-shape: superellipse(1.4);
   background: var(--os-panel);
   list-style: none;
 }
@@ -210,6 +243,7 @@ button.row:active {
 .rowTitle {
   overflow: hidden;
   font-size: 17px;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -245,4 +279,121 @@ button.row:active {
   padding: 48px 12px;
   color: var(--ios-grey);
   text-align: center;
+}
+
+/* iOS 26's search field: a grey capsule under the large title. */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  margin: 0 0 18px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(118, 118, 128, 0.24);
+  color: rgba(235, 235, 245, 0.6);
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.search span {
+  flex: 1;
+}
+
+.searchGlass {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.searchMic {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* --- Tab bar ---------------------------------------------------------------- */
+
+.tabBar {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 24px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.tabs {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  gap: 2px;
+  height: 62px;
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.tab {
+  position: relative;
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 2px;
+  border-radius: 999px;
+  color: var(--os-text);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.tab svg {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
+}
+
+/* The open tab: a lighter lozenge of glass, and the app's tint on it. */
+.tab[data-on] {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--tint);
+}
+
+.tabBadge {
+  position: absolute;
+  top: 3px;
+  left: calc(50% + 6px);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #ff3b30;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.tabSearch {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  color: var(--os-text);
+}
+
+.tabSearch svg {
+  width: 24px;
+  height: 24px;
 }

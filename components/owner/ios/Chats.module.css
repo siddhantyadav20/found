@@ -3,16 +3,17 @@
    `data-app`. Not their artwork; the shape of the idea. */
 
 .chats {
+  /* WhatsApp's iOS app, dark. */
   --chat-bg: #000;
   --chat-wall: #0b141a;
-  --chat-bar: rgba(22, 27, 30, 0.86);
+  --chat-bar: rgba(16, 20, 22, 0.72);
   --chat-accent: #21c063;
-  --chat-in: #1f2c34;
-  --chat-out: #005c4b;
-  --chat-text: #e9edef;
-  --chat-dim: #8696a0;
+  --chat-in: #242626;
+  --chat-out: #144d37;
+  --chat-text: #f2f4f5;
+  --chat-dim: #8e9598;
   --chat-tick: #53bdeb;
-  --chat-line: rgba(134, 150, 160, 0.16);
+  --chat-line: rgba(142, 149, 152, 0.18);
 
   position: absolute;
   inset: 0;
@@ -40,9 +41,9 @@
 
 /* A conversation sits on the app's wallpaper; the list doesn't. */
 .chats[data-wall] {
+  /* WhatsApp's own wallpaper: its doodles, faint, on the night green. */
   background:
-    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.025) 0 1.5px, transparent 2px) 0 0 / 34px 34px,
-    radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.02) 0 1px, transparent 1.5px) 0 0 / 22px 22px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' fill='none' stroke='%23fff' stroke-opacity='.055' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 30c-4-6-14-3-12 5 2 6 12 11 12 11s10-5 12-11c2-8-8-11-12-5z'/%3E%3Cpath d='M78 18l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z'/%3E%3Cpath d='M150 22a12 12 0 1 0 12 16 10 10 0 1 1-12-16z'/%3E%3Cpath d='M30 92V70l18-4v22'/%3E%3Ccircle cx='25' cy='93' r='5'/%3E%3Ccircle cx='43' cy='89' r='5'/%3E%3Crect x='80' y='70' width='26' height='20' rx='4'/%3E%3Ccircle cx='93' cy='80' r='6'/%3E%3Cpath d='M86 70l3-5h8l3 5'/%3E%3Cpath d='M140 78c0-8 18-8 18 0v6h-18zM146 84v12M152 84v12'/%3E%3Cpath d='M20 148a14 14 0 0 1 28 0zM34 148v14c0 3 5 3 5 0'/%3E%3Cpath d='M86 136h18l-3 22H89zM104 141c6 0 6 9 0 9'/%3E%3Cpath d='M138 150c0-8 8-12 14-8 4-8 18-6 16 4 6 2 4 10-2 10h-24c-6 0-6-6-4-6z'/%3E%3Cpath d='M60 118l6 6M66 118l-6 6M120 112l5 5M125 112l-5 5M60 50l5 5M65 50l-5 5'/%3E%3C/svg%3E") 0 0 / 180px 180px,
     var(--chat-wall);
 }
 
@@ -59,7 +60,89 @@
   flex: none;
   display: flex;
   justify-content: space-between;
-  padding: 10px 18px 0;
+  align-items: center;
+  min-height: 52px;
+  padding: 2px 12px;
+}
+
+.listActions {
+  display: flex;
+  gap: 10px;
+}
+
+/* New chat: WhatsApp's green circle with a plus. */
+.newChat {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #21c063;
+  color: #0b141a;
+}
+
+.newChat svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.barGlyph {
+  width: 23px !important;
+  height: 23px !important;
+  fill: currentColor;
+}
+
+/* Search, with Meta AI's ring in front of it, as the app has it now. */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  margin: 0 16px 12px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(118, 118, 128, 0.24);
+  color: var(--chat-dim);
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.metaAi {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #0668e1, #5a4ff5, #e24bd8, #13c8f0, #0668e1);
+  -webkit-mask: radial-gradient(circle, transparent 4.2px, #000 4.6px);
+  mask: radial-gradient(circle, transparent 4.2px, #000 4.6px);
+}
+
+/* The filter chips: All, Unread, Favourites, Groups. */
+.chips {
+  display: flex;
+  gap: 8px;
+  margin: 0 16px 8px;
+  overflow: hidden;
+}
+
+.chips span {
+  flex: none;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(118, 118, 128, 0.22);
+  color: var(--chat-dim);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.chips span[data-on] {
+  background: rgba(33, 192, 99, 0.2);
+  color: #21c063;
 }
 
 .edit {
@@ -71,12 +154,20 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 96px;
+  padding-bottom: 110px;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+}
+
+.listBody::-webkit-scrollbar {
+  display: none;
 }
 
 .big {
-  margin: 6px 18px 10px;
-  font-size: 32px;
+  margin: 4px 20px 12px;
+  font-family: var(--font-ios-display);
+  font-size: 34px;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -169,19 +260,21 @@
 
 .pin {
   flex: none;
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   fill: var(--chat-dim);
 }
 
+/* WhatsApp's default picture: a paler silhouette on grey, cut off at the shoulders. */
 .avatar {
   flex: none;
   display: grid;
-  place-items: center;
+  place-items: end center;
   width: 52px;
   height: 52px;
+  overflow: hidden;
   border-radius: 50%;
-  background: linear-gradient(180deg, #3a4a53, #26323a);
+  background: #3b4a54;
   color: #cfd8dc;
   font-size: 19px;
   font-weight: 600;
@@ -200,12 +293,10 @@
 }
 
 .avatar svg {
-  width: 62%;
-  height: 62%;
-  fill: none;
-  stroke: #cfd8dc;
-  stroke-width: 1.6;
-  stroke-linecap: round;
+  width: 86%;
+  height: 86%;
+  margin-bottom: -6%;
+  fill: #8696a0;
 }
 
 .chats[data-app="telegram"] .avatar {
@@ -213,58 +304,54 @@
   color: #fff;
 }
 
-.tabs {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 22px;
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 6px;
-  border-radius: 99px;
-  background: var(--chat-bar);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-edge);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--chat-dim);
-}
-
-.tabs [data-on] {
-  color: var(--chat-accent);
-}
-
 /* --- A conversation ----------------------------------------------------------- */
 
+/* The header floats on the wallpaper, frosted, with its controls in glass. */
 .chatBar {
+  position: relative;
+  z-index: 3;
   flex: none;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 4px 12px 8px;
-  background: var(--chat-bar);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 0.5px solid var(--chat-line);
+  background: linear-gradient(180deg, rgba(11, 20, 26, 0.92) 0%, rgba(11, 20, 26, 0.55) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
 }
 
 .backButton {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 50%;
-  background: none;
-  color: var(--chat-accent);
+  color: var(--chat-text);
   cursor: pointer;
 }
 
 .backButton svg {
-  width: 11px;
-  height: 19px;
+  width: 10px;
+  height: 17px;
+}
+
+.calls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: var(--chat-text);
+}
+
+.calls svg {
+  width: 23px;
+  height: 23px;
 }
 
 .chatTitle {
@@ -295,15 +382,16 @@
 
 .whoName {
   overflow: hidden;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .whoSub {
   overflow: hidden;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--chat-dim);
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -326,11 +414,12 @@
 .day,
 .service {
   align-self: center;
-  margin: 10px 0 6px;
-  padding: 5px 11px;
-  border-radius: 9px;
-  background: rgba(24, 34, 41, 0.92);
-  color: var(--chat-dim);
+  width: fit-content;
+  margin: 10px auto 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(30, 36, 38, 0.9);
+  color: var(--chat-text);
   font-size: 12.5px;
   font-weight: 500;
   text-align: center;
@@ -348,17 +437,18 @@
   display: flex;
   flex-direction: column;
   max-width: 80%;
-  padding: 6px 9px 5px;
-  border-radius: 12px 12px 12px 4px;
+  padding: 6px 10px 5px;
+  border-radius: 16px 16px 16px 5px;
   background: var(--chat-in);
-  font-size: 16px;
-  line-height: 1.32;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
   overflow-wrap: anywhere;
 }
 
 .bubble[data-out] {
   align-self: flex-end;
-  border-radius: 12px 12px 4px 12px;
+  border-radius: 16px 16px 5px 16px;
   background: var(--chat-out);
 }
 
@@ -704,25 +794,56 @@
 
 /* --- The composer, and a contact's info ------------------------------------------ */
 
+/* WhatsApp's composer: attach, the field with its sticker, camera, microphone. */
 .composer {
   flex: none;
-  padding: 8px 12px 34px;
-  background: var(--chat-bar);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px 34px;
+  background: linear-gradient(180deg, rgba(11, 20, 26, 0.55) 0%, rgba(11, 20, 26, 0.94) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
+}
+
+.composerIcon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--chat-text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .field {
-  width: 100%;
-  padding: 9px 14px;
-  border: 0.5px solid var(--chat-line);
-  border-radius: 99px;
-  background: rgba(255, 255, 255, 0.06);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 10px 7px 14px;
+  border-radius: 20px;
+  background: rgba(118, 118, 128, 0.22);
   color: var(--chat-dim);
   font: inherit;
   font-size: 16px;
+  letter-spacing: -0.02em;
   text-align: left;
   cursor: text;
+}
+
+.sticker {
+  flex: none;
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: var(--chat-dim);
+  stroke-width: 1.7;
+  stroke-linejoin: round;
 }
 
 .info {
@@ -838,4 +959,34 @@
   --chat-out: #3797f0;
   --chat-text: #f5f5f5;
   --chat-dim: #a8a8a8;
+}
+
+/* Your own phone's Messages: iMessage, not WhatsApp. Blue out, grey in, no
+   time inside a bubble, and the grey monogram iOS gives anyone without a photo. */
+.chats[data-app="yours:chats"] {
+  --chat-bg: #000;
+  --chat-wall: #000;
+  --chat-bar: rgba(0, 0, 0, 0.8);
+  --chat-accent: #0a84ff;
+  --chat-in: #262629;
+  --chat-out: #0a84ff;
+  --chat-text: #fff;
+  --chat-dim: #8e8e93;
+}
+
+.chats[data-app="yours:chats"] .bubble {
+  border-radius: 19px;
+  padding: 7px 13px 8px;
+}
+
+.chats[data-app="yours:chats"] .stamp {
+  display: none;
+}
+
+.chats[data-app="yours:chats"] .avatar {
+  background: linear-gradient(180deg, #a6a6ab 0%, #7d7d83 100%);
+}
+
+.chats[data-app="yours:chats"] .avatar svg {
+  fill: rgba(255, 255, 255, 0.92);
 }

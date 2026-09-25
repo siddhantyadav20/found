@@ -1,23 +1,47 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback } from "react";
 
-import Chat from "@/components/owner/apps/Chat";
-import Instagram from "@/components/owner/apps/Instagram";
-import Mail from "@/components/owner/apps/Mail";
-import Paytap from "@/components/owner/apps/Paytap";
-import VoiceMemos from "@/components/owner/apps/VoiceMemos";
-import Messages from "@/components/owner/apps/Messages";
-import Notes from "@/components/owner/apps/Notes";
-import Photos from "@/components/owner/apps/Photos";
-import Recents from "@/components/owner/apps/Recents";
-import Safari from "@/components/owner/apps/Safari";
-import Settings from "@/components/owner/apps/Settings";
 import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { restored, reverted } from "@/lib/game/phone";
 import CaseFile from "./CaseFile";
 import { flag, read, save, say } from "./playthrough";
+
+/* Each app's code arrives when it's first opened, and all of it is fetched
+   while the phone sits idle (`preloadApps`), so opening one is still instant
+   and the case page stays inside its budget (scripts/check-budget.mjs). */
+const load = {
+  chat: () => import("@/components/owner/apps/Chat"),
+  instagram: () => import("@/components/owner/apps/Instagram"),
+  mail: () => import("@/components/owner/apps/Mail"),
+  paytap: () => import("@/components/owner/apps/Paytap"),
+  voicememos: () => import("@/components/owner/apps/VoiceMemos"),
+  messages: () => import("@/components/owner/apps/Messages"),
+  notes: () => import("@/components/owner/apps/Notes"),
+  photos: () => import("@/components/owner/apps/Photos"),
+  recents: () => import("@/components/owner/apps/Recents"),
+  safari: () => import("@/components/owner/apps/Safari"),
+  settings: () => import("@/components/owner/apps/Settings"),
+};
+
+const Chat = dynamic(load.chat, { ssr: false });
+const Instagram = dynamic(load.instagram, { ssr: false });
+const Mail = dynamic(load.mail, { ssr: false });
+const Paytap = dynamic(load.paytap, { ssr: false });
+const VoiceMemos = dynamic(load.voicememos, { ssr: false });
+const Messages = dynamic(load.messages, { ssr: false });
+const Notes = dynamic(load.notes, { ssr: false });
+const Photos = dynamic(load.photos, { ssr: false });
+const Recents = dynamic(load.recents, { ssr: false });
+const Safari = dynamic(load.safari, { ssr: false });
+const Settings = dynamic(load.settings, { ssr: false });
+
+/** Fetch every app's code ahead of its first opening. */
+export function preloadApps() {
+  for (const get of Object.values(load)) void get();
+}
 
 /* ===========================================================================
    What each app on the found phone shows, and what doing something in it
@@ -46,11 +70,11 @@ export default function AppBody({
     case "instagram":
       return <Instagram story={story} state={state} onHome={onHome} onRead={onRead} onSay={onSay} />;
     case "messages":
-      return <Messages story={story} state={state} onRead={onRead} />;
+      return <Messages story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "whatsapp":
       return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} />;
     case "phone":
-      return <Recents story={story} state={state} onRead={onRead} />;
+      return <Recents story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "photos":
       return (
         <Photos
@@ -68,19 +92,20 @@ export default function AppBody({
           story={story}
           state={state}
           onRead={onRead}
+          onHome={onHome}
           onPassword={(id) => flag(`did:unlocked-${id}`)}
         />
       );
     case "settings":
-      return <Settings story={story} state={state} onAct={(sets) => flag(...sets)} onRead={onRead} />;
+      return <Settings story={story} state={state} onAct={(sets) => flag(...sets)} onRead={onRead} onHome={onHome} />;
     case "voicememos":
-      return <VoiceMemos story={story} state={state} onRead={onRead} onRestore={(id) => flag(restored(id))} />;
+      return <VoiceMemos story={story} state={state} onRead={onRead} onHome={onHome} onRestore={(id) => flag(restored(id))} />;
     case "mail":
-      return <Mail story={story} state={state} onRead={onRead} />;
+      return <Mail story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "paytap":
-      return <Paytap story={story} state={state} onRead={onRead} />;
+      return <Paytap story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "safari":
-      return <Safari story={story} state={state} onRead={onRead} />;
+      return <Safari story={story} state={state} onRead={onRead} onHome={onHome} />;
     default:
       // Not on this phone. Nothing on the home screen opens this.
       return null;

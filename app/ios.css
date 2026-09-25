@@ -1,0 +1,98 @@
+/* ==========================================================================
+   The found phone's system layer: what every screen and app on it shares
+   with iOS itself, whatever the app.
+
+   - Type: San Francisco, which every Apple device draws for `-apple-system`
+     without a file being sent, and Inter where it isn't installed.
+   - Liquid Glass, iOS 26 and 27's material, in two thicknesses: `.lg`, the
+     clear glass of controls (bars, buttons, pills, the dock), which lets what
+     is behind it through, brightened, and catches light along its rim; and
+     `.lg-thick`, the frosted platter under notifications and widgets, so
+     words on it stay readable over anything. The element brings its own
+     radius and position; the rim is drawn by ::after.
+   - The continuous corner: app icons are masked to Apple's squircle
+     (`.sq`, a superellipse with n = 5), and larger surfaces ask for
+     `corner-shape` where the browser can draw it.
+   ========================================================================== */
+
+:root {
+  --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", var(--font-phone), "Helvetica Neue", system-ui, sans-serif;
+  --font-ios-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro", var(--font-phone), "Helvetica Neue", system-ui, sans-serif;
+  --icon-squircle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100 50 99.96 66.8 99.83 72.14 99.61 76.01 99.31 79.12 98.92 81.75 98.44 84.05 97.87 86.08 97.2 87.89 96.44 89.52 95.58 91 94.61 92.33 93.53 93.53 92.33 94.61 91 95.58 89.52 96.44 87.89 97.2 86.08 97.87 84.05 98.44 81.75 98.92 79.12 99.31 76.01 99.61 72.14 99.83 66.8 99.96 50 100 33.2 99.96 27.86 99.83 23.99 99.61 20.88 99.31 18.25 98.92 15.95 98.44 13.92 97.87 12.11 97.2 10.48 96.44 9 95.58 7.67 94.61 6.47 93.53 5.39 92.33 4.42 91 3.56 89.52 2.8 87.89 2.13 86.08 1.56 84.05 1.08 81.75 0.69 79.12 0.39 76.01 0.17 72.14 0.04 66.8 0 50 0.04 33.2 0.17 27.86 0.39 23.99 0.69 20.88 1.08 18.25 1.56 15.95 2.13 13.92 2.8 12.11 3.56 10.48 4.42 9 5.39 7.67 6.47 6.47 7.67 5.39 9 4.42 10.48 3.56 12.11 2.8 13.92 2.13 15.95 1.56 18.25 1.08 20.88 0.69 23.99 0.39 27.86 0.17 33.2 0.04 50 0 66.8 0.04 72.14 0.17 76.01 0.39 79.12 0.69 81.75 1.08 84.05 1.56 86.08 2.13 87.89 2.8 89.52 3.56 91 4.42 92.33 5.39 93.53 6.47 94.61 7.67 95.58 9 96.44 10.48 97.2 12.11 97.87 13.92 98.44 15.95 98.92 18.25 99.31 20.88 99.61 23.99 99.83 27.86 99.96 33.2Z'/%3E%3C/svg%3E");
+
+  /* Clear glass, over a dark phone. */
+  --lg-fill: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+  --lg-filter: blur(10px) saturate(1.9) brightness(1.06);
+  --lg-shadow: 0 6px 18px rgba(0, 0, 0, 0.22), inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  /* Light caught on the rim: strongest top-left, again bottom-right, as glass refracts it. */
+  --lg-rim: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0) 42%,
+    rgba(255, 255, 255, 0) 68%,
+    rgba(255, 255, 255, 0.26) 100%
+  );
+
+  /* The platter: frosted, darker, so white text reads over a bright wallpaper. */
+  --lg-thick-fill: linear-gradient(180deg, rgba(58, 58, 64, 0.5) 0%, rgba(34, 34, 38, 0.46) 100%);
+  --lg-thick-filter: blur(24px) saturate(1.8) brightness(0.96);
+  --lg-thick-shadow: 0 10px 34px rgba(0, 0, 0, 0.3), inset 0 0 0 0.5px rgba(255, 255, 255, 0.07);
+}
+
+.lg,
+.lg-thick {
+  isolation: isolate;
+  background: var(--lg-fill);
+  -webkit-backdrop-filter: var(--lg-filter);
+  backdrop-filter: var(--lg-filter);
+  box-shadow: var(--lg-shadow);
+}
+
+.lg-thick {
+  background: var(--lg-thick-fill);
+  -webkit-backdrop-filter: var(--lg-thick-filter);
+  backdrop-filter: var(--lg-thick-filter);
+  box-shadow: var(--lg-thick-shadow);
+}
+
+.lg::after,
+.lg-thick::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--lg-rim);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.lg-thick::after {
+  opacity: 0.4;
+}
+
+/* Pressed, glass swells and brightens a touch, as iOS 26 makes it. */
+button.lg {
+  transition:
+    scale 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.3),
+    background-color 0.2s;
+}
+
+button.lg:active {
+  scale: 1.06;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.12) 100%);
+}
+
+/* An app icon's shape. */
+.sq {
+  -webkit-mask: var(--icon-squircle) center / 100% 100% no-repeat;
+  mask: var(--icon-squircle) center / 100% 100% no-repeat;
+}

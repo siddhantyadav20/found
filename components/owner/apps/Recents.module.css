@@ -1,0 +1,147 @@
+/* Phone › Calls, iOS 26. */
+
+.filter {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  padding: 0;
+}
+
+.filter svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.section {
+  margin: 6px 4px 6px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list > li {
+  position: relative;
+}
+
+/* Separators start under the name, not under the face. */
+.list > li + li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 62px;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.row {
+  cursor: pointer;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  letter-spacing: -0.02em;
+}
+
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.name {
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.name[data-missed] {
+  color: #ff453a;
+}
+
+.when {
+  flex: none;
+  font-size: 15px;
+  color: var(--ios-grey);
+}
+
+.sub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  color: var(--ios-grey);
+}
+
+.sub svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The glass call button at the end of a row. */
+.call {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #0a84ff;
+}
+
+.call svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
+}
+
+.recorded {
+  flex: none;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(10, 132, 255, 0.18);
+  color: #0a84ff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

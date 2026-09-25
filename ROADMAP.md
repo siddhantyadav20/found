@@ -628,6 +628,37 @@ The video-dead path waits on S11's footage.
 - A full human playthrough on a phone, logged in the style of the last
   `PLAYTEST.md`.
 
+## The phone as iOS 26–27 draws it · **done (2026-09-25)**
+
+Siddhant asked for the found phone to match iOS exactly, app by app. His calls:
+- **The phone's type is the system's.** San Francisco on any Apple device, through `-apple-system`, with no file shipped. Inter, loaded but not preloaded, everywhere else. Found's own pages keep Canela and Outfit.
+- **Real icons and marks where the phone needs them.** This supersedes 2026-09-15's "draw them ourselves, never Apple's". The legal risk is his, and he'll weigh it at launch.
+
+Built:
+- **`app/ios.css`**, the system layer: Liquid Glass in two thicknesses (`.lg` for controls, `.lg-thick` for platters), with a rim of light drawn by `::after`; the squircle mask for icons (`.sq`, a superellipse with n = 5); `corner-shape` on large surfaces.
+- **Icons** (`components/owner/ios/icons.tsx`): full-bleed artwork of the real ones, drawn as SVG. The gradient ids come from `useId`.
+- **The system chrome**:
+  - the lock screen: the carrier, the date, a bold SF clock, glass notifications
+  - Notification Centre, with times like "39m ago"
+  - Control Centre, laid out like iOS 26's first page; only airplane mode is live
+  - banners, the Home Screen's Search pill, the dock, the widget
+  - the call screen, over the blurred wallpaper
+- **One screen, one bar**: `Page` in `AppView.tsx`, with a glass back circle, a large title that hands over to the bar's small one, the scroll edge, and a push from the right. `TabBar` is the floating glass one. Every app but the case file draws its own screens.
+- **Apps redrawn after the real ones**:
+  - Settings: search, the radios, real app icons
+  - Mail: categories, a plain inbox, the message header, the toolbar
+  - Phone: iOS 26's unified Calls
+  - Messages: the iOS 26 thread header and the SMS composer
+  - Notes: sections by date, its yellow, the toolbar
+  - Voice Memos: folders and the record button
+  - Safari: History with favicons
+  - Photos: the Library heading, the album shelf, the viewer's glass toolbar, and placeholders that read as night exposures
+  - WhatsApp: silhouettes, Meta AI search, chips, the tab bar, the doodle wallpaper, iOS bubble colours, voice notes, the composer
+  - Instagram: its own bar, feed, profile and bottom bar
+  - Paytap: a UPI app
+- **Kept readable, over faithful**: search queries and payment notes wrap to two lines, because they're clues.
+- **Each app's code loads when it's first opened** and is preloaded when idle (`preloadApps`). That took the case page from 721 KB to 621 KB of 700.
+
 ---
 
 ## What only Siddhant can do

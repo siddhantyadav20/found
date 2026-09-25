@@ -1,13 +1,14 @@
 import styles from "./App.module.css";
 
+/** SF Symbols' chevron: `chevron.backward` in a bar, `chevron.forward` at the end of a row. */
 export function Chevron({ back = false }: { back?: boolean }) {
   return (
-    <svg viewBox="0 0 8 14" className={back ? undefined : styles.chev} aria-hidden="true">
+    <svg viewBox="0 0 10 17" className={back ? undefined : styles.chev} aria-hidden="true">
       <path
-        d={back ? "M7 1 1 7l6 6" : "m1 1 6 6-6 6"}
+        d={back ? "M8.5 1.5 1.5 8.5l7 7" : "m1.5 1.5 7 7-7 7"}
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth={back ? 2.4 : 2.2}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -30,17 +31,20 @@ export default function AppBar({
   backLabel = "Back",
   onTitle,
   end,
+  hideTitle,
 }: {
   title?: string;
   onBack?: () => void;
   backLabel?: string;
   onTitle?: () => void;
   end?: React.ReactNode;
+  /** The large title is still on screen, so the bar's small one waits for it to scroll away. */
+  hideTitle?: boolean;
 }) {
   return (
     <header className={styles.bar}>
       {onBack ? (
-        <button type="button" className={styles.back} onClick={onBack} data-back aria-label={backLabel}>
+        <button type="button" className={`${styles.back} lg`} onClick={onBack} data-back aria-label={backLabel}>
           <Chevron back />
         </button>
       ) : (
@@ -52,7 +56,9 @@ export default function AppBar({
           <Chevron />
         </button>
       ) : (
-        <h2 className={styles.title}>{title}</h2>
+        <h2 className={styles.title} data-hidden={hideTitle || undefined}>
+          {title}
+        </h2>
       )}
       <span className={styles.barEnd}>{end}</span>
     </header>

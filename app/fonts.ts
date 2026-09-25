@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import { Outfit } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 
 /**
  * Display face. Only the two weights the design actually uses are shipped
@@ -36,4 +36,17 @@ export const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-ui",
   display: "swap",
+});
+
+/**
+ * The found phone's face where San Francisco isn't installed (Android,
+ * Windows): Inter, the closest free match. Apple devices draw the phone in
+ * their own SF through `-apple-system` and never fetch this, so it isn't
+ * preloaded (see `--font-ios` in globals.css).
+ */
+export const phone = Inter({
+  subsets: ["latin"],
+  variable: "--font-phone",
+  display: "swap",
+  preload: false,
 });

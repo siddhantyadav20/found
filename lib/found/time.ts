@@ -25,6 +25,13 @@ export function stamp(hhmm: string | undefined): string {
 
 const WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const DDMM = /^(\d{1,2})\/(\d{1,2})$/;
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+/** "Saturday", "29/11" → "Saturday 29 November", as the Lock Screen writes the day. */
+export function longDay(day: string, date: string): string {
+  const m = DDMM.exec(date);
+  return m ? `${day} ${Number(m[1])} ${MONTHS[Number(m[2]) - 1]}` : day;
+}
 const DAY_MS = 86_400_000;
 
 /** A date as a day number: any fixed year will do, since only differences are used. */

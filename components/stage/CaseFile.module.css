@@ -3,7 +3,7 @@
 .file { display: flex; flex-direction: column; gap: 0.6rem; }
 
 .eyebrow {
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 0.6rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -32,7 +32,7 @@
 .row { display: flex; gap: 0.5rem; margin-top: 0.3rem; }
 
 .answer, .hint {
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 0.78rem;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
@@ -134,7 +134,7 @@
 
 .groupHead {
   margin: 12px 0 4px;
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;

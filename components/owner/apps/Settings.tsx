@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 
-import type { Flag, SettingsRow, Story } from "@/content/types";
+import type { AppId, Flag, SettingsRow, Story } from "@/content/types";
 import { all, has, type CaseState } from "@/lib/game/engine";
+import { AIRPLANE } from "@/lib/game/phone";
+import { Page, SearchField } from "../AppView";
 import Switch from "../ios/Switch";
 import app from "../ios/App.module.css";
 import { Chevron } from "../ios/AppBar";
 import Avatar from "../ios/Avatar";
+import { AppGlyph } from "../ios/icons";
 import s from "../ios/Settings.module.css";
 import local from "./Settings.module.css";
 
@@ -20,15 +23,23 @@ import local from "./Settings.module.css";
 
    =========================================================================== */
 
-const BLUE = "#0a84ff";
-const GREEN = "#30d158";
+/* Settings' tiles keep iOS's light-mode colours in dark mode, as iOS does. */
+const BLUE = "#007aff";
+const GREEN = "#34c759";
 const GREY = "#8e8e93";
-const RED = "#ff453a";
-const PURPLE = "#5e5ce6";
+const RED = "#ff3b30";
+const PURPLE = "#5856d6";
 
-function Tile({ bg, children }: { bg: string; children: React.ReactNode }) {
+function Tile({ bg, app: icon, children }: { bg?: string; app?: AppId; children?: React.ReactNode }) {
+  // A row about an app wears that app's own icon.
+  if (icon)
+    return (
+      <span className={s.appTile} aria-hidden="true">
+        <AppGlyph app={icon} />
+      </span>
+    );
   return (
-    <span className={s.tile} style={{ background: bg }} aria-hidden="true">
+    <span className={`${s.tile} sq`} style={{ background: bg }} aria-hidden="true">
       <svg viewBox="0 0 24 24">{children}</svg>
     </span>
   );
@@ -86,15 +97,21 @@ const SOS = (
   </text>
 );
 
-/** Apps › Photos: the flower, small. */
-const FLOWER = (
+const PLANE = <path className={s.solid} d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5Z" />;
+const WIFI = (
+  <path
+    className={s.solid}
+    d="M12 19.2 9.2 16.4a4 4 0 0 1 5.6 0Zm-5.7-5.7a8 8 0 0 1 11.4 0l-1.8 1.8a5.5 5.5 0 0 0-7.8 0Zm-3-3a12.3 12.3 0 0 1 17.4 0l-1.8 1.8a9.8 9.8 0 0 0-13.8 0Z"
+  />
+);
+const BLUETOOTH = <path d="m7 7.5 10 8.5-5 4.5V3.5l5 4.5-10 8.5" />;
+const ANTENNA = (
   <>
-    <circle cx="12" cy="8" r="2.6" className={s.solid} />
-    <circle cx="16" cy="12" r="2.6" className={s.solid} />
-    <circle cx="12" cy="16" r="2.6" className={s.solid} />
-    <circle cx="8" cy="12" r="2.6" className={s.solid} />
+    <circle cx="12" cy="9" r="1.6" className={s.solid} />
+    <path d="M12 10.5V20M8.2 5.3a5.4 5.4 0 0 0 0 7.4M15.8 5.3a5.4 5.4 0 0 1 0 7.4" />
   </>
 );
+
 const APPS = (
   <>
     <rect x="5" y="5" width="5.5" height="5.5" rx="1.4" />
@@ -105,9 +122,9 @@ const APPS = (
 );
 
 /** Which tile leads which row. A row nobody drew a tile for goes without. */
-const TILES: Record<string, { bg: string; glyph: React.ReactNode }> = {
+const TILES: Record<string, { bg?: string; glyph?: React.ReactNode; app?: AppId }> = {
   "Face ID & Passcode": { bg: GREEN, glyph: FACE },
-  Photos: { bg: "#ff9f0a", glyph: FLOWER },
+  Photos: { app: "photos" },
   Apps: { bg: PURPLE, glyph: APPS },
   "Screen Time": { bg: PURPLE, glyph: HOURGLASS },
   "Emergency SOS": { bg: RED, glyph: SOS },
@@ -142,16 +159,17 @@ function Detail({
   const done = row.action?.sets.every((f) => has(state, f));
   const offered = Boolean(row.action && all(state, row.action.requires));
   return (
-    <>
-      <button type="button" className={local.backLink} onClick={onBack} data-back>
-        <Chevron back /> Settings
-      </button>
+    <Page title={row.title} onBack={onBack} backLabel="Settings">
       <p className={app.groupLabel}>{row.detail.heading}</p>
       <ul className={app.group}>
         {row.detail.title && (
           <li>
             <div className={app.row}>
-              {TILES[row.title] && <Tile bg={TILES[row.title].bg}>{TILES[row.title].glyph}</Tile>}
+              {TILES[row.title] && (
+                <Tile bg={TILES[row.title].bg} app={TILES[row.title].app}>
+                  {TILES[row.title].glyph}
+                </Tile>
+              )}
               <span className={app.rowMain}>
                 <span className={app.rowTitle}>{done ? row.action?.done : row.detail.title}</span>
               </span>
@@ -208,7 +226,7 @@ function Detail({
           </li>
         </ul>
       )}
-    </>
+    </Page>
   );
 }
 
@@ -217,12 +235,14 @@ export default function Settings({
   state,
   onAct,
   onRead,
+  onHome,
 }: {
   story: Story;
   state: CaseState;
   onAct?: (sets: readonly Flag[]) => void;
   /** Opening a page one level down is how what's on it gets found. */
   onRead?: (ids: readonly string[]) => void;
+  onHome?: () => void;
 }) {
   const [asking, setAsking] = useState<string | null>(null);
   const [page, setPage] = useState<string | null>(null);
@@ -235,8 +255,19 @@ export default function Settings({
   if (opened?.detail)
     return <Detail row={{ ...opened, detail: opened.detail }} state={state} onBack={() => setPage(null)} onAct={onAct} />;
 
+  const airplane = has(state, AIRPLANE);
+  /* What every iPhone's Settings opens with, under the account: its radios. Airplane
+     Mode is the real switch, one way, as in Control Centre; the rest only say how things are. */
+  const radios = [
+    { title: "Airplane Mode", bg: "#ff9500", glyph: PLANE },
+    { title: "Wi-Fi", bg: BLUE, glyph: WIFI, value: airplane ? "Off" : "Not Connected" },
+    { title: "Bluetooth", bg: BLUE, glyph: BLUETOOTH, value: "On" },
+    { title: "Mobile Service", bg: GREEN, glyph: ANTENNA, value: airplane ? "Airplane Mode" : "" },
+  ];
+
   return (
-    <>
+    <Page title="Settings" large root onBack={onHome} backLabel="Home">
+      <SearchField />
       {/* The owner's name on the profile card, the way the top of Settings looks. */}
       <ul className={app.group}>
         <li>
@@ -254,6 +285,27 @@ export default function Settings({
         </li>
       </ul>
 
+      <ul className={app.group}>
+        {radios.map((r) => (
+          <li key={r.title}>
+            <div className={app.row}>
+              <Tile bg={r.bg}>{r.glyph}</Tile>
+              <span className={app.rowMain}>
+                <span className={app.rowTitle}>{r.title}</span>
+              </span>
+              {r.title === "Airplane Mode" ? (
+                <OneWay sets={[AIRPLANE]} label="Airplane Mode" state={state} onAct={onAct} />
+              ) : (
+                <>
+                  {r.value && <span className={app.rowMeta}>{r.value}</span>}
+                  <Chevron />
+                </>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+
       {groups.map((g, i) => {
         const rows = g.rows.filter((r) => all(state, r.requires));
         if (!rows.length) return null;
@@ -267,7 +319,11 @@ export default function Settings({
                 const offered = Boolean(r.action && all(state, r.action.requires));
                 const inner = (
                   <>
-                    {tile && <Tile bg={tile.bg}>{tile.glyph}</Tile>}
+                    {tile && (
+                      <Tile bg={tile.bg} app={tile.app}>
+                        {tile.glyph}
+                      </Tile>
+                    )}
                     <span className={app.rowMain}>
                       <span className={app.rowTitle}>{r.title}</span>
                       {r.sub && <span className={app.rowSub}>{r.sub}</span>}
@@ -331,6 +387,6 @@ export default function Settings({
           </div>
         );
       })}
-    </>
+    </Page>
   );
 }

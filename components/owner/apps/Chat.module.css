@@ -4,35 +4,73 @@
 
 .voicePlay {
   flex: none;
-  width: 28px;
-  height: 28px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: none;
   color: inherit;
-  font-size: 14px;
   cursor: pointer;
 }
 
-.wave {
-  flex: 1;
-  height: 18px;
-  background:
-    linear-gradient(90deg, #53bdeb 0 0) 0 0 / 0% 100% no-repeat,
-    repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 4px);
-  opacity: 0.6;
-  -webkit-mask: linear-gradient(0deg, transparent 20%, #000 20% 80%, transparent 80%);
-  mask: linear-gradient(0deg, transparent 20%, #000 20% 80%, transparent 80%);
+.voicePlay svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+  opacity: 0.85;
 }
 
-.wave[data-playing] {
+/* The note's waveform, bar by bar, and the knob that runs along it as it plays. */
+.wave {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 24px;
+}
+
+.wave span {
+  flex: 1;
+  min-height: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.wave::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: #53bdeb;
+}
+
+.wave[data-playing]::after {
   animation: listen var(--len, 10s) linear forwards;
 }
 
 @keyframes listen {
   to {
-    background-size: 100% 100%, auto;
+    left: 100%;
   }
+}
+
+/* A mark in a chat's preview line: a mic, a camera, a page. */
+.mark {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 3px;
+  vertical-align: -2px;
+  fill: currentColor;
 }
 
 .photo {
@@ -136,7 +174,7 @@
   cursor: pointer;
 }
 
-.archivedIcon { width: 52px; text-align: center; font-size: 20px; color: #8e8e93; }
+.archivedIcon { flex: none; width: 52px; height: 22px; fill: none; stroke: #8e9598; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
 .archivedLabel { flex: 1; font-size: 16px; font-weight: 600; }
 .archivedCount { font-size: 14px; color: #8e8e93; }
 .archivedBack { margin: 0 0 4px; padding: 0; border: 0; background: none; color: #25d366; font: inherit; font-size: 16px; cursor: pointer; }

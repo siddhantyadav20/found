@@ -18,6 +18,7 @@ import {
   charging as onCharger,
   clockAt,
   clockNow,
+  dateNow,
   dayNow,
   dueEvents,
   fire,
@@ -32,10 +33,10 @@ import {
 import { AIRPLANE } from "@/lib/game/phone";
 import { hasRecord, SAW_RECORD, somethingNew, yourMessages } from "@/lib/game/yours";
 import { useNow } from "@/lib/found/now";
-import { phoneClock, stamp } from "@/lib/found/time";
+import { longDay, phoneClock, stamp } from "@/lib/found/time";
 import { boundCase, readProgress } from "@/lib/found/progress";
 import { noteBattery } from "@/lib/found/shelf";
-import AppBody from "./AppBody";
+import AppBody, { preloadApps } from "./AppBody";
 import { flag, nudged, save } from "./playthrough";
 import styles from "./Stage.module.css";
 
@@ -102,6 +103,12 @@ export default function Table({
     setTold(newsKey);
     setHolding(true);
   };
+
+  // Every app's code, fetched once the phone is on screen and nothing else is going on.
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 1200));
+    idle(() => preloadApps());
+  }, []);
 
   /* Live events: anything the story says is due, once whatever it waits for
      is true: a message, a missed call, the phone beginning to die. */
@@ -221,13 +228,13 @@ export default function Table({
       <div className={styles.table}>
         <Phone
           time={phoneClock(clock)}
-          day={dayNow(story, state)}
+          day={longDay(dayNow(story, state), dateNow(story, state))}
           battery={percent}
           charging={charging}
           wallpaper={meta.wallpaper}
           lock={
             has(state, "did:past-lock") ? undefined : (
-              <LockScreen day={dayNow(story, state)} clock={phoneClock(clock)} notes={notices} onOpen={() => flag("did:past-lock")} />
+              <LockScreen day={longDay(dayNow(story, state), dateNow(story, state))} clock={phoneClock(clock)} notes={notices} onOpen={() => flag("did:past-lock")} />
             )
           }
           home={<Home story={story} state={state} onOpen={onOpenApp} covered={Boolean(openApp)} />}
@@ -236,8 +243,8 @@ export default function Table({
               <AppView
                 title={appLabel(story, openApp)}
                 onBack={() => setOpenApp(null)}
-                own={openApp === "messages" || openApp === "voicememos" || openApp === "mail" || openApp === "paytap"}
-                whole={openApp === "photos" || openApp === "whatsapp" || openApp === "instagram"}
+                // Every app but the case file draws its own screens, each with its own bar.
+                whole={openApp !== "casefile"}
               >
                 <AppBody app={openApp} story={story} state={state} onHome={() => setOpenApp(null)} />
               </AppView>

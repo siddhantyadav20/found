@@ -1,0 +1,91 @@
+/* Safari's History: a day's heading, then its pages, each with its favicon. */
+
+.day {
+  margin: 4px 4px 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.group {
+  margin: 0 0 22px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 26px;
+  corner-shape: superellipse(1.4);
+  background: var(--os-panel);
+  list-style: none;
+}
+
+.group > li {
+  position: relative;
+}
+
+.group > li + li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 60px;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:active {
+  background: var(--os-panel-2);
+}
+
+/* Google's favicon: its G, on white, in a small rounded tile. */
+.favicon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #fff;
+  color: #4285f4;
+  font-family: Arial, "Helvetica Neue", sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  letter-spacing: -0.02em;
+}
+
+/* Two lines, not one: what he searched for is the point, and has to be read whole. */
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 17px;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.url {
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--ios-grey);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

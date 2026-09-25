@@ -47,7 +47,7 @@ function Icon({ app }: { app: "messages" | keyof typeof TILES }) {
     );
   return (
     <span className={styles.icon} aria-hidden="true">
-      <span className={tile.tile} style={{ background: TILES[app] }}>
+      <span className={`${tile.tile} sq`} style={{ background: TILES[app] }}>
         <svg viewBox="0 0 24 24" className={tile.glyph}>
           {app === "social" && (
             <path d="M3.5 12.5h4l2-5.5 4 11 2.2-5.5h4.8" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

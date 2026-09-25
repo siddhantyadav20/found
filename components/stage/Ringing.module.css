@@ -15,17 +15,33 @@
   text-align: center;
 }
 
+/* The phone's own wallpaper, blurred and dimmed behind the call, as iOS shows one. */
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  z-index: -1;
+  background: var(--wallpaper, none) center / cover no-repeat;
+  filter: blur(34px) brightness(0.42) saturate(1.2);
+}
+
+.screen { isolation: isolate; overflow: hidden; }
+
 /* iOS: the caller high on the screen, the buttons low, words under them. */
 .screen:not([data-answered]) { justify-content: space-between; padding-top: 18vh; padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+
+.extras { display: flex; justify-content: center; gap: 5.5rem; width: 100%; margin-top: auto; margin-bottom: 1.6rem; }
+.extra { position: relative; display: grid; place-items: center; width: 4.6rem; height: 4.6rem; border-radius: 50%; color: #fff; }
+.extra svg { width: 1.7rem; height: 1.7rem; }
 .screen[data-answered] { justify-content: flex-start; padding-top: 3.5rem; }
 
 .head { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
-.who { font-family: var(--font-ui); font-size: 2.1rem; font-weight: 500; line-height: 1.15; }
-.sub { font-family: var(--font-ui); font-size: 1rem; color: #a8a39c; }
+.who { font-family: var(--font-ios); font-size: 2.1rem; font-weight: 500; line-height: 1.15; }
+.sub { font-family: var(--font-ios); font-size: 1rem; color: #a8a39c; }
 .sub[data-timer] { font-variant-numeric: tabular-nums; }
 
 .buttons { display: flex; justify-content: center; gap: 5.5rem; width: 100%; }
-.button { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; font-family: var(--font-ui); font-size: 0.85rem; color: #f1ede7; }
+.button { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; font-family: var(--font-ios); font-size: 0.85rem; color: #f1ede7; }
 
 .answer, .decline {
   display: grid;
@@ -50,12 +66,12 @@
 
 .lines { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 24rem; margin-top: 1rem; text-align: left; }
 
-.line { display: flex; flex-direction: column; gap: 0.15rem; font-family: var(--font-ui); font-size: 1rem; line-height: 1.4; }
+.line { display: flex; flex-direction: column; gap: 0.15rem; font-family: var(--font-ios); font-size: 1rem; line-height: 1.4; }
 .speaker { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a857e; }
 .english { font-size: 0.75rem; color: #8a857e; }
 
 .say { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem; }
-.prompt { font-family: var(--font-ui); font-size: 0.72rem; color: #8a857e; }
+.prompt { font-family: var(--font-ios); font-size: 0.72rem; color: #8a857e; }
 
 .option {
   display: flex;
@@ -67,7 +83,7 @@
   background: #16181c;
   color: #e9e5df;
   font: inherit;
-  font-family: var(--font-ui);
+  font-family: var(--font-ios);
   font-size: 0.85rem;
   line-height: 1.35;
   text-align: left;

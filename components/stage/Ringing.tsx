@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 import type { IncomingCall, ReplyOption } from "@/content/types";
 import { has, type CaseState } from "@/lib/game/engine";
@@ -45,8 +45,11 @@ export default function Ringing({
   onAnswer,
   onDecline,
   onSay,
+  wallpaper,
 }: {
   call: IncomingCall;
+  /** The phone's wallpaper, blurred behind the call as iOS shows it. */
+  wallpaper?: string;
   state: CaseState;
   /** Answering is remembered in the save, so a reload doesn't re-ring it. */
   answered: boolean;
@@ -97,7 +100,11 @@ export default function Ringing({
   const reaction = chosen?.then?.[0];
 
   return (
-    <div className={styles.screen} data-answered={answered || undefined}>
+    <div
+      className={styles.screen}
+      data-answered={answered || undefined}
+      style={wallpaper ? ({ "--wallpaper": `url(${wallpaper})` } as CSSProperties) : undefined}
+    >
       <div className={styles.head}>
         <p className={styles.who}>{call.from}</p>
         {answered ? (
@@ -153,6 +160,27 @@ export default function Ringing({
           )}
         </div>
       ) : (
+        <>
+        {/* iOS 26 offers these two over the answer buttons; here they only set the scene. */}
+        <div className={styles.extras} aria-hidden="true">
+          <span className={styles.button}>
+            <span className={`${styles.extra} lg`}>
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="13" r="7" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M12 9.5V13l2.2 1.6M5 4.5 3 6.5M19 4.5l2 2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            </span>
+            <span>Remind Me</span>
+          </span>
+          <span className={styles.button}>
+            <span className={`${styles.extra} lg`}>
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4.5c4.7 0 8 2.9 8 6.6s-3.3 6.6-8 6.6c-.9 0-1.8-.1-2.6-.3L5.2 19.3l1-3C4.8 15 4 13.3 4 11.1c0-3.7 3.3-6.6 8-6.6Z" fill="currentColor" />
+              </svg>
+            </span>
+            <span>Message</span>
+          </span>
+        </div>
         <div className={styles.buttons}>
           {onDecline && (
             <span className={styles.button}>
@@ -178,6 +206,7 @@ export default function Ringing({
             <span>Accept</span>
           </span>
         </div>
+        </>
       )}
     </div>
   );

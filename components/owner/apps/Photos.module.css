@@ -26,6 +26,8 @@
 .paper[data-big] .paperTitle { font-size: 11px; margin-bottom: 10px; }
 .paper[data-big] .hand { font-size: 16px; line-height: 1.7; }
 
+/* A photograph not shot yet: a dark exposure in its own light (--hue), with
+   the lens falling off at the edges and a phone sensor's grain on it. */
 .scene {
   position: relative;
   overflow: hidden;
@@ -33,7 +35,18 @@
   place-items: center;
   width: 100%;
   height: 100%;
-  background: radial-gradient(80% 60% at 40% 30%, #4b5a49, #1d241f);
+  background:
+    radial-gradient(120% 90% at 35% 28%, hsl(var(--hue, 30) 38% 30%) 0%, hsl(var(--hue, 30) 26% 12%) 52%, #050505 100%);
+}
+
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 /* Full size, a photograph is portrait, as the phone took it: as wide as the

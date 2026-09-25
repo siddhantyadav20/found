@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { siteUrl } from "@/lib/origin";
-import { canela, outfit } from "./fonts";
+import { canela, outfit, phone } from "./fonts";
 import "./globals.css";
+import "./ios.css";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${canela.variable} ${outfit.variable}`}
+      className={`${canela.variable} ${outfit.variable} ${phone.variable}`}
       // SaveScript marks a returning player's page before React sees it.
       suppressHydrationWarning
     >
