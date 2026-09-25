@@ -33,6 +33,6 @@ jobs:
         env:
           # Placeholder until Found has its own domain. lib/origin.ts refuses
           # to build on CI without one.
-          NEXT_PUBLIC_SITE_URL: http://localhost:3001
+          SITE_URL: http://localhost:3001
 
       - run: npm run budget

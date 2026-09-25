@@ -62,7 +62,7 @@ function normalise(raw: string): string {
     return new URL(withScheme).origin;
   } catch {
     throw new Error(
-      `NEXT_PUBLIC_SITE_URL is not a valid origin: ${JSON.stringify(raw)}. ` +
+      `SITE_URL is not a valid origin: ${JSON.stringify(raw)}. ` +
         "Set it to this deployment's own origin, e.g. https://sidbuilds.in. " +
         "See .env.example.",
     );
@@ -70,7 +70,10 @@ function normalise(raw: string): string {
 }
 
 export function siteOrigin(): string {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  /* SITE_URL first: it's only ever read on the server, and Vercel refuses a
+     NEXT_PUBLIC_ variable unless it's marked safe to expose. The old name
+     still works. */
+  const configured = (process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL)?.trim();
   if (configured) return normalise(configured);
 
   /* On Vercel, the project's production domain is always known: a custom
@@ -82,7 +85,7 @@ export function siteOrigin(): string {
 
   if (process.env.CI) {
     throw new Error(
-      "NEXT_PUBLIC_SITE_URL is unset. Set it to this deployment's own origin " +
+      "SITE_URL is unset. Set it to this deployment's own origin " +
         "— falling back to " +
         FALLBACK +
         " would publish production canonicals, og:url and sitemap entries " +
