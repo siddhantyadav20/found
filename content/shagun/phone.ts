@@ -352,9 +352,21 @@ export const threads: readonly Thread[] = [
 /** Bhasin's group as Sameer screenshotted it on Sunday morning, before it could disappear. */
 const GROUP = { name: "Banyan — Security", sub: "Bhasin, Kunal, Pappu, Ramesh, You" } as const;
 
+/**
+ * Free-licence stand-ins (Pexels; ASSETS.md "Stock stand-ins"), for frames
+ * with no character's face in them. The cast shoot replaces them.
+ */
+const STOCK: Readonly<Record<string, string>> = {
+  "w-0": "/found/shagun/w-0.jpg",
+  "w-1": "/found/shagun/w-1.jpg",
+  "w-8": "/found/shagun/w-8.jpg",
+  "w-11": "/found/shagun/w-11.jpg",
+  "w-14": "/found/shagun/w-14.jpg",
+};
+
 /** A wedding photographer's night: most of it is just the wedding (ASSETS.md §1). */
 const WEDDING: readonly [string, string][] = [
-  ["18:02", "The mandap going up, marigold strings on ladders"],
+  ["16:40", "The mandap going up, marigold strings on ladders"],
   ["18:40", "Ishita's hands, mehendi, the groom's name hidden in it"],
   ["19:05", "The Sehgal cousins, matching sherwanis, one yawning"],
   ["19:20", "Rohan on the white mare, sehra over his face"],
@@ -382,6 +394,7 @@ export const photos: readonly Photo[] = [
     place: "Chhattarpur",
     kind: "scene",
     title,
+    src: STOCK[`w-${i}`],
   })),
   { id: "w-baraat", album: "Sehgal wedding", at: "19:34", day: "22/11", place: "Chhattarpur", kind: "scene", title: "The baraat at the gate, dhol and marigolds" },
   { id: "w-couple", album: "Sehgal wedding", at: "20:10", day: "22/11", place: "Chhattarpur", kind: "scene", title: "Ishita and Rohan under fairy lights" },
@@ -400,8 +413,8 @@ export const photos: readonly Photo[] = [
     zoom: { at: { x: 34, y: 66 }, reveal: "CHHOTU", evidence: "badge" },
     evidence: "portrait",
   },
-  { id: "w-dance", album: "Sehgal wedding", at: "23:40", day: "22/11", place: "Chhattarpur", kind: "scene", title: "The dance floor, phones in the air" },
-  { id: "w-pheras", album: "Sehgal wedding", at: "01:20", day: "Sunday", place: "Chhattarpur", kind: "scene", title: "Pheras, late, the fire in the middle" },
+  { id: "w-dance", album: "Sehgal wedding", at: "23:40", day: "22/11", place: "Chhattarpur", kind: "scene", title: "The dance floor, phones in the air", src: "/found/shagun/w-dance.jpg" },
+  { id: "w-pheras", album: "Sehgal wedding", at: "01:20", day: "Sunday", place: "Chhattarpur", kind: "scene", title: "Pheras, late, the fire in the middle", src: "/found/shagun/w-pheras.jpg" },
   /* Kunal's photo of the reel's setup: Sameer deleted the message, and WhatsApp
      had already saved the picture to Photos (CHAPTER1.md E). Like the reel
      take, only its thumbnail is on the phone: the rest is in iCloud, and
@@ -427,6 +440,7 @@ export const photos: readonly Photo[] = [
     place: "Chhattarpur",
     kind: "scene",
     title: "The varmala, out of focus",
+    src: "/found/shagun/w-blur.jpg",
     deletedAt: "11:20",
     daysLeft: 25,
   },
@@ -447,6 +461,7 @@ export const photos: readonly Photo[] = [
     day: "Sunday",
     kind: "scene",
     title: "A tripod shot of the back lawn",
+    src: "/found/shagun/reel-take.jpg",
     deletedAt: "22:48",
     daysLeft: 28,
     inCloud: ["ep:2"],
@@ -472,7 +487,8 @@ export const photos: readonly Photo[] = [
     at: "04:47",
     day: "Sunday",
     kind: "scene",
-    title: "Firelight moving on a brick wall",
+    title: "A fire before dawn, smoke across the fairy lights",
+    src: "/found/shagun/fire.jpg",
     video: {
       seconds: 9,
       captions: [
@@ -617,7 +633,8 @@ export const notes: readonly Note[] = [
         at: "04:47",
         day: "Sunday",
         kind: "scene",
-        title: "Firelight moving on a brick wall",
+        title: "A fire before dawn, smoke across the fairy lights",
+    src: "/found/shagun/fire.jpg",
         video: {
           seconds: 31,
           captions: [
@@ -791,7 +808,7 @@ export const profiles: readonly Profile[] = [
     own: true,
     bio: "SK Films · weddings that feel like films\nDelhi → Mumbai, soon",
     posts: [
-      { id: "i-1", title: "Pheras under fairy lights", caption: "Ishita & Rohan ✨" },
+      { id: "i-1", title: "Pheras under fairy lights", caption: "Ishita & Rohan ✨", src: "/found/shagun/w-pheras.jpg" },
       { id: "i-2", title: "A selfie, camera up, a silver kada on his wrist", caption: "New gimbal day" },
       { id: "i-3", title: "A haldi, yellow everywhere" },
       { id: "i-4", title: "A bride laughing at a mirror" },

@@ -276,6 +276,10 @@ are stalls.
     squares. Q2's name badge needs a zoom that nothing invites, and Q12's "his
     hands, with the kada" needs the kada from his Instagram. S11 is what turns
     clever into gripping.
+    Started 2026-09-26:
+    - Ten free-licence Pexels frames for scenes with no character's face (ASSETS.md "Stock stand-ins").
+    - Voice scripts per actor (VOICE-SCRIPTS.md).
+    - Still open: the character photos (generated or cast), recordings, and audio playback.
 56. ✅ **Episode 1's questions are clerical after a huge hook.** "They burned him"
     lands in the first two minutes. Then Q1–Q4 ask whose phone this is, who
     the poster boy is, and when the phone was set up. Nothing says why the

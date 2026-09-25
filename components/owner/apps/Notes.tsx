@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, type CSSProperties } from "react";
 
 import type { Note, Photo, Story } from "@/content/types";
@@ -30,7 +31,11 @@ function Attachment({ photo }: { photo: Photo }) {
   return (
     <figure className={styles.attachment}>
       <div className={frame.frame} data-size={photo.video ? undefined : "full"} data-wide={photo.video ? "" : undefined} style={{ "--hue": photo.video ? 24 : 205 } as CSSProperties}>
-        <span className={frame.pending}>{photo.title}</span>
+        {photo.src ? (
+          <Image src={photo.src} alt={photo.title} fill sizes="400px" className={frame.image} />
+        ) : (
+          <span className={frame.pending}>{photo.title}</span>
+        )}
       </div>
       {photo.video && <Clip seconds={photo.video.seconds} captions={photo.video.captions} />}
     </figure>

@@ -42,6 +42,38 @@ dance-floor lawn and a back lawn with trees. One evening, a small cast.
 | **Raju's profile photo** at Chhath, Samastipur, and **Dilip at home** (Raju sends it in A) | Ep 1; A | Titled cards | ⬜ |
 | **Sameer's lock-screen wallpaper**: one of his own night shots from a wedding, the kind a photographer keeps as his best | Every screen of his phone | Generated fairy lights (`public/found/shagun-wallpaper.jpg`) | 🟨 |
 
+## Stock stand-ins (2026-09-26)
+
+Until the shoot, frames with **no character's face in them** use free
+photographs from Pexels, saved at 900 px wide in `public/found/shagun/`.
+The [Pexels licence](https://www.pexels.com/license/) allows free use,
+including commercial use, with no attribution. It forbids showing
+identifiable people in a bad light, so no stock photo stands in for Dilip,
+Sameer, Kunal, Nitin, the Sehgals or the couple's faces. Those stay titled
+cards until the shoot, or generated fictional people. **Never use a found
+photo of a real person**, from Google or anywhere else.
+
+| File | Stands in for | Source |
+|---|---|---|
+| `w-0.jpg` | The mandap going up, marigold strings (4:40 PM) | [Pexels 36652869](https://www.pexels.com/photo/36652869/) |
+| `w-1.jpg` | Ishita's hands, mehendi | [Pexels 29092945](https://www.pexels.com/photo/29092945/) |
+| `w-8.jpg` | The buffet, steam off the tandoor | [Pexels 32558924](https://www.pexels.com/photo/32558924/) |
+| `w-11.jpg` | The sangeet floor from the stage, phones in the air | [Pexels 3727129](https://www.pexels.com/photo/3727129/) |
+| `w-14.jpg` | Confetti cannons | [Pexels 5156622](https://www.pexels.com/photo/5156622/) |
+| `w-dance.jpg` | The dance floor, phones in the air | [Pexels 5152595](https://www.pexels.com/photo/5152595/) |
+| `w-pheras.jpg` | Pheras, late, the fire in the middle; also his Instagram's "Pheras under fairy lights" | [Pexels 8960427](https://www.pexels.com/photo/8960427/) |
+| `w-blur.jpg` | The varmala, out of focus (the bin) | [Pexels 34724759](https://www.pexels.com/photo/34724759/) |
+| `reel-take.jpg` | The reel take's poster: bulbs in the back lawn's trees | [Pexels 35372396](https://www.pexels.com/photo/35372396/) |
+| `fire.jpg` | The fire clip's poster, 4:47 AM: logs, smoke, fairy lights behind. No body | [Pexels 28181582](https://www.pexels.com/photo/28181582/) |
+
+Still titled cards, because each shows a character or no stock fits: the
+cousins, the groom on the mare, the dhol players at the gate, the varmala,
+the couple on stage, the shagun envelope (stock only has Chinese red
+envelopes), the waiters, Mrs Sehgal, Kunal's friends, Nitin on B cam, the
+empty mandap at midnight, the baraat twice, the couple, the family, **Dilip's
+portrait**, **the 12:29 photo**, his selfies with the kada, and Raju's
+photographs.
+
 ## 2. Video — short clips, not a call
 
 H.264 MP4, 480p and 360p, each clip with a poster frame and captions.
@@ -56,6 +88,8 @@ H.264 MP4, 480p and 360p, each clip with a poster frame and captions.
 
 AAC/M4A mono, 64 kbps. Every line already has its transcript and English in
 CHAPTER1; keep delivery to the words written there.
+
+**The recording scripts, one section per actor, are in [VOICE-SCRIPTS.md](VOICE-SCRIPTS.md)** (2026-09-26).
 
 | Asset | Beat | Placeholder | Status |
 |---|---|---|---|
