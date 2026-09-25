@@ -73,6 +73,13 @@ export function siteOrigin(): string {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (configured) return normalise(configured);
 
+  /* On Vercel, the project's production domain is always known: a custom
+     domain once one is attached, `<project>.vercel.app` until then. It's the
+     right canonical for a preview too, so a first import deploys without a
+     variable nobody knew to set. */
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return normalise(vercel);
+
   if (process.env.CI) {
     throw new Error(
       "NEXT_PUBLIC_SITE_URL is unset. Set it to this deployment's own origin " +
