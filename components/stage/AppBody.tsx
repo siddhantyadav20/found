@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { restored, reverted, unlocked } from "@/lib/game/phone";
+import { CHATS_UNLOCKED, restored, reverted, unlocked } from "@/lib/game/phone";
 import CaseFile from "./CaseFile";
 import { flag, read, save, say } from "./playthrough";
 
@@ -72,7 +72,7 @@ export default function AppBody({
     case "messages":
       return <Messages story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "whatsapp":
-      return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} />;
+      return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} onUnlock={() => flag(CHATS_UNLOCKED)} />;
     case "phone":
       return <Recents story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "photos":

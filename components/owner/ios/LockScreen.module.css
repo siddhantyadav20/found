@@ -150,6 +150,15 @@
   -webkit-line-clamp: 2;
 }
 
+.noteEnglish {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* The torch, the hint, the camera: the lock screen's bottom row. */
 .bottom {
   display: flex;

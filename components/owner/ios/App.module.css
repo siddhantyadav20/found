@@ -354,6 +354,15 @@ button.row:active {
   letter-spacing: 0;
 }
 
+/* A tab that goes somewhere is a button, and looks exactly like the rest. */
+button.tab {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
 .tab svg {
   width: 25px;
   height: 25px;

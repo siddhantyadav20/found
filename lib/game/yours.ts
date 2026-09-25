@@ -30,7 +30,9 @@ export const READ_KEY = "yours:read";
 export const hasRecord = (story: Story, s: CaseState): boolean => recordRows(story, s).some((r) => r.line !== null);
 
 export function somethingNew(story: Story, s: CaseState): boolean {
-  const toAnswer = yourThreads(story, s).some((t) => openReply(s, t));
+  // Something to answer means someone wrote: a chat the player could start isn't news.
+  const today = dateNow(story, s);
+  const toAnswer = yourThreads(story, s).some((t) => openReply(s, t) && conversation(s, t, today).some((m) => m.from === "them"));
   const unread = yourMessages(story, s) > (s.at[READ_KEY] ?? 0);
   const draft = hasRecord(story, s) && !s.flags.includes(SAW_RECORD);
   return toAnswer || unread || draft;

@@ -26,7 +26,15 @@ const run = (say: readonly Flag[] = [], style: Style = TRUTH, from?: CaseState) 
 
 describe("every ending, reached by playing", () => {
   it("the full chain, 11 of 11, sent: The Complete Record", () => {
-    const s = run(["did:protect-nitin", "did:raju-trusts", "did:confronted-sameer"]);
+    const s = run(["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:confronted-sameer"]);
+    expect(traced(ep, s)).toHaveLength(11);
+    expect(endingFor(ep, s, "send")?.id).toBe("complete");
+  });
+
+  it("the player ahead of the phone, filing hunches where they can, still traces the whole chain", () => {
+    const ahead: Style = { prefer: "truth", side: true, hunch: true };
+    const s = run(["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:confronted-sameer"], ahead);
+    expect(s.flags).toEqual(expect.arrayContaining(["claim:q3:sameer", "claim:q9:sameer"]));
     expect(traced(ep, s)).toHaveLength(11);
     expect(endingFor(ep, s, "send")?.id).toBe("complete");
   });
@@ -53,7 +61,7 @@ describe("every ending, reached by playing", () => {
 describe("fair play: every link survives any one route closing", () => {
   const routes: Record<string, () => CaseState> = {
     "nobody answered at all": () => run(),
-    "Nitin protected": () => run(["did:protect-nitin"]),
+    "Nitin protected": () => run(["did:nitin-asked", "did:protect-nitin"]),
     "Nitin pressed": () => run(["did:nitin-pressed"]),
     "Kunal confronted, so Nitin closes": () => run(["did:confronted-kunal"]),
     "Nitin handed to Kunal": () => run(["did:exposed-nitin"]),
@@ -71,7 +79,7 @@ describe("every piece of evidence", () => {
   it("is reachable by some way of playing", () => {
     // Each reply option opens something the others don't; between them, everything.
     const ways: (readonly Flag[])[] = [
-      ["did:protect-nitin", "did:raju-trusts", "did:told-sameer-shot", "did:gave-rescuer", "did:wrote-meera"],
+      ["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:told-sameer-shot", "did:gave-rescuer", "did:wrote-meera"],
       ["did:exposed-nitin", "did:asked-sameer-after", "did:confronted-sameer"],
       ["did:confronted-kunal"],
     ];

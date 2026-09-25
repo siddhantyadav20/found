@@ -27,7 +27,7 @@ function captionOf(state: DeskState, meta: CaseMeta, now: number): { hint: strin
       return {
         hint: state.solved ? `Closed${state.solved.minutes ? ` in ${state.solved.minutes} min` : ""}.` : "Closed.",
         cta: state.again ? "Play again" : "Open it",
-        small: state.again ? "Someone else goes missing next time." : "Bagged, tagged, and still on your desk.",
+        small: state.again ? "Someone else goes missing next time." : "Bagged and tagged. Case 2 is on its way: a phone, from Mumbai.",
       };
     default:
       return { hint: meta.hint, cta: meta.cta, small: "More are being found." };

@@ -40,13 +40,21 @@ export function recordRows(story: Story, s: CaseState): RecordRow[] {
   return story.chain.map((link) => {
     const traced = isTraced(s, link);
     const filed = traced ? undefined : versionFor(story, s, link.id);
-    const options: RecordChoice[] = traced ? ["in", "out"] : link.version ? ["out", "says", "fact"] : ["out"];
+    const options: RecordChoice[] = traced
+      ? link.unnamed
+        ? ["in", "anon", "out"]
+        : ["in", "out"]
+      : link.version
+        ? ["out", "says", "fact"]
+        : ["out"];
     const set = s.record?.[link.id];
     const choice: RecordChoice = set && options.includes(set) ? set : traced ? "in" : filed ? "fact" : "out";
     const line =
       choice === "in"
         ? link.truth
-        : choice === "says"
+        : choice === "anon"
+          ? (link.unnamed ?? link.truth)
+          : choice === "says"
           ? `Sameer says: “${link.english ?? link.version}”`
           : choice === "fact"
             ? (filed?.text ?? link.english ?? link.version ?? null)
@@ -69,7 +77,8 @@ export function endingFor(story: Story, s: CaseState, act: Act): Ending | undefi
   return story.endings.find(({ when }) => {
     if (!when.acts.includes(act)) return false;
     if (when.untraced?.some((id) => row(id)?.traced)) return false;
-    if (when.in?.some((id) => !(row(id)?.traced && row(id)?.choice === "in"))) return false;
+    // In without a witness's name is still in.
+    if (when.in?.some((id) => !(row(id)?.traced && (row(id)?.choice === "in" || row(id)?.choice === "anon")))) return false;
     if (when.noFacts && rows.some((r) => !r.traced && r.choice === "fact")) return false;
     return true;
   });
@@ -89,5 +98,10 @@ export function actFlags(story: Story, s: CaseState, act: Act): readonly Flag[] 
     `did:${act === "send" ? "sent" : act === "post" ? "posted" : "returned"}`,
     ...rows.filter((r) => r.traced && r.choice === "out").map((r): Flag => `did:left-out-${r.link.id}`),
     ...rows.filter((r) => !r.traced && r.choice === "fact").map((r): Flag => `did:fact-${r.link.id}`),
+    // A witness named, or kept out, wherever a row could have named him.
+    ...(rows.some((r) => r.link.unnamed && r.choice === "in") ? (["did:named-witness"] as const) : []),
+    ...(rows.some((r) => r.link.unnamed && r.choice === "anon") && !rows.some((r) => r.link.unnamed && r.choice === "in")
+      ? (["did:kept-witness"] as const)
+      : []),
   ];
 }

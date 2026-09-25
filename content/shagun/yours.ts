@@ -3,8 +3,8 @@ import type { LiveEvent, Thread } from "../types";
 /* ===========================================================================
    Your phone (CHAPTER1.md H: preserve evidence first).
 
-   Meera, written to from your own phone once her number is found, on his,
-   in M's contact info (her name is on the parcel's label already). She was
+   Meera, written to from your own phone: her name and mobile are on the
+   parcel's label, as a courier prints them (and on his, in M's contact info). She was
    away at a wedding when the courier tried her (CHAPTER1.md O1: returned to
    origin), which is why it's in the player's hands. She tells the player to
    put his phone on airplane mode; if they do, she reads Sameer's habits for
@@ -16,10 +16,9 @@ const meera: Thread = {
   app: "yours:chats",
   name: "Meera Arora",
   number: "+91 98••• •1206",
-  requires: ["saw:meera"],
   messages: [
     { id: "me-4", from: "them", at: "02:00", with: "meera-reads", requires: ["fired:meera-reads"], text: "Achha kiya.", english: "Good." },
-    { id: "me-5", from: "them", at: "02:00", with: "meera-reads", requires: ["fired:meera-reads"], text: "Ek baat. Sameer jo nahi dekhna chahta, archive karta hai. Ya hide.", english: "One thing. What Sameer doesn't want to look at, he archives. Or hides." },
+    { id: "me-5", from: "them", at: "02:00", with: "meera-reads", requires: ["fired:meera-reads"], text: "Ek baat. Sameer jo nahi dekhna chahta, lock kar deta hai. Aur password hamesha kisi aisi cheez ka rakhta hai jo woh bhool nahi sakta.", english: "One thing. What Sameer doesn't want to look at, he locks. And he always makes the password something he can't forget." },
     { id: "me-6", from: "them", at: "02:01", with: "meera-reads", requires: ["fired:meera-reads"], text: "Sameer darpok hai, par jhooth nahi bolta.", english: "Sameer's a coward, but he doesn't lie." },
     { id: "me-7", from: "them", at: "02:20", with: "meera-takes-back", requires: ["fired:meera-takes-back"], text: "Maine kaha tha woh jhooth nahi bolta.", english: "I said he doesn't lie." },
     { id: "me-8", from: "them", at: "02:20", with: "meera-takes-back", requires: ["fired:meera-takes-back"], typing: 5, text: "Maine galat kaha tha.", english: "I was wrong." },
@@ -27,7 +26,6 @@ const meera: Thread = {
   replies: [
     {
       id: "meera-first",
-      requires: ["saw:meera"],
       options: [
         {
           id: "write",
@@ -42,8 +40,8 @@ const meera: Thread = {
               id: "me-3",
               from: "them",
               at: "01:01",
-              text: "Us phone ko airplane mode pe daalo. Kuch delete mat karo. Kisi ko reply mat karo.",
-              english: "Put that phone on airplane mode. Don't delete anything. Don't reply to anyone.",
+              text: "Us phone ko airplane mode pe daalo. Kuch delete mat karo. Aur ab jo bhi likhe, soch ke reply karna.",
+              english: "Put that phone on airplane mode. Don't delete anything. And whoever writes now, think before you reply.",
             },
           ],
         },

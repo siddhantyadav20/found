@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
 import { conversation, offeredOptions, openReply } from "@/lib/game/chat";
-import { all, arrivedAt, dateNow, reachable, seen, type CaseState } from "@/lib/game/engine";
-import { AIRPLANE, calendarOf } from "@/lib/game/phone";
+import { all, arrivedAt, dateNow, has, reachable, seen, type CaseState } from "@/lib/game/engine";
+import { AIRPLANE, calendarOf, CHATS_UNLOCKED, isCode } from "@/lib/game/phone";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { TabBar } from "../AppView";
@@ -26,9 +26,12 @@ import local from "./Chat.module.css";
    everyone, a forward, or a reply quoting an earlier one. In a group, each
    message says who sent it.
 
-   Three WhatsApp behaviours a chapter can rest on (CHAPTER1.md E):
+   Four WhatsApp behaviours a chapter can rest on (CHAPTER1.md E):
    - **Archived**: a chat moved out of the list sits one tap further, under
      "Archived" at the top
+   - **Chat Lock**, with "Hide locked chats" on: a chat that isn't in the
+     list at all, until its secret code is typed into Search; Settings ›
+     Privacy › Chat lock is where anyone would learn there are some
    - **one grey tick**: sent and never delivered, which is what a block
      looks like from the other side
    - a message deleted "for me" leaves nothing behind, so a reply to it is
@@ -455,6 +458,7 @@ export default function Chat({
   chrome = true,
   onRead,
   onSay,
+  onUnlock,
 }: {
   story: Story;
   state: CaseState;
@@ -462,13 +466,17 @@ export default function Chat({
   onHome?: () => void;
   /** WhatsApp draws its own bar, title and tabs; Instagram's DMs sit inside Instagram. */
   chrome?: boolean;
+  /** The secret code, typed into Search: the locked chats show, and the save keeps it. */
+  onUnlock?: () => void;
   /** Opening a chat is how what's in it gets found. */
   onRead: (evidenceIds: readonly string[]) => void;
   /** The player, saying something on somebody else's phone. */
   onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
-  const [archive, setArchive] = useState(false);
+  const [view, setView] = useState<"chats" | "archived" | "locked" | "settings" | "privacy" | "lock">("chats");
+  const [query, setQuery] = useState("");
+  const archive = view === "archived";
   const live = story.threads.filter((t) => t.app === app && all(state, t.requires));
 
   /* Two entries with the same name are one chat: a later episode adds
@@ -484,16 +492,37 @@ export default function Chat({
   const here = threads.find((t) => t.id === open);
   if (here) return <Conversation key={here.id} story={story} thread={here} state={state} app={app} onBack={() => setOpen(null)} onRead={onRead} onSay={onSay} />;
 
-  const archived = threads.filter((t) => t.archived);
+  const archived = threads.filter((t) => t.archived && !t.locked);
+  const locked = threads.filter((t) => t.locked);
+  const unlocked = has(state, CHATS_UNLOCKED);
   const today = dateNow(story, state);
   const cal = calendarOf(story, state);
-  const inList = archive ? archived : threads.filter((t) => !t.archived);
+  const wanted = query.trim().toLowerCase();
+  const inList =
+    view === "archived"
+      ? archived
+      : view === "locked"
+        ? locked
+        : threads.filter((t) => !t.archived && !t.locked && (!wanted || t.name.toLowerCase().includes(wanted)));
 
   const list = (
     <ul className={styles.list}>
-      {!archive && archived.length > 0 && (
+      {/* The locked chats, once the code has been typed: a folder at the top, as WhatsApp shows it. */}
+      {view === "chats" && unlocked && locked.length > 0 && (
         <li>
-          <button type="button" className={local.archivedRow} onClick={() => setArchive(true)}>
+          <button type="button" className={local.archivedRow} onClick={() => setView("locked")}>
+            <svg viewBox="0 0 24 24" className={local.archivedIcon} aria-hidden="true">
+              <rect x="5" y="10.5" width="14" height="10" rx="2.5" />
+              <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+            </svg>
+            <span className={local.archivedLabel}>Locked chats</span>
+            <span className={local.archivedCount}>{locked.length}</span>
+          </button>
+        </li>
+      )}
+      {view === "chats" && archived.length > 0 && (
+        <li>
+          <button type="button" className={local.archivedRow} onClick={() => setView("archived")}>
             <svg viewBox="0 0 24 24" className={local.archivedIcon} aria-hidden="true">
               <path d="M3.5 5.5h17v4h-17ZM5 9.5v9a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18.5v-9M9.5 13.5h5" />
             </svg>
@@ -554,9 +583,9 @@ export default function Chat({
 
   if (!chrome) return list;
 
-  // Everything waiting, across every chat: the Chats tab carries the count.
+  // Everything waiting, across every chat in the list: the Chats tab carries the count.
   const waiting = threads
-    .filter((t) => !t.archived)
+    .filter((t) => !t.archived && !t.locked)
     .reduce(
       (n, t) =>
         n +
@@ -570,8 +599,14 @@ export default function Chat({
   return (
     <section className={styles.chats} data-app="whatsapp">
       <header className={styles.listBar}>
-        {archive ? (
-          <button type="button" className={`${styles.backButton} lg`} onClick={() => setArchive(false)} data-back aria-label="Chats">
+        {view !== "chats" ? (
+          <button
+            type="button"
+            className={`${styles.backButton} lg`}
+            onClick={() => setView(view === "lock" ? "privacy" : view === "privacy" ? "settings" : "chats")}
+            data-back
+            aria-label="Back"
+          >
             <Chevron back />
           </button>
         ) : (
@@ -579,7 +614,7 @@ export default function Chat({
             <Chevron back />
           </button>
         )}
-        {!archive && (
+        {view === "chats" && (
           <span className={styles.listActions} aria-hidden="true">
             <span className={`${styles.backButton} lg`}>
               <svg viewBox="0 0 24 24" className={styles.barGlyph}>
@@ -595,18 +630,45 @@ export default function Chat({
         )}
       </header>
       <div className={styles.listBody}>
-        {archive ? (
+        {view === "settings" || view === "privacy" || view === "lock" ? (
+          <WhatsAppSettings view={view} owner={story.owner.name} onOpen={setView} />
+        ) : archive ? (
           <>
             <h2 className={styles.big}>Archived</h2>
             <p className={local.archivedNote}>These chats stay archived when new messages are received.</p>
           </>
+        ) : view === "locked" ? (
+          <>
+            <h2 className={styles.big}>Locked chats</h2>
+            <p className={local.archivedNote}>Hidden from your chat list. Found with your secret code.</p>
+          </>
         ) : (
           <>
             <h2 className={styles.big}>Chats</h2>
-            <div className={styles.search} aria-hidden="true">
-              <span className={styles.metaAi} />
-              Ask Meta AI or Search
-            </div>
+            <label className={styles.search}>
+              <span className={styles.metaAi} aria-hidden="true" />
+              <input
+                className={local.searchField}
+                value={query}
+                placeholder="Ask Meta AI or Search"
+                aria-label="Search"
+                autoComplete="off"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                onChange={(e) => {
+                  const typed = e.target.value;
+                  // The secret code, typed where WhatsApp says to type it: the locked chats open.
+                  if (isCode(story, typed)) {
+                    onUnlock?.();
+                    setQuery("");
+                    setView("locked");
+                    return;
+                  }
+                  setQuery(typed);
+                }}
+              />
+            </label>
             <div className={styles.chips} aria-hidden="true">
               {["All", "Unread", "Favourites", "Groups"].map((c, i) => (
                 <span key={c} data-on={i === 0 || undefined}>
@@ -617,9 +679,113 @@ export default function Chat({
             </div>
           </>
         )}
-        {list}
+        {view !== "settings" && view !== "privacy" && view !== "lock" && list}
+        {view === "chats" && wanted && inList.length === 0 && <p className={local.archivedNote}>No chats found.</p>}
       </div>
-      <TabBar tabs={TABS.map((tab) => ({ ...tab, on: tab.label === "Chats", badge: tab.label === "Chats" ? waiting : undefined }))} tint="#25d366" />
+      <TabBar
+        tabs={TABS.map((tab) => ({
+          ...tab,
+          on: tab.label === (view === "settings" || view === "privacy" || view === "lock" ? "Settings" : "Chats"),
+          badge: tab.label === "Chats" ? waiting : undefined,
+        }))}
+        tint="#25d366"
+        onSelect={(label) => {
+          if (label === "Chats") setView("chats");
+          if (label === "Settings") setView("settings");
+        }}
+      />
     </section>
+  );
+}
+
+/**
+ * WhatsApp's Settings, as far as anyone would go: the account, and Privacy,
+ * where Chat lock says that locked chats exist and how they're found, without
+ * showing them. The door, not what's behind it.
+ */
+function WhatsAppSettings({
+  view,
+  owner,
+  onOpen,
+}: {
+  view: "settings" | "privacy" | "lock";
+  owner: string;
+  onOpen: (v: "settings" | "privacy" | "lock") => void;
+}) {
+  if (view === "lock")
+    return (
+      <>
+        <h2 className={styles.big}>Chat lock</h2>
+        <div className={local.setGroup}>
+          <div className={local.setRow}>
+            <span>Hide locked chats</span>
+            <span className={local.setToggle} aria-label="On" role="img" />
+          </div>
+          <div className={local.setRow}>
+            <span>Secret code</span>
+            <span className={local.setMeta}>Set</span>
+          </div>
+        </div>
+        <p className={local.setNote}>Locked chats are hidden from your chat list. To see them, type your secret code in the search bar in Chats.</p>
+        <div className={local.setGroup}>
+          <div className={local.setRow} data-danger>
+            Unlock and clear locked chats
+          </div>
+        </div>
+      </>
+    );
+  if (view === "privacy")
+    return (
+      <>
+        <h2 className={styles.big}>Privacy</h2>
+        <div className={local.setGroup}>
+          {[
+            ["Last seen and online", "Nobody"],
+            ["Profile photo", "My contacts"],
+            ["About", "Everyone"],
+            ["Read receipts", "On"],
+          ].map(([k, v]) => (
+            <div key={k} className={local.setRow}>
+              <span>{k}</span>
+              <span className={local.setMeta}>{v}</span>
+            </div>
+          ))}
+        </div>
+        <div className={local.setGroup}>
+          <button type="button" className={local.setRow} onClick={() => onOpen("lock")}>
+            <span>Chat lock</span>
+            <span className={local.setMeta}>2 chats</span>
+            <Chevron />
+          </button>
+        </div>
+      </>
+    );
+  return (
+    <>
+      <h2 className={styles.big}>Settings</h2>
+      <div className={local.setGroup}>
+        <div className={local.setRow}>
+          <Avatar head />
+          <span className={local.setWho}>
+            {owner}
+            <small>SK Films 📷</small>
+          </span>
+        </div>
+      </div>
+      <div className={local.setGroup}>
+        {["Account", "Privacy", "Chats", "Notifications", "Storage and data"].map((k) =>
+          k === "Privacy" ? (
+            <button key={k} type="button" className={local.setRow} onClick={() => onOpen("privacy")}>
+              <span>{k}</span>
+              <Chevron />
+            </button>
+          ) : (
+            <div key={k} className={local.setRow}>
+              <span>{k}</span>
+            </div>
+          ),
+        )}
+      </div>
+    </>
   );
 }

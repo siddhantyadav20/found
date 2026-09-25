@@ -37,6 +37,8 @@ export type Notice = {
   app: AppId;
   from: string;
   text: string;
+  /** The English under a Hinglish line, on the lock screen as everywhere. */
+  english?: string;
   time?: string;
   /** Whose icon it wears, when that isn't the app it opens. */
   icon?: AppId;

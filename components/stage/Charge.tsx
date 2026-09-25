@@ -30,16 +30,18 @@ export default function Charge({ gate, onPlugged }: { gate: Gate; onPlugged: () 
     };
   }, []);
 
+  /* A charger going in is the moment itself. One that was already in (a
+     laptop on mains) isn't a moment at all, so the player plugs his phone in
+     by hand: the beat has to happen either way (PLAYTEST-SHAGUN.md #45). */
   useEffect(() => {
     if (!battery) return undefined;
     const check = () => battery.charging && onPlugged();
-    check();
     battery.addEventListener("chargingchange", check);
     return () => battery.removeEventListener("chargingchange", check);
   }, [battery, onPlugged]);
 
-  // No battery to read, or two minutes of nothing: a cable they can tap.
-  const cable = battery === null || waited;
+  // No battery to read, one already charging, or two minutes of nothing: a cable they can tap.
+  const cable = battery === null || Boolean(battery?.charging) || waited;
 
   return (
     <div className={styles.charge}>

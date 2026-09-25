@@ -7,7 +7,7 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   href: "/c/shagun",
   title: "Shagun",
   cta: "Open the parcel",
-  hint: "A parcel at your door. A wedding envelope. A note to someone called M.",
+  hint: "A parcel for a lawyer came back to your door. Inside: a stranger's phone, and a note.",
   description:
     "A stranger's phone arrives with a wedding envelope and a note meant for someone else. A Delhi wedding, a shot, and a night that was arranged before it reached you.",
   wallpaper: "/found/shagun-wallpaper.jpg",
@@ -25,6 +25,10 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   label: {
     to: "Meera Arora",
     address: "Advocate · Lawyers' Chambers, Saket Courts, New Delhi",
+    // Couriers print the receiver's mobile: it's how the player can reach her.
+    phone: "+91 98••• •1206",
+    // The sender he wrote: a name you don't know, over your own address (#56).
+    from: "S. Khurana · your address",
     stamp: ["RETURN TO ORIGIN", "Addressee not available"],
   },
   links: 11,

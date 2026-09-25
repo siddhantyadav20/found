@@ -67,9 +67,21 @@ export const story: Story = {
   },
   lockScreen: [
     { key: "calls", app: "phone", from: "Phone", text: "47 Missed Calls", time: "11:38 PM" },
-    { key: "mummy", app: "whatsapp", from: "Mummy", text: "Beta, phone kyun nahi utha raha? Khana khaya?", time: "10:52 PM" },
+    {
+      key: "mummy",
+      app: "whatsapp",
+      from: "Mummy",
+      text: "Beta, phone kyun nahi utha raha? Khana khaya?",
+      english: "Why aren't you picking up? Have you eaten?",
+      time: "10:52 PM",
+    },
     { key: "bhasin", app: "phone", from: "Bhasin Uncle", text: "2 missed calls", time: "Fri" },
   ],
+  /* Nitin's and Chhotu's chats, locked and hidden on Thursday. The code is the
+     word of his promise to Dilip ("Mumbai wali baat pakki na?"). Sameer gives
+     it himself in Episode 2, to show he tried; the other way is the memo he
+     deleted, in Voice Memos once it's back. */
+  chatLock: { code: "pakki", knownWhen: [["did:installed-voicememos"], ["fired:sameer-code"]] },
   /* What a wedding photographer keeps on the first page. */
   home: {
     pages: [
@@ -99,7 +111,7 @@ export const story: Story = {
   mail,
   payments,
   profiles,
-  incoming: [...episode1.incoming],
+  incoming: [...episode1.incoming, ...episode2.incoming, ...episode3.incoming],
   searches,
   calls,
   settings,
@@ -114,7 +126,8 @@ export const story: Story = {
     social: "Pulse",
     intro: "What happened at the Sehgal wedding · Banyan Farms, Chhattarpur · 22 Nov",
     sendTo: "Meera",
-    sendRequires: ["saw:meera"],
+    // Her number is on the parcel's label: nothing to find before she can be reached.
+    sendRequires: [],
     /* Return to Sender, where the sender on paper is you (O1): the
        legitimate channel for a parcel that isn't yours is the courier. */
     parcel: {
@@ -125,6 +138,17 @@ export const story: Story = {
   },
   // The replay image (CHAPTER1.md J): the note whose last line stops at "4. Nitin —".
   replay: { note: "for-m", caption: "He started to tell you." },
+  /* Canon §21: Meera, with a separate case and another handset, in Mumbai. The
+     player's role is established now; this time the label is theirs. */
+  next: {
+    title: "Chapter 2 · Mumbai",
+    from: "Meera",
+    lines: [
+      { text: "Ek aur phone aaya hai. Mumbai se.", english: "Another phone has come. From Mumbai." },
+      { text: "Is baar label pe naam tumhara hai.", english: "This time, the name on the label is yours." },
+    ],
+    note: "Being found. It'll be on your desk when it arrives.",
+  },
   /* Checked at the source on 2026-09-24: the Arms Act, 1959, s.25(9) as
      inserted by Act 48 of 2019 (indiankanoon.org/doc/26451110); Parmanand
      Katara v. Union of India, AIR 1989 SC 2039 (indiankanoon.org/doc/498126);

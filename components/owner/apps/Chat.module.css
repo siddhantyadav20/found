@@ -207,3 +207,112 @@
 }
 
 .contactLabel { font-size: 12px; color: #8e8e93; }
+
+/* Search, for real: the field is the pill itself. */
+.searchField {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--os-text);
+  font: inherit;
+  outline: none;
+}
+
+.searchField::placeholder {
+  color: var(--chat-dim, #8e8e93);
+}
+
+/* WhatsApp's Settings: grouped rows on dark, as its iOS app draws them. */
+.setGroup {
+  display: grid;
+  margin: 0 16px 18px;
+  overflow: hidden;
+  border-radius: 14px;
+  corner-shape: superellipse(1.4);
+  background: #1c1c1e;
+}
+
+.setRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 16px;
+  border: 0;
+  border-bottom: 0.5px solid rgba(84, 84, 88, 0.6);
+  background: none;
+  color: var(--os-text);
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+}
+
+.setRow:last-child {
+  border-bottom: 0;
+}
+
+button.setRow {
+  cursor: pointer;
+}
+
+.setRow > span:first-child {
+  flex: 1;
+}
+
+.setRow svg:last-child {
+  width: 8px;
+  height: 13px;
+  color: #8e8e93;
+}
+
+.setRow[data-danger] {
+  color: #ff453a;
+}
+
+.setMeta {
+  flex: none;
+  color: #8e8e93;
+}
+
+.setWho {
+  display: grid;
+  gap: 2px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.setWho small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #8e8e93;
+}
+
+.setToggle {
+  flex: none;
+  position: relative;
+  width: 51px;
+  height: 31px;
+  border-radius: 999px;
+  background: #25d366;
+}
+
+.setToggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.setNote {
+  margin: -10px 32px 18px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #8e8e93;
+}

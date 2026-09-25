@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { CASES } from "@/content/cases";
 import { STORIES } from "@/content/stories";
 import type { Flag } from "@/content/types";
-import { homeIcons } from "@/lib/game/engine";
+import { blanksOf, homeIcons } from "@/lib/game/engine";
 
 /**
  * The chapter, held to its own promises (PLAYER-JOURNEY law 3):
@@ -39,7 +39,8 @@ describe("every question", () => {
               ? new Set(q.rows.map((r) => r.evidence)).size
               : q.kind === "file"
                 ? // The traced answer, not the owner's version, is the one that must be reachable twice.
-                  Math.min(...q.claims.filter((c) => !c.version).map((c) => 1 + (c.orProof?.length ?? 0)))
+                  // A near miss the sentence refuses is no way in at all.
+                  Math.min(...q.claims.filter((c) => !c.version && !c.refuse).map((c) => 1 + (c.orProof?.length ?? 0)))
                 : q.claims.length;
       expect(ways, q.id).toBeGreaterThanOrEqual(2);
     }
@@ -48,8 +49,41 @@ describe("every question", () => {
   it("that accepts the owner's version also accepts the truth, and says when it comes back", () => {
     for (const q of ep.questions) {
       if (q.kind !== "file" || !q.claims.some((c) => c.version)) continue;
-      expect(q.claims.some((c) => !c.version), q.id).toBe(true);
-      expect(q.reopenWhen?.length, `${q.id} can never be revisited`).toBeGreaterThan(0);
+      expect(q.claims.some((c) => !c.version && !c.refuse), q.id).toBe(true);
+      // Back as a Revisit, or crossed out by the next episode's answer.
+      expect((q.reopenWhen?.length ?? 0) + (q.struckWhen?.length ?? 0), `${q.id} can never be revisited or struck`).toBeGreaterThan(0);
+    }
+  });
+
+  /* Said as a sentence (script §12): the player's words decide the claim, so
+     every claim has to be sayable, in words the sentence offers, and no two
+     claims can be said the same way. */
+  it("that is a sentence to finish can say every claim, one way each, in its own words", () => {
+    for (const q of ep.questions) {
+      if (q.kind !== "file" || !q.say) continue;
+      const blanks = blanksOf(q.say.line);
+      expect(blanks.length, q.id).toBeGreaterThan(0);
+      for (const b of blanks) expect(q.say.blanks[b]?.length ?? 0, `${q.id}: {${b}}`).toBeGreaterThanOrEqual(2);
+      const said = new Set<string>();
+      for (const c of q.claims) {
+        for (const b of blanks) expect(q.say.blanks[b], `${q.id}:${c.id} {${b}}`).toContain(c.words?.[b]);
+        const key = blanks.map((b) => c.words?.[b]).join("|");
+        expect(said.has(key), `${q.id}:${c.id} is said the same way as another claim`).toBe(false);
+        said.add(key);
+      }
+    }
+  });
+
+  it("that pays a hunch pays one a player could have filed, in an earlier episode", () => {
+    for (const q of ep.questions) {
+      if (q.kind !== "file") continue;
+      for (const c of q.claims)
+        for (const ref of c.pays ?? []) {
+          const [qid, cid] = ref.split(":");
+          const earlier = ep.questions.find((x) => x.id === qid);
+          expect(earlier?.episode, ref).toBeLessThan(q.episode);
+          expect(earlier?.kind === "file" && earlier.claims.find((x) => x.id === cid)?.hunch, ref).toBeTruthy();
+        }
     }
   });
 
@@ -113,7 +147,9 @@ describe("every piece of evidence", () => {
       ...ep.memos.filter((m) => m.deletedAt).map((m) => m.evidence),
       // A locked note: found by opening it with its password, not by opening Notes.
       ...ep.notes.filter((n) => n.locked).flatMap((n) => (n.attachments ?? []).map((a) => a.evidence)),
-      ...ep.threads.filter((t) => t.archived).flatMap((t) => t.messages.map((m) => m.evidence)),
+      // What was already there when he tucked it away; what arrives there later arrives by an event.
+      ...ep.threads.filter((t) => t.archived || t.locked).flatMap((t) => t.messages.filter((m) => !m.with).map((m) => m.evidence)),
+      ...ep.photos.filter((p) => p.deletedAt).flatMap((p) => p.chat?.lines.map((l) => l.evidence) ?? []),
     ].filter((id): id is string => Boolean(id));
     for (const id of hard) expect(ep.evidence.find((e) => e.id === id)?.manual, `${id} would be found just by opening its app`).toBe(true);
   });

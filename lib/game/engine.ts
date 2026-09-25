@@ -40,7 +40,7 @@ export type CaseState = {
  * A link, as it goes into the record: a traced link `in` or `out`; an
  * untraced one `out`, as what Sameer `says`, or as `fact`.
  */
-export type RecordChoice = "in" | "out" | "says" | "fact";
+export type RecordChoice = "in" | "anon" | "out" | "says" | "fact";
 
 export function newCase(run: string, now: number, via?: string): CaseState {
   return { version: SAVE_VERSION, flags: [], run, started: now, at: {}, via };
@@ -121,6 +121,49 @@ export function filedClaims(q: Question, s: CaseState): FileClaim[] {
 export const filedClaim = (q: Question, s: CaseState): FileClaim | undefined => filedClaims(q, s).at(-1);
 
 /**
+ * A version on file that what the player proved since has crossed out
+ * (`struckWhen`): the next episode's answer to the last one's question.
+ */
+export const struckOut = (q: Question, s: CaseState): boolean =>
+  q.kind === "file" && Boolean(q.struckWhen?.length) && all(s, q.struckWhen) && Boolean(filedClaim(q, s)?.version);
+
+/* --- saying it ---------------------------------------------------------- */
+
+/** The blanks of a sentence, in the order they appear in it. */
+export const blanksOf = (line: string): string[] => [...line.matchAll(/\{(\w+)\}/g)].map((m) => m[1]);
+
+/**
+ * Which claim a finished sentence files. `close` when no claim fits but one
+ * is only a word away: the player is nearly there, and is told so.
+ */
+export function claimFor(q: Question, words: Readonly<Record<string, string>>): { claim?: FileClaim; close: boolean } {
+  if (q.kind !== "file" || !q.say) return { close: false };
+  const names = blanksOf(q.say.line);
+  const fits = (c: FileClaim) => names.filter((n) => c.words?.[n] === words[n]).length;
+  const claim = q.claims.find((c) => c.words && fits(c) === names.length);
+  if (claim) return { claim, close: false };
+  const best = Math.max(0, ...q.claims.filter((c) => c.words && !c.refuse).map(fits));
+  return { close: names.length > 1 && best === names.length - 1 };
+}
+
+/** When the story's clock says a claim was filed, for a player who called something early. */
+export const FILED_AT = (q: string, c: string) => `filed:${q}:${c}`;
+
+/**
+ * The hunch this claim proves, if the player filed it: when they did, on
+ * the story's clock, so the answer can say "You called it at 11:49 PM."
+ */
+export function calledIt(story: Story, s: CaseState, c: FileClaim): string | undefined {
+  for (const ref of c.pays ?? []) {
+    const [q, id] = ref.split(":");
+    if (!has(s, `claim:${q}:${id}`)) continue;
+    const when = s.at[FILED_AT(q, id)];
+    return when === undefined ? "" : clockAt(story, s, when);
+  }
+  return undefined;
+}
+
+/**
  * The claims a player is offered: only those they could prove with what they
  * have found. A claim the phone can't yet support is never put in front of
  * them, because its words alone would give the next episode away. What they
@@ -181,7 +224,10 @@ export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
 export const PARTLY = "That's part of it. Something's missing.";
 export const UNCHECKED = "Check each of them on the phone before you decide.";
 export const STRUCK = "That's the line you struck. What you found since says otherwise.";
+export const UNSAID = "That isn't what the phone shows.";
+export const CLOSE = "Close. One part of that isn't what the phone shows.";
 export const THIN = "The board can't show that yet. Something's missing from it.";
+export const UNPLACED = "Every row needs a lane first.";
 
 /** A timeline with enough on it to prove anything: one of its `enough` routes is all found. */
 export const boardReady = (q: Question, s: CaseState): boolean =>
@@ -189,13 +235,19 @@ export const boardReady = (q: Question, s: CaseState): boolean =>
 
 /**
  * All of one route, and nothing that wasn't found. More true proof is still
- * proof: anything that belongs to one of the routes can sit beside it, and
- * only what proves nothing here has to come off the table.
+ * proof: anything that belongs to one of the routes, or is on the point
+ * (`also`), can sit beside it, and only what proves nothing here has to
+ * come off the table.
  */
-function judgeProof(s: CaseState, routes: readonly (readonly string[])[], picked: readonly string[]): { ok: boolean; reply: string } {
+function judgeProof(
+  s: CaseState,
+  routes: readonly (readonly string[])[],
+  picked: readonly string[],
+  also: readonly string[] = [],
+): { ok: boolean; reply: string } {
   // You cannot put something on the table that you have not found.
   if (!picked.length || !picked.every((id) => seen(s, id))) return { ok: false, reply: WRONG };
-  const proves = (id: string) => routes.some((route) => route.includes(id));
+  const proves = (id: string) => also.includes(id) || routes.some((route) => route.includes(id));
   const stray = picked.filter((p) => !proves(p)).length;
   if (!stray && routes.some((route) => route.every((id) => picked.includes(id)))) return { ok: true, reply: "" };
   // Something in there proves it, and something else doesn't.
@@ -231,8 +283,13 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
       /* The board only holds what the player has found, so the answer is
          judged against that and not against the whole script: every known
          row in its own lane, and nothing else. */
-      const want = q.rows.filter((r) => seen(s, r.evidence)).map((r) => `${r.id}@${r.lane}`);
-      ok = want.length > 0 && picked.length === want.length && want.every((w) => picked.includes(w));
+      const known = q.rows.filter((r) => seen(s, r.evidence));
+      const laneOf = new Map(picked.map((p) => [p.slice(0, p.indexOf("@")), p.slice(p.indexOf("@") + 1)]));
+      const unplaced = known.filter((r) => !laneOf.has(r.id)).length;
+      const off = known.filter((r) => laneOf.has(r.id) && laneOf.get(r.id) !== r.lane && laneOf.get(r.id) !== r.orLane).length;
+      ok = known.length > 0 && picked.length === known.length && !unplaced && !off;
+      // How far off, never which: the board is still theirs to fix (PLAYTEST-SHAGUN.md #53).
+      if (!ok) reply = unplaced ? UNPLACED : off === 1 ? "One row is in the wrong lane." : off ? `${off} rows are in the wrong lane.` : WRONG;
       break;
     }
     case "claims": {
@@ -253,9 +310,11 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
       const { claim: cid, proof } = given as { claim: string; proof: readonly string[] };
       const c = q.claims.find((x) => x.id === cid);
       if (!c) return { state: s, ok: false, reply: WRONG };
+      // Said that way, it's the near miss the phone answers pointedly.
+      if (c.refuse) return { state: s, ok: false, reply: c.refuse };
       // A Revisit moves on from the version on file; it can't file a version again.
       if (revisiting && c.version) return { state: s, ok: false, reply: STRUCK };
-      ({ ok, reply } = judgeProof(s, [c.proof, ...(c.orProof ?? [])], proof));
+      ({ ok, reply } = judgeProof(s, [c.proof, ...(c.orProof ?? [])], proof, c.also));
       if (!ok) return { state: s, ok, reply };
       return {
         state: add(s, `ask:${id}`, `claim:${id}:${c.id}`, ...(c.sets ?? []), ...(revisiting ? [] : (q.sets ?? []))),

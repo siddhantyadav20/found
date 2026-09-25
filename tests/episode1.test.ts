@@ -20,10 +20,33 @@ describe("Episode 1", () => {
     expect(battery(ep, s, 0)).toBe(2);
   });
 
-  it("files what happened as Sameer tells it, because nothing on the phone can yet say otherwise", () => {
+  /* Q3 is said, not chosen: his version (Kunal), only what the phone shows
+     (someone), or a hunch that runs ahead of it (Sameer). None of the three
+     is called wrong; the next episode tests them (PLAYTEST-SHAGUN.md #35). */
+  it("files what happened as only the phone shows it, for a careful player", () => {
     const q3 = ep.questions.find((q) => q.id === "q3")!;
-    expect(filedClaim(q3, s)?.id).toBe("his");
-    expect(filedClaim(q3, s)?.version).toBe(true);
+    expect(filedClaim(q3, s)?.id).toBe("someone");
+    expect(filedClaim(q3, s)?.version).toBeFalsy();
+  });
+
+  it("files it as Sameer tells it, for the reader he was counting on", () => {
+    const q3 = ep.questions.find((q) => q.id === "q3")!;
+    const his = play((_, scene) => scene.kind === "charge", [], undefined, { prefer: "version" });
+    expect(filedClaim(q3, his)?.id).toBe("his");
+    expect(filedClaim(q3, his)?.version).toBe(true);
+  });
+
+  it("files a hunch that Sameer fired, for a player ahead of the phone, and doesn't call it proved", () => {
+    const q3 = ep.questions.find((q) => q.id === "q3")!;
+    const ahead = play((_, scene) => scene.kind === "charge", [], undefined, { hunch: true });
+    expect(filedClaim(q3, ahead)?.id).toBe("sameer");
+    expect(ahead.flags).not.toContain("link:shot");
+  });
+
+  it("won't file Bhasin as the shooter: nothing on the phone puts a gun in his hand", () => {
+    const q3 = ep.questions.find((q) => q.id === "q3")!;
+    const bhasin = q3.kind === "file" ? q3.claims.find((c) => c.words?.who === "Vinod Bhasin") : undefined;
+    expect(bhasin?.refuse).toBeTruthy();
   });
 
   it("counts nothing that belongs to a later episode, however hard the player looked", () => {

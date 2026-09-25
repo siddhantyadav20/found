@@ -89,3 +89,6 @@
   text-align: left;
   cursor: pointer;
 }
+
+/* Hung up by hand, once the answer has been read. */
+.end { align-self: center; margin-top: 1.2rem; }

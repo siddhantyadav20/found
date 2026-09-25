@@ -147,3 +147,23 @@
 }
 
 .source { display: block; margin-top: 0.15rem; font-size: 0.72rem; color: #6f6a63; }
+
+/* The next case, as a message from Meera: a bubble on the card. */
+.nextLine {
+  display: block;
+  max-width: 19rem;
+  margin: 0.35rem 0;
+  padding: 0.55rem 0.8rem;
+  border-radius: 1.1rem 1.1rem 1.1rem 0.3rem;
+  background: #26252b;
+  color: #f2efe9;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.nextFrom {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.68rem;
+  color: #8a847c;
+}

@@ -170,3 +170,88 @@
   border: 1px dashed #3a3d44;
   border-radius: 10px;
 }
+
+/* --- saying it ----------------------------------------------------------------
+   The sentence the player finishes: its blanks are the words they choose,
+   underlined until chosen, Notes' yellow while one is open. */
+
+.saying { display: flex; flex-direction: column; gap: 2px; }
+
+.sentence {
+  margin: 4px 0 0;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #f2efe9;
+}
+
+.blank {
+  display: inline;
+  margin: 0 2px;
+  padding: 1px 6px;
+  border: 0;
+  border-bottom: 1.5px dashed #8a857e;
+  border-radius: 6px 6px 0 0;
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbc6be;
+  font: inherit;
+  cursor: pointer;
+}
+
+.blank[data-filled] {
+  border-bottom-style: solid;
+  border-bottom-color: #e8843c;
+  color: #fff;
+  font-weight: 600;
+}
+
+.blank[data-open] {
+  border-bottom-color: #ffd60a;
+  background: rgba(255, 214, 10, 0.12);
+}
+
+/* --- the moment ---------------------------------------------------------------
+   A reveal lands on its own first, large, then what it means comes up under it. */
+
+.moment {
+  margin: 18px 0 20px;
+  font-family: var(--font-ios-display);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #fff;
+  animation: land 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.afterMoment {
+  animation: after 0.8s ease-out 1.5s both;
+}
+
+.called {
+  margin: 6px 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffd60a;
+}
+
+@keyframes land {
+  from {
+    opacity: 0;
+    letter-spacing: 0.08em;
+    filter: blur(6px);
+  }
+}
+
+@keyframes after {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moment,
+  .afterMoment {
+    animation: none;
+  }
+}

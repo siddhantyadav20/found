@@ -28,7 +28,7 @@ import styles from "./Sheet.module.css";
 
 type View = "home" | "messages" | "draft" | "record" | "parcel";
 
-const AS: Record<RecordChoice, string> = { in: "In", out: "Leave out", says: "As he says", fact: "As fact" };
+const AS: Record<RecordChoice, string> = { in: "In", anon: "Without his name", out: "Leave out", says: "As he says", fact: "As fact" };
 
 /* Your own apps, drawn like his: the same tile and edge light, so both
    phones read as phones. Messages is the one app they have in common. */

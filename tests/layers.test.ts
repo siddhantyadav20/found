@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { add, episodeOf, homeIcons, newCase, see, seen, settle, type CaseState } from "@/lib/game/engine";
 import { installed, library, loaded, memos, offload, SHOW_HIDDEN, syncPaused, unlocked } from "@/lib/game/phone";
+import { episode3 } from "@/content/shagun/episode3";
 import { ep, play } from "./support/play";
 
 /**
@@ -46,8 +47,10 @@ describe("Episode 1's phone", () => {
 
   it("never gives the password: nothing a player can read before Episode 3 says 1:52", () => {
     const early = (requires?: readonly string[]) => !(requires ?? []).includes("ep:3");
+    // Episode 3's own chats only arrive in Episode 3.
+    const third = new Set(episode3.threads.map((t) => t.id));
     const readable = [
-      ...ep.threads.filter((t) => early(t.requires)).flatMap((t) => t.messages.filter((m) => early(m.requires))),
+      ...ep.threads.filter((t) => !third.has(t.id) && early(t.requires)).flatMap((t) => t.messages.filter((m) => early(m.requires))),
       ...ep.photos,
       ...ep.notes.filter((n) => n.id !== "insurance"),
       ...ep.mail,

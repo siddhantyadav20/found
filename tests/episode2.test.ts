@@ -8,15 +8,16 @@ import {
   episodeOf,
   filedClaim,
   filedClaims,
+  calledIt,
+  claimFor,
   needsRevisit,
-  openQuestion,
   see,
   seen,
   sideQuestions,
-  THIN,
+  struckOut,
 } from "@/lib/game/engine";
 import type { Flag } from "@/content/types";
-import { ep, look, play, solve } from "./support/play";
+import { ep, play } from "./support/play";
 
 /**
  * Episode 2, "The Second Shot", played the way a player can
@@ -45,11 +46,26 @@ describe("Episode 2", () => {
     for (const l of ["link:kept", "link:lie", "link:fire", "link:edit"]) expect(links).not.toContain(l);
   });
 
-  it("strikes Episode 1's line once the two firings are traced, before anything else is asked", () => {
-    expect(filedClaims(q("q3"), s).map((c) => c.id)).toEqual(["his", "two"]);
-    const at = (f: string) => s.flags.indexOf(f as Flag);
-    expect(at("claim:q3:two")).toBeGreaterThan(at("link:two-firings"));
-    expect(at("claim:q3:two")).toBeLessThan(at("ask:q7"));
+  it("crosses out Episode 1's version the moment Sameer is proved to have fired, with nothing to refile", () => {
+    const his = play((_, scene) => scene.kind === "title" && scene.episode === 3, [], undefined, { prefer: "version" });
+    expect(filedClaims(q("q3"), his).map((c) => c.id)).toEqual(["his"]);
+    expect(struckOut(q("q3"), his)).toBe(true);
+    // A careful player's line stands: it never named Kunal.
+    expect(struckOut(q("q3"), s)).toBe(false);
+  });
+
+  it("says a player called it when they'd filed Sameer as the shooter in Episode 1", () => {
+    const ahead = play((x) => x.flags.includes("ask:q6"), [], undefined, { hunch: true });
+    const shot = q("q6");
+    const c = shot.kind === "file" ? shot.claims.find((x) => x.id === "sameer") : undefined;
+    expect(c && calledIt(ep, ahead, c)).toBeDefined();
+    expect(c && calledIt(ep, s, c)).toBeUndefined();
+  });
+
+  it("ends on its own question, filed as his version, what the phone shows, or a hunch", () => {
+    expect(filedClaim(q("q9"), s)?.id).toBe("someone");
+    const his = play((_, scene) => scene.kind === "title" && scene.episode === 3, [], undefined, { prefer: "version" });
+    expect(filedClaim(q("q9"), his)?.id).toBe("turned");
   });
 
   it("ends on the gap: Episode 3 opens only once the car is known to have left empty", () => {
@@ -58,25 +74,33 @@ describe("Episode 2", () => {
 
   it("turns to Episode 3 only once Raju, Sameer and Bhasin have had their say, and the phone is put down", () => {
     const order = ep.events.map((e) => e.id);
-    for (const last of ["sameer-asks", "raju-writes", "bhasin-writes"]) expect(order.indexOf(last), last).toBeLessThan(order.indexOf("the-gap"));
+    for (const last of ["sameer-asks", "sameer-code", "raju-rings-2", "bhasin-writes"]) expect(order.indexOf(last), last).toBeLessThan(order.indexOf("the-gap"));
     expect(ep.events.find((e) => e.id === "the-gap")?.quiet).toBe(true);
   });
 });
 
-describe("the two firings", () => {
-  it("won't be proved by a board holding one row", () => {
-    const s = see(ep, opened(), "kunal-clip");
-    expect(answer(ep, s, "q6", ["t-kunal@dance"]).reply).toBe(THIN);
-    const full = see(ep, s, "reel-take");
-    expect(answer(ep, full, "q6", ["t-kunal@dance", "t-take@back"]).ok).toBe(true);
+describe("who fired, said by the player", () => {
+  it("files Sameer and the second shot only with the reel take and what shows the second shot was his", () => {
+    const s = ["kunal-clip", "reel-take"].reduce((acc, id) => see(ep, acc, id), opened());
+    expect(answer(ep, s, "q6", { claim: "sameer", proof: ["kunal-clip", "reel-take"] }).ok).toBe(false);
+    const full = see(ep, s, "gun-to-kunal");
+    const r = answer(ep, full, "q6", { claim: "sameer", proof: ["kunal-clip", "reel-take", "gun-to-kunal"] });
+    expect(r.ok).toBe(true);
+    expect(r.state.flags).toEqual(expect.arrayContaining(["link:two-firings", "link:shot"]));
   });
 
-  it("brings Q3 back as a Revisit that has to be done, and won't take his version twice", () => {
-    let s = opened();
-    s = solve(look(s), q("q5"));
-    s = solve(look(s), q("q6"));
-    expect(openQuestion(ep, s)?.id).toBe("q3");
-    expect(answer(ep, s, "q3", { claim: "his", proof: ["vn-kunal", "fire-clip"] }).ok).toBe(false);
+  it("answers a near miss pointedly, and never files it", () => {
+    const shot = q("q6");
+    expect(shot.kind === "file" && claimFor(shot, { place: "dance floor", who: "Kunal", which: "second" }).claim?.refuse).toBeTruthy();
+    expect(shot.kind === "file" && claimFor(shot, { place: "back lawn", who: "Sameer", which: "second" }).close).toBe(true);
+    expect(shot.kind === "file" && claimFor(shot, { place: "service lane", who: "Bhasin", which: "first" }).close).toBe(false);
+  });
+
+  it("gives a player the locked chats' code, from Sameer or from the memo he deleted", () => {
+    const code = ep.chatLock?.knownWhen ?? [];
+    expect(code).toEqual(expect.arrayContaining([["fired:sameer-code"], ["did:installed-voicememos"]]));
+    expect(ep.memos.find((m) => m.id === "memo-code")?.lines.some((l) => l.line.includes(ep.chatLock!.code))).toBe(true);
+    for (const t of ep.threads.filter((x) => x.name === "Nitin" || x.name === "Chhotu")) expect(t.locked, t.id).toBe(true);
   });
 });
 
@@ -114,9 +138,9 @@ describe("who writes, and when", () => {
   it("has Bhasin write early to a player who told Sameer's mother a stranger has the phone", () => {
     const told = add(opened(), "did:mummy-stranger");
     expect(dueEvents(ep, told).map((e) => e.id)).toContain("bhasin-knows");
-    const late = add(told, "ask:q8");
+    const late = add(told, "ask:q7");
     expect(dueEvents(ep, late).map((e) => e.id)).not.toContain("bhasin-writes");
-    expect(dueEvents(ep, add(opened(), "ask:q8")).map((e) => e.id)).toContain("bhasin-writes");
+    expect(dueEvents(ep, add(opened(), "ask:q7")).map((e) => e.id)).toContain("bhasin-writes");
   });
 
   it("gives what Dilip told his brother only to a player Raju trusts", () => {
@@ -143,7 +167,7 @@ describe("who writes, and when", () => {
 
 describe("Episode 2's finds", () => {
   it("are behind a hard route wherever Sameer tucked them away", () => {
-    for (const id of ["reel-take", "memo", "chhotu-107", "nitin-car", "nitin-reply"])
+    for (const id of ["reel-take", "memo", "gun-to-kunal", "chhotu-107", "nitin-car", "nitin-reply"])
       expect(ep.evidence.find((e) => e.id === id)?.manual, id).toBe(true);
   });
 });

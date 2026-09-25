@@ -102,6 +102,8 @@ export default function Parcel({
                 {to ? `By hand, over a courier's label to ${meta.label.to}` : meta.label.address}
               </span>
             )}
+            {meta.label?.phone && !to && <span className={styles.from}>Mob: {meta.label.phone}</span>}
+            {meta.label?.from && !to && <span className={styles.from}>From: {meta.label.from}</span>}
             <span className={styles.note}>
               <b>Contains:</b> {meta.note.split(" · ").slice(0, 2).join(" · ")}
             </span>

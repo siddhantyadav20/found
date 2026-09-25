@@ -92,6 +92,33 @@ const shortDay = (n: number) => {
  * paper. `veiled`: only the thumbnail is on the phone, blurred past reading.
  */
 function Picture({ photo, big, seconds, veiled }: { photo: Photo; big?: boolean; seconds?: number; veiled?: boolean }) {
+  // A screenshot of a chat: WhatsApp's own dark bubbles, with the group's name on top.
+  if (photo.kind === "chat" && photo.chat)
+    return (
+      <div className={paper.shot} data-big={big || undefined} data-veiled={veiled || undefined}>
+        <p className={paper.shotHead}>
+          <b>{photo.chat.name}</b>
+          {photo.chat.sub && <span>{photo.chat.sub}</span>}
+        </p>
+        {/* Still in iCloud: the shapes of the messages, none of their words. */}
+        {veiled
+          ? photo.chat.lines.map((l, i) => <span key={i} className={paper.shotBar} data-system={l.system || undefined} aria-hidden="true" />)
+          : photo.chat.lines.map((l, i) =>
+          l.system ? (
+            <p key={i} className={paper.shotSystem}>
+              {l.text}
+            </p>
+          ) : (
+            <p key={i} className={paper.shotLine}>
+              {l.who && <b>{l.who}</b>}
+              <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
+              {big && l.english && <small>{l.english}</small>}
+              <i>{stamp(l.at)}</i>
+            </p>
+          ),
+            )}
+      </div>
+    );
   if (photo.kind === "paper")
     return (
       <div className={paper.paper} data-big={big || undefined}>
@@ -417,7 +444,8 @@ export default function Photos({
           open?.bin
             ? () => {
                 onRestore(photo.id);
-                if (photo.evidence && loaded(state, photo)) onRead([photo.evidence]);
+                const ids = [photo.evidence, ...(photo.chat?.lines.map((l) => l.evidence) ?? [])].filter((id): id is string => Boolean(id));
+                if (ids.length && loaded(state, photo)) onRead(ids);
                 setViewing(null);
                 setAlbum(null);
                 setTab("library");
@@ -438,7 +466,10 @@ export default function Photos({
             setViewing(p.id);
             // Seen in the bin is seen: it counts from the moment it's opened (PLAYTEST.md #44).
             // What's still in iCloud hasn't been seen, whenever it was tapped.
-            if (p.evidence && loaded(state, p)) onRead([p.evidence]);
+            if (loaded(state, p)) {
+              const ids = [p.evidence, ...(p.chat?.lines.map((l) => l.evidence) ?? [])].filter((id): id is string => Boolean(id));
+              if (ids.length) onRead(ids);
+            }
           }}
           aria-label={loaded(state, p) ? `${p.title}, ${cal.label(p.day)} ${stamp(p.at)}` : `${p.video ? "Video" : "Photo"}, ${cal.label(p.day)} ${stamp(p.at)}`}
         >

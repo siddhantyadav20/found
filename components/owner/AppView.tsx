@@ -131,19 +131,41 @@ export type Tab = { readonly label: string; readonly d: string; readonly on?: bo
  * it, in its own glass circle beside it. Only the open tab answers here; the
  * others are the furniture of the real app.
  */
-export function TabBar({ tabs, search = false, tint = "#0a84ff" }: { tabs: readonly Tab[]; search?: boolean; tint?: string }) {
+export function TabBar({
+  tabs,
+  search = false,
+  tint = "#0a84ff",
+  onSelect,
+}: {
+  tabs: readonly Tab[];
+  search?: boolean;
+  tint?: string;
+  /** Tabs that go somewhere: without it the bar only sets the scene. */
+  onSelect?: (label: string) => void;
+}) {
   return (
-    <div className={styles.tabBar} aria-hidden="true">
+    <div className={styles.tabBar} aria-hidden={onSelect ? undefined : true}>
       <span className={`${styles.tabs} lg`} style={{ "--tint": tint } as React.CSSProperties}>
-        {tabs.map((t) => (
-          <span key={t.label} className={styles.tab} data-on={t.on || undefined}>
-            <svg viewBox="0 0 24 24">
-              <path d={t.d} fillRule="evenodd" />
-            </svg>
-            {t.label}
-            {t.badge ? <span className={styles.tabBadge}>{t.badge}</span> : null}
-          </span>
-        ))}
+        {tabs.map((t) => {
+          const inside = (
+            <>
+              <svg viewBox="0 0 24 24">
+                <path d={t.d} fillRule="evenodd" />
+              </svg>
+              {t.label}
+              {t.badge ? <span className={styles.tabBadge}>{t.badge}</span> : null}
+            </>
+          );
+          return onSelect ? (
+            <button key={t.label} type="button" className={styles.tab} data-on={t.on || undefined} aria-pressed={t.on} onClick={() => onSelect(t.label)}>
+              {inside}
+            </button>
+          ) : (
+            <span key={t.label} className={styles.tab} data-on={t.on || undefined}>
+              {inside}
+            </span>
+          );
+        })}
       </span>
       {search && (
         <span className={`${styles.tabSearch} lg`}>

@@ -27,7 +27,7 @@ const thread = (name: string): Thread => {
 };
 
 describe("Episode 3", () => {
-  const s = toEnd(["did:protect-nitin", "did:confronted-sameer"]);
+  const s = toEnd(["did:nitin-asked", "did:protect-nitin", "did:confronted-sameer"]);
 
   it("plays from 1:52 to the last question, answering Q10–Q13", () => {
     for (const id of ["q10", "q11", "q12", "q13"]) expect(s.flags, id).toContain(`ask:${id}`);
@@ -77,7 +77,7 @@ describe("the routes", () => {
   });
 
   it("gets the 1:52 screenshot from a Nitin who was protected", () => {
-    const s = toEnd(["did:protect-nitin"]);
+    const s = toEnd(["did:nitin-asked", "did:protect-nitin"]);
     expect(seen(s, "nitin-shot-152")).toBe(true);
     expect(seen(s, "vicky-location")).toBe(true);
   });
@@ -90,7 +90,7 @@ describe("the routes", () => {
 
   it("goes quiet in airplane mode: nobody writes, nothing can be sent, and every question can still be answered", () => {
     const quiet = add(opened(), AIRPLANE);
-    const s = play(done, ["did:protect-nitin", "did:confronted-kunal"], quiet);
+    const s = play(done, ["did:nitin-asked", "did:protect-nitin", "did:confronted-kunal"], quiet);
     for (const id of ["q10", "q11", "q12", "q13"]) expect(s.flags).toContain(`ask:${id}`);
     for (const f of ["fired:sameer-last", "fired:nitin-named"]) expect(s.flags).not.toContain(f);
     // Nothing could be sent, so Nitin was never asked, and the lie was traced on this phone alone.

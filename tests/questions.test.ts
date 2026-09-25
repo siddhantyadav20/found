@@ -102,8 +102,8 @@ describe("picking the proof", () => {
 
     it("takes the Apple Account, his Instagram and the invoice for whose phone it is", () => {
       const s = has("apple-account", "sk-films", "invoice", "poster");
-      expect(answer(shagun, s, "q1", ["apple-account", "sk-films", "invoice"]).ok).toBe(true);
-      expect(answer(shagun, s, "q1", ["apple-account", "sk-films", "poster"]).reply).toBe(TOO_MUCH);
+      expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "invoice"] }).ok).toBe(true);
+      expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster"] }).reply).toBe(TOO_MUCH);
     });
 
     it("takes all three voice notes with the fire for his version", () => {
@@ -113,7 +113,7 @@ describe("picking the proof", () => {
 
     it("takes the 12:29 photo, the shot list and Kunal's promise for the back lawn", () => {
       const s = has("bts", "shot-list", "kunal-papa");
-      expect(answer(shagun, s, "q5", ["bts", "shot-list", "kunal-papa"]).ok).toBe(true);
+      expect(answer(shagun, s, "q5", { claim: "reel", proof: ["bts", "shot-list", "kunal-papa"] }).ok).toBe(true);
     });
 
     it("takes Nitin's copy of 1:52 as the edit it is", () => {

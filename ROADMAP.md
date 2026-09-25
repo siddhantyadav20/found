@@ -605,11 +605,12 @@ courier returned it "to origin". Built:
     - #23: a lone claim is chosen.
     - #24, #26 and #28–32: polish, including your phone's edge note and icons, Notification Centre's times, and the Instagram feed.
   - **Done (2026-09-25):** #11 and #25, the phone in layers (below).
-  - **Open, for Siddhant:**
-    - #17: a hook for Chapter 2.
-    - #19–20: letting the player deduce.
-    - #21–22: Meera's timing.
-    - #27: Nitin's name.
+  - **A third play, for the story** (2026-09-25, after the layers): `PLAYTEST-SHAGUN.md` #34–50.
+    - The chats solve the case in Episode 1.
+    - The player never states an answer.
+    - The reveals land as receipts, the people are brief, and nothing threatens the player.
+    - The verdict: most will finish; few will come back as it stands. The ordered fixes are at the foot of that section.
+  - **Done (2026-09-25), Chapter 1 for its first players (below):** #17, #19–22, #27 and #34–50.
   - **With S11:** #14 and #16.
   - 153 tests; the case page at 686 of 700 KB.
 
@@ -684,6 +685,40 @@ open.
 - **To check on a real iPhone:**
   - the exact wording of the alerts and of the Photos footer
   - that Voice Memos can be offloaded rather than only deleted
+
+## Chapter 1 for its first players · **done (2026-09-25)**
+
+Siddhant asked for Chapter 1 to be ready to send to friends, with every
+finding of the third play solved, and the calls left to Claude, "not married
+to a concept". The design is in CHAPTER1.md's new first section. In short:
+- **The night unfolds, a layer an episode.**
+  - Bhasin's group has disappearing messages; Sameer's screenshots of it come down from iCloud in Episode 2.
+  - Nitin's and Chhotu's chats are behind WhatsApp Chat Lock (code *pakki*). Sameer gives the code himself, or it's in a memo he deleted.
+- **The player says it.** Every question but the board is a sentence to finish from a few words a blank (`Question.say`), then proved.
+  - A sentence can be his version, only what the phone shows, or a hunch.
+  - Each episode's last question is tested by the next: a version is struck from the record on the spot (`struckWhen`), and a hunch pays off, *"You called it at 11:45 PM."* (`hunch`, `pays`).
+  - Near misses are answered pointedly (`refuse`, `CLOSE`).
+- **Staged reveals.** "Sameer.", "Alive.", "He knew." land large (`moment`), and the phone reacts: Sameer types, Raju rings.
+- **People with arcs.**
+  - Raju rings twice and asks the last question.
+  - Sameer steers and gives the lock away.
+  - Nitin wants a reason before he hands a stranger anything.
+- **The threat.** Bhasin rings in Episode 3 and says where the phone is. Airplane mode is the counter.
+- **Endings on people.**
+  - Meera's mobile is on the label.
+  - Nitin's name can be kept out.
+  - Raju's answer, Bhasin's 7 AM and Sameer's train close the lines.
+  - The end card and the desk announce Chapter 2, Mumbai.
+- **Fixes:** the lock screen's English, a call that waits to be hung up, the charger beat on mains power, the parcel strip, a fuller wedding album, and no answer narrating unseen evidence.
+- **Built:**
+  - `components/owner/ios/Alert.tsx`
+  - the sentence UI in `CaseFile.tsx`
+  - WhatsApp's search, locked folder and Settings
+  - chat screenshots in Photos
+  - `claimFor`, `calledIt` and `struckOut` in the engine
+  - `CHATS_UNLOCKED` and `isCode` in `lib/game/phone.ts`
+- **Tests:** 174, including a full hunch player's run to The Complete Record. The case page is 652 of 700 KB.
+- **Played end to end in the browser** at phone size: The Complete Record, sent to Meera, with Nitin's name kept out.
 
 ---
 

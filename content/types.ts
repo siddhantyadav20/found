@@ -115,6 +115,12 @@ export type FileClaim = {
   readonly english?: string;
   readonly proof: readonly string[];
   readonly orProof?: readonly (readonly string[])[];
+  /**
+   * True and on the point, but not proof by itself: the portrait beside the
+   * badge that names him. It can sit beside a whole route without being
+   * called wrong; it never completes one (PLAYTEST-SHAGUN.md #51).
+   */
+  readonly also?: readonly string[];
   readonly reply: string;
   readonly sets?: readonly Flag[];
   /** The owner's own framing: accepted now, and reopened by `reopenWhen`. */
@@ -124,6 +130,37 @@ export type FileClaim = {
    * as fact, in the player's own words, until they say otherwise.
    */
   readonly link?: string;
+  /**
+   * The sentence as the player makes it, blank by blank (`Question.say`):
+   * these words, and only these, file this claim.
+   */
+  readonly words?: Readonly<Record<string, string>>;
+  /**
+   * True, and more than this episode can show: filed on the player's word,
+   * a bet on this link. When a later answer traces it, that answer says the
+   * player called it, and when.
+   */
+  readonly hunch?: string;
+  /** Hunches this claim proves, as "question:claim": it says the player called it. */
+  readonly pays?: readonly string[];
+  /**
+   * Said this way, it isn't filed: the reply says what the phone shows
+   * instead. For the near miss that deserves a pointed answer, not "no".
+   */
+  readonly refuse?: string;
+  /** The line that lands first, large, before the reply: the reveal itself. */
+  readonly moment?: string;
+};
+
+/**
+ * A question asked as a sentence the player finishes (script §12: the
+ * inference is theirs). Each blank is written {name} in the line, and offers
+ * its words in order; which claim the finished sentence files is decided by
+ * the claims' `words`.
+ */
+export type Say = {
+  readonly line: string;
+  readonly blanks: Readonly<Record<string, readonly string[]>>;
 };
 
 /** One row on a timeline: an event, the lane it belongs in, and what shows it. */
@@ -132,6 +169,11 @@ export type TimelineRow = {
   readonly at: string;
   readonly text: string;
   readonly lane: string;
+  /**
+   * A second lane that is just as true: Nitin's 1:40 is his message and the
+   * car's arrival both (PLAYTEST-SHAGUN.md #53).
+   */
+  readonly orLane?: string;
   readonly evidence: string;
   /**
    * Doesn't fit the story somebody told: once the board is filed, the row
@@ -173,6 +215,11 @@ export type Link = {
   /** The owner's version of it, in his words, if he has one. */
   readonly version?: string;
   readonly english?: string;
+  /**
+   * The same truth without a witness's name in it, for a player who promised
+   * to keep it out (the record's "Without his name").
+   */
+  readonly unnamed?: string;
 };
 
 export type Question =
@@ -218,6 +265,14 @@ export type Question =
       readonly reopenWhen?: readonly Flag[];
       /** A Revisit that holds everything up until it's done, not one offered on the side. */
       readonly mustRevisit?: boolean;
+      /** Asked as a sentence to finish, rather than a list of claims to choose from. */
+      readonly say?: Say;
+      /**
+       * When these hold, a version on file is struck from the record by what
+       * the player proved since: no Revisit to file, the line just crosses
+       * out (the next episode answers the last one's question).
+       */
+      readonly struckWhen?: readonly Flag[];
     });
 
 /** Something the story does to a phone on its own: a message, a notification. */
@@ -312,6 +367,7 @@ export type LockNotice = {
   readonly app: AppId;
   readonly from: string;
   readonly text: string;
+  readonly english?: string;
   /** As the lock screen shows it: "Fri", "1:04 AM". */
   readonly time: string;
 };
@@ -493,6 +549,11 @@ export type Thread = {
   readonly number?: string;
   /** Moved out of the list into Archived, which is one tap further than most people look. */
   readonly archived?: boolean;
+  /**
+   * WhatsApp's Chat Lock with "Hide locked chats" on: out of the list
+   * altogether, until the secret code (`Story.chatLock`) is typed into search.
+   */
+  readonly locked?: boolean;
   /** What tapping the name at the top shows: WhatsApp's contact info. */
   readonly contact?: {
     readonly number: string;
@@ -522,8 +583,21 @@ export type Photo = {
   readonly at: string;
   readonly day: string;
   readonly place?: string;
-  /** `paper` draws a page; `scene` draws a photograph. */
-  readonly kind: "paper" | "scene";
+  /** `paper` draws a page; `scene` draws a photograph; `chat` a screenshot of a chat (`chat`). */
+  readonly kind: "paper" | "scene" | "chat";
+  /** A screenshot of a chat: its name at the top and the messages it caught, each of which can count. */
+  readonly chat?: {
+    readonly name: string;
+    readonly sub?: string;
+    readonly lines: readonly {
+      readonly who?: string;
+      readonly text: string;
+      readonly english?: string;
+      readonly at: string;
+      readonly system?: boolean;
+      readonly evidence?: string;
+    }[];
+  };
   readonly title: string;
   readonly src?: string;
   /** What is written on the page, in the writer's hand. */
@@ -726,6 +800,11 @@ export type Story = {
   readonly arrival: Arrival;
   readonly gate: Gate;
   readonly lockScreen: readonly LockNotice[];
+  /**
+   * WhatsApp's secret code for its hidden locked chats, and when a player can
+   * know it: any one of these sets of flags (for a solver and for tests).
+   */
+  readonly chatLock?: { readonly code: string; readonly knownWhen: readonly (readonly Flag[])[] };
   /** The found phone's home screen, as its owner left it: pages, and the dock. */
   readonly home: {
     readonly pages: readonly (readonly HomeIcon[])[];
@@ -755,6 +834,16 @@ export type Story = {
    * its cursor still blinking after the last line, and one line under it.
    */
   readonly replay?: { readonly note: string; readonly caption: string };
+  /**
+   * What comes next, on the end card: the next case, as it reaches the
+   * player (canon §21: a new mystery, never the missing half of this one).
+   */
+  readonly next?: {
+    readonly title: string;
+    readonly from: string;
+    readonly lines: readonly { readonly text: string; readonly english?: string }[];
+    readonly note: string;
+  };
   /**
    * Outside the fiction: the end card's last, quiet screen. Every line
    * checked at its source before it's written here (CHAPTER1.md L).

@@ -9,6 +9,7 @@ import type { CaseId } from "@/content/cases";
 import type { EpisodeNo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { chosen } from "@/lib/game/endings";
+import { recordRows } from "@/lib/game/record";
 import { commit } from "@/lib/found/progress";
 import { resultOf } from "@/lib/found/result";
 import { markSolved } from "@/lib/found/shelf";
@@ -40,6 +41,8 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
   const done = result.traced;
   const episodes = story.episodes.length as EpisodeNo;
   const replay = story.notes.find((n) => n.id === story.replay?.note);
+  // A name the player kept out of the record stays out of the card they may share (PLAYTEST-SHAGUN.md #54).
+  const kept = new Set(recordRows(story, state).filter((r) => r.choice === "anon").map((r) => r.link.id));
 
   // A finish outlives "Play again", and goes on the shelf if they keep a number.
   useEffect(() => {
@@ -77,7 +80,7 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
               <li key={l.id} data-traced={traced || undefined} style={{ animationDelay: `${0.3 + i * 0.35}s` }}>
                 <span className={styles.linkLabel}>{l.label}</span>
                 {traced ? (
-                  <span className={styles.linkText}>{l.truth}</span>
+                  <span className={styles.linkText}>{kept.has(l.id) ? (l.unnamed ?? l.truth) : l.truth}</span>
                 ) : l.version ? (
                   /* Untraced: what the owner said happened, in his words. */
                   <span className={styles.linkText}>
@@ -121,6 +124,21 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
             ))}
           </div>
           <p className={styles.only}>{story.replay?.caption}</p>
+        </section>
+      )}
+
+      {/* The next case, reaching you the way this one did: through Meera. */}
+      {story.next && (
+        <section className={styles.section} aria-label={story.next.title}>
+          <p className={styles.eyebrow}>{story.next.title}</p>
+          {story.next.lines.map((l) => (
+            <p key={l.text} className={styles.nextLine}>
+              <span className={styles.nextFrom}>{story.next!.from}</span>
+              <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
+              {l.english && <span className={styles.english}>{l.english}</span>}
+            </p>
+          ))}
+          <p className={styles.only}>{story.next.note}</p>
         </section>
       )}
 

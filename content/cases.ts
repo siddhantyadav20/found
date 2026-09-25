@@ -33,7 +33,14 @@ export type CaseMeta = {
    * courier's stamp over it. It's how the phone came to the player
    * (CHAPTER1.md O1).
    */
-  readonly label?: { readonly to: string; readonly address: string; readonly stamp: readonly [string, string] };
+  readonly label?: {
+    readonly to: string;
+    readonly address: string;
+    readonly phone?: string;
+    /** The sender, as written: for Shagun, a stranger's name over your own address. */
+    readonly from?: string;
+    readonly stamp: readonly [string, string];
+  };
   /**
    * Something besides the phone in the parcel, drawn on the passed-on
    * parcel's share image: Shagun's wedding envelope.

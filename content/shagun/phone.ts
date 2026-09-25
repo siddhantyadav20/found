@@ -190,7 +190,10 @@ export const threads: readonly Thread[] = [
       },
     ],
   },
-  /* Bhasin's group, left intact: it's Sameer's case against him (CHAPTER1.md C3). */
+  /* Bhasin's group. He turned on disappearing messages the moment he made it,
+     as a man who used to be police would: by Monday the night was gone from
+     every phone in it. What survives is what Sameer screenshotted on Sunday
+     morning (Photos, below), which is why "For M" sends M there. */
   {
     id: "security",
     app: "whatsapp",
@@ -199,17 +202,13 @@ export const threads: readonly Thread[] = [
     sub: "Bhasin, Kunal, Pappu, Ramesh, You",
     messages: [
       { id: "s-0", from: "system", at: "00:36", day: "Sunday", text: "Vinod Bhasin created group “Banyan — Security”" },
-      { id: "s-1", from: "them", who: "Bhasin", at: "00:36", day: "Sunday", text: "Sameer, gun Kunal ko do. Abhi.", english: "Sameer, give the gun to Kunal. Now.", evidence: "gun-to-kunal" },
-      { id: "s-2", from: "them", who: "Bhasin", at: "00:38", day: "Sunday", text: "Koi 112 nahi karega. Ladke ko service room le jao. Main sambhaal raha hoon.", english: "Nobody calls 112. Take the boy to the service room. I'm handling it.", evidence: "no-112" },
-      { id: "s-3", from: "them", who: "Bhasin", at: "00:52", day: "Sunday", text: "Doctor ka intezaam ho raha hai.", english: "A doctor is being arranged.", evidence: "doctor" },
-      { id: "s-4", from: "them", who: "Pappu", at: "01:14", day: "Sunday", text: "Sir ladka hosh mein hai. Paani maang raha hai.", english: "Sir, the boy is conscious. He's asking for water.", evidence: "conscious" },
-      { id: "s-5", from: "them", who: "Bhasin", at: "01:31", day: "Sunday", text: "Doctor aa raha hai. Sab shaant raho.", english: "The doctor's coming. Everyone stay calm." },
-      { id: "s-6", from: "them", who: "Ramesh", at: "01:49", day: "Sunday", text: "Sir, Sameer sir service room mein hain ladke ke paas.", english: "Sir, Sameer sir is in the service room with the boy.", evidence: "sameer-room" },
-      { id: "s-7", from: "them", who: "Pappu", at: "01:59", day: "Sunday", text: "Sir service gate pe ek Swift aayi hai, kisi ko lene.", english: "Sir, a Swift has come to the service gate, to pick someone up.", evidence: "swift" },
-      { id: "s-8", from: "them", who: "Bhasin", at: "02:00", day: "Sunday", text: "Kaun? Pata karo.", english: "Who? Find out." },
-      { id: "s-9", from: "them", who: "Pappu", at: "02:04", day: "Sunday", text: "Chali gayi sir. Driver bol raha tha cancel ho gaya.", english: "It's gone, sir. The driver said it was cancelled.", evidence: "left-empty" },
-      { id: "s-10", from: "them", who: "Pappu", at: "02:41", day: "Sunday", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking.", evidence: "not-speaking" },
-      { id: "s-11", from: "them", who: "Bhasin", at: "02:42", day: "Sunday", text: "Call karo mujhe.", english: "Call me." },
+      {
+        id: "s-dm",
+        from: "system",
+        at: "00:36",
+        day: "Sunday",
+        text: "Vinod Bhasin turned on disappearing messages. New messages will disappear from this chat 24 hours after they're sent.",
+      },
     ],
   },
   {
@@ -253,13 +252,15 @@ export const threads: readonly Thread[] = [
       },
     ],
   },
-  /* Archived on Thursday, at 11:08 PM: the boy's own chat, which ends on a
-     promise Sameer made at 1:08 AM (CHAPTER1.md E). */
+  /* Locked on Thursday at 11:08 PM, with "Hide locked chats" on: the boy's
+     own chat, which ends on a promise Sameer made at 1:08 AM. He couldn't
+     delete Dilip's last words, and couldn't leave them where M would start
+     (CHAPTER1.md E). The secret code is `chatLock` in story.ts. */
   {
     id: "chhotu",
     app: "whatsapp",
     name: "Chhotu",
-    archived: true,
+    locked: true,
     messages: [
       {
         id: "d-1",
@@ -276,14 +277,14 @@ export const threads: readonly Thread[] = [
       { id: "d-6", from: "owner", at: "01:08", day: "Sunday", text: "aa raha hoon. hospital le jayenge. bas thodi der", english: "I'm coming. We'll take you to hospital. Just a little longer." },
     ],
   },
-  /* Archived on Thursday at 11:10 PM, after his 1:52 message was deleted "for
+  /* Locked with Dilip's at 11:10 PM, after his 1:52 message was deleted "for
      me": nothing marks the hole, and Nitin's 1:53 answers a message that
      isn't there (CHAPTER1.md C3). */
   {
     id: "nitin",
     app: "whatsapp",
     name: "Nitin",
-    archived: true,
+    locked: true,
     messages: [
       { id: "n-1", from: "owner", at: "22:40", day: "21/11", text: "kal 5 baje van. batteries sab charge kar lena. B cam tu", english: "Van at 5 tomorrow. Charge all the batteries. You're on B cam." },
       { id: "n-2", from: "them", at: "22:41", day: "21/11", text: "done bhai 👍" },
@@ -348,8 +349,40 @@ export const threads: readonly Thread[] = [
   },
 ];
 
+/** Bhasin's group as Sameer screenshotted it on Sunday morning, before it could disappear. */
+const GROUP = { name: "Banyan — Security", sub: "Bhasin, Kunal, Pappu, Ramesh, You" } as const;
+
+/** A wedding photographer's night: most of it is just the wedding (ASSETS.md §1). */
+const WEDDING: readonly [string, string][] = [
+  ["18:02", "The mandap going up, marigold strings on ladders"],
+  ["18:40", "Ishita's hands, mehendi, the groom's name hidden in it"],
+  ["19:05", "The Sehgal cousins, matching sherwanis, one yawning"],
+  ["19:20", "Rohan on the white mare, sehra over his face"],
+  ["19:41", "Dhol players mid-jump at the gate"],
+  ["19:58", "The varmala: Ishita lifted by her brothers"],
+  ["20:25", "The couple on the stage, a queue of relatives with envelopes"],
+  ["20:52", "A shagun envelope changing hands: Ishita weds Rohan, in gold"],
+  ["21:15", "The buffet under fairy lights, steam off the tandoor"],
+  ["21:31", "Waiters in maroon waistcoats, trays up, a line of them"],
+  ["22:10", "Mrs Sehgal dancing with the bride's grandmother"],
+  ["22:36", "The sangeet floor from the stage, phones in the air"],
+  ["23:05", "Kunal and his friends on the floor, a bottle passed along"],
+  ["23:20", "Nitin on B cam, gimbal up, grinning at the lens"],
+  ["23:48", "Confetti cannons, the couple ducking"],
+  ["00:05", "The mandap at midnight, empty chairs, the pandit's plate"],
+];
+
 export const photos: readonly Photo[] = [
   // The Sehgal wedding: a few of the 1,284, until the shoot (ASSETS.md §1).
+  ...WEDDING.map(([at, title], i): Photo => ({
+    id: `w-${i}`,
+    album: "Sehgal wedding",
+    at,
+    day: at < "12:00" ? "Sunday" : "22/11",
+    place: "Chhattarpur",
+    kind: "scene",
+    title,
+  })),
   { id: "w-baraat", album: "Sehgal wedding", at: "19:34", day: "22/11", place: "Chhattarpur", kind: "scene", title: "The baraat at the gate, dhol and marigolds" },
   { id: "w-couple", album: "Sehgal wedding", at: "20:10", day: "22/11", place: "Chhattarpur", kind: "scene", title: "Ishita and Rohan under fairy lights" },
   { id: "w-family", album: "Sehgal wedding", at: "21:05", day: "22/11", place: "Chhattarpur", kind: "scene", title: "The Sehgals on the stage, Kunal at the end" },
@@ -450,6 +483,86 @@ export const photos: readonly Photo[] = [
     },
     evidence: "fire-clip",
   },
+  /* Bhasin's group, screenshotted on the Sunday morning before it could
+     disappear, which is what "For M" means by "Bhasin wala group". Like
+     everything he took that week, only thumbnails are on the phone until
+     it can reach iCloud (Episode 2). The first one, with his own name in the
+     order, he deleted on Thursday: the only screenshot he did. */
+  {
+    id: "group-1",
+    album: "Screenshots",
+    at: "08:52",
+    day: "Sunday",
+    kind: "chat",
+    title: "Screenshot: Banyan — Security",
+    camera: "Screenshot",
+    deletedAt: "22:47",
+    daysLeft: 28,
+    inCloud: ["ep:2"],
+    chat: {
+      ...GROUP,
+      lines: [
+        { system: true, at: "00:36", text: "Vinod Bhasin created group “Banyan — Security”" },
+        { system: true, at: "00:36", text: "Vinod Bhasin turned on disappearing messages." },
+        { who: "Bhasin", at: "00:36", text: "Sameer, gun Kunal ko do. Abhi.", english: "Sameer, give the gun to Kunal. Now.", evidence: "gun-to-kunal" },
+      ],
+    },
+  },
+  {
+    id: "group-2",
+    album: "Screenshots",
+    at: "08:52",
+    day: "Sunday",
+    kind: "chat",
+    title: "Screenshot: Banyan — Security",
+    camera: "Screenshot",
+    inCloud: ["ep:2"],
+    chat: {
+      ...GROUP,
+      lines: [
+        { who: "Bhasin", at: "00:38", text: "Koi 112 nahi karega. Ladke ko service room le jao. Main sambhaal raha hoon.", english: "Nobody calls 112. Take the boy to the service room. I'm handling it.", evidence: "no-112" },
+        { who: "Bhasin", at: "00:52", text: "Doctor ka intezaam ho raha hai.", english: "A doctor is being arranged.", evidence: "doctor" },
+        { who: "Pappu", at: "01:14", text: "Sir ladka hosh mein hai. Paani maang raha hai.", english: "Sir, the boy is conscious. He's asking for water.", evidence: "conscious" },
+      ],
+    },
+  },
+  {
+    id: "group-3",
+    album: "Screenshots",
+    at: "08:53",
+    day: "Sunday",
+    kind: "chat",
+    title: "Screenshot: Banyan — Security",
+    camera: "Screenshot",
+    inCloud: ["ep:2"],
+    chat: {
+      ...GROUP,
+      lines: [
+        { who: "Bhasin", at: "01:31", text: "Doctor aa raha hai. Sab shaant raho.", english: "The doctor's coming. Everyone stay calm." },
+        { who: "Ramesh", at: "01:49", text: "Sir, Sameer sir service room mein hain ladke ke paas.", english: "Sir, Sameer sir is in the service room with the boy.", evidence: "sameer-room" },
+        { who: "Pappu", at: "01:59", text: "Sir service gate pe ek Swift aayi hai, kisi ko lene.", english: "Sir, a Swift has come to the service gate, to pick someone up.", evidence: "swift" },
+        { who: "Bhasin", at: "02:00", text: "Kaun? Pata karo.", english: "Who? Find out." },
+      ],
+    },
+  },
+  {
+    id: "group-4",
+    album: "Screenshots",
+    at: "08:53",
+    day: "Sunday",
+    kind: "chat",
+    title: "Screenshot: Banyan — Security",
+    camera: "Screenshot",
+    inCloud: ["ep:2"],
+    chat: {
+      ...GROUP,
+      lines: [
+        { who: "Pappu", at: "02:04", text: "Chali gayi sir. Driver bol raha tha cancel ho gaya.", english: "It's gone, sir. The driver said it was cancelled.", evidence: "left-empty" },
+        { who: "Pappu", at: "02:41", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking.", evidence: "not-speaking" },
+        { who: "Bhasin", at: "02:42", text: "Call karo mujhe.", english: "Call me." },
+      ],
+    },
+  },
   /* What he hid, and then hid the album: the EMI he couldn't pay, twice.
      Settings › Show Hidden Album finds his shame, not the case (CHAPTER1.md E). */
   {
@@ -479,7 +592,7 @@ export const notes: readonly Note[] = [
     at: "23:20",
     day: "Thursday",
     edited: "Thursday 11:26 PM",
-    body: ["1. Voice notes — M chat", "2. Favorites — video", "3. Bhasin wala group", "4. Nitin —"],
+    body: ["1. Voice notes — M chat", "2. Favorites — video", "3. Bhasin wala group — screenshots", "4. Nitin —"],
     evidence: "for-m",
   },
   /* What he kept for himself, locked with a Notes password of its own
@@ -650,6 +763,25 @@ export const memos: readonly Memo[] = [
     daysLeft: 28,
     evidence: "memo",
   },
+  /* Thursday, 11:12 PM, straight after locking the two chats: he started to
+     tell M the code, and didn't, the same way "For M" stops at "4. Nitin —".
+     Deleted a minute later; the only other way to the code is Sameer. */
+  {
+    id: "memo-code",
+    title: "New Recording 15",
+    at: "23:12",
+    day: "Thursday",
+    seconds: 16,
+    lines: [
+      { at: 1, line: "[a breath]" },
+      { at: 2, who: "Sameer", line: "M. Nitin aur Chhotu ki chat maine lock kar di hai.", english: "M. I've locked Nitin's and Chhotu's chats." },
+      { at: 7, who: "Sameer", line: "Code hai… pakki.", english: "The code is… pakki." },
+      { at: 10, line: "[a long pause]" },
+      { at: 13, who: "Sameer", line: "Nahi. Rehne de.", english: "No. Leave it." },
+    ],
+    deletedAt: "23:13",
+    daysLeft: 28,
+  },
 ];
 
 export const profiles: readonly Profile[] = [
@@ -680,6 +812,7 @@ export const calls: readonly CallEntry[] = [
 
 /* Safari, which he never thought to tidy: he believed it showed a man trying to help. */
 export const searches: readonly Search[] = [
+  { id: "q-lock", text: "whatsapp chat lock hide chats secret code", at: "23:06", day: "Thursday" },
   { id: "q-1", text: "goli lagne pe kya karein", at: "00:44", day: "Sunday", evidence: "search-1244" },
   { id: "q-2", text: "gunshot hospital without police case delhi", at: "00:47", day: "Sunday" },
   { id: "q-3", text: "lifeline hospital mehrauli emergency number", at: "00:52", day: "Sunday" },

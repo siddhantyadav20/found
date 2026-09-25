@@ -10,6 +10,9 @@
 }
 
 .parcel {
+  /* Pulled with a mouse, the strip is dragged, not selected. */
+  user-select: none;
+  -webkit-user-select: none;
   position: relative;
   width: min(20rem, 80vw);
   aspect-ratio: 5 / 7;

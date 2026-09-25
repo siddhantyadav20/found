@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import type { IncomingCall, ReplyOption } from "@/content/types";
 import { has, type CaseState } from "@/lib/game/engine";
@@ -84,20 +84,20 @@ export default function Ringing({
     return () => window.clearTimeout(t);
   }, [answered, said, lines.length]);
 
-  // What was said gets its answer, and then the line goes.
+  /* What was said gets its answer, a line at a time, at reading speed. Then
+     the call waits: the player hangs up when they've read it (PLAYTEST-SHAGUN.md #46). */
+  const [heard, setHeard] = useState(0);
+  const answers = useMemo(() => chosen?.then ?? [], [chosen]);
   useEffect(() => {
-    if (!chosen) return undefined;
-    const t = window.setTimeout(
-      () => {
-        ended();
-        onSay(chosen);
-      },
-      reactionMs(chosen.then?.[0]),
-    );
+    if (!chosen || heard >= answers.length) return undefined;
+    const t = window.setTimeout(() => setHeard((n) => n + 1), heard === 0 ? 900 : reactionMs(answers[heard - 1]));
     return () => window.clearTimeout(t);
-  }, [chosen, onSay]);
-
-  const reaction = chosen?.then?.[0];
+  }, [chosen, heard, answers]);
+  const over = Boolean(chosen) && heard >= answers.length;
+  const hangUp = () => {
+    ended();
+    if (chosen) onSay(chosen);
+  };
 
   return (
     <div
@@ -132,13 +132,22 @@ export default function Ringing({
               <span>{chosen.text}</span>
             </p>
           )}
-          {reaction && (
-            <p className={styles.line}>
+          {answers.slice(0, heard).map((reaction) => (
+            <p key={reaction.id} className={styles.line}>
               {/* Whoever has been speaking answers, by name, however the phone listed them. */}
               <span className={styles.speaker}>{call.lines[0]?.who ?? call.from}</span>
               <span lang={reaction.english ? "hi-Latn" : undefined}>{reaction.text}</span>
               {reaction.english && <span className={styles.english}>{reaction.english}</span>}
             </p>
+          ))}
+
+          {over && (
+            <span className={`${styles.button} ${styles.end}`}>
+              <button type="button" className={styles.decline} onClick={hangUp} aria-label="End call">
+                <Glyph kind="decline" />
+              </button>
+              <span>End</span>
+            </span>
           )}
 
           {!chosen && said >= lines.length && !call.reply && call.dismiss && (

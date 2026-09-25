@@ -92,6 +92,7 @@ export default function LockScreen({
               <span className={styles.noteBody}>
                 <span className={styles.noteFrom}>{n.from}</span>
                 <span className={styles.noteText}>{n.text}</span>
+                {n.english && <span className={styles.noteEnglish}>{n.english}</span>}
               </span>
             </span>
           ))}

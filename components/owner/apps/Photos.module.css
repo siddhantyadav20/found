@@ -94,3 +94,133 @@
   background: inherit;
   filter: blur(10px) saturate(0.8);
 }
+
+/* A screenshot of a WhatsApp chat: the header, then its messages as the app
+   drew them. Small in the grid, readable in the viewer. */
+.shot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 6px 5px;
+  background: #0b141a;
+  color: #e9edef;
+  font-size: 5.5px;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.shotHead {
+  display: grid;
+  margin: 0 -5px 3px;
+  padding: 0 6px 3px;
+  border-bottom: 0.5px solid #222d34;
+}
+
+.shotHead span {
+  color: #8696a0;
+}
+
+.shotSystem {
+  align-self: center;
+  max-width: 90%;
+  margin: 0;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #182229;
+  color: #8696a0;
+  text-align: center;
+}
+
+.shotLine {
+  display: grid;
+  max-width: 88%;
+  margin: 0;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: #202c33;
+}
+
+.shotLine b {
+  color: #53bdeb;
+  font-weight: 600;
+}
+
+.shotLine i {
+  justify-self: end;
+  color: #8696a0;
+  font-style: normal;
+}
+
+.shotLine small {
+  color: #8696a0;
+}
+
+.shot[data-big] {
+  width: min(100cqw, 75cqh);
+  height: auto;
+  aspect-ratio: 9 / 16;
+  margin-inline: auto;
+  gap: 8px;
+  padding: 14px 12px;
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.shot[data-big] .shotHead {
+  margin: 0 -12px 6px;
+  padding: 0 14px 10px;
+  font-size: 16px;
+}
+
+.shot[data-big] .shotHead span {
+  font-size: 12px;
+}
+
+.shot[data-big] .shotSystem {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.shot[data-big] .shotLine {
+  gap: 2px;
+  padding: 6px 9px;
+  border-radius: 9px;
+}
+
+.shot[data-big] .shotLine small {
+  font-size: 12px;
+}
+
+.shot[data-big] .shotLine i {
+  font-size: 11px;
+}
+
+/* Only its thumbnail on the phone: the words don't resolve. */
+.shot[data-veiled] > * {
+  filter: blur(3px);
+}
+
+.shot:not([data-big]) {
+  aspect-ratio: 1;
+}
+
+/* A message's shape, for a screenshot whose words haven't come down yet. */
+.shotBar {
+  display: block;
+  width: 72%;
+  height: 12%;
+  border-radius: 4px;
+  background: #202c33;
+}
+
+.shotBar[data-system] {
+  align-self: center;
+  width: 60%;
+  height: 7%;
+  background: #182229;
+}

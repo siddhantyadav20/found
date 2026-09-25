@@ -12,8 +12,18 @@ import { all, has, type CaseState } from "./engine";
    in Episode 1, and before whatever Episode 3 brings.
    =========================================================================== */
 
-/** The option picked in an exchange, if one was. */
-export const chosenIn = (s: CaseState, r: Reply) => r.options.find((o) => o.sets?.some((f) => s.flags.includes(f)));
+/**
+ * The option picked in an exchange, if one was. Options can share a flag
+ * (Nitin's "for Raju" and "promise" both protect him), so the pick is the
+ * option whose flags are all set, the most specific of them first, and only
+ * then one that merely shares a flag (PLAYTEST-SHAGUN.md #52).
+ */
+export function chosenIn(s: CaseState, r: Reply): ReplyOption | undefined {
+  const set = (o: ReplyOption) => (o.sets ?? []).filter((f) => s.flags.includes(f)).length;
+  const whole = r.options.filter((o) => o.sets?.length && set(o) === o.sets.length);
+  if (whole.length) return whole.reduce((a, b) => (b.sets!.length > a.sets!.length ? b : a));
+  return r.options.find((o) => set(o) > 0);
+}
 
 /** Where a set of flags landed in the playthrough: the latest of them, or before everything. */
 const landed = (s: CaseState, flags: readonly string[] = []): number =>
@@ -25,6 +35,8 @@ export function conversation(s: CaseState, t: Thread, today: string): Message[] 
     .map((m) => ({ m, key: landed(s, m.requires) }));
 
   for (const r of t.replies ?? []) {
+    // An exchange that never opened here wasn't had here, whatever was said elsewhere (a call, say).
+    if (!all(s, r.requires)) continue;
     const o = chosenIn(s, r);
     if (!o) continue;
     // Where the choice landed: the first of its flags that's set.
