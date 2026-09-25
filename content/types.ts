@@ -346,7 +346,16 @@ export type Gate = {
   readonly ask: string;
 };
 
-export type HomeIcon = { readonly app: AppId; readonly label: string };
+export type HomeIcon = {
+  readonly app: AppId;
+  readonly label: string;
+  /**
+   * Offloaded (Settings › General › iPhone Storage): the app is gone and its
+   * data kept, and the icon wears a cloud. Tapped, it downloads again, but
+   * only once these hold; before that the App Store says it can't.
+   */
+  readonly offloaded?: readonly Flag[];
+};
 
 /* --- what is on the found phone -------------------------------------------
    Everything below is content, not mechanism: a chat is a list of messages, a
@@ -532,6 +541,12 @@ export type Photo = {
   readonly favorite?: boolean;
   /** In the Hidden album, which Photos shows only once Settings says to (`SHOW_HIDDEN`). */
   readonly hidden?: boolean;
+  /**
+   * Kept in iCloud rather than on the phone (Optimize iPhone Storage): a
+   * blurred thumbnail is all that's here, and opening it can't load the rest
+   * until these hold.
+   */
+  readonly inCloud?: readonly Flag[];
   /** In Recently Deleted, with the time it was deleted and the days it has left. */
   readonly deletedAt?: string;
   readonly daysLeft?: number;
@@ -618,8 +633,14 @@ export type Note = {
   /** A locked note asks for a password. Whether it holds anything is another matter. */
   readonly locked?: boolean;
   readonly password?: string;
+  /** Notes shows the owner's own hint once a wrong password has been tried. */
+  readonly hint?: string;
+  /** When the password can be known from what's on the phone: a solver unlocks it then, and not before. */
+  readonly knownAfter?: readonly Flag[];
   /** What is inside once it opens. */
   readonly inside?: readonly string[];
+  /** Photos and videos put in the note, shown under its text once it opens. */
+  readonly attachments?: readonly Photo[];
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };

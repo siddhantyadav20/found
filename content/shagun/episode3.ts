@@ -8,9 +8,14 @@ import { RAJU } from "./phone";
 
    CHAPTER1.md F, Episode 3: the missing interval on a five-lane board;
    Nitin, who can be protected or pressed; why the car left empty (his
-   version, or the lie); the fire, reverted; why he filmed it; their
-   evidence, in the Hidden album; why he sent the phone; and Sameer, one last
-   time, told he tried to save him or confronted with the whole chain.
+   version, or the lie); the fire, whole; why he filmed it; their evidence;
+   why he sent the phone; and Sameer, one last time, told he tried to save him
+   or confronted with the whole chain.
+
+   The whole fire clip and Kunal's frame are in his locked note, "Agar kuch
+   hua" (phone.ts), from the first minute. Its password is 0152: the minute
+   of the lie, which nothing on the phone gives before this episode opens on
+   it (CHAPTER1.md F, the layers).
 
    And the routes (CHAPTER1.md H): Kunal, messaged as Sameer, who can be asked
    for the truth or handed Nitin's name, and either way names Nitin to
@@ -29,6 +34,9 @@ const now: readonly ["ep:3"] = ["ep:3"];
 /** Airplane mode, turned on by hand (lib/game/phone.ts): after it, nobody's messages reach the phone. */
 const OFFLINE = "did:airplane";
 
+/** His locked note, opened with its password (lib/game/phone.ts: `unlocked`). */
+const UNLOCKED = "did:unlocked-insurance";
+
 const evidence: readonly Evidence[] = [
   // Q10: the board.
   { id: "no-112", device: "owner", app: "whatsapp", label: "Bhasin, 12:38 AM: “Koi 112 nahi karega. Ladke ko service room le jao.”", within: true, requires: now },
@@ -44,11 +52,11 @@ const evidence: readonly Evidence[] = [
   { id: "vicky-location", device: "owner", app: "whatsapp", label: "Vicky's live location, 1:38–2:06: six minutes at the service gate", within: true, requires: ["ep:3", "did:protect-nitin"] },
 
   // Q12: the fire.
-  { id: "fire-original", device: "owner", app: "photos", label: "The fire clip, reverted: 31 seconds, “Bhasin sir, yahan?”, his hands, a jerrycan", manual: true, foundBy: ["did:reverted-fire"], requires: now },
+  { id: "fire-original", device: "owner", app: "notes", label: "The whole fire clip, in his locked note: 31 seconds, “Bhasin sir, yahan?”, his hands, a jerrycan", manual: true, requires: [...now, UNLOCKED] },
   { id: "kunal-wood", device: "owner", app: "whatsapp", label: "Kunal: “Aur aag? Lakdi tu khud dhoke laaya tha.”", within: true, requires: ["ep:3", "did:confronted-kunal"] },
 
   // Q13: their evidence.
-  { id: "frame", device: "owner", app: "photos", label: "Hidden: Kunal's frame of the second shot, “Humare paas bhi hai”", manual: true, requires: now },
+  { id: "frame", device: "owner", app: "notes", label: "In his locked note: Kunal's frame of the second shot, “Humare paas bhi hai”", manual: true, requires: [...now, UNLOCKED] },
   { id: "kunal-frame", device: "owner", app: "whatsapp", label: "Kunal sends it again: the frame, “Tera Nitin bhi andar hai”", within: true, requires: ["ep:3", "did:exposed-nitin"] },
 
   // Sameer, one last time.
@@ -138,11 +146,11 @@ const questions: readonly Question[] = [
     id: "q12",
     ask: "Why did Sameer film the fire?",
     episode: 3,
-    whereToLook: ["photos", "whatsapp"],
+    whereToLook: ["notes", "whatsapp"],
     hints: [
-      "The clip in Favorites is nine seconds long, and Photos says it was edited.",
-      "iOS keeps the original of an edited video: open it, then Edit › Revert. Or ask Kunal what he remembers.",
-      "Table the reverted fire clip, or Kunal's “Lakdi tu khud dhoke laaya tha” with the clip in Favorites.",
+      "The clip in Favorites is nine seconds of something longer. He kept the rest somewhere only he could open.",
+      "Notes › “Agar kuch hua” is locked, and its hint is his: “When I told N”. What time did he write to Nitin? Or ask Kunal what he remembers.",
+      "The password is 0152, the minute he wrote to Nitin. Table the whole fire clip, or Kunal's “Lakdi tu khud dhoke laaya tha” with the clip in Favorites.",
     ],
     claims: [
       {
@@ -159,7 +167,7 @@ const questions: readonly Question[] = [
         text: "He took part, on Bhasin's orders, and kept the footage as proof against them.",
         proof: ["fire-original"],
         orProof: [["kunal-wood", "fire-clip"]],
-        reply: "On the record. The first twenty-two seconds are his voice, “Bhasin sir, yahan?”, and his own hands, with the kada, setting down a jerrycan. He cut them before he sent it.",
+        reply: "On the record. The first twenty-two seconds are his voice, “Bhasin sir, yahan?”, and his own hands, with the kada, setting down a jerrycan. He left M the last nine, and locked the rest away for himself.",
         sets: ["link:fire"],
       },
     ],
@@ -171,11 +179,11 @@ const questions: readonly Question[] = [
     id: "q13",
     ask: "Why did he send this phone?",
     episode: 3,
-    whereToLook: ["settings", "photos", "whatsapp"],
+    whereToLook: ["notes", "whatsapp"],
     hints: [
-      "Somebody else has a picture of that night. Where would he keep something he didn't want seen?",
-      "Settings › Apps › Photos › Show Hidden Album. Then set what's in Hidden beside what he cut and deleted.",
-      "Table Kunal's frame (Hidden, or Kunal's chat) with the reverted fire clip and Nitin's 1:53 (or his copy of 1:52), or the frame with the deleted reel take and the deleted memo.",
+      "Somebody else has a picture of that night. Where would he keep something he didn't want M to see?",
+      "His locked note, “Agar kuch hua”, holds more than the fire (0152). Set what's in it beside what he cut and deleted.",
+      "Table Kunal's frame (in the locked note, or Kunal's chat) with the whole fire clip and Nitin's 1:53 (or his copy of 1:52), or the frame with the deleted reel take and the deleted memo.",
     ],
     claims: [
       {

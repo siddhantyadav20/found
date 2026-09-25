@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
-import type { Note, Story } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
-import { calendarOf } from "@/lib/game/phone";
+import type { Note, Photo, Story } from "@/content/types";
+import { all, has, type CaseState } from "@/lib/game/engine";
+import { calendarOf, unlocked } from "@/lib/game/phone";
 import { Page, SearchField } from "../AppView";
 import app from "../ios/App.module.css";
+import Clip from "../ios/Clip";
+import frame from "../ios/PhotoFrame.module.css";
 import styles from "./Notes.module.css";
 import { stamp } from "@/lib/found/time";
 
@@ -15,9 +17,25 @@ import { stamp } from "@/lib/found/time";
    touched ("Previous 7 Days"), each a bold title over its time and first
    line, the count in the toolbar at the foot and Notes' yellow on every
    glass button; a note with its date over it. A locked note asks for a
-   password, and whether it holds anything is the chapter's business, never
-   required.
+   password (a Notes password is its own, whatever the phone's passcode is)
+   and gives the owner's hint after a wrong one; once it opens it stays open,
+   with whatever was put in it under its text.
    =========================================================================== */
+
+/** A wrong password shakes the field, then clears it. */
+const SHAKE_MS = 420;
+
+/** A photo or video put in a note: as big as the note is wide, a video with its transport under it. */
+function Attachment({ photo }: { photo: Photo }) {
+  return (
+    <figure className={styles.attachment}>
+      <div className={frame.frame} data-size={photo.video ? undefined : "full"} data-wide={photo.video ? "" : undefined} style={{ "--hue": photo.video ? 24 : 205 } as CSSProperties}>
+        <span className={frame.pending}>{photo.title}</span>
+      </div>
+      {photo.video && <Clip seconds={photo.video.seconds} captions={photo.video.captions} />}
+    </figure>
+  );
+}
 
 const YELLOW = "#ffd60a";
 
@@ -30,9 +48,39 @@ function section(back: number): string {
   return "Earlier";
 }
 
-function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id: string) => void }) {
+function Open({
+  note,
+  day,
+  opened,
+  onOpened,
+  onSeen,
+}: {
+  note: Note;
+  day: string;
+  /** Unlocked before, and the save remembers. */
+  opened: boolean;
+  onOpened: (id: string) => void;
+  onSeen: (ids: readonly string[]) => void;
+}) {
   const [typed, setTyped] = useState("");
-  const [open, setOpen] = useState(!note.locked);
+  const [open, setOpen] = useState(!note.locked || opened);
+  const [shaking, setShaking] = useState(false);
+  const [missed, setMissed] = useState(false);
+
+  useEffect(() => {
+    if (!shaking) return undefined;
+    const t = window.setTimeout(() => {
+      setShaking(false);
+      setTyped("");
+    }, SHAKE_MS);
+    return () => window.clearTimeout(t);
+  }, [shaking]);
+
+  // What's in it is seen the moment it opens.
+  const inside = open ? (note.attachments ?? []).map((a) => a.evidence).filter((id): id is string => Boolean(id)).join(",") : "";
+  useEffect(() => {
+    if (inside) onSeen(inside.split(","));
+  }, [inside, onSeen]);
 
   if (!open)
     return (
@@ -48,17 +96,28 @@ function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id:
           maxLength={4}
           value={typed}
           placeholder="Password"
+          data-shake={shaking || undefined}
+          readOnly={shaking}
           onChange={(e) => {
             const v = e.target.value.replace(/\D/g, "");
             setTyped(v);
             if (v === note.password) {
               setOpen(true);
               onOpened(note.id);
+            } else if (note.password && v.length >= note.password.length) {
+              setShaking(true);
+              setMissed(true);
             }
           }}
           aria-label="Note password"
+          aria-invalid={shaking || undefined}
         />
         <p className={styles.lockHint}>Enter the password for “{note.title}”.</p>
+        {missed && note.hint && (
+          <p className={styles.lockClue} aria-live="polite">
+            Hint: {note.hint}
+          </p>
+        )}
       </div>
     );
 
@@ -75,6 +134,7 @@ function Open({ note, day, onOpened }: { note: Note; day: string; onOpened: (id:
           {line}
         </p>
       ))}
+      {note.attachments?.map((a) => <Attachment key={a.id} photo={a} />)}
     </article>
   );
 }
@@ -112,8 +172,11 @@ export default function Notes({
     return (
       <Page title="" onBack={() => setOpen(null)} backLabel="Notes" tint={YELLOW} end={more}>
         <Open
+          key={here.id}
           note={here}
           day={cal.label(here.day)}
+          opened={has(state, unlocked(here.id))}
+          onSeen={onRead}
           onOpened={() => {
             onPassword(here.id);
             if (here.evidence) onRead([here.evidence]);

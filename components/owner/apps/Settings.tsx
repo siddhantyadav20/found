@@ -135,6 +135,8 @@ const TILES: Record<string, { bg?: string; glyph?: React.ReactNode; app?: AppId 
   "Bold Text": { bg: BLUE, glyph: SUN },
   "Battery Percentage": { bg: GREEN, glyph: BATTERY },
   "Low Power Mode": { bg: GREEN, glyph: BATTERY },
+  // Under General on a real iPhone, and General's own grey.
+  "iPhone Storage": { bg: GREY, glyph: GEAR },
 };
 
 /** A switch that only goes one way: on, it sets its flags; this phone never turns it back off. */

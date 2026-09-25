@@ -13,8 +13,13 @@ import { RAJU } from "./phone";
    the side; Raju; Bhasin; and, in the archived chat, a car that came and
    left, and a reply to a message that isn't there.
 
-   Everything here is on the phone from the first minute (phone.ts). None of
-   it counts before this episode (the hybrid pacing).
+   What's in plain view is on the phone from the first minute (phone.ts),
+   and anything read early counts once this episode opens. What gives the
+   episode away can't be opened before it (CHAPTER1.md F, the layers): the
+   12:29 photo and the reel take are still in iCloud, with the phone in Low
+   Power Mode and its day's data used up, and Voice Memos, with the memo in
+   its bin, is offloaded. Both come back once the phone has died, charged
+   and passed midnight.
 
    End belief (canon): Sameer fired the shot, but the family controlled what
    happened afterwards.
@@ -36,7 +41,8 @@ const evidence: readonly Evidence[] = [
   { id: "reel-take", device: "owner", app: "photos", label: "The reel take, 12:31 AM, in Recently Deleted", manual: true, requires: now },
 
   // Q7: who fired.
-  { id: "memo", device: "owner", app: "voicememos", label: "A deleted memo: “Doosri… main pose kar raha tha.”", manual: true, requires: now },
+  // Voice Memos has to be downloaded again first (story.ts: offloaded).
+  { id: "memo", device: "owner", app: "voicememos", label: "A deleted memo: “Doosri… main pose kar raha tha.”", manual: true, requires: ["ep:2", "did:installed-voicememos"] },
   { id: "gun-to-kunal", device: "owner", app: "whatsapp", label: "Bhasin, 12:36 AM: “Sameer, gun Kunal ko do. Abhi.”", within: true, requires: now },
 
   // Q8: alive.
@@ -74,8 +80,8 @@ const questions: readonly Question[] = [
     episode: 2,
     whereToLook: ["photos", "notes", "whatsapp"],
     hints: [
-      "His shot list says where he meant to be at 12:15, and WhatsApp saved a photo from that lawn to Photos.",
-      "Photos › WhatsApp has Kunal's 12:29 picture. Kunal's chat, the Thursday before the wedding, says what he'd bring.",
+      "His shot list says where he meant to be at 12:15, and WhatsApp saved a photo from that lawn to Photos. It's come down from iCloud now.",
+      "Photos › WhatsApp has Kunal's 12:29 picture, whole at last. Kunal's chat, the Thursday before the wedding, says what he'd bring.",
       "Table Kunal's “Papa wali le aaunga” with the 12:29 photo, or with the shot list's 12:15 line.",
     ],
     proof: ["kunal-papa", "bts"],
@@ -94,7 +100,7 @@ const questions: readonly Question[] = [
     whereToLook: ["whatsapp", "photos"],
     hints: [
       "Kunal's clip and the reel weren't shot in the same place. Put what you've found where it happened.",
-      "Watch Kunal's clip in his chat. Then look in Photos › Recently Deleted: Sameer deleted something shot on the back lawn.",
+      "Watch Kunal's clip in his chat. Then look in Photos › Recently Deleted: the video shot on the back lawn wouldn't load before. It will now.",
       "Dance floor: Kunal's 11:52 clip. Back lawn: the shot list's 12:15, the 12:29 photo and the 12:31 take.",
     ],
     lanes: [
@@ -122,7 +128,7 @@ const questions: readonly Question[] = [
     whereToLook: ["voicememos", "photos", "whatsapp"],
     hints: [
       "The take ends on “ek aur, pose mein—”. Who was holding the gun, and was there another shot?",
-      "Voice Memos keeps what's deleted, too. And the first thing Bhasin wrote in his group was an order to someone.",
+      "Voice Memos is offloaded, not deleted: the app went, what it kept stayed. Tap it to download it, and look in its Recently Deleted. Or read the first thing Bhasin wrote in his group.",
       "Table the memo in Voice Memos › Recently Deleted with the reel take, or Bhasin's 12:36 “Sameer, gun Kunal ko do” with the reel take.",
     ],
     proof: ["memo", "reel-take"],
@@ -416,6 +422,8 @@ const bhasin: Thread = { id: "bhasin-2", app: "whatsapp", name: "Bhasin Uncle", 
 export const threads: readonly Thread[] = [sameer, raju, bhasin];
 
 const events: readonly LiveEvent[] = [
+  // Back on, past midnight: his day's data is back, so what was waiting in iCloud and the App Store can come down.
+  { id: "data-renewed", device: "owner", after: ["fired:title-2"], unless: [OFFLINE], delay: 3, app: "messages", banner: "JIO · Your daily data quota of 1.5 GB has been renewed." },
   // The phone comes back on, on the player's charger, and the man who sent it sees it online.
   { id: "sameer-online", device: "owner", after: ["fired:title-2"], unless: [OFFLINE], delay: 6, app: "whatsapp", banner: `${SAMEER_NEW} · Online dikh raha hai. M?` },
   // Told a stranger has the phone, his mother told Bhasin, and Bhasin writes early (CHAPTER1.md H).

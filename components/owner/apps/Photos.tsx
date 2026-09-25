@@ -5,7 +5,8 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import type { Photo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { calendarOf, clipOf, library, mmss, revertible } from "@/lib/game/phone";
+import { calendarOf, clipOf, library, loaded, mmss, revertible, syncPaused } from "@/lib/game/phone";
+import Alert from "../ios/Alert";
 import app from "../ios/App.module.css";
 import AppBar, { Chevron } from "../ios/AppBar";
 import Clip from "../ios/Clip";
@@ -21,13 +22,16 @@ import { stamp } from "@/lib/found/time";
    Deleted with the days each thing has left). A viewer with the place and
    time on top and a toolbar underneath.
 
-   Four things in here are real iOS behaviour a chapter can hide something
+   Five things in here are real iOS behaviour a chapter can hide something
    behind (CHAPTER1.md E):
    - Recently Deleted keeps a photo or video for 30 days, and Recover puts it
      back
    - the Hidden album only appears once Settings › Photos says to show it
    - an edited clip keeps its original, and Edit › Revert brings it back
    - a photograph can hold something only leaning in finds (zoom that counts)
+   - with Optimise iPhone Storage, a photo or video can be only a blurred
+     thumbnail here, the rest in iCloud: until it can come down, opening it
+     spins and then says it couldn't (`Photo.inCloud`)
 
    Until the shoot, `paper` is a page in somebody's hand and `scene` a titled
    card; `src` swaps in the real thing.
@@ -83,8 +87,11 @@ const shortDay = (n: number) => {
   return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
 };
 
-/** A photograph, a video's poster, or a handwritten page as a phone camera sees paper. */
-function Picture({ photo, big, seconds }: { photo: Photo; big?: boolean; seconds?: number }) {
+/**
+ * A photograph, a video's poster, or a handwritten page as a phone camera sees
+ * paper. `veiled`: only the thumbnail is on the phone, blurred past reading.
+ */
+function Picture({ photo, big, seconds, veiled }: { photo: Photo; big?: boolean; seconds?: number; veiled?: boolean }) {
   if (photo.kind === "paper")
     return (
       <div className={paper.paper} data-big={big || undefined}>
@@ -101,12 +108,13 @@ function Picture({ photo, big, seconds }: { photo: Photo; big?: boolean; seconds
       className={paper.scene}
       data-big={big || undefined}
       data-video={photo.video ? "" : undefined}
+      data-veiled={veiled || undefined}
       style={{ "--hue": hueOf(photo.id) } as CSSProperties}
     >
       {photo.src ? (
-        <Image src={photo.src} alt={photo.title} fill sizes={big ? "400px" : "140px"} className={frame.image} />
+        <Image src={photo.src} alt={veiled ? "" : photo.title} fill sizes={big ? "400px" : "140px"} className={frame.image} />
       ) : (
-        <span className={paper.sceneTitle}>{photo.title}</span>
+        !veiled && <span className={paper.sceneTitle}>{photo.title}</span>
       )}
       {seconds !== undefined && !big && <span className={paper.duration}>{mmss(seconds)}</span>}
     </div>
@@ -221,6 +229,9 @@ function Glyph({ d, filled = false }: { d: string; filled?: boolean }) {
   );
 }
 
+/** How long the viewer spins on something still in iCloud before it gives up. */
+const LOAD_TRY_MS = 1600;
+
 function Viewer({
   photo,
   day,
@@ -241,8 +252,18 @@ function Viewer({
 }) {
   const [info, setInfo] = useState(false);
   const [editing, setEditing] = useState(false);
-  const clip = clipOf(state, photo);
-  const zoomed = photo.zoom;
+  // Still in iCloud: it tries, and then says it couldn't, the way Photos does.
+  const here = loaded(state, photo);
+  const [failed, setFailed] = useState(false);
+  const [told, setTold] = useState(false);
+  useEffect(() => {
+    if (here) return undefined;
+    const t = window.setTimeout(() => setFailed(true), LOAD_TRY_MS);
+    return () => window.clearTimeout(t);
+  }, [here]);
+  const clip = here ? clipOf(state, photo) : undefined;
+  const zoomed = here ? photo.zoom : undefined;
+  const video = Boolean(photo.video);
 
   return (
     <div className={frame.viewer} data-no-swipe>
@@ -262,8 +283,9 @@ function Viewer({
       {zoomed ? (
         <Zoomable photo={{ ...photo, zoom: zoomed }} onFound={() => onRead([zoomed.evidence])} />
       ) : (
-        <div className={frame.viewerImage} data-video={clip ? "" : undefined}>
-          <Picture photo={photo} big />
+        <div className={frame.viewerImage} data-video={photo.video ? "" : undefined}>
+          <Picture photo={photo} big veiled={!here} />
+          {!here && (failed ? <span className={frame.failed} aria-label="Couldn't load" role="img" /> : <span className={frame.loading} aria-label="Loading" role="img" />)}
         </div>
       )}
 
@@ -305,6 +327,14 @@ function Viewer({
             Cancel
           </button>
         </div>
+      )}
+
+      {failed && !told && (
+        <Alert
+          title={video ? "Unable to Load Video" : "Unable to Load Photo"}
+          message={`An error occurred while loading a higher quality version of this ${video ? "video" : "photo"}.`}
+          onClose={() => setTold(true)}
+        />
       )}
 
       {/* iOS 26's viewer toolbar: share, then favourite, info and edit, then delete, on one pane of glass. */}
@@ -387,7 +417,7 @@ export default function Photos({
           open?.bin
             ? () => {
                 onRestore(photo.id);
-                if (photo.evidence) onRead([photo.evidence]);
+                if (photo.evidence && loaded(state, photo)) onRead([photo.evidence]);
                 setViewing(null);
                 setAlbum(null);
                 setTab("library");
@@ -407,11 +437,12 @@ export default function Photos({
           onClick={() => {
             setViewing(p.id);
             // Seen in the bin is seen: it counts from the moment it's opened (PLAYTEST.md #44).
-            if (p.evidence) onRead([p.evidence]);
+            // What's still in iCloud hasn't been seen, whenever it was tapped.
+            if (p.evidence && loaded(state, p)) onRead([p.evidence]);
           }}
-          aria-label={`${p.title}, ${cal.label(p.day)} ${stamp(p.at)}`}
+          aria-label={loaded(state, p) ? `${p.title}, ${cal.label(p.day)} ${stamp(p.at)}` : `${p.video ? "Video" : "Photo"}, ${cal.label(p.day)} ${stamp(p.at)}`}
         >
-          <Picture photo={p} seconds={clipOf(state, p)?.seconds} />
+          <Picture photo={p} seconds={clipOf(state, p)?.seconds} veiled={!loaded(state, p)} />
           {open?.bin && <span className={styles.days}>{p.daysLeft ?? 30} days</span>}
         </button>
       ))}
@@ -421,7 +452,7 @@ export default function Photos({
   const row = (a: Album, glyph?: string) => (
     <li key={a.name}>
       <button type="button" className={app.row} onClick={() => setAlbum(a.name)}>
-        {glyph ? <RowGlyph d={glyph} /> : <span className={styles.albumThumb}>{a.photos.at(-1) && <Picture photo={a.photos.at(-1)!} />}</span>}
+        {glyph ? <RowGlyph d={glyph} /> : <span className={styles.albumThumb}>{a.photos.at(-1) && <Picture photo={a.photos.at(-1)!} veiled={!loaded(state, a.photos.at(-1)!)} />}</span>}
         <span className={app.rowMain}>
           <span className={app.rowTitle}>{a.name}</span>
         </span>
@@ -434,7 +465,7 @@ export default function Photos({
   // An album on the Collections shelf: its newest picture, big, and its name and count under it.
   const card = (name: string, photos: readonly Photo[], onOpen: () => void) => (
     <button key={name} type="button" className={styles.card} onClick={onOpen}>
-      <span className={styles.cardThumb}>{photos.at(-1) && <Picture photo={photos.at(-1)!} />}</span>
+      <span className={styles.cardThumb}>{photos.at(-1) && <Picture photo={photos.at(-1)!} veiled={!loaded(state, photos.at(-1)!)} />}</span>
       <span className={styles.cardName}>{name}</span>
       <span className={styles.cardCount}>{photos.length}</span>
     </button>
@@ -489,6 +520,8 @@ export default function Photos({
               {stills} {stills === 1 ? "Photo" : "Photos"}
               {videos > 0 && `, ${videos} ${videos === 1 ? "Video" : "Videos"}`}
             </p>
+            {/* iCloud's word, under the count, as the Library gives it. */}
+            <p className={styles.synced}>{syncPaused(story, state) ? "Syncing Paused · Low Power Mode" : "Updated Just Now"}</p>
           </>
         ) : (
           <>

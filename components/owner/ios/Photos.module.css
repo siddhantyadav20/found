@@ -235,3 +235,11 @@
   font-size: 13px;
   color: var(--ios-grey);
 }
+
+/* iCloud's line under the Library's count. */
+.synced {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ios-grey);
+  text-align: center;
+}

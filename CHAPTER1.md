@@ -105,7 +105,7 @@ later.
 | **11:52 PM** | **Kunal fires two rounds into the air** on the dance-floor lawn, dhol and cheering. At 11:58 he sends Sameer the clip: *"bhai ye bhi daal dena film mein 🔥🔥"* | WhatsApp › Kunal (video, 0:14) |
 | 12:15 AM | The private reel on the back lawn: Sameer, Kunal, Dilip holding an LED panel, Sameer's iPhone on a tripod. Nitin is outside at the van. | Notes (shot list) |
 | 12:29 AM | Kunal photographs the setup: Sameer holding the revolver, Dilip beside him with the light. He sends it: *"🔥 boss"* | WhatsApp auto-saved it to Photos (the message itself was later deleted) |
-| **12:31:40** | Sameer fires once, upward, for the camera. The take ends at 12:31:54, when he stops recording to check it | Photos › **Recently Deleted** (the take, 0:14) |
+| **12:31:40** | Sameer fires once, upward, for the camera. The take ends at 12:31:54, when he stops recording to check it | Photos › **Recently Deleted** (the take, 0:14; in iCloud until Episode 2) |
 | **12:32:05** | **The second discharge**, made while posing for Kunal's phone, lower than intended. **It hits Dilip. He is alive.** | Kunal's phone (the family's video). Not on Sameer's phone until Monday (C4) |
 
 ## C3. The missing interval
@@ -144,8 +144,8 @@ later.
 | Mon 2:05 AM | Voice note 3: *"Unhone usko jala diya, M. Main wahan tha. Maine dekha."* | M |
 | Mon 10:12 AM | Mr Sethi: *"Chhotu ka hisaab Bhasin sir ne kar diya. List se naam hata diya. Aap bhi kuch mat bolna."* **(money that makes the incident disappear)** | WhatsApp › Sethi Caterers |
 | Mon, from 1 PM | Raju's calls begin (he got the number from Dilip's contacts), then a forwarded poster: **LAPATA — Dilip Kumar Mahto (Chhotu), 19**, last seen Sat 22 Nov, Chhattarpur | Phone; WhatsApp › unsaved number |
-| **Mon 3:10 PM** | **Kunal sends a frame from his video:** Sameer's arm coming down, the flash, Dilip behind the light. *"Humare paas bhi hai. Soch samajh ke."* Sameer screenshots it. **Now he knows he fired the shot, and that they can prove it.** | Photos › **Hidden** (the screenshot); the chat message deleted |
-| Mon 4:58 PM | A voice memo, to nobody: *"Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai."* *(The first was for the camera. The second… I was posing. I thought it was empty.)* | Voice Memos › **Recently Deleted** |
+| **Mon 3:10 PM** | **Kunal sends a frame from his video:** Sameer's arm coming down, the flash, Dilip behind the light. *"Humare paas bhi hai. Soch samajh ke."* Sameer screenshots it. **Now he knows he fired the shot, and that they can prove it.** | Notes › **"Agar kuch hua"**, locked (the screenshot); the chat message deleted |
+| Mon 4:58 PM | A voice memo, to nobody: *"Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai."* *(The first was for the camera. The second… I was posing. I thought it was empty.)* | Voice Memos › **Recently Deleted** (the app offloaded) |
 | Tue 11:30 AM | Mummy: *"Bhasin uncle aaye the. Pooch rahe the tu kahan hai. Beta sab theek hai?"* | WhatsApp › Mummy |
 | Tue | Mumbai goes on: the offer letter from Rangmanch Productions (second-unit DOP, joining **Mon 1 Dec**), a flat deposit, and a train, **Sun 30 Nov**, New Delhi → Mumbai Central | Mail; Paytap |
 | Wed 10:15 PM | Voice note 4: *"Agar mujhe kuch hua… sab phone mein hai."* | M |
@@ -216,11 +216,13 @@ true about phones.
 |---|---|---|---|
 | 10:48 PM | Deleted the reel take | **Photos › Recently Deleted**, "28 days" | iOS keeps deleted photos and videos for 30 days |
 | 10:52 PM | Deleted the "Doosri… main pose kar raha tha" memo | **Voice Memos › Recently Deleted** | Voice Memos has its own 30-day bin |
-| 11:02 PM | Trimmed the fire clip from 0:31 to 0:09 and favourited it | **Edit › Revert** restores the first 22 seconds: his voice, *"Bhasin sir, yahan?"*, and his hands with a jerrycan, the silver kada from his Instagram selfies on his wrist. **No body, ever.** | iOS keeps the original of an edited video |
+| 10:53 PM | **Offloaded Voice Memos (2026-09-25)** | Its icon, with iOS's cloud; tapped, it downloads again, with everything it kept | Offloading an app removes it and keeps its data |
+| 11:02 PM | Trimmed the fire clip to its last 0:09 with *Save Video as New Clip*, and favourited the new clip | **Notes › "Agar kuch hua"**, locked with its own password: the whole 0:31, his voice, *"Bhasin sir, yahan?"*, and his hands with a jerrycan, the silver kada from his Instagram selfies on his wrist. **No body, ever.** | Trim can save a new clip and keep the old; a note can be locked with a Notes password of its own |
 | 11:06 PM | Deleted Kunal's 12:29 photo from their chat | The copy WhatsApp **auto-saved to Photos** | Deleting a WhatsApp message doesn't delete the saved photo |
 | 11:08 PM | **Archived** Dilip's chat ("Chhotu"), which ends on his 1:08 *"aa raha hoon. hospital le jayenge"* **(game, S7)** | **Chats › Archived**: the promise at 7:10 PM, and Dilip alive at 1:07 | Archiving hides a chat from the list and deletes nothing |
 | 11:10 PM | Deleted his 1:52 message to Nitin "for me", then **archived** Nitin's chat | **Chats › Archived (2)**, and Nitin's 1:53 reply to a message that isn't there | "Delete for me" removes nothing from the other phone |
-| 11:14 PM | Hid the screenshot of Kunal's frame, and turned off **Show Hidden Album** | **Settings › Apps › Photos › Show Hidden Album** | With no passcode, the Hidden album opens once it's shown |
+| 11:14 PM | Moved the screenshot of Kunal's frame into the same locked note (2026-09-25) | **"Agar kuch hua"**. The password is **0152**, the minute he told Nitin; the hint, his own: *"When I told N"* | A Notes password is separate from the phone's passcode |
+| 11:15 PM | Turned off **Show Hidden Album**, over two screenshots of his EMI notices | **Settings › Apps › Photos › Show Hidden Album**: his shame, not the case | With no passcode, the Hidden album opens once it's shown |
 | 11:20 PM | Wrote "For M" | The unfinished "4. Nitin —" | — |
 
 **What he didn't think to curate:** Safari history, whose timestamps he
@@ -237,11 +239,27 @@ questions, and each question sits on a stage of the mystery ladder (script
 the engine already enforces. Hints and full dialogue come in S6–S8; key lines
 are drafted here. **English sits under every Hinglish line in the game.**
 
-**Pacing (game, decided 2026-09-24): paced, with a hybrid.** The whole
-phone is there from minute one, as he left it. What he pointed M at counts
-from Episode 1. What he tucked away (the bin, Hidden, the original, the
-archive) can be found early but is only filed in its own episode, so a
-player who digs is never punished and never skips ahead.
+**Pacing (game, decided 2026-09-24, layered 2026-09-25): the phone opens in
+layers.** The whole phone is there from minute one, as he left it. What he
+pointed M at counts from Episode 1. Anything in plain view that a later
+episode needs can be read early, and counts once its episode opens. What
+would *give an episode away* has a door a digging player can find in
+Episode 1 and can't open until its own episode (PLAYTEST-SHAGUN.md #11):
+
+- **Episode 2's layer waits for the phone to wake.** In Episode 1 the phone
+  is in Low Power Mode (Sameer turned it on for the courier) and its day's
+  Jio data is used up (the SMS says so). The 12:29 photo and the reel take
+  are only thumbnails, the rest in iCloud (Optimise iPhone Storage):
+  opening one spins, then *"Unable to Load Video"*. Voice Memos is offloaded,
+  and the App Store says it can't be downloaded. Once the phone has died,
+  charged and passed midnight, the data renews (a Jio SMS), Photos says
+  *"Updated Just Now"*, and Voice Memos downloads when tapped.
+- **Episode 3's layer is behind his own lock.** "Agar kuch hua" holds the
+  whole fire clip and Kunal's frame, locked with 0152: the minute of the
+  lie, which nothing on the phone says before Episode 3 opens on it.
+- **Airplane mode** doesn't hold a layer back: it lifts with the episode.
+  Airplane mode is one-way on this phone, so a network-true lock would
+  strand a player who turned it on in Episode 1.
 
 **Question types.** *Pick* (table the proof, name the answer), *type*,
 *timeline* (multi-lane, ordered), and *claims* (proven / not proven). New in
@@ -314,9 +332,9 @@ happened afterwards. **Doesn't know:** what was said at 1:52, or by whom.
 | 1 | **Q10 — The missing interval.** A **five-lane timeline**, 12:32 → 4:47 AM: *Dilip · Sameer · Nitin · the car · Bhasin*. Place the group's lines, the Chhotu chat, Nitin's archived messages, the Safari searches, the Recents. Beside the board, **the venue's site plan** (Mail: the planner sent it to Sameer for his shot list) puts the service room forty metres from the service gate on Mandi Road: a minute's carry. **Bhasin's lane** holds the orders: 12:38 *no 112*, 12:52 *doctor*, 1:31 *doctor*, 1:59 *kaun?*. **Contradictions light up**: 1:49 *Sameer is with Dilip*, 1:53 *"agar le gaye hain"*, 1:56 *Sameer searches for an ambulance.* *(link 6; reconfirms 5 and 7)* *L6–L7* | Case file (the board) | Multi-lane, ordered timeline |
 | 2 | **Nitin.** Message him (he thinks you're Sameer, until you say otherwise). **Protect him**, and he sends two screenshots, the 1:52 message and **Vicky's live location** from 1:38 to 2:06 (the car's own movement: in, a six-minute stop at the service gate, out), and says: *"Maine check bhi nahi kiya. Bas maan gaya."* *(I didn't even check. I just believed it.)* **Expose him**, or have confronted Kunal first, and he goes silent (H). | WhatsApp | Trust; reply list |
 | 3 | **Q11 — Why did the car leave empty?** **Sameer's version is accepted:** *"Bhasin's people turned it away"* (the group, 1:59–2:04). **The traced answer:** *Sameer told Nitin at 1:52 that Dilip had gone for treatment, and he knew it was false.* Route 1: Nitin's screenshot. Route 2, on this phone: 1:49 (he's in the service room), 1:53 (the reply to a missing message), 1:56 (still searching for an ambulance). *(link 8)* *L7* | Case file | Pick (two answers accepted, H) |
-| 4 | **The fire, again.** Photos › the fire clip › **Edit › Revert**. Twenty-two seconds come back: Sameer's voice, *"Bhasin sir, yahan?"*, his hands, the kada, a jerrycan. **No body.** | Photos | Revert (irreversible on iOS, so it's done by hand) |
-| 5 | **Q12 — Why did Sameer film the fire?** **Sameer's version is accepted:** *"to have proof against them"* (voice note 3, Favorites, "For M"). **The traced answer:** *he took part, and kept the footage as counter-evidence.* Route 1: Revert. Route 2: Kunal, if messaged, *"Aur aag? Lakdi tu khud dhoke laaya tha."* *(link 9)* *L8* | Case file | Pick |
-| 6 | **Their evidence.** Settings › Apps › Photos › **Show Hidden Album**, on. **Hidden** holds one screenshot: Kunal's frame of the second discharge, and *"Humare paas bhi hai. Soch samajh ke."* (Second route: exposing Nitin, or accusing Kunal, makes Kunal send it again, H.) | Settings, Photos | Finding (*understanding*) |
+| 4 | **The fire, again.** Notes › **"Agar kuch hua"**, locked since Episode 1, opens with **0152**, the minute of the lie (its hint: *"When I told N"*). Thirty-one seconds: Sameer's voice, *"Bhasin sir, yahan?"*, his hands, the kada, a jerrycan. **No body.** (Until 2026-09-25: Edit › Revert.) | Notes | A password, known only now |
+| 5 | **Q12 — Why did Sameer film the fire?** **Sameer's version is accepted:** *"to have proof against them"* (voice note 3, Favorites, "For M"). **The traced answer:** *he took part, and kept the footage as counter-evidence.* Route 1: the whole clip, in the note. Route 2: Kunal, if messaged, *"Aur aag? Lakdi tu khud dhoke laaya tha."* *(link 9)* *L8* | Case file | Pick |
+| 6 | **Their evidence.** The same note holds one screenshot: Kunal's frame of the second discharge, and *"Humare paas bhi hai. Soch samajh ke."* (Second route: exposing Nitin, or accusing Kunal, makes Kunal send it again, H.) | Notes | Finding (*understanding*) |
 | 7 | **Q13 — Why did he send this phone?** **Sameer's version is accepted:** *"to confess and get help"* (voice note 4, the envelope's *"Sab isme hai"*). **The traced answer:** *they can prove he fired, so he sent a counter-file: what they did after the shot, with his lie left out.* It needs their evidence (beat 6) and at least two of his edits traced (E). *(link 11)* *L8–L9* | Case file | Pick |
 | 8 | **Sameer, one last time.** **Give him the rescuer:** *"Tumne bachane ki koshish ki thi."* He takes it gratefully and keeps talking. **Or confront him with the full chain** (only with links 4, 5, 7 and 8 traced): *"1:52 pe tumne Nitin ko bola Dilip chala gaya. 1:56 pe tum ambulance dhoond rahe the."* Typing… for a long time. Then: ***"Maine usko bola Dilip nikal gaya hai. Mujhe pata tha woh nahi nikla tha."*** *(I told him Dilip had already left. I knew he hadn't.)* **He never writes again.** *L10* | WhatsApp | The chapter's last choice before the record |
 | 9 | **The record.** Your phone. **(I.)** | Your phone | The ending |
@@ -368,7 +386,7 @@ to it (ROADMAP S12).
 |---|---|---|---|---|
 | **Answer Sameer's mother** | Ep 1 beat 12: tell her a stranger has it / reply as Sameer / nothing | She learns an unknown person has the phone, or thinks her son answered | *Stranger:* she tells Bhasin, and his message (Ep 2 beat 12) comes early and knows you're not Sameer. *As Sameer:* Bhasin writes to "Sameer": *"Ghar aa jao. Baat karte hain."* *Nothing:* Find My keeps sounding | Nothing closes; the pressure changes shape |
 | **Reply to Raju early** | Ep 1 beats 2–3 (the call), or replying before Q2 | Raju is in the story before you understand Dilip | If you tell him something you later have to take back (*"Kunal ne maara"*), he withdraws: *"Aap log sab ek jaise ho."* | The promise: the Chhotu chat, Sat 7:10 PM |
-| **Protect Nitin** | Ep 3 beat 2 | He trusts you and sends the 1:52 screenshot | Kunal's frame arrives more slowly (Hidden only) | — |
+| **Protect Nitin** | Ep 3 beat 2 | He trusts you and sends the 1:52 screenshot | Kunal's frame arrives more slowly (the locked note only) | — |
 | **Expose Nitin** | Forward his messages to Kunal, or name him to Bhasin | Kunal and Bhasin move fast: Kunal sends the frame, *"Tera Nitin bhi andar hai"* | Nitin goes silent | The lie: route 2 on this phone (1:49 / 1:53 / 1:56) |
 | **Confront Kunal** | Message Kunal as Sameer (Ep 2 or 3) | The firing order, his *"maine sirf gun di thi"*, the family's story: *"Papa ne bola hai Bhasin uncle sambhalenge. Tu bas Mumbai ja."* | He names Nitin to Bhasin, and **the Nitin route closes** | The lie: route 2 |
 | **Publish early theory** | Your phone's **draft post**, from the end of Q3 on, until the end | Public pressure, now | **Before link 3: Ending C.** After: the chapter ends there, with the post as your record (I) | — |
@@ -488,7 +506,7 @@ partly unresolved for them (canon). Lines vary with what they'd already seen:
 | One grey tick on every voice note | Voice notes are voice notes | M blocked him. That's why he sent the phone and didn't just talk |
 | *"Kunal firing kar raha tha. Ek ladka gir gaya."* | One sentence | Two sentences, two moments, forty minutes apart |
 | The boy smiling over the tray | A waiter | A portrait, taken for someone he'd promised Mumbai to |
-| The fire clip starts mid-movement | It's shaky night footage | It was trimmed. Revert |
+| The fire clip starts mid-movement | It's shaky night footage | It was trimmed, and the rest locked away |
 | **"4. Nitin —"** | An unfinished list | The whole chapter |
 | *"Archived (1)"* at the top of Chats | Everyone archives | The chat he couldn't delete |
 | *"Bhasin uncle phir aaye the"* | A mother fussing | The family's man is at his mother's door |

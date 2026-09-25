@@ -604,8 +604,8 @@ courier returned it "to origin". Built:
     - #18: the gap waits for the phone to be put down.
     - #23: a lone claim is chosen.
     - #24, #26 and #28–32: polish, including your phone's edge note and icons, Notification Centre's times, and the Instagram feed.
+  - **Done (2026-09-25):** #11 and #25, the phone in layers (below).
   - **Open, for Siddhant:**
-    - #11: every twist can be reached in Episode 1. #25 goes with it.
     - #17: a hook for Chapter 2.
     - #19–20: letting the player deduce.
     - #21–22: Meera's timing.
@@ -658,6 +658,32 @@ Built:
   - Paytap: a UPI app
 - **Kept readable, over faithful**: search queries and payment notes wrap to two lines, because they're clues.
 - **Each app's code loads when it's first opened** and is preloaded when idle (`preloadApps`). That took the case page from 721 KB to 621 KB of 700.
+
+## The phone in layers (PLAYTEST-SHAGUN.md #11) · **done (2026-09-25)**
+
+Every twist could be reached in Episode 1's first ten minutes, because all of
+the phone was open from minute one and only filing waited. Siddhant chose
+**real locks, in layers**. The rule: a player who digs early finds the door,
+not what's behind it, and the phone says why it won't open, in iOS's words.
+Plants in plain view (the security group, Safari, the archived chats) stay
+open.
+
+- **Episode 2's layer waits for the phone to wake.**
+  - Episode 1's phone is in Low Power Mode, with its day's Jio data used up (an SMS says so).
+  - The 12:29 photo and the reel take are blurred thumbnails (`Photo.inCloud`). Opening one spins, then gives iOS's *"Unable to Load Video"*.
+  - Voice Memos is offloaded (`HomeIcon.offloaded`). Tapped, it waits, then the App Store says *"could not be downloaded"*.
+  - At the turn a Jio SMS says the data is renewed and Photos says *"Updated Just Now"*. Voice Memos downloads when tapped.
+- **Episode 3's layer is behind his own lock.**
+  - **"Agar kuch hua"**, a note with a Notes password, holds the whole fire clip (he trimmed with *Save Video as New Clip*) and Kunal's frame.
+  - The key is **0152**, the minute of the lie. The hint is *"When I told N"*.
+  - A test holds that nothing readable before Episode 3 says 1:52.
+  - Edit › Revert and Hidden stay in the engine for later chapters. This chapter's Hidden holds only his EMI notices.
+- **#25:** something read before it could count now counts the moment its episode opens (`readEarly`, `settle`). So a chat already read carries no badge, and nothing new in it is announced.
+- **Airplane mode** doesn't hold a layer back; it lifts with the episode. Airplane mode is one-way here, so a network-true lock would strand a player who switched it on in Episode 1. If airplane mode ever becomes reversible, the layer can wait for the network instead.
+- **Build:** `tests/layers.test.ts`; the solver downloads and unlocks only once a player could. 164 tests; the case page at 626 of 700 KB.
+- **To check on a real iPhone:**
+  - the exact wording of the alerts and of the Photos footer
+  - that Voice Memos can be offloaded rather than only deleted
 
 ---
 

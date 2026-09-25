@@ -79,7 +79,8 @@ export const story: Story = {
         { app: "notes", label: "Notes" },
         { app: "mail", label: "Mail" },
         { app: "paytap", label: "Paytap" },
-        { app: "voicememos", label: "Voice Memos" },
+        // Offloaded on Thursday, straight after the memo went in the bin: the app gone, what it kept kept (CHAPTER1.md E).
+        { app: "voicememos", label: "Voice Memos", offloaded: ["ep:2"] },
         { app: "safari", label: "Safari" },
         { app: "settings", label: "Settings" },
       ],

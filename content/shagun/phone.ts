@@ -15,11 +15,14 @@ import type {
    Sameer's phone, as he left it: the layer in plain view (CHAPTER1.md E,
    "what he put in front", and everything he didn't think to tidy).
 
-   It is all here from the first minute, because it's his phone (the hybrid
-   pacing, decided 2026-09-24). What he tucked away (the archived chats,
-   Recently Deleted, the Hidden album, the deleted memo) is here too, behind
-   the hard routes, and counts only in the episode that needs it: each
-   evidence id says which, in episode1.ts, episode2.ts and episode3.ts.
+   It is all here from the first minute, because it's his phone. What he
+   tucked away is here too, behind the hard routes, and counts only in the
+   episode that needs it: each evidence id says which, in episode1.ts,
+   episode2.ts and episode3.ts. What would give an episode away has a door
+   the player can find early and can't open until then (the layers, decided
+   2026-09-25, CHAPTER1.md F): the 12:29 photo and the reel take are still in
+   iCloud, Voice Memos is offloaded, and the whole fire clip and Kunal's
+   frame are in a note locked with the minute of the lie.
 
    Days: the wedding was Saturday 22/11, and the player's night is Saturday
    29/11, so last Saturday is written as a date the way WhatsApp would.
@@ -317,6 +320,32 @@ export const threads: readonly Thread[] = [
       { id: "z-1", from: "them", at: "09:00", day: "Friday", text: "Your EMI of Rs 14,200 for Sony A7 IV (loan ZE-88213) is overdue. Late fee applies after 3 days." },
     ],
   },
+  /* His carrier, on the day's data: why nothing large will come down in
+     Episode 1, and, once the phone is back on after midnight, why it can. */
+  {
+    id: "jio",
+    app: "messages",
+    name: "JIO",
+    messages: [
+      { id: "j-1", from: "them", at: "17:05", day: "Saturday", text: "50% of your daily data quota of 1.5 GB has been used." },
+      {
+        id: "j-2",
+        from: "them",
+        at: "21:14",
+        day: "Saturday",
+        text: "100% of your daily data quota of 1.5 GB has been used. Internet speed is now 64 Kbps. Stay connected with a data add-on in the MyJio app.",
+      },
+      {
+        id: "j-3",
+        from: "them",
+        at: "00:33",
+        day: "30/11",
+        with: "data-renewed",
+        requires: ["fired:data-renewed"],
+        text: "Your daily data quota of 1.5 GB has been renewed. Enjoy high-speed internet.",
+      },
+    ],
+  },
 ];
 
 export const photos: readonly Photo[] = [
@@ -341,7 +370,9 @@ export const photos: readonly Photo[] = [
   { id: "w-dance", album: "Sehgal wedding", at: "23:40", day: "22/11", place: "Chhattarpur", kind: "scene", title: "The dance floor, phones in the air" },
   { id: "w-pheras", album: "Sehgal wedding", at: "01:20", day: "Sunday", place: "Chhattarpur", kind: "scene", title: "Pheras, late, the fire in the middle" },
   /* Kunal's photo of the reel's setup: Sameer deleted the message, and WhatsApp
-     had already saved the picture to Photos (CHAPTER1.md E). */
+     had already saved the picture to Photos (CHAPTER1.md E). Like the reel
+     take, only its thumbnail is on the phone: the rest is in iCloud, and
+     comes down once the phone is back on power with data (Episode 2). */
   {
     id: "bts",
     album: "WhatsApp",
@@ -350,9 +381,33 @@ export const photos: readonly Photo[] = [
     kind: "scene",
     title: "Back lawn, fairy lights in the trees: two figures, one holding something up",
     caption: "Saved from WhatsApp",
+    inCloud: ["ep:2"],
     evidence: "bts",
   },
-  /* The reel take, deleted on Thursday at 10:48 PM: 28 days left. */
+  /* A photographer's bin: what he culled from the wedding, and the reel take,
+     deleted on Thursday at 10:48 PM with 28 days left. */
+  {
+    id: "w-blur",
+    album: "Sehgal wedding",
+    at: "20:12",
+    day: "22/11",
+    place: "Chhattarpur",
+    kind: "scene",
+    title: "The varmala, out of focus",
+    deletedAt: "11:20",
+    daysLeft: 25,
+  },
+  {
+    id: "w-twice",
+    album: "Sehgal wedding",
+    at: "19:35",
+    day: "22/11",
+    place: "Chhattarpur",
+    kind: "scene",
+    title: "The baraat at the gate, again, a horse's head in the way",
+    deletedAt: "11:21",
+    daysLeft: 25,
+  },
   {
     id: "reel-take",
     at: "00:31",
@@ -361,6 +416,7 @@ export const photos: readonly Photo[] = [
     title: "A tripod shot of the back lawn",
     deletedAt: "22:48",
     daysLeft: 28,
+    inCloud: ["ep:2"],
     video: {
       seconds: 14,
       captions: [
@@ -374,8 +430,9 @@ export const photos: readonly Photo[] = [
     },
     evidence: "reel-take",
   },
-  /* The fire, 4:47 AM: favourited and trimmed to nine seconds on Thursday.
-     The original's first 22 seconds are Episode 3's (Revert). No body, ever. */
+  /* The fire, 4:47 AM: trimmed to its last nine seconds on Thursday with
+     Save Video as New Clip, and the new clip favourited. The whole of it went
+     into his locked note ("Agar kuch hua", below). No body, ever. */
   {
     id: "fire",
     favorite: true,
@@ -391,35 +448,27 @@ export const photos: readonly Photo[] = [
         { at: 6, who: "A man, off camera", line: "Jaldi karo.", english: "Hurry up." },
       ],
     },
-    original: {
-      seconds: 31,
-      captions: [
-        { at: 1, line: "[footsteps on gravel]" },
-        { at: 4, who: "Sameer", line: "Bhasin sir, yahan?", english: "Bhasin sir, here?" },
-        { at: 9, line: "[a jerrycan, set down]" },
-        { at: 15, line: "[breathing, close to the phone]" },
-        { at: 23, line: "[crackle]" },
-        { at: 26, line: "[wind, smoke]" },
-        { at: 29, who: "A man, off camera", line: "Jaldi karo.", english: "Hurry up." },
-      ],
-      evidence: "fire-original",
-    },
     evidence: "fire-clip",
   },
-  /* Kunal's frame of the second discharge, sent on Monday at 3:10 PM with
-     "Humare paas bhi hai": Sameer screenshotted it, deleted the message, hid
-     the screenshot and turned off Show Hidden Album (CHAPTER1.md E). It stops
-     before anything happens to Dilip. */
+  /* What he hid, and then hid the album: the EMI he couldn't pay, twice.
+     Settings › Show Hidden Album finds his shame, not the case (CHAPTER1.md E). */
   {
-    id: "frame",
+    id: "emi-1",
     hidden: true,
-    at: "15:11",
+    at: "10:15",
     day: "Monday",
     kind: "scene",
-    // Screenshotted with WhatsApp's chrome: Kunal's words are in the picture (ASSETS.md §1).
-    title: "WhatsApp, Kunal: a video frame (an arm coming down, a flash, a boy behind a light) and “Humare paas bhi hai. Soch samajh ke.”",
+    title: "Screenshot: ZipEMI, “EMI of Rs 14,200 due 25 Nov. Pay now to avoid a late fee.”",
     camera: "Screenshot",
-    evidence: "frame",
+  },
+  {
+    id: "emi-2",
+    hidden: true,
+    at: "23:47",
+    day: "Tuesday",
+    kind: "scene",
+    title: "Screenshot: a loan app, “₹50,000 in 10 minutes. No documents.”",
+    camera: "Screenshot",
   },
 ];
 
@@ -432,6 +481,55 @@ export const notes: readonly Note[] = [
     edited: "Thursday 11:26 PM",
     body: ["1. Voice notes — M chat", "2. Favorites — video", "3. Bhasin wala group", "4. Nitin —"],
     evidence: "for-m",
+  },
+  /* What he kept for himself, locked with a Notes password of its own
+     (CHAPTER1.md E): the whole fire clip, from before he trimmed it, and the
+     screenshot of Kunal's frame, moved out of Photos. The password is the
+     minute he told Nitin Dilip had gone. Nothing on the phone says 1:52
+     before Episode 3 opens on it, and the hint is his own. */
+  {
+    id: "insurance",
+    title: "Agar kuch hua",
+    at: "23:16",
+    day: "Thursday",
+    edited: "Thursday 11:16 PM",
+    body: ["If they use theirs, I use mine."],
+    locked: true,
+    password: "0152",
+    hint: "When I told N",
+    knownAfter: ["ep:3"],
+    attachments: [
+      {
+        id: "fire-whole",
+        at: "04:47",
+        day: "Sunday",
+        kind: "scene",
+        title: "Firelight moving on a brick wall",
+        video: {
+          seconds: 31,
+          captions: [
+            { at: 1, line: "[footsteps on gravel]" },
+            { at: 4, who: "Sameer", line: "Bhasin sir, yahan?", english: "Bhasin sir, here?" },
+            { at: 9, line: "[a jerrycan, set down]" },
+            { at: 15, line: "[breathing, close to the phone]" },
+            { at: 23, line: "[crackle]" },
+            { at: 26, line: "[wind, smoke]" },
+            { at: 29, who: "A man, off camera", line: "Jaldi karo.", english: "Hurry up." },
+          ],
+        },
+        evidence: "fire-original",
+      },
+      {
+        id: "frame",
+        at: "15:11",
+        day: "Monday",
+        kind: "scene",
+        // Screenshotted with WhatsApp's chrome: Kunal's words are in the picture (ASSETS.md §1).
+        title: "WhatsApp, Kunal: a video frame (an arm coming down, a flash, a boy behind a light) and “Humare paas bhi hai. Soch samajh ke.”",
+        camera: "Screenshot",
+        evidence: "frame",
+      },
+    ],
   },
   {
     id: "shot-list",
@@ -610,6 +708,22 @@ export const settings: readonly SettingsGroup[] = [
       },
       { title: "Battery Percentage", value: "On" },
       { title: "Low Power Mode", value: "On" },
+      /* A photographer's phone is always full. What he offloaded is here too,
+         and how to get it back. */
+      {
+        title: "iPhone Storage",
+        value: "121 GB of 128 GB",
+        detail: {
+          heading: "iPhone Storage",
+          rows: [
+            { label: "Photos", value: "84.6 GB" },
+            { label: "WhatsApp", value: "17.2 GB" },
+            { label: "Instagram", value: "2.1 GB" },
+            { label: "Voice Memos", value: "Offloaded" },
+          ],
+          footer: "Offloading an app removes it and keeps its documents and data. Tap its icon on the Home Screen to download it again.",
+        },
+      },
     ],
   },
   {
@@ -621,9 +735,10 @@ export const settings: readonly SettingsGroup[] = [
           heading: "Photos",
           rows: [
             { label: "iCloud Photos", value: "On" },
+            { label: "Optimise iPhone Storage", value: "On" },
             { label: "Show Hidden Album", toggle: { sets: ["did:show-hidden-album"] } },
           ],
-          footer: "When on, the Hidden album appears in Utilities in Photos.",
+          footer: "With Optimise iPhone Storage, full-resolution photos and videos stay in iCloud and download when they're opened. The Hidden album appears in Utilities once it's shown.",
         },
       },
     ],

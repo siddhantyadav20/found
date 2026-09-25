@@ -198,3 +198,46 @@
   font-size: 13px;
   color: var(--ios-grey);
 }
+
+/* A wrong password: the field shakes, as iOS shakes it, and then the owner's hint. */
+.pin[data-shake] {
+  animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  15%,
+  55% {
+    translate: -9px 0;
+  }
+  35%,
+  75% {
+    translate: 9px 0;
+  }
+}
+
+.lockClue {
+  max-width: 16rem;
+  margin: 0;
+  font-size: 15px;
+  color: var(--os-text);
+}
+
+/* A photo or video in a note: the width of the note, its corners rounded. */
+.attachment {
+  display: grid;
+  margin: 16px 0 0;
+  overflow: hidden;
+  border-radius: 14px;
+  corner-shape: superellipse(1.4);
+  background: #000;
+}
+
+.attachment > div[data-wide] {
+  aspect-ratio: 16 / 9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin[data-shake] {
+    animation: none;
+  }
+}

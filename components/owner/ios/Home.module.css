@@ -215,3 +215,82 @@
 .dock .label {
   display: none;
 }
+
+/* --- An offloaded app ---------------------------------------------------------
+   iOS keeps the icon and puts a cloud before the name. Asked for, the icon
+   dims under a ring: "Waiting…" while the App Store can't be reached,
+   "Loading…" as it fills. */
+
+.cloud {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 1px;
+  vertical-align: -1px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The cloud takes room the name needs: let it run on a little further. */
+.icon[data-offloaded] .label {
+  width: max-content;
+  max-width: calc(100% + 28px);
+}
+
+.icon[data-busy] .tile {
+  filter: brightness(0.55) saturate(0.6);
+}
+
+/* The download ring: a track, and a pie that fills as it loads. */
+.progress {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 40%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  padding: 2.5px;
+  border: 2.5px solid rgba(255, 255, 255, 0.92);
+  border-radius: 50%;
+  /* The gap between ring and pie is the padding. */
+  background: conic-gradient(rgba(255, 255, 255, 0.92) calc(var(--p, 0) * 1%), transparent 0) content-box;
+}
+
+.icon[data-busy="waiting"] .progress {
+  --p: 0;
+  animation: breathe 1.2s ease-in-out infinite;
+}
+
+.icon[data-busy="loading"] .progress {
+  animation: fill 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@property --p {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes fill {
+  from {
+    --p: 4;
+  }
+  to {
+    --p: 100;
+  }
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon[data-busy] .progress {
+    animation: none;
+    --p: 60;
+  }
+}

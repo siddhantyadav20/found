@@ -15,7 +15,7 @@ import {
   settle,
   type CaseState,
 } from "@/lib/game/engine";
-import { AIRPLANE } from "@/lib/game/phone";
+import { AIRPLANE, installed, offload, unlocked } from "@/lib/game/phone";
 import { PLUGGED_IN, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
 
 /**
@@ -28,9 +28,16 @@ import { PLUGGED_IN, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
 export const ep = STORIES.shagun;
 const apps = [...new Set(homeIcons(ep).map((i) => i.app))] as AppId[];
 
-/** Everything a careful player opens: each app, and each chat, photo, note and letter in it. */
+/**
+ * Everything a careful player opens: each app, and each chat, photo, note and
+ * letter in it. An offloaded app is downloaded again once it can be, and a
+ * locked note opened once its password can be known; not before.
+ */
 export function look(s: CaseState): CaseState {
-  const opened = apps.reduce((acc, app) => openApp(ep, acc, app), s);
+  const back = homeIcons(ep).filter((i) => offload(s, i) === "available").map((i) => installed(i.app));
+  const keys = ep.notes.filter((n) => n.locked && n.knownAfter && n.knownAfter.every((f) => s.flags.includes(f))).map((n) => unlocked(n.id));
+  const ready = add(s, ...back, ...keys);
+  const opened = apps.reduce((acc, app) => openApp(ep, acc, app), ready);
   return settle(ep, ep.evidence.reduce((acc, e) => see(ep, acc, e.id), opened));
 }
 

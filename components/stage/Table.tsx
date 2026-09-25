@@ -21,6 +21,7 @@ import {
   dateNow,
   dayNow,
   dueEvents,
+  episodeOf,
   fire,
   has,
   minutesSince,
@@ -30,7 +31,7 @@ import {
   whereToLook,
   type CaseState,
 } from "@/lib/game/engine";
-import { AIRPLANE } from "@/lib/game/phone";
+import { AIRPLANE, installed } from "@/lib/game/phone";
 import { hasRecord, SAW_RECORD, somethingNew, yourMessages } from "@/lib/game/yours";
 import { useNow } from "@/lib/found/now";
 import { longDay, phoneClock, stamp } from "@/lib/found/time";
@@ -156,15 +157,19 @@ export default function Table({
   /* Found by looking rather than by opening: a zoom into a face, a clip
      restored from the bin. Say so, once, quietly, so the player knows it
      counted (PLAYTEST.md #28). */
-  const manual = caseFile(story, state)
+  const manual = `${episodeOf(state)}|${caseFile(story, state)
     .filter((e) => e.manual)
     .map((e) => e.id)
-    .join(",");
+    .join(",")}`;
   const knownManual = useRef(manual);
   useEffect(() => {
-    const before = new Set(knownManual.current.split(","));
+    const [wasIn, was] = knownManual.current.split("|");
+    const [nowIn, ids] = manual.split("|");
     knownManual.current = manual;
-    const fresh = story.evidence.find((e) => manual.split(",").includes(e.id) && !before.has(e.id));
+    // A new episode files what was read before it could count, all at once: nothing to say about that.
+    if (wasIn !== nowIn) return undefined;
+    const before = new Set(was.split(","));
+    const fresh = story.evidence.find((e) => ids.split(",").includes(e.id) && !before.has(e.id));
     if (!fresh) return undefined;
     const t = window.setTimeout(() => setBanner({ app: "casefile", from: "Case file", text: `Noted: ${fresh.label}` }), 350);
     return () => window.clearTimeout(t);
@@ -181,6 +186,9 @@ export default function Table({
     // be looked for rather than opened stays hidden until it is.
     if (s) save(findIn(story, s, app));
   };
+
+  // An offloaded app, downloaded again from its icon. Stable, as Home waits on it.
+  const onInstall = useCallback((app: AppId) => flag(installed(app)), []);
 
   /* When a notification came, as iOS lists it: "now", then minutes ago, then
      the time it came, on the story's clock. */
@@ -237,7 +245,7 @@ export default function Table({
               <LockScreen day={longDay(dayNow(story, state), dateNow(story, state))} clock={phoneClock(clock)} notes={notices} onOpen={() => flag("did:past-lock")} />
             )
           }
-          home={<Home story={story} state={state} onOpen={onOpenApp} covered={Boolean(openApp)} />}
+          home={<Home story={story} state={state} onOpen={onOpenApp} onInstall={onInstall} covered={Boolean(openApp)} />}
           app={
             openApp ? (
               <AppView

@@ -64,18 +64,24 @@ export const reachable = (s: CaseState, e: Evidence): boolean => all(s, e.requir
 
 export const seen = (s: CaseState, id: string): boolean => has(s, `saw:${id}`);
 
+/** Read before it could count: kept, so it counts once it can (`settle`). */
+export const readEarly = (id: string): Flag => `did:read-${id}`;
+
 export function see(story: Story, s: CaseState, id: string): CaseState {
   const e = story.evidence.find((x) => x.id === id);
-  return e && reachable(s, e) ? add(s, `saw:${id}`) : s;
+  if (!e) return s;
+  return reachable(s, e) ? add(s, `saw:${id}`) : add(s, readEarly(id));
 }
 
 /**
- * Everything whose finding act has already happened, now that it can count.
- * Run on every save, so an act done early counts the moment its episode opens.
+ * Everything already read, or whose finding act has already happened, now
+ * that it can count. Run on every save, so something read in plain view in
+ * Episode 1 counts the moment its own episode opens, and doesn't sit there as
+ * a badge over a chat the player has read (PLAYTEST-SHAGUN.md #25).
  */
 export const settle = (story: Story, s: CaseState): CaseState =>
   story.evidence
-    .filter((e) => e.foundBy?.length && all(s, e.foundBy) && reachable(s, e) && !seen(s, e.id))
+    .filter((e) => (has(s, readEarly(e.id)) || (e.foundBy?.length && all(s, e.foundBy))) && reachable(s, e) && !seen(s, e.id))
     .reduce((acc, e) => add(acc, `saw:${e.id}`), s);
 
 /** What the case file lists: everything reachable, in the order it was found. */

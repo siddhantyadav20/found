@@ -1,4 +1,4 @@
-import type { Caption, Flag, Memo, Photo, Story } from "@/content/types";
+import type { AppId, Caption, Flag, HomeIcon, Memo, Photo, Story } from "@/content/types";
 import { calendar, type Calendar } from "@/lib/found/time";
 import { all, episodeOf, has, type CaseState } from "./engine";
 
@@ -6,7 +6,8 @@ import { all, episodeOf, has, type CaseState } from "./engine";
    How the found phone's own apps behave, as far as that can be decided
    without a screen: what is in Recently Deleted and what has been put back,
    what the Hidden album shows and when, what an edited clip plays before and
-   after Revert. iOS's behaviour, not any story's, so every chapter's phone
+   after Revert, what is still in iCloud, which app is offloaded, which note
+   is locked. iOS's behaviour, not any story's, so every chapter's phone
    keeps the same promises (CHAPTER1.md E: every hard route is a real one).
    =========================================================================== */
 
@@ -21,6 +22,24 @@ export const restored = (id: string): Flag => `did:restored-${id}`;
 
 /** Edit › Revert, on an edited photo or video. It can't be undone on this phone either. */
 export const reverted = (id: string): Flag => `did:reverted-${id}`;
+
+/** A locked note, opened with its password. */
+export const unlocked = (id: string): Flag => `did:unlocked-${id}`;
+
+/** An offloaded app, downloaded again from its Home Screen icon. */
+export const installed = (app: AppId): Flag => `did:installed-${app}`;
+
+/** Here in full, or still only a thumbnail with the rest in iCloud. */
+export const loaded = (s: CaseState, p: Photo): boolean => all(s, p.inCloud);
+
+/** Whether iCloud Photos has anything it hasn't brought down yet: the Library's footer says so. */
+export const syncPaused = (story: Story, s: CaseState): boolean => story.photos.some((p) => !loaded(s, p));
+
+/** What the Home Screen icon is now: the app, gone with its data kept, or on its way back. */
+export function offload(s: CaseState, icon: HomeIcon): "installed" | "offloaded" | "available" {
+  if (!icon.offloaded || has(s, installed(icon.app))) return "installed";
+  return all(s, icon.offloaded) ? "available" : "offloaded";
+}
 
 /** In the bin: deleted, and not put back. */
 export const inBin = (s: CaseState, item: { readonly id: string; readonly deletedAt?: string }): boolean =>

@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { restored, reverted } from "@/lib/game/phone";
+import { restored, reverted, unlocked } from "@/lib/game/phone";
 import CaseFile from "./CaseFile";
 import { flag, read, save, say } from "./playthrough";
 
@@ -93,7 +93,7 @@ export default function AppBody({
           state={state}
           onRead={onRead}
           onHome={onHome}
-          onPassword={(id) => flag(`did:unlocked-${id}`)}
+          onPassword={(id) => flag(unlocked(id))}
         />
       );
     case "settings":

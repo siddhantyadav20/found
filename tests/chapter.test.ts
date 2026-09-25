@@ -100,7 +100,7 @@ describe("every piece of evidence", () => {
   /**
    * Opening an app finds everything in it that isn't `manual`. So anything
    * behind one of the phone's hard routes (the bin, Hidden, an edit's
-   * original, a zoom, an archived chat) must be manual, or opening the app
+   * original, a zoom, an archived chat, a locked note) must be manual, or opening the app
    * would find it for the player (found walking S4 with a fixture).
    */
   it("behind a hard route is found by taking the route, not by opening the app", () => {
@@ -111,6 +111,8 @@ describe("every piece of evidence", () => {
         p.zoom?.evidence,
       ]),
       ...ep.memos.filter((m) => m.deletedAt).map((m) => m.evidence),
+      // A locked note: found by opening it with its password, not by opening Notes.
+      ...ep.notes.filter((n) => n.locked).flatMap((n) => (n.attachments ?? []).map((a) => a.evidence)),
       ...ep.threads.filter((t) => t.archived).flatMap((t) => t.messages.map((m) => m.evidence)),
     ].filter((id): id is string => Boolean(id));
     for (const id of hard) expect(ep.evidence.find((e) => e.id === id)?.manual, `${id} would be found just by opening its app`).toBe(true);
