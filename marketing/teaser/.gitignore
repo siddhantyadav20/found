@@ -1,0 +1,5 @@
+# Frames, stills and the silent cut are rebuilt by render.mjs. The finished
+# Reel is kept.
+out/*
+!out/shagun-teaser.mp4
+!out/shagun-cover.jpg

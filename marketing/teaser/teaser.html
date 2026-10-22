@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shagun teaser</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  /* One 1080×1920 frame, drawn by renderAt(t). Nothing animates on its own:
+     render.mjs sets the clock, so every frame is the same on every run. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0a0908; }
+  body { color: #f2ede6; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  #frame { position: absolute; inset: 0; overflow: hidden;
+    background: radial-gradient(circle at 50% 38%, #2b221c 0%, #0a0908 68%); }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .grain { position: absolute; inset: -40px; pointer-events: none; opacity: .07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.75) 100%); }
+  #black { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
+
+  /* Captions sit in the top third: Reels covers the bottom with the caption
+     and the right edge with buttons. */
+  .cap { position: absolute; left: 90px; right: 90px; top: 250px; text-align: center;
+    font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 74px; line-height: 1.12;
+    letter-spacing: -.5px; text-shadow: 0 4px 30px rgba(0,0,0,.8); }
+  .sub { position: absolute; left: 110px; right: 110px; text-align: center; }
+  .sub .hi { font-size: 50px; font-weight: 600; color: #fff; text-shadow: 0 3px 18px rgba(0,0,0,.9); }
+  .sub .en { margin-top: 14px; font-size: 40px; color: rgba(242,237,230,.72); font-style: italic; text-shadow: 0 3px 18px rgba(0,0,0,.9); }
+
+  /* --- the found phone ------------------------------------------------- */
+  .phone { position: absolute; left: 50%; top: 560px; width: 700px; height: 1300px; margin-left: -350px;
+    border-radius: 110px; background: #1f1f21; padding: 18px;
+    box-shadow: 0 60px 140px rgba(0,0,0,.8), 0 0 0 3px #3a3a3d inset; }
+  .screen { position: relative; width: 100%; height: 100%; border-radius: 94px; overflow: hidden; background: #050505; }
+  .wall { position: absolute; inset: 0; background: url(../../public/found/shagun-wallpaper.jpg) center/cover; }
+  .wall.dim::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.25); }
+  .island { position: absolute; top: 26px; left: 50%; width: 200px; height: 58px; margin-left: -100px; border-radius: 30px; background: #000; z-index: 5; }
+  .crack { position: absolute; right: 0; bottom: 0; width: 300px; height: 300px; z-index: 6; opacity: .55; }
+  .status { position: absolute; top: 40px; left: 70px; right: 60px; display: flex; justify-content: space-between; font-size: 30px; font-weight: 600; z-index: 4; }
+  .lock-date { position: absolute; top: 150px; width: 100%; text-align: center; font-size: 36px; font-weight: 500; color: rgba(255,255,255,.85); }
+  .lock-time { position: absolute; top: 185px; width: 100%; text-align: center; font-size: 230px; font-weight: 600; letter-spacing: -6px; color: rgba(255,255,255,.92); }
+  .notes { position: absolute; left: 30px; right: 30px; bottom: 150px; display: flex; flex-direction: column; gap: 16px; }
+  .note { border-radius: 40px; padding: 26px 30px; background: rgba(40,36,34,.62); backdrop-filter: blur(30px);
+    display: grid; grid-template-columns: 76px 1fr auto; column-gap: 22px; align-items: center; }
+  .note .ic { width: 76px; height: 76px; border-radius: 18px; display: grid; place-items: center; font-size: 40px; }
+  .note b { display: block; font-size: 31px; font-weight: 600; }
+  .note span { display: block; font-size: 30px; color: rgba(255,255,255,.85); margin-top: 2px; }
+  .note i { font-style: normal; font-size: 26px; color: rgba(255,255,255,.55); align-self: start; }
+
+  .call { position: absolute; inset: 0; background: linear-gradient(#3b3936, #121110); }
+  .call .who { position: absolute; top: 230px; width: 100%; text-align: center; }
+  .call .who small { display: block; font-size: 32px; color: rgba(255,255,255,.6); }
+  .call .who big { display: block; margin-top: 12px; font-size: 76px; font-weight: 500; letter-spacing: -1px; }
+  .call .btns { position: absolute; bottom: 170px; left: 90px; right: 90px; display: flex; justify-content: space-between; }
+  .call .btn { width: 160px; text-align: center; font-size: 28px; color: rgba(255,255,255,.85); }
+  .call .btn div { width: 160px; height: 160px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 18px; }
+
+  /* --- the parcel label --------------------------------------------------- */
+  .kraft { position: absolute; inset: 0; background: #8f6b40 radial-gradient(circle at 40% 40%, #b48a58 0%, #7a5a35 80%); }
+  .label { position: absolute; left: 130px; top: 700px; width: 820px; padding: 50px 56px; background: #f4f1ea; color: #1a1714;
+    border-radius: 8px; box-shadow: 0 30px 70px rgba(0,0,0,.45); transform: rotate(-2.5deg); font-family: Inter, sans-serif; }
+  .label .k { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; color: #6b645b; }
+  .label .to { margin-top: 10px; font-size: 64px; font-weight: 700; letter-spacing: -1px; }
+  .label .addr { margin-top: 6px; font-size: 32px; line-height: 1.35; color: #3a342e; }
+  .label .bars { margin-top: 34px; height: 90px; background: repeating-linear-gradient(90deg, #1a1714 0 4px, transparent 4px 7px, #1a1714 7px 9px, transparent 9px 15px, #1a1714 15px 21px, transparent 21px 24px); }
+  .label .awb { margin-top: 10px; font-size: 24px; font-family: "JetBrains Mono", monospace; letter-spacing: 3px; }
+  .stamp { position: absolute; left: 140px; top: 1150px; width: 800px; padding: 22px 0; text-align: center;
+    border: 9px solid #b3261e; border-radius: 14px; color: #b3261e; font-family: Inter, sans-serif; background: rgba(244,241,234,.08); }
+  .stamp b { display: block; white-space: nowrap; font-size: 62px; font-weight: 900; letter-spacing: 4px; }
+  .stamp span { display: block; font-size: 32px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+
+  /* --- the envelope's back ------------------------------------------------ */
+  .env { position: absolute; left: 80px; top: 620px; width: 920px; height: 700px; background: #6b1624; border-radius: 10px;
+    box-shadow: 0 40px 90px rgba(0,0,0,.6); transform: rotate(1.5deg); border: 4px solid #c9a25a; }
+  .env .panel { position: absolute; inset: 60px; background: #f1e6cf; border-radius: 4px; padding: 56px 60px;
+    font-family: Kalam, cursive; color: #1d2a5c; font-size: 60px; line-height: 1.32; }
+  .env .panel div { white-space: nowrap; }
+
+  /* --- the album ------------------------------------------------------- */
+  .print { position: absolute; left: 90px; width: 900px; height: 600px; background-size: cover; background-position: center;
+    box-shadow: 0 40px 80px rgba(0,0,0,.7); border: 14px solid #f4f1ea; }
+  .album-meta { position: absolute; left: 90px; right: 90px; top: 1380px; text-align: center; font-size: 38px; color: rgba(242,237,230,.8); }
+  .album-meta b { display: block; font-size: 30px; letter-spacing: 6px; text-transform: uppercase; color: #ff8a3d; margin-bottom: 14px; font-weight: 600; }
+
+  /* --- the poster --------------------------------------------------------- */
+  .poster { position: absolute; left: 150px; top: 560px; width: 780px; height: 1100px; background: #f6f3ec; color: #151311;
+    box-shadow: 0 40px 90px rgba(0,0,0,.65); transform: rotate(-1.5deg); text-align: center; padding: 50px 60px; }
+  .poster .hi { font-family: Hind, sans-serif; font-weight: 700; font-size: 150px; line-height: 1.1; color: #c4161c; }
+  .poster .en { font-family: Inter, sans-serif; font-weight: 900; font-size: 64px; letter-spacing: 14px; margin-top: -6px; }
+  .poster .photo { margin: 30px auto 0; width: 360px; height: 440px; background: linear-gradient(#cfc8bc, #a39b8e); position: relative; overflow: hidden; }
+  .poster .photo::before { content: ""; position: absolute; left: 50%; top: 80px; width: 150px; height: 170px; margin-left: -75px; border-radius: 50%; background: #8a8275; }
+  .poster .photo::after { content: ""; position: absolute; left: 50%; bottom: -60px; width: 300px; height: 230px; margin-left: -150px; border-radius: 50% 50% 0 0; background: #8a8275; }
+  .poster .name { margin-top: 30px; font-family: Inter, sans-serif; font-size: 44px; font-weight: 800; }
+  .poster .seen { margin-top: 10px; font-family: Inter, sans-serif; font-size: 32px; color: #4a443d; }
+
+  /* --- the voice note ----------------------------------------------------- */
+  .chat { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #0b0b0c; }
+  .chat .bar { position: absolute; top: 0; left: 0; right: 0; height: 230px; background: #161617; display: flex; align-items: flex-end; padding: 0 60px 30px; gap: 26px; }
+  .chat .av { width: 92px; height: 92px; border-radius: 50%; background: #5b4a6b; display: grid; place-items: center; font-size: 44px; font-weight: 600; }
+  .chat .bar b { font-size: 42px; font-weight: 600; }
+  .chat .bar small { display: block; font-size: 28px; color: rgba(255,255,255,.5); font-weight: 400; }
+  .vn { position: absolute; right: 60px; width: 760px; height: 170px; padding-bottom: 26px !important; border-radius: 40px 40px 10px 40px; background: #1f5f4a;
+    display: flex; align-items: center; padding: 0 34px; gap: 26px; }
+  .vn .play { width: 0; height: 0; border-left: 40px solid #fff; border-top: 26px solid transparent; border-bottom: 26px solid transparent; }
+  .vn .wave { flex: 1; height: 80px; display: flex; align-items: center; gap: 6px; }
+  .vn .wave i { flex: 1; border-radius: 4px; background: rgba(255,255,255,.45); }
+  .vn .meta { position: absolute; right: 30px; bottom: 14px; font-size: 24px; color: rgba(255,255,255,.65); }
+  .vn .tick { color: rgba(255,255,255,.65); }
+
+  /* --- the fire ----------------------------------------------------------- */
+  .fire { position: absolute; inset: -60px; background: url(../../public/found/shagun/fire.jpg) center/cover; filter: blur(.6px); }
+  .scrub { position: absolute; left: 90px; right: 90px; top: 1640px; }
+  .scrub .track { height: 8px; border-radius: 4px; background: rgba(255,255,255,.3); }
+  .scrub .fill { height: 8px; border-radius: 4px; background: #fff; }
+  .scrub .t { margin-top: 14px; display: flex; justify-content: space-between; font-size: 28px; color: rgba(255,255,255,.8); font-variant-numeric: tabular-nums; }
+  .stamp-time { position: absolute; top: 560px; left: 0; right: 0; text-align: center; font-size: 34px; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,.85); }
+
+  /* --- the note ------------------------------------------------------------ */
+  .notes-app { position: absolute; inset: 0; background: #1c1c1e; }
+  .notes-app .when { position: absolute; top: 640px; left: 0; right: 0; text-align: center; font-size: 28px; color: rgba(255,255,255,.45); }
+  .notes-app .body { position: absolute; top: 720px; left: 110px; right: 90px; font-size: 52px; line-height: 1.55; }
+  .notes-app .body h1 { font-size: 72px; font-weight: 700; margin-bottom: 18px; }
+  .cursor { display: inline-block; width: 5px; height: 62px; margin-left: 6px; vertical-align: -10px; background: #e8b730; }
+
+  /* --- the last message --------------------------------------------------- */
+  .msg { position: absolute; left: 90px; top: 820px; max-width: 760px; padding: 34px 46px; border-radius: 48px 48px 48px 12px; background: #262628; font-size: 66px; }
+  .msg small { display: block; font-size: 28px; color: rgba(255,255,255,.5); margin-bottom: 8px; }
+  .batt { position: absolute; top: 120px; right: 110px; display: flex; align-items: center; gap: 14px; font-size: 40px; font-weight: 600; color: #ff453a; }
+  .batt .cell { width: 74px; height: 36px; border: 4px solid rgba(255,255,255,.55); border-radius: 10px; position: relative; padding: 4px; }
+  .batt .cell::after { content: ""; position: absolute; right: -10px; top: 9px; width: 5px; height: 12px; border-radius: 2px; background: rgba(255,255,255,.55); }
+  .batt .cell i { display: block; width: 6px; height: 100%; border-radius: 3px; background: #ff453a; }
+
+  /* --- the title ------------------------------------------------------------ */
+  .title { position: absolute; left: 0; right: 0; top: 560px; text-align: center; }
+  .title .kick { font-size: 34px; letter-spacing: 14px; text-transform: uppercase; color: #ff8a3d; font-weight: 600; }
+  .title h1 { margin-top: 40px; font-family: Fraunces, Georgia, serif; font-weight: 600; font-size: 230px; line-height: 1; letter-spacing: -4px; }
+  .title p { margin: 60px auto 0; max-width: 820px; font-family: Fraunces, Georgia, serif; font-size: 56px; line-height: 1.28; color: rgba(242,237,230,.88); }
+  .title .play { margin-top: 90px; font-size: 38px; color: rgba(242,237,230,.75); }
+  .title .cta { display: inline-block; margin-top: 34px; padding: 26px 60px; border-radius: 60px; background: #ff8a3d; color: #1a0f07; font-size: 42px; font-weight: 700; }
+  .title .fine { margin-top: 46px; font-size: 26px; color: rgba(242,237,230,.45); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div id="frame">
+
+  <!-- 1–2 · the phone wakes, then rings -->
+  <div class="scene" id="s-phone">
+    <div class="cap" id="cap1">This phone isn't yours.</div>
+    <div class="cap" id="cap2">And it won't stop ringing.</div>
+    <div class="phone" id="phone">
+      <div class="screen">
+        <div class="island"></div>
+        <div id="lock">
+          <div class="wall dim"></div>
+          <div class="status"><span></span><span>▮▮▮ 18%</span></div>
+          <div class="lock-date">Thursday 27 November</div>
+          <div class="lock-time">11:40</div>
+          <div class="notes">
+            <div class="note" id="n1"><div class="ic" style="background:#34c759">✆</div><div><b>Missed Calls (47)</b><span>+91 62••• •••••</span></div><i>now</i></div>
+            <div class="note" id="n2"><div class="ic" style="background:#8e8e93">M</div><div><b>Mummy (6)</b><span>Beta, phone kyun nahi utha raha?</span></div><i>2m</i></div>
+            <div class="note" id="n3"><div class="ic" style="background:#8e8e93">B</div><div><b>Bhasin Uncle (2)</b><span>Missed call</span></div><i>9m</i></div>
+          </div>
+        </div>
+        <div class="call" id="call">
+          <div class="who"><small>mobile</small><big>+91 62••• •••••</big></div>
+          <div class="btns">
+            <div class="btn"><div style="background:#ff3b30;font-size:64px">✕</div>Decline</div>
+            <div class="btn"><div style="background:#34c759;font-size:64px">✆</div>Accept</div>
+          </div>
+        </div>
+        <svg class="crack" viewBox="0 0 300 300" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.6">
+          <path d="M300 230 L240 210 L205 240 L150 232 L110 262"/><path d="M240 210 L228 160 L250 120"/>
+          <path d="M205 240 L190 300"/><path d="M228 160 L180 150 L150 170"/><path d="M300 270 L262 252 L240 300"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 · returned to origin -->
+  <div class="scene" id="s-label">
+    <div class="kraft"></div>
+    <div class="cap" id="cap3">It was meant<br>for someone else.</div>
+    <div class="label">
+      <div class="k">Deliver to</div>
+      <div class="to">Meera Arora</div>
+      <div class="addr">Advocate · Lawyers' Chambers,<br>Saket Courts, New Delhi</div>
+      <div class="bars"></div>
+      <div class="awb">AWB 7741 2209 1186</div>
+    </div>
+    <div class="stamp" id="stamp"><b>RETURN TO ORIGIN</b><span>Addressee not available</span></div>
+  </div>
+
+  <!-- 4 · the envelope's back -->
+  <div class="scene" id="s-env">
+    <div class="env"><div class="panel">
+      <div class="hl">M —</div>
+      <div class="hl">Sab isme hai.</div>
+      <div class="hl">Local thane mat le jaana.</div>
+      <div class="hl">Bhasin ke log wahan</div>
+      <div class="hl">baithe hain. — S</div>
+    </div></div>
+    <div class="sub" style="top:1420px"><div class="en" id="env-en">“It's all in here. Don't take it to the local police.<br>Bhasin's people sit there.”</div></div>
+  </div>
+
+  <!-- 5 · the album -->
+  <div class="scene" id="s-album">
+    <div class="cap">One Delhi wedding.</div>
+    <div class="print" id="p1" style="background-image:url(../../public/found/shagun/w-0.jpg)"></div>
+    <div class="print" id="p2" style="background-image:url(../../public/found/shagun/w-dance.jpg)"></div>
+    <div class="print" id="p3" style="background-image:url(../../public/found/shagun/w-14.jpg)"></div>
+    <div class="print" id="p4" style="background-image:url(../../public/found/shagun/w-pheras.jpg)"></div>
+    <div class="album-meta"><b>Sehgal wedding · 1,284 photos</b>Sat 22 Nov · a farmhouse in Chhattarpur</div>
+  </div>
+
+  <!-- 6 · the poster -->
+  <div class="scene" id="s-poster">
+    <div class="cap" style="top:220px">And a boy who<br>never went home.</div>
+    <div class="poster">
+      <div class="hi">लापता</div>
+      <div class="en">MISSING</div>
+      <div class="photo"></div>
+      <div class="name">Dilip Kumar Mahto (Chhotu), 19</div>
+      <div class="seen">Last seen Sat 22 Nov, Chhattarpur</div>
+    </div>
+  </div>
+
+  <!-- 7 · the voice note -->
+  <div class="scene" id="s-vn">
+    <div class="chat">
+      <div class="bar"><div class="av">M</div><div><b>M</b><small>tap here for contact info</small></div></div>
+      <div class="vn" style="top:820px"><div class="play"></div><div class="wave" id="wave"></div><div class="meta">0:14 · 9:40 AM <span class="tick">✓</span></div></div>
+    </div>
+    <div class="sub" style="top:1100px"><div class="hi">“Kunal firing kar raha tha.<br>Ek ladka gir gaya.”</div><div class="en">“Kunal was firing. A boy fell.”</div></div>
+    <div class="sub" style="top:1420px"><div class="en" style="font-style:normal;font-size:30px;letter-spacing:3px;text-transform:uppercase;color:rgba(242,237,230,.5)">One grey tick. She never heard it.</div></div>
+  </div>
+
+  <!-- 8 · the fire -->
+  <div class="scene" id="s-fire">
+    <div class="fire" id="fire"></div>
+    <div class="vignette"></div>
+    <div class="cap" style="top:220px">Nine seconds of fire.<br>No body.</div>
+    <div class="stamp-time">Sunday · 4:47 AM</div>
+    <div class="sub" style="top:1460px"><div class="hi" id="jaldi">“Jaldi karo.”</div><div class="en" id="jaldi-en">“Hurry up.”</div></div>
+    <div class="scrub"><div class="track"><div class="fill" id="fill"></div></div><div class="t"><span id="ft">0:00</span><span>0:09</span></div></div>
+  </div>
+
+  <!-- 9 · "For M" -->
+  <div class="scene" id="s-note">
+    <div class="notes-app">
+      <div class="cap" style="top:250px;color:#f2ede6">He left her a reading order.</div>
+      <div class="when">Thursday, 11:26 PM</div>
+      <div class="body"><h1>For M</h1><div id="note-text"></div></div>
+    </div>
+  </div>
+
+  <!-- 10 · M? Tu hai? -->
+  <div class="scene" id="s-msg">
+    <div class="batt"><span>2%</span><div class="cell"><i></i></div></div>
+    <div class="msg" id="m1"><small>Unknown number</small>M? Tu hai?</div>
+    <div class="msg" id="m2" style="top:1090px"><small>Unknown number</small>Order mein dekhna.</div>
+    <div class="sub" style="top:1360px"><div class="en" id="m-en">“M? Is that you?” · “Look in order.”</div></div>
+  </div>
+
+  <!-- 11 · the title -->
+  <div class="scene" id="s-title">
+    <div class="title">
+      <div class="kick">Found · Chapter One</div>
+      <h1>Shagun</h1>
+      <p>Everything on it is true.<br>Not everything is in<br>the right order.</p>
+      <div class="play">A mystery you play on a stranger's phone</div>
+      <div class="cta">Play free · link in bio</div>
+      <div class="fine">16+ · it never asks for anything real</div>
+    </div>
+  </div>
+
+  <div class="grain"></div>
+  <div class="vignette"></div>
+  <div id="black"></div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ramp = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (x) => 1 - Math.pow(1 - x, 3);
+const inOut = (x) => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+// In over `fin`, out over `fout`, inside [a, b].
+const window_ = (t, a, b, fin = .25, fout = .25) => Math.min(ramp(t, a, a + fin), 1 - ramp(t, b - fout, b));
+const noise = (t) => Math.sin(t * 13.1) * .5 + Math.sin(t * 29.7 + 1.3) * .3 + Math.sin(t * 61.3 + 2.1) * .2;
+
+// The cut list, in seconds. render.mjs and the sound read it too.
+const SCENES = {
+  phone:  [0.0, 5.8],
+  label:  [5.8, 8.9],
+  env:    [8.9, 12.6],
+  album:  [12.6, 15.2],
+  poster: [15.2, 17.8],
+  vn:     [17.8, 20.8],
+  fire:   [20.8, 23.6],
+  note:   [23.6, 27.0],
+  msg:    [27.0, 29.4],
+  title:  [29.6, 34.0],
+};
+const DURATION = 34.0;
+window.TEASER = { SCENES, DURATION };
+
+// The waveform's bars, fixed once.
+const BARS = Array.from({ length: 38 }, (_, i) => 18 + Math.abs(Math.sin(i * 1.7) * 52 + Math.sin(i * .6) * 20));
+$('wave').innerHTML = BARS.map((h) => `<i style="height:${h}px"></i>`).join('');
+const NOTE = ['1. Voice notes — M chat', '2. Favorites — video', '3. Bhasin wala group', '4. Nitin —'];
+
+function show(id, t, [a, b], fin = .3, fout = .3) {
+  const o = window_(t, a, b, fin, fout);
+  $(id).style.opacity = o;
+  return o;
+}
+
+window.renderAt = function (t) {
+  // 1–2 · the phone
+  {
+    const [a, b] = SCENES.phone;
+    show('s-phone', t, SCENES.phone, .5, .25);
+    const push = 1 + ramp(t, a, b) * .06;
+    const ringing = t > 3.0;
+    // Buzz: a short shake in each ring.
+    const ring = ringing ? ((t - 3.0) % 1.0) : 1;
+    const shake = ringing && ring < .45 ? Math.sin(ring * 120) * 7 * (1 - ring / .45) : 0;
+    $('phone').style.transform = `translateX(${shake}px) scale(${push})`;
+    $('cap1').style.opacity = window_(t, .4, 3.0, .4, .3);
+    $('cap2').style.opacity = window_(t, 3.1, b, .3, .25);
+    ['n1', 'n2', 'n3'].forEach((id, i) => {
+      const p = ease(ramp(t, .7 + i * .45, 1.1 + i * .45));
+      $(id).style.opacity = p;
+      $(id).style.transform = `translateY(${(1 - p) * -40}px) scale(${.96 + p * .04})`;
+    });
+    $('call').style.opacity = ramp(t, 2.9, 3.15);
+    $('lock').style.opacity = 1 - ramp(t, 2.9, 3.15);
+  }
+  // 3 · the label
+  {
+    const [a] = SCENES.label;
+    show('s-label', t, SCENES.label, .2, .3);
+    $('cap3').style.opacity = window_(t, a + .2, SCENES.label[1], .4, .3);
+    const st = a + 1.0;
+    const p = ramp(t, st, st + .12);
+    $('stamp').style.opacity = t < st ? 0 : .92;
+    $('stamp').style.transform = `rotate(-9deg) scale(${1.5 - .5 * ease(p)})`;
+    // The table jumps with the thump.
+    const jolt = t > st + .1 && t < st + .3 ? Math.sin((t - st) * 90) * 4 : 0;
+    $('s-label').style.transform = `translateY(${jolt}px) scale(${1.02 - ramp(t, a, a + 3) * .02})`;
+  }
+  // 4 · the note, written as you watch
+  {
+    const [a, b] = SCENES.env;
+    show('s-env', t, SCENES.env, .3, .3);
+    document.querySelectorAll('#s-env .hl').forEach((el, i) => {
+      const p = ramp(t, a + .3 + i * .48, a + .3 + i * .48 + .5);
+      el.style.clipPath = `inset(0 ${100 - p * 100}% 0 0)`;
+    });
+    $('env-en').style.opacity = ramp(t, a + 2.4, a + 2.8);
+    $('s-env').style.transform = `scale(${1 + ramp(t, a, b) * .05})`;
+  }
+  // 5 · the album: four frames, one after another
+  {
+    const [a, b] = SCENES.album;
+    show('s-album', t, SCENES.album, .15, .25);
+    const each = (b - a) / 4;
+    ['p1', 'p2', 'p3', 'p4'].forEach((id, i) => {
+      const s = a + i * each;
+      const on = t >= s && (i === 3 || t < s + each);
+      $(id).style.opacity = on ? 1 : 0;
+      $(id).style.top = '640px';
+      $(id).style.transform = `rotate(${[-2, 1.5, -1, 2][i]}deg) scale(${1 + clamp((t - s) / each) * .04})`;
+      $(id).style.backgroundSize = `${110 + clamp((t - s) / each) * 8}%`;
+    });
+  }
+  // 6 · the poster
+  {
+    const [a, b] = SCENES.poster;
+    show('s-poster', t, SCENES.poster, .35, .3);
+    $('s-poster').style.transform = `scale(${1.06 - ease(ramp(t, a, b)) * .06})`;
+  }
+  // 7 · the voice note, playing
+  {
+    const [a] = SCENES.vn;
+    show('s-vn', t, SCENES.vn, .3, .3);
+    const played = ramp(t, a + .3, a + 2.7);
+    document.querySelectorAll('#wave i').forEach((el, i) => {
+      el.style.background = i / BARS.length < played ? '#fff' : 'rgba(255,255,255,.45)';
+    });
+  }
+  // 8 · the fire
+  {
+    const [a, b] = SCENES.fire;
+    show('s-fire', t, SCENES.fire, .3, .3);
+    const f = 1 + noise(t) * .12;
+    $('fire').style.filter = `brightness(${f}) saturate(1.1) blur(.6px)`;
+    $('fire').style.transform = `scale(${1.02 + ramp(t, a, b) * .06})`;
+    const p = ramp(t, a, b);
+    $('fill').style.width = `${p * 100}%`;
+    $('ft').textContent = `0:0${Math.min(9, Math.floor(p * 9))}`;
+    const j = ramp(t, a + 1.2, a + 1.5);
+    $('jaldi').style.opacity = j;
+    $('jaldi-en').style.opacity = j;
+  }
+  // 9 · "For M", typed out to where it stops
+  {
+    const [a] = SCENES.note;
+    show('s-note', t, SCENES.note, .3, .3);
+    const full = NOTE.join('\n');
+    const n = Math.floor(clamp((t - a - .5) / 1.9) * full.length);
+    const blink = Math.floor((t - a) * 2.4) % 2 === 0 || n < full.length;
+    $('note-text').innerHTML = full.slice(0, n).split('\n').join('<br>') +
+      `<span class="cursor" style="opacity:${blink ? 1 : 0}"></span>`;
+  }
+  // 10 · the last message, and the screen going out
+  {
+    const [a, b] = SCENES.msg;
+    show('s-msg', t, SCENES.msg, .2, .6);
+    const p1 = ease(ramp(t, a + .2, a + .5)), p2 = ease(ramp(t, a + 1.0, a + 1.3));
+    $('m1').style.opacity = p1; $('m1').style.transform = `translateY(${(1 - p1) * 30}px)`;
+    $('m2').style.opacity = p2; $('m2').style.transform = `translateY(${(1 - p2) * 30}px)`;
+    $('m-en').style.opacity = ramp(t, a + 1.3, a + 1.6);
+    $('s-msg').style.filter = `brightness(${1 - ramp(t, b - 1.0, b) * .8})`;
+  }
+  // 11 · the title
+  {
+    const [a] = SCENES.title;
+    $('s-title').style.opacity = ramp(t, a, a + .8);
+    const kids = document.querySelectorAll('#s-title .title > *');
+    kids.forEach((el, i) => {
+      const p = ease(ramp(t, a + .2 + i * .3, a + .8 + i * .3));
+      el.style.opacity = p;
+      el.style.transform = `translateY(${(1 - p) * 24}px)`;
+    });
+  }
+  // Fade from black at the start, and the dip between the message and the title.
+  $('black').style.opacity = Math.max(1 - ramp(t, 0, .5), window_(t, 29.1, 29.9, .3, .3));
+};
+
+window.renderAt(0);
+</script>
+</body>
+</html>
