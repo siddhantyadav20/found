@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shagun trailer</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  /* One 1080×1920 frame of the trailer, drawn by renderAt(t) from edit.json
+     (render.mjs injects it as window.EDIT, with any footage it found). */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  body { color: #f4efe8; font-family: Archivo, Inter, sans-serif; font-stretch: 125%; -webkit-font-smoothing: antialiased; }
+  #frame { position: absolute; inset: 0; overflow: hidden; background: #000; }
+  .layer { position: absolute; inset: 0; }
+
+  /* The picture: a shot, graded. */
+  #pic { position: absolute; inset: -70px; background: #000 center/cover no-repeat; }
+  #grade { mix-blend-mode: soft-light; }
+  #tint { mix-blend-mode: color; opacity: .0; }
+
+  /* Made in code, until the footage arrives. */
+  #phone, #door, #missed { display: none; }
+  #phone .table { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 55%, #2e2117 0%, #0d0907 50%, #000 100%); }
+  #phone .grainwood { position: absolute; inset: 0; opacity: .25;
+    background: repeating-linear-gradient(97deg, rgba(255,210,160,.05) 0 3px, transparent 3px 11px, rgba(0,0,0,.25) 11px 13px, transparent 13px 29px); }
+  #phone .body { position: absolute; left: 50%; top: 50%; width: 420px; height: 860px; margin: -430px 0 0 -210px;
+    border-radius: 64px; background: linear-gradient(160deg, #26231f, #0c0b0a 60%); box-shadow: 0 0 0 3px #5b544c inset, 0 0 60px rgba(150,180,255,.35); }
+  #phone .spill { position: absolute; left: 50%; top: 50%; width: 760px; height: 1240px; margin: -620px 0 0 -380px;
+    border-radius: 50%; background: radial-gradient(ellipse, rgba(185,210,255,.75) 0%, rgba(120,150,220,.25) 36%, transparent 62%); }
+  #phone .lens { position: absolute; left: 50%; top: 50%; margin: -380px 0 0 -170px; width: 110px; height: 110px; border-radius: 30px; background: #070707; box-shadow: 0 0 0 2px #2c2925; }
+  #door .wall { position: absolute; inset: 0; background: linear-gradient(#030303, #0a0806 70%, #000); }
+  #door .frame { position: absolute; left: 230px; right: 230px; top: 260px; bottom: 520px; border: 6px solid #0f0d0b; background: #050403; }
+  #door .strip { position: absolute; left: 236px; right: 236px; top: 1394px; height: 10px; background: #ffd9a8; filter: blur(3px); box-shadow: 0 0 40px 10px rgba(255,190,120,.55); }
+  #door .floor { position: absolute; left: 0; right: 0; top: 1400px; height: 520px; background: radial-gradient(ellipse at 50% 0%, rgba(255,190,120,.55) 0%, transparent 60%); }
+  #door .box { position: absolute; left: 380px; top: 1250px; width: 320px; height: 190px; background: linear-gradient(#2b2015, #120d08); box-shadow: 0 -2px 0 rgba(255,200,140,.25) inset; transform: skewX(-4deg); }
+  #door .tape { position: absolute; left: 520px; top: 1250px; width: 40px; height: 190px; background: rgba(120,100,70,.4); transform: skewX(-4deg); }
+  #missed { text-align: center; }
+  #missed .n { position: absolute; left: 80px; right: 80px; top: 820px; padding: 40px 30px; border-radius: 48px; background: rgba(30,30,32,.55);
+    font-family: Inter, sans-serif; font-stretch: 100%; }
+  #missed .n b { display: block; font-size: 58px; font-weight: 600; }
+  #missed .n span { display: block; margin-top: 8px; font-size: 40px; color: rgba(255,255,255,.7); }
+
+  /* Words. */
+  #card { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .place { font-weight: 300; font-size: 30px; letter-spacing: .5em; line-height: 2.2; color: rgba(244,239,232,.85); margin-right: -.5em; }
+  .line { white-space: nowrap; font-weight: 500; font-size: 42px; letter-spacing: .2em; line-height: 1.5; margin-right: -.2em; }
+  .message { font-family: Inter, sans-serif; font-stretch: 100%; font-size: 64px; font-weight: 400; letter-spacing: .01em; }
+  .message small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 22px; letter-spacing: .5em; color: rgba(244,239,232,.45); margin-bottom: 34px; }
+  #type { display: flex; align-items: center; justify-content: center; text-align: center;
+    white-space: pre-line; font-weight: 700; font-size: 74px; letter-spacing: .14em; line-height: 1.2; padding: 0 60px; text-shadow: 0 0 40px rgba(0,0,0,.6); }
+
+  #title { background: #000; text-align: center; }
+  #title .hi { position: absolute; left: 0; right: 0; top: 700px; font-family: Hind, sans-serif; font-stretch: 100%; font-weight: 300; font-size: 52px; letter-spacing: .3em; color: rgba(244,239,232,.6); }
+  #title .found { position: absolute; left: 0; right: 0; top: 640px; font-weight: 300; font-size: 26px; letter-spacing: .8em; color: #e8a25b; margin-right: -.8em; }
+  #title h1 { position: absolute; left: 0; right: 0; top: 820px; font-weight: 700; font-size: 128px; letter-spacing: .2em; margin-right: -.2em; }
+  #title .what { position: absolute; left: 0; right: 0; top: 1050px; font-weight: 300; font-size: 26px; letter-spacing: .38em; line-height: 2; color: rgba(244,239,232,.8); margin-right: -.38em; }
+  #title .cta { position: absolute; left: 0; right: 0; top: 1300px; font-weight: 500; font-size: 30px; letter-spacing: .42em; color: #f4efe8; margin-right: -.42em; }
+  #title .rule { position: absolute; left: 50%; top: 1270px; width: 120px; height: 2px; margin-left: -60px; background: rgba(244,239,232,.35); }
+  #title .fine { position: absolute; left: 0; right: 0; top: 1400px; font-weight: 300; font-size: 20px; letter-spacing: .3em; color: rgba(244,239,232,.4); }
+
+  /* The film over everything. */
+  #grain { inset: auto; left: -200px; top: -200px; width: 1480px; height: 2320px; opacity: .3; mix-blend-mode: overlay; }
+  #vig { background: radial-gradient(ellipse at 50% 48%, transparent 40%, rgba(0,0,0,.55) 80%, rgba(0,0,0,.9) 100%); }
+  #flash { background: #fff; opacity: 0; }
+  #bars::before, #bars::after { content: ""; position: absolute; left: 0; right: 0; height: 90px; background: #000; }
+  #bars::before { top: 0; } #bars::after { bottom: 0; }
+</style>
+</head>
+<body>
+<div id="frame">
+  <div class="layer" id="shot">
+    <div id="pic"></div>
+    <div class="layer" id="phone"><div class="table"></div><div class="grainwood"></div><div class="spill"></div><div class="body"></div><div class="lens"></div></div>
+    <div class="layer" id="door"><div class="wall"></div><div class="frame"></div><div class="floor"></div><div class="strip"></div><div class="box"></div><div class="tape"></div></div>
+    <div class="layer" id="missed"><div class="n"><b>47 Missed Calls</b><span>+91 62••• •••••</span></div></div>
+    <div class="layer" id="grade"></div>
+    <div class="layer" id="tint"></div>
+  </div>
+  <div class="layer" id="type"></div>
+  <div class="layer" id="card"></div>
+  <div class="layer" id="title">
+    <div class="found">FOUND · CHAPTER ONE</div>
+    <div class="hi">शगुन</div>
+    <h1>SHAGUN</h1>
+    <div class="what">A MYSTERY YOU PLAY<br>ON A STRANGER'S PHONE</div>
+    <div class="rule"></div>
+    <div class="cta">PLAY FREE · LINK IN BIO</div>
+    <div class="fine">16+ · NOTHING GRAPHIC IS SHOWN</div>
+  </div>
+  <canvas class="layer" id="grain" width="740" height="1160"></canvas>
+  <div class="layer" id="vig"></div>
+  <div class="layer" id="bars"></div>
+  <div class="layer" id="flash"></div>
+</div>
+
+<script>
+const E = window.EDIT;
+const FOOT = window.FOOTAGE || {};
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ramp = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (x) => 1 - Math.pow(1 - x, 3);
+const smooth = (x) => x * x * (3 - 2 * x);
+// Deterministic noise: the same frame twice is the same frame.
+const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+
+/* Grades: a soft-light wash for the shadows and highlights, a CSS filter for
+   the rest. Teal nights, sodium-amber weddings, a grey dawn. */
+const GRADES = {
+  night:  { f: 'contrast(1.18) saturate(.55) brightness(.78)', wash: 'linear-gradient(#0d3a4a, #0b2530 50%, #3a2a1a)', tint: 0 },
+  warm:   { f: 'contrast(1.22) saturate(.8) brightness(.8) sepia(.18)', wash: 'linear-gradient(#1b2f3a, #6a3d16 60%, #2a1406)', tint: 0 },
+  cool:   { f: 'contrast(1.25) saturate(.35) brightness(.7)', wash: 'linear-gradient(#0a3448, #0a2230)', tint: .12 },
+  dawn:   { f: 'contrast(1.1) saturate(.25) brightness(.85) grayscale(.4)', wash: 'linear-gradient(#4a5868, #23303c)', tint: .2 },
+  fire:   { f: 'contrast(1.3) saturate(.95) brightness(.75)', wash: 'linear-gradient(#08222c, #7a2c08 70%, #2a0a00)', tint: 0 },
+  screen: { f: 'contrast(1.05) saturate(.4) brightness(.9)', wash: 'linear-gradient(#123a52, #08202e)', tint: 0 },
+};
+const MOTION = {
+  in:    (p) => `scale(${1.04 + p * .1})`,
+  out:   (p) => `scale(${1.16 - p * .1})`,
+  left:  (p) => `scale(1.12) translateX(${30 - p * 60}px)`,
+  right: (p) => `scale(1.12) translateX(${-30 + p * 60}px)`,
+  up:    (p) => `scale(1.12) translateY(${30 - p * 60}px)`,
+};
+
+// Grain: a few frames of noise, drawn once, offset every frame.
+const G = [];
+for (let k = 0; k < 6; k++) {
+  const c = document.createElement('canvas'); c.width = 370; c.height = 580;
+  const x = c.getContext('2d'), img = x.createImageData(370, 580);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = hash(i * .37 + k * 1013.3) * 255;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255;
+  }
+  x.putImageData(img, 0, 0); G.push(c);
+}
+const gctx = $('grain').getContext('2d');
+
+let lastSrc = '';
+function setPic(src) {
+  if (src !== lastSrc) { $('pic').style.backgroundImage = src ? `url("${src}")` : 'none'; lastSrc = src; }
+}
+
+function shotAt(t) { return E.shots.find((s) => t >= s.t0 && t < s.t1); }
+function cardAt(t) { return E.cards.find((c) => t >= c.t0 && t < c.t1); }
+
+function drawShot(s, t, frame) {
+  const p = ramp(t, s.t0, s.t1);
+  const g = GRADES[s.grade] || GRADES.night;
+  $('phone').style.display = s.fx === 'phone' && !FOOT[s.slot] ? 'block' : 'none';
+  $('door').style.display = s.fx === 'door' && !FOOT[s.slot] ? 'block' : 'none';
+  $('missed').style.display = s.fx === 'missed' ? 'block' : 'none';
+
+  // Footage first; the still stands in until there is some.
+  const f = FOOT[s.slot];
+  if (f) {
+    // Each use of a slot starts somewhere new in its clip.
+    const uses = E.shots.filter((x) => x.slot === s.slot);
+    const offset = Math.floor(uses.indexOf(s) * f.frames / Math.max(1, uses.length));
+    const i = (offset + Math.floor((t - s.t0) * E.fps)) % f.frames;
+    setPic(`${f.dir}/${String(i + 1).padStart(5, '0')}.jpg`);
+  } else {
+    setPic(s.still || '');
+  }
+  // Gate weave: the frame never sits perfectly still.
+  const wx = (hash(frame * 3.1) - .5) * 2.2, wy = (hash(frame * 7.7) - .5) * 2.2;
+  $('pic').style.transform = `translate(${wx}px, ${wy}px) ${MOTION[s.motion](ease(p))}`;
+  let filter = g.f;
+  if (s.grade === 'fire') filter += ` brightness(${1 + Math.sin(t * 17) * .06 + Math.sin(t * 41) * .04})`;
+  // Stills are small: keep them a breath out of focus, like a long lens.
+  if (!f && s.still) filter += ' blur(1.4px)';
+  $('pic').style.filter = filter;
+  $('grade').style.background = g.wash;
+  $('tint').style.background = '#1a4a5a'; $('tint').style.opacity = g.tint;
+
+  if (s.fx === 'phone' && !f) {
+    // Face down. The light leaks from underneath, and it buzzes.
+    const buzzes = [.6, 1.6, 2.6];
+    const b = buzzes.find((x) => t - s.t0 >= x && t - s.t0 < x + .5);
+    const k = b === undefined ? 0 : 1 - (t - s.t0 - b) / .5;
+    const sh = k * Math.sin(t * 160) * 6;
+    const push = 1 + ease(p) * .12;
+    $('phone').style.transform = `perspective(1600px) rotateX(${18 - p * 6}deg) scale(${push})`;
+    $('phone').querySelector('.body').style.transform = `translate(${sh}px, ${sh * .4}px) rotate(${-8 + sh * .1}deg)`;
+    $('phone').querySelector('.lens').style.transform = `translate(${sh}px, ${sh * .4}px) rotate(-8deg)`;
+    $('phone').querySelector('.spill').style.opacity = .35 + k * .65;
+  }
+  if (s.fx === 'door' && !f) {
+    $('door').style.transform = `scale(${1 + ease(p) * .08})`;
+    $('door').querySelector('.strip').style.opacity = .8 + Math.sin(t * 9) * .05;
+  }
+  if (s.fx === 'missed') {
+    // A focus pull onto the notification.
+    const fp = smooth(ramp(t, s.t0 + .2, s.t0 + 1.2));
+    $('missed').style.filter = `blur(${(1 - fp) * 16}px)`;
+    $('missed').style.opacity = .3 + fp * .7;
+    $('pic').style.filter = filter + ` blur(${8 + fp * 10}px)`;
+  }
+}
+
+function drawCard(c, t) {
+  const el = $('card');
+  if (!c) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  if (c.style === 'title') { el.style.display = 'none'; return; }
+  const key = c.t0;
+  if (el.dataset.key !== String(key)) {
+    el.dataset.key = key;
+    el.innerHTML = c.style === 'message'
+      ? `<div class="message"><small>UNKNOWN NUMBER · 2%</small>${c.lines[0]}</div>`
+      : `<div class="${c.style}">${c.lines.join('<br>')}</div>`;
+  }
+  const inner = el.firstElementChild;
+  // Words arrive out of focus and settle, then go.
+  const pin = smooth(ramp(t, c.t0 + .1, c.t0 + .9));
+  const pout = smooth(ramp(t, c.t1 - .45, c.t1));
+  inner.style.opacity = pin * (1 - pout);
+  inner.style.filter = `blur(${(1 - pin) * 10 + pout * 6}px)`;
+  inner.style.transform = `scale(${1.03 - pin * .03 + ramp(t, c.t0, c.t1) * .02})`;
+}
+
+function drawTitle(t) {
+  const c = E.cards.find((x) => x.style === 'title');
+  const on = t >= c.t0;
+  $('title').style.display = on ? 'block' : 'none';
+  if (!on) return;
+  const parts = [['.found', .2], ['.hi', .6], ['h1', 0], ['.what', 1.6], ['.rule', 2.2], ['.cta', 2.4], ['.fine', 2.9]];
+  for (const [sel, d] of parts) {
+    const el = $('title').querySelector(sel);
+    const p = smooth(ramp(t, c.t0 + d, c.t0 + d + .9));
+    el.style.opacity = p;
+    el.style.filter = `blur(${(1 - p) * 8}px)`;
+  }
+  // The name slams in on the hit, tracking in from wide.
+  const h = $('title').querySelector('h1');
+  const ph = ease(ramp(t, c.t0, c.t0 + 1.4));
+  h.style.letterSpacing = `${.6 - ph * .4}em`;
+  h.style.marginRight = `${-(.6 - ph * .4)}em`;
+  // The last half second goes to black.
+  $('title').style.opacity = 1 - ramp(t, E.duration - .6, E.duration);
+}
+
+window.renderAt = function (t) {
+  const frame = Math.round(t * E.fps);
+  const s = shotAt(t);
+  const silent = E.silence.some(([a, b]) => t >= a && t < b);
+  $('shot').style.display = s && !silent ? 'block' : 'none';
+  if (s && !silent) {
+    drawShot(s, t, frame);
+    // A breath of black between shots, not a dissolve.
+    const fin = ramp(t, s.t0, s.t0 + .12), fout = 1 - ramp(t, s.t1 - .08, s.t1);
+    $('shot').style.opacity = s.t1 - s.t0 < .5 ? 1 : Math.min(fin, fout);
+  }
+  drawCard(cardAt(t), t);
+  drawTitle(t);
+
+  const ty = E.type.find((x) => t >= x.t0 && t < x.t1);
+  $('type').style.display = ty ? 'flex' : 'none';
+  if (ty) {
+    $('type').textContent = ty.text;
+    $('type').style.opacity = 1 - ramp(t, ty.t1 - .06, ty.t1);
+  }
+
+  const fl = E.flashes.find((x) => t >= x.t && t < x.t + x.d + .15);
+  $('flash').style.opacity = fl ? (t < fl.t + fl.d ? 1 : 1 - ramp(t, fl.t + fl.d, fl.t + fl.d + .15)) : 0;
+
+  const gk = G[frame % G.length];
+  gctx.clearRect(0, 0, 740, 1160);
+  const ox = Math.floor(hash(frame) * 370), oy = Math.floor(hash(frame + .5) * 580);
+  for (let x = -ox; x < 740; x += 370) for (let y = -oy; y < 1160; y += 580) gctx.drawImage(gk, x, y);
+};
+</script>
+</body>
+</html>

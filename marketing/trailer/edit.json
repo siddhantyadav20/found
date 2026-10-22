@@ -1,0 +1,704 @@
+{
+ "fps": 30,
+ "duration": 53.0,
+ "shots": [
+  {
+   "t0": 0.0,
+   "t1": 3.2,
+   "slot": "phone_dark",
+   "still": null,
+   "motion": "in",
+   "grade": "night",
+   "fx": "phone"
+  },
+  {
+   "t0": 5.6,
+   "t1": 7.6,
+   "slot": "wedding_lights",
+   "still": "../../public/found/shagun/reel-take.jpg",
+   "motion": "in",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 7.6,
+   "t1": 9.2,
+   "slot": "dhol",
+   "still": "../../public/found/shagun/w-14.jpg",
+   "motion": "left",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 9.2,
+   "t1": 10.4,
+   "slot": "crowd",
+   "still": "../../public/found/shagun/w-dance.jpg",
+   "motion": "in",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 16.4,
+   "t1": 19.0,
+   "slot": "dawn_smoke",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "up",
+   "grade": "dawn",
+   "fx": null
+  },
+  {
+   "t0": 21.0,
+   "t1": 23.4,
+   "slot": "parcel_door",
+   "still": null,
+   "motion": "in",
+   "grade": "night",
+   "fx": "door"
+  },
+  {
+   "t0": 25.8,
+   "t1": 28.0,
+   "slot": "phone_hand",
+   "still": "../../public/found/shagun-wallpaper.jpg",
+   "motion": "in",
+   "grade": "screen",
+   "fx": "missed"
+  },
+  {
+   "t0": 34.2,
+   "t1": 35.3,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "in",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 35.3,
+   "t1": 36.18,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "left",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 36.18,
+   "t1": 36.884,
+   "slot": "mehendi_hands",
+   "still": "../../public/found/shagun/w-1.jpg",
+   "motion": "out",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 36.884,
+   "t1": 37.447,
+   "slot": "rain_glass",
+   "still": "../../public/found/shagun/w-blur.jpg",
+   "motion": "right",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 37.447,
+   "t1": 37.898,
+   "slot": "smoke",
+   "still": "../../public/found/shagun/w-8.jpg",
+   "motion": "up",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 37.898,
+   "t1": 38.258,
+   "slot": "hands_phone",
+   "still": "../../public/found/shagun/w-dance.jpg",
+   "motion": "in",
+   "grade": "night",
+   "fx": null
+  },
+  {
+   "t0": 38.258,
+   "t1": 38.547,
+   "slot": "delhi_fog",
+   "still": "../../public/found/shagun/w-pheras.jpg",
+   "motion": "left",
+   "grade": "dawn",
+   "fx": null
+  },
+  {
+   "t0": 38.547,
+   "t1": 38.777,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "out",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 38.777,
+   "t1": 38.962,
+   "slot": "crowd",
+   "still": "../../public/found/shagun/w-14.jpg",
+   "motion": "right",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 38.962,
+   "t1": 39.109,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "up",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 39.109,
+   "t1": 39.239,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "in",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 39.239,
+   "t1": 39.369,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "left",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 39.369,
+   "t1": 39.499,
+   "slot": "mehendi_hands",
+   "still": "../../public/found/shagun/w-1.jpg",
+   "motion": "out",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 39.499,
+   "t1": 39.629,
+   "slot": "rain_glass",
+   "still": "../../public/found/shagun/w-blur.jpg",
+   "motion": "right",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 39.629,
+   "t1": 39.759,
+   "slot": "smoke",
+   "still": "../../public/found/shagun/w-8.jpg",
+   "motion": "up",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 39.759,
+   "t1": 39.889,
+   "slot": "hands_phone",
+   "still": "../../public/found/shagun/w-dance.jpg",
+   "motion": "in",
+   "grade": "night",
+   "fx": null
+  },
+  {
+   "t0": 39.889,
+   "t1": 40.019,
+   "slot": "delhi_fog",
+   "still": "../../public/found/shagun/w-pheras.jpg",
+   "motion": "left",
+   "grade": "dawn",
+   "fx": null
+  },
+  {
+   "t0": 40.019,
+   "t1": 40.149,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "out",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 40.149,
+   "t1": 40.279,
+   "slot": "crowd",
+   "still": "../../public/found/shagun/w-14.jpg",
+   "motion": "right",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 40.279,
+   "t1": 40.409,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "up",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 40.409,
+   "t1": 40.539,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "in",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 40.539,
+   "t1": 40.669,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "left",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 40.669,
+   "t1": 40.799,
+   "slot": "mehendi_hands",
+   "still": "../../public/found/shagun/w-1.jpg",
+   "motion": "out",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 40.799,
+   "t1": 40.929,
+   "slot": "rain_glass",
+   "still": "../../public/found/shagun/w-blur.jpg",
+   "motion": "right",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 40.929,
+   "t1": 41.059,
+   "slot": "smoke",
+   "still": "../../public/found/shagun/w-8.jpg",
+   "motion": "up",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 41.059,
+   "t1": 41.189,
+   "slot": "hands_phone",
+   "still": "../../public/found/shagun/w-dance.jpg",
+   "motion": "in",
+   "grade": "night",
+   "fx": null
+  },
+  {
+   "t0": 41.189,
+   "t1": 41.319,
+   "slot": "delhi_fog",
+   "still": "../../public/found/shagun/w-pheras.jpg",
+   "motion": "left",
+   "grade": "dawn",
+   "fx": null
+  },
+  {
+   "t0": 41.319,
+   "t1": 41.449,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "out",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 41.449,
+   "t1": 41.579,
+   "slot": "crowd",
+   "still": "../../public/found/shagun/w-14.jpg",
+   "motion": "right",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 41.579,
+   "t1": 41.709,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "up",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 41.709,
+   "t1": 41.839,
+   "slot": "night_road",
+   "still": "../../public/found/shagun/w-11.jpg",
+   "motion": "in",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 41.839,
+   "t1": 41.969,
+   "slot": "fire",
+   "still": "../../public/found/shagun/fire.jpg",
+   "motion": "left",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 41.969,
+   "t1": 42.099,
+   "slot": "mehendi_hands",
+   "still": "../../public/found/shagun/w-1.jpg",
+   "motion": "out",
+   "grade": "warm",
+   "fx": null
+  },
+  {
+   "t0": 42.099,
+   "t1": 42.229,
+   "slot": "rain_glass",
+   "still": "../../public/found/shagun/w-blur.jpg",
+   "motion": "right",
+   "grade": "cool",
+   "fx": null
+  },
+  {
+   "t0": 42.229,
+   "t1": 42.359,
+   "slot": "smoke",
+   "still": "../../public/found/shagun/w-8.jpg",
+   "motion": "up",
+   "grade": "fire",
+   "fx": null
+  },
+  {
+   "t0": 42.359,
+   "t1": 42.489,
+   "slot": "hands_phone",
+   "still": "../../public/found/shagun/w-dance.jpg",
+   "motion": "in",
+   "grade": "night",
+   "fx": null
+  },
+  {
+   "t0": 42.489,
+   "t1": 42.6,
+   "slot": "delhi_fog",
+   "still": "../../public/found/shagun/w-pheras.jpg",
+   "motion": "left",
+   "grade": "dawn",
+   "fx": null
+  }
+ ],
+ "cards": [
+  {
+   "t0": 3.2,
+   "t1": 5.6,
+   "lines": [
+    "22 NOVEMBER",
+    "CHHATTARPUR \u00b7 NEW DELHI"
+   ],
+   "style": "place"
+  },
+  {
+   "t0": 10.9,
+   "t1": 13.4,
+   "lines": [
+    "ONE SHOT IN THE AIR."
+   ],
+   "style": "line"
+  },
+  {
+   "t0": 13.8,
+   "t1": 16.4,
+   "lines": [
+    "ONE BOY",
+    "NEVER WENT HOME."
+   ],
+   "style": "line"
+  },
+  {
+   "t0": 19.0,
+   "t1": 21.0,
+   "lines": [
+    "FIVE DAYS LATER"
+   ],
+   "style": "place"
+  },
+  {
+   "t0": 23.4,
+   "t1": 25.8,
+   "lines": [
+    "HIS PHONE",
+    "ARRIVED AT YOUR DOOR."
+   ],
+   "style": "line"
+  },
+  {
+   "t0": 28.4,
+   "t1": 30.8,
+   "lines": [
+    "EVERYTHING ON IT",
+    "IS TRUE."
+   ],
+   "style": "line"
+  },
+  {
+   "t0": 31.6,
+   "t1": 34.2,
+   "lines": [
+    "NOT EVERYTHING IS",
+    "IN THE RIGHT ORDER."
+   ],
+   "style": "line"
+  },
+  {
+   "t0": 43.8,
+   "t1": 46.4,
+   "lines": [
+    "M? Tu hai?"
+   ],
+   "style": "message"
+  },
+  {
+   "t0": 46.6,
+   "t1": 53.0,
+   "lines": [],
+   "style": "title"
+  }
+ ],
+ "type": [
+  {
+   "t0": 34.2,
+   "t1": 35.3,
+   "text": "11:52 PM"
+  },
+  {
+   "t0": 36.18,
+   "t1": 36.884,
+   "text": "LOCAL THANE\nMAT LE JAANA."
+  },
+  {
+   "t0": 37.447,
+   "t1": 37.898,
+   "text": "1:53 AM"
+  }
+ ],
+ "cues": [
+  {
+   "t": 0.0,
+   "sfx": "tick_start"
+  },
+  {
+   "t": 0.6,
+   "sfx": "buzz"
+  },
+  {
+   "t": 1.6,
+   "sfx": "buzz"
+  },
+  {
+   "t": 2.6,
+   "sfx": "buzz"
+  },
+  {
+   "t": 5.6,
+   "sfx": "dhol_in"
+  },
+  {
+   "t": 10.4,
+   "sfx": "gunshot"
+  },
+  {
+   "t": 13.8,
+   "sfx": "hit"
+  },
+  {
+   "t": 21.4,
+   "sfx": "knock"
+  },
+  {
+   "t": 25.9,
+   "sfx": "buzz"
+  },
+  {
+   "t": 26.9,
+   "sfx": "buzz"
+  },
+  {
+   "t": 31.6,
+   "sfx": "braam"
+  },
+  {
+   "t": 34.2,
+   "sfx": "shepard",
+   "until": 42.6
+  },
+  {
+   "t": 34.2,
+   "sfx": "tick_fast",
+   "until": 42.6
+  },
+  {
+   "t": 44.0,
+   "sfx": "ping"
+  },
+  {
+   "t": 46.6,
+   "sfx": "title_hit"
+  }
+ ],
+ "flashes": [
+  {
+   "t": 10.4,
+   "d": 0.07
+  },
+  {
+   "t": 37.447,
+   "d": 0.04
+  },
+  {
+   "t": 37.898,
+   "d": 0.04
+  },
+  {
+   "t": 38.258,
+   "d": 0.04
+  },
+  {
+   "t": 38.547,
+   "d": 0.04
+  },
+  {
+   "t": 38.777,
+   "d": 0.04
+  },
+  {
+   "t": 38.962,
+   "d": 0.04
+  },
+  {
+   "t": 39.109,
+   "d": 0.04
+  },
+  {
+   "t": 39.239,
+   "d": 0.04
+  },
+  {
+   "t": 39.369,
+   "d": 0.04
+  },
+  {
+   "t": 39.499,
+   "d": 0.04
+  },
+  {
+   "t": 39.629,
+   "d": 0.04
+  },
+  {
+   "t": 39.759,
+   "d": 0.04
+  },
+  {
+   "t": 39.889,
+   "d": 0.04
+  },
+  {
+   "t": 40.019,
+   "d": 0.04
+  },
+  {
+   "t": 40.149,
+   "d": 0.04
+  },
+  {
+   "t": 40.279,
+   "d": 0.04
+  },
+  {
+   "t": 40.409,
+   "d": 0.04
+  },
+  {
+   "t": 40.539,
+   "d": 0.04
+  },
+  {
+   "t": 40.669,
+   "d": 0.04
+  },
+  {
+   "t": 40.799,
+   "d": 0.04
+  },
+  {
+   "t": 40.929,
+   "d": 0.04
+  },
+  {
+   "t": 41.059,
+   "d": 0.04
+  },
+  {
+   "t": 41.189,
+   "d": 0.04
+  },
+  {
+   "t": 41.319,
+   "d": 0.04
+  },
+  {
+   "t": 41.449,
+   "d": 0.04
+  },
+  {
+   "t": 41.579,
+   "d": 0.04
+  },
+  {
+   "t": 41.709,
+   "d": 0.04
+  },
+  {
+   "t": 41.839,
+   "d": 0.04
+  },
+  {
+   "t": 41.969,
+   "d": 0.04
+  },
+  {
+   "t": 42.099,
+   "d": 0.04
+  },
+  {
+   "t": 42.229,
+   "d": 0.04
+  },
+  {
+   "t": 42.359,
+   "d": 0.04
+  },
+  {
+   "t": 42.489,
+   "d": 0.04
+  }
+ ],
+ "silence": [
+  [
+   42.6,
+   43.8
+  ]
+ ]
+}
