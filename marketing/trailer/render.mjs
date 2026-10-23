@@ -2,6 +2,7 @@
 
      node marketing/trailer/render.mjs              → marketing/trailer/out/shagun-trailer.mp4
      node marketing/trailer/render.mjs --stills     → a PNG in each shot and card, to check the cut
+     node marketing/trailer/render.mjs --stills --at 9.5,34  → just those moments
      node marketing/trailer/render.mjs --from 30    → only from 30 s on (a quick look at the end)
 
    Footage: drop a clip at footage/<slot>.mp4 (slots are in edit.json and
@@ -10,10 +11,11 @@
    Needs Playwright (Chromium), ffmpeg, and Python 3 with numpy. */
 
 import { spawn, execFileSync } from "node:child_process";
+import { createServer } from "node:http";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 const { chromium } = (() => {
@@ -52,21 +54,32 @@ if (existsSync(footDir)) {
 }
 console.log(`footage: ${Object.keys(FOOTAGE).join(", ") || "none yet, stand-ins throughout"}`);
 
-const browser = await chromium.launch();
+// Served over HTTP, because the page is a module and file:// won't load one.
+const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".woff2": "font/woff2", ".jpg": "image/jpeg" };
+const server = createServer((req, res) => {
+  const file = path.join(here, decodeURIComponent(new URL(req.url, "http://x").pathname));
+  if (!file.startsWith(here) || !existsSync(file)) { res.writeHead(404); res.end(); return; }
+  res.writeHead(200, { "content-type": TYPES[path.extname(file)] || "application/octet-stream" });
+  res.end(readFileSync(file));
+});
+await new Promise((r) => server.listen(0, "127.0.0.1", r));
+
+// SwiftShader: WebGL on the CPU, so this runs anywhere, slowly.
+const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
+const errors = [];
+page.on("pageerror", (e) => errors.push(e.message));
 await page.addInitScript(([e, f]) => { window.EDIT = e; window.FOOTAGE = f; }, [EDIT, FOOTAGE]);
-await page.goto(pathToFileURL(path.join(here, "trailer.html")).href);
+await page.goto(`http://127.0.0.1:${server.address().port}/trailer.html`);
+await page.waitForFunction(() => window.ready || false, null, { timeout: 120000 }).catch(() => {});
+if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
 await page.evaluate(() => document.fonts.ready);
 
-// Every frame waits for its picture to be decoded before it's taken.
-const draw = (t) => page.evaluate(async (t) => {
-  window.renderAt(t);
-  const bg = getComputedStyle(document.getElementById("pic")).backgroundImage.match(/url\("(.*)"\)/);
-  if (bg) { const img = new Image(); img.src = bg[1]; await img.decode().catch(() => {}); }
-}, t);
+const draw = (t) => page.evaluate((t) => window.renderAt(t), t);
 
 if (stills) {
-  const times = [...EDIT.shots.filter((s) => s.t1 - s.t0 > .5), ...EDIT.cards].map((x) => +(x.t0 + (x.t1 - x.t0) * .6).toFixed(2)).sort((a, b) => a - b);
+  const at = process.argv.includes("--at") ? process.argv[process.argv.indexOf("--at") + 1].split(",").map(Number) : null;
+  const times = at || [...EDIT.shots.filter((s) => s.t1 - s.t0 > .5), ...EDIT.cards].map((x) => +(x.t0 + (x.t1 - x.t0) * .6).toFixed(2)).sort((a, b) => a - b);
   rmSync(path.join(out, "stills"), { recursive: true, force: true });
   mkdirSync(path.join(out, "stills"));
   for (const t of times) {
@@ -75,6 +88,7 @@ if (stills) {
   }
   console.log(`${times.length} stills → ${path.join(out, "stills")}`);
   await browser.close();
+  server.close();
   process.exit(0);
 }
 
@@ -92,11 +106,12 @@ for (let i = Math.round(from * EDIT.fps); i < frames; i++) {
 ff.stdin.end();
 await new Promise((r) => ff.on("close", r));
 await browser.close();
+server.close();
 console.log("\nframes done");
 
 const wav = path.join(out, "sound.wav");
 execFileSync("python3", [path.join(here, "sound.py"), path.join(here, "edit.json"), wav], { stdio: "inherit" });
 const final = path.join(out, from ? "preview.mp4" : "shagun-trailer.mp4");
 execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", silent, "-ss", String(from), "-i", wav,
-  "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", final], { stdio: "inherit" });
+  "-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", final], { stdio: "inherit" });
 console.log(`→ ${final}`);
