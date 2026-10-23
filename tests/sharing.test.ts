@@ -15,7 +15,7 @@ import { MIN_ANSWERS, fasterThan, percentages } from "@/lib/found/store";
  * spoil the case, and none of it may say something about too few people.
  */
 
-const ep = STORIES.shagun;
+const ep = STORIES.raakh;
 const start = () => newCase("test", 0);
 
 /** A playthrough that traced two links, and then chose an ending. */
@@ -42,9 +42,9 @@ describe("the shared result", () => {
   });
 
   it("carries the case's own question, and names no answer", () => {
-    const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.shagun.ask, CASES.shagun.hook);
+    const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.raakh.ask, CASES.raakh.hook);
     expect(text).toContain("I traced 2 of 11 links.");
-    expect(text).toContain("A photographer's phone. A wedding. Where does it end?");
+    expect(text).toContain("A wedding planner's phone. A missing waiter. Where does it end?");
     expect(text).toContain("https://found.test/d/Abcd2345");
     // Nothing from the chain itself: not a label, not a line, not his words.
     for (const l of ep.chain) {
@@ -101,7 +101,7 @@ describe("cases", () => {
   });
 
   it("only knows its own case ids", () => {
-    expect(isCaseId("shagun")).toBe(true);
+    expect(isCaseId("raakh")).toBe(true);
     expect(isCaseId("dont-cut-the-call")).toBe(false);
     for (const bad of ["toString", "__proto__", "", null, 3]) expect(isCaseId(bad)).toBe(false);
   });

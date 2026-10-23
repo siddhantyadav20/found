@@ -1,64 +1,112 @@
-/* A dark room, a dying phone, and one thing to do. */
+/* A dark room, a dying phone, and one thing to do (rebuilt 2026-10-17):
+   the phone's own low-battery screen, then the words, set left. */
 
 .charge {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 16px;
   min-height: 100dvh;
-  padding: 2rem 1.4rem calc(2rem + env(safe-area-inset-bottom));
-  text-align: center;
-  background: #060607;
-  color: #efeae4;
+  padding: 40px var(--gutter) calc(36px + env(safe-area-inset-bottom));
+  background: #000;
+  color: var(--text);
 }
 
+.charge > * {
+  width: 100%;
+  max-width: 24rem;
+  margin-inline: auto;
+}
+
+/* The battery, as a phone draws it when there's almost nothing left. */
+.cell {
+  position: relative;
+  width: 84px;
+  height: 40px;
+  margin: 0 auto 18px;
+  border: 3px solid rgb(255 255 255 / 70%);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.cell::after {
+  content: "";
+  position: absolute;
+  right: -9px;
+  top: 11px;
+  width: 4px;
+  height: 12px;
+  border-radius: 0 3px 3px 0;
+  background: rgb(255 255 255 / 70%);
+}
+
+.cell span {
+  display: block;
+  width: 7%;
+  height: 100%;
+  border-radius: 3px;
+  background: #ff453a;
+  animation: low 1.4s ease-in-out infinite;
+}
+
+@keyframes low { 50% { opacity: 0.35; } }
+
 .level {
-  font-family: var(--font-display);
-  font-size: 3.2rem;
-  color: #e2705f;
+  margin-bottom: 8px;
+  font-family: -apple-system, var(--font-phone), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: #ff6b5e;
 }
 
 .line {
-  max-width: 24rem;
-  font-family: var(--font-ui);
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: #a7a099;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 19px;
+  line-height: 1.4;
+  color: var(--paper-2);
 }
 
 .ask {
-  margin-top: 0.8rem;
-  max-width: 22rem;
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  line-height: 1.35;
+  margin-top: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .waiting {
-  font-family: var(--font-ui);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  color: #6d6862;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.waiting::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stamp);
+  animation: low 1.2s ease-in-out infinite;
 }
 
 .nearby {
-  max-width: 30ch;
-  font-family: var(--font-ui);
-  font-size: 0.78rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
   line-height: 1.5;
-  color: #57534e;
-  text-align: center;
-  text-wrap: balance;
+  color: var(--dim);
 }
 
-.cable {
-  font-family: var(--font-ui);
-  font-size: 0.85rem;
-  padding: 0.7rem 1.3rem;
-  border: 0;
-  border-radius: 999px;
-  background: #e8843c;
-  color: #14100c;
-  cursor: pointer;
+.cable { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cell span, .waiting::before { animation: none; }
 }

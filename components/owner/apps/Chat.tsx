@@ -4,11 +4,12 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
-import { conversation, offeredOptions, openReply } from "@/lib/game/chat";
-import { all, arrivedAt, dateNow, has, reachable, seen, type CaseState } from "@/lib/game/engine";
+import { conversation, offeredOptions, openReply, readKey, threadsIn, unreadCount } from "@/lib/game/chat";
+import { arrivedAt, dateNow, dueEvents, has, type CaseState } from "@/lib/game/engine";
 import { AIRPLANE, calendarOf, CHATS_UNLOCKED, isCode } from "@/lib/game/phone";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
+import { useVoice } from "@/lib/found/voice";
 import { TabBar } from "../AppView";
 import { Chevron } from "../ios/AppBar";
 import Clip from "../ios/Clip";
@@ -48,7 +49,14 @@ import local from "./Chat.module.css";
 const TYPING_MS = 1800;
 
 /** WhatsApp's picture for anyone without one: its grey silhouette, or two for a group. */
-function Avatar({ group, head, big }: { group?: boolean; head?: boolean; big?: boolean }) {
+function Avatar({ group, head, big, src }: { group?: boolean; head?: boolean; big?: boolean; src?: string }) {
+  // Their profile photo, when they set one (2026-10-23: faces for the cast).
+  if (src)
+    return (
+      <span className={styles.avatar} data-size={big ? "big" : head ? "head" : undefined} data-photo aria-hidden="true">
+        <Image src={src} alt="" fill sizes="96px" className={styles.avatarPhoto} />
+      </span>
+    );
   return (
     <span className={styles.avatar} data-size={big ? "big" : head ? "head" : undefined} aria-hidden="true">
       <svg viewBox="0 0 24 24">
@@ -117,6 +125,7 @@ function preview(m: Message | undefined): React.ReactNode {
       );
     case "photo":
     case "handwriting":
+    case "poster":
       return (
         <>
           <Mark d={MARK.photo} />
@@ -142,10 +151,11 @@ function preview(m: Message | undefined): React.ReactNode {
   }
 }
 
-function Voice({ seconds, transcript, english }: { seconds: number; transcript: string; english?: string }) {
-  // No recording yet (ASSETS.md): the play button runs the note's length, and
-  // the words are always there underneath.
+function Voice({ seconds, transcript, english, src }: { seconds: number; transcript: string; english?: string; src?: string }) {
+  // The play button runs the note's length, with its recording where there is
+  // one (`Story.voices`), and the words are always there underneath.
   const [playing, setPlaying] = useState(false);
+  useVoice(src, playing);
   useEffect(() => {
     if (!playing) return undefined;
     const t = window.setTimeout(() => setPlaying(false), seconds * 1000);
@@ -178,12 +188,53 @@ function Voice({ seconds, transcript, english }: { seconds: number; transcript: 
   );
 }
 
-function Bubble({ m, at }: { m: Message; at: string }) {
+/** A missing-person notice, as a family prints one: the word across the top, a face, a name, a number. */
+function Poster({ a }: { a: Extract<NonNullable<Message["attachment"]>, { kind: "poster" }> }) {
+  return (
+    <span className={local.poster} role="img" aria-label={a.label}>
+      <span className={local.posterHead} lang="hi">
+        {a.heading}
+      </span>
+      {a.subheading && <span className={local.posterSub}>{a.subheading}</span>}
+      {/* His photograph, until the shoot: a silhouette, never a stranger's face (ASSETS.md). */}
+      <span className={local.posterFace} aria-hidden="true">
+        {a.src ? (
+          <Image src={a.src} alt="" fill sizes="120px" className={local.image} />
+        ) : (
+          <svg viewBox="0 0 60 70">
+            <circle cx="30" cy="25" r="13" />
+            <path d="M6 70c2-16 12-24 24-24s22 8 24 24Z" />
+          </svg>
+        )}
+      </span>
+      <span className={local.posterName}>{a.name}</span>
+      {a.lines.map((l) => (
+        <span key={l} className={local.posterLine}>
+          {l}
+        </span>
+      ))}
+      {a.contact && <span className={local.posterContact}>{a.contact}</span>}
+    </span>
+  );
+}
+
+function Bubble({
+  m,
+  at,
+  onLink,
+  voices,
+}: {
+  m: Message;
+  at: string;
+  onLink?: (to: NonNullable<Message["link"]>["to"]) => void;
+  /** The story's recordings, for a voice note or a clip in this message. */
+  voices?: Story["voices"];
+}) {
   if (m.from === "system") return <p className={styles.service}>{m.text}</p>;
 
   const out = m.from === "owner";
   const a = m.attachment;
-  const media = a?.kind === "photo" || a?.kind === "handwriting" || a?.kind === "video";
+  const media = a?.kind === "photo" || a?.kind === "handwriting" || a?.kind === "video" || a?.kind === "poster";
   const ticks = m.ticks ?? "read";
   return (
     <div className={styles.bubble} data-out={out || undefined} data-media={media || undefined}>
@@ -204,7 +255,7 @@ function Bubble({ m, at }: { m: Message; at: string }) {
         <>
           {a?.kind === "document" && (
             <span className={styles.doc}>
-              <span className={styles.docIcon}>PDF</span>
+              <span className={styles.docIcon} data-ext={extOf(a.label)}>{extOf(a.label)}</span>
               <span className={styles.docText}>
                 <span className={styles.docName}>{a.label}</span>
                 {a.meta && <span className={styles.docMeta}>{a.meta}</span>}
@@ -212,7 +263,9 @@ function Bubble({ m, at }: { m: Message; at: string }) {
             </span>
           )}
 
-          {a?.kind === "voice" && <Voice seconds={a.seconds} transcript={a.transcript} english={a.english} />}
+          {a?.kind === "voice" && <Voice seconds={a.seconds} transcript={a.transcript} english={a.english} src={voices?.[`voice:${m.id}`]?.src} />}
+
+          {a?.kind === "poster" && <Poster a={a} />}
 
           {/* A photograph: the real one once it exists, and until then a soft frame and what it shows. */}
           {a?.kind === "photo" && (
@@ -230,7 +283,7 @@ function Bubble({ m, at }: { m: Message; at: string }) {
                   ▶
                 </span>
               </span>
-              {a.captions?.length ? <Clip seconds={a.seconds} captions={a.captions} /> : null}
+              {a.captions?.length ? <Clip seconds={a.seconds} captions={a.captions} voice={voices?.[`clip:${m.id}`]?.src} /> : null}
             </span>
           )}
 
@@ -253,6 +306,12 @@ function Bubble({ m, at }: { m: Message; at: string }) {
 
           {m.text && <span className={styles.text}>{m.text}</span>}
           {m.english && <span className={styles.docMeta}>{m.english}</span>}
+          {/* A link that does something here: the courier's return pickup. */}
+          {m.link && onLink && (
+            <button type="button" className={local.link} onClick={() => onLink(m.link!.to)}>
+              {m.link.label}
+            </button>
+          )}
         </>
       )}
 
@@ -280,6 +339,10 @@ function Conversation({
   onBack,
   onRead,
   onSay,
+  onMark,
+  coming,
+  onLink,
+  attach,
 }: {
   story: Story;
   thread: Thread;
@@ -288,6 +351,13 @@ function Conversation({
   onBack: () => void;
   onRead: (evidenceIds: readonly string[]) => void;
   onSay?: (option: ReplyOption, replyId: string) => void;
+  /** How far the player has read: what the unread count counts from. */
+  onMark?: (key: string, count: number) => void;
+  /** Somebody's reply is on its way (a story event that writes here is due): they're typing. */
+  coming?: boolean;
+  onLink?: (to: NonNullable<Message["link"]>["to"]) => void;
+  /** Something the player can attach in this chat (the record, for Meera), and what doing it opens. */
+  attach?: { readonly label: string; readonly onAttach: () => void };
 }) {
   /* What was said back, once said: the player's line, then whatever comes
      back (the option's `then`), revealed with "typing…" like anything new. */
@@ -330,6 +400,12 @@ function Conversation({
     if (visible) onRead(visible.split(","));
   }, [visible, onRead]);
 
+  // Read up to here: the chat's unread count starts again from this.
+  const key = readKey(thread);
+  useEffect(() => {
+    if ((state.at[key] ?? -1) < shown) onMark?.(key, shown);
+  }, [key, shown, onMark, state.at]);
+
   // In airplane mode nothing leaves his phone either. Yours isn't in airplane mode.
   const offline = app !== "yours:chats" && state.flags.includes(AIRPLANE);
 
@@ -344,7 +420,7 @@ function Conversation({
           <span />
         </header>
         <div className={local.contact}>
-          <Avatar group={isGroup(thread)} big />
+          <Avatar group={isGroup(thread)} big src={thread.avatar} />
           <p className={local.contactName}>{thread.name}</p>
           <p className={local.contactNumber}>{thread.contact.number}</p>
           {thread.contact.about && (
@@ -374,11 +450,11 @@ function Conversation({
             if (thread.contact.evidence) onRead([thread.contact.evidence]);
           }}
         >
-          <Avatar group={isGroup(thread)} head />
+          <Avatar group={isGroup(thread)} head src={thread.avatar} />
           <span className={styles.whoText}>
             <span className={styles.whoName}>{thread.name}</span>
             <span className={styles.whoSub} aria-live="polite">
-              {pending && nextFromThem ? "typing…" : (thread.sub ?? thread.number ?? "")}
+              {(pending && nextFromThem) || (coming && !pending) ? "typing…" : (thread.sub ?? thread.number ?? "")}
             </span>
           </span>
         </button>
@@ -403,9 +479,17 @@ function Conversation({
         {messages.slice(0, shown).map((m, i) => (
           <div key={m.id}>
             {m.day && cal.dayOf(m.day) !== cal.dayOf(messages[i - 1]?.day ?? "01/01") && <p className={styles.day}>{cal.label(m.day)}</p>}
-            <Bubble m={m} at={arrivedAt(story, state, m)} />
+            <Bubble m={m} at={arrivedAt(story, state, m)} onLink={onLink} voices={story.voices} />
           </div>
         ))}
+        {/* Somebody writing back: said where the player is looking, not only in the header. */}
+        {((pending && nextFromThem) || (coming && !pending)) && (
+          <p className={local.typing} aria-label="Typing">
+            <span />
+            <span />
+            <span />
+          </p>
+        )}
       </div>
 
       {reply && !pending ? (
@@ -425,14 +509,30 @@ function Conversation({
               {o.english && <span className={styles.docMeta}>{o.english}</span>}
             </button>
           ))}
+          {/* Nothing has to be said first: the record can go before a word does. */}
+          {attach && (
+            <button type="button" className={local.attach} onClick={attach.onAttach}>
+              {attach.label}
+            </button>
+          )}
         </div>
+      ) : attach && !pending ? (
+        /* The record, attached in the chat it goes to, the way a person sends anything. */
+        <footer className={styles.composer}>
+          <button type="button" className={local.attach} onClick={attach.onAttach}>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            {attach.label}
+          </button>
+        </footer>
       ) : (
         <footer className={styles.composer}>
           <svg viewBox="0 0 24 24" className={styles.composerIcon} aria-hidden="true">
             <path d="M12 5v14M5 12h14" />
           </svg>
           <span className={styles.field}>
-            {app === "yours:chats" ? "iMessage" : offline && openReply(state, thread) ? "Airplane Mode is on." : "It isn't your phone."}
+            {app === "yours:chats" ? (thread.number ? "iMessage" : "Text Message") : offline && openReply(state, thread) ? "Airplane Mode is on." : coming || pending ? "" : "It isn't your phone."}
             <svg viewBox="0 0 24 24" className={styles.sticker} aria-hidden="true">
               <path d="M19.5 13.5V7a2.5 2.5 0 0 0-2.5-2.5H7A2.5 2.5 0 0 0 4.5 7v10A2.5 2.5 0 0 0 7 19.5h6.5Zm0 0-6 6c0-3.3 2.7-6 6-6Z" />
             </svg>
@@ -459,11 +559,23 @@ export default function Chat({
   onRead,
   onSay,
   onUnlock,
+  onMark,
+  onLink,
+  attachFor,
+  opened,
 }: {
   story: Story;
   state: CaseState;
   app: Thread["app"];
   onHome?: () => void;
+  /** A chat to open on, coming back to it from what it opened (your phone's record or return). */
+  opened?: string;
+  /** How far the player has read a chat, for its unread count. */
+  onMark?: (key: string, count: number) => void;
+  /** A link in a message was tapped (the courier's return pickup), in that chat. */
+  onLink?: (to: NonNullable<Message["link"]>["to"], thread: Thread) => void;
+  /** What can be attached in a given chat, if anything (the record, in Meera's). */
+  attachFor?: (thread: Thread) => { readonly label: string; readonly onAttach: () => void } | undefined;
   /** WhatsApp draws its own bar, title and tabs; Instagram's DMs sit inside Instagram. */
   chrome?: boolean;
   /** The secret code, typed into Search: the locked chats show, and the save keeps it. */
@@ -473,24 +585,35 @@ export default function Chat({
   /** The player, saying something on somebody else's phone. */
   onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
-  const [open, setOpen] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(opened ?? null);
   const [view, setView] = useState<"chats" | "archived" | "locked" | "settings" | "privacy" | "lock">("chats");
   const [query, setQuery] = useState("");
   const archive = view === "archived";
-  const live = story.threads.filter((t) => t.app === app && all(state, t.requires));
-
-  /* Two entries with the same name are one chat: a later episode adds
-     messages to a thread rather than opening a second one. */
-  const threads = live.reduce<Thread[]>((acc, t) => {
-    const same = acc.find((x) => x.name === t.name);
-    if (!same) return [...acc, t];
-    return acc.map((x) =>
-      x === same ? { ...x, messages: [...x.messages, ...t.messages], replies: [...(x.replies ?? []), ...(t.replies ?? [])] } : x,
-    );
-  }, []);
+  // Two entries with the same name are one chat: a later episode adds to a thread rather than opening a second.
+  const threads = threadsIn(story, state, app);
+  // Story events due now, whose messages would land in an open chat: someone is writing.
+  const due = new Set(dueEvents(story, state).map((e) => e.id));
+  // A text from a business (no number: the courier) doesn't type; it just arrives.
+  const coming = (t: Thread) => (app !== "yours:chats" || Boolean(t.number)) && t.messages.some((m) => m.with && due.has(m.with));
 
   const here = threads.find((t) => t.id === open);
-  if (here) return <Conversation key={here.id} story={story} thread={here} state={state} app={app} onBack={() => setOpen(null)} onRead={onRead} onSay={onSay} />;
+  if (here)
+    return (
+      <Conversation
+        key={here.id}
+        story={story}
+        thread={here}
+        state={state}
+        app={app}
+        onBack={() => setOpen(null)}
+        onRead={onRead}
+        onSay={onSay}
+        onMark={onMark}
+        coming={coming(here)}
+        onLink={onLink && ((to) => onLink(to, here))}
+        attach={attachFor?.(here)}
+      />
+    );
 
   const archived = threads.filter((t) => t.archived && !t.locked);
   const locked = threads.filter((t) => t.locked);
@@ -543,15 +666,12 @@ export default function Chat({
         .map((t) => {
           const shown = conversation(state, t, today);
           const last = shown[shown.length - 1];
-          // Only what can count now: a later episode's find doesn't sit there as a badge nobody can clear.
-          const unread = shown.filter((m) => {
-            const e = m.evidence ? story.evidence.find((x) => x.id === m.evidence) : undefined;
-            return e && reachable(state, e) && !seen(state, e.id);
-          }).length;
+          // Unread, as WhatsApp counts it: what came from them and hasn't been on screen.
+          const unread = unreadCount(state, t, today);
           return (
             <li key={t.id}>
               <button type="button" className={styles.row} onClick={() => setOpen(t.id)}>
-                <Avatar group={isGroup(t)} />
+                <Avatar group={isGroup(t)} src={t.avatar} />
                 <span className={styles.rowMain}>
                   <span className={styles.rowTop}>
                     <span className={styles.rowName}>{t.name}</span>
@@ -583,18 +703,8 @@ export default function Chat({
 
   if (!chrome) return list;
 
-  // Everything waiting, across every chat in the list: the Chats tab carries the count.
-  const waiting = threads
-    .filter((t) => !t.archived && !t.locked)
-    .reduce(
-      (n, t) =>
-        n +
-        conversation(state, t, today).filter((m) => {
-          const e = m.evidence ? story.evidence.find((x) => x.id === m.evidence) : undefined;
-          return e && reachable(state, e) && !seen(state, e.id);
-        }).length,
-      0,
-    );
+  // The Chats tab counts chats with something unread, as WhatsApp's does.
+  const waiting = threads.filter((t) => !t.archived && !t.locked && unreadCount(state, t, today) > 0).length;
 
   return (
     <section className={styles.chats} data-app="whatsapp">
@@ -788,4 +898,10 @@ function WhatsAppSettings({
       </div>
     </>
   );
+}
+
+/** A file's kind, off its name: "report.zip" is a ZIP. Untitled reads as a PDF. */
+function extOf(label: string): string {
+  const m = /\.([a-z0-9]{2,4})$/i.exec(label);
+  return m ? m[1].toUpperCase() : "PDF";
 }

@@ -5,12 +5,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.1rem;
+  gap: 20px;
   min-height: 100dvh;
-  padding: 2rem 1rem calc(2rem + env(safe-area-inset-bottom));
-  text-align: center;
-  color: #efeae4;
-  background: radial-gradient(circle at 50% 35%, #1d1a17 0%, #0b0b0c 70%);
+  padding: 32px var(--gutter) calc(32px + env(safe-area-inset-bottom));
+  text-align: left;
+  color: var(--text);
+  /* The same desk, under the same lamp. */
+  background:
+    radial-gradient(60% 40% at 50% 34%, rgb(255 214 160 / 14%), transparent 72%),
+    repeating-linear-gradient(91deg, rgb(0 0 0 / 0%) 0 9px, rgb(0 0 0 / 9%) 9px 10px, rgb(0 0 0 / 0%) 10px 23px, rgb(255 255 255 / 2%) 23px 24px),
+    linear-gradient(180deg, #2a1e16 0%, #2f2219 45%, var(--ink) 100%);
 }
 
 .paper {
@@ -26,29 +30,41 @@
 
 /* A quick ballpoint hand, until the photograph of the real one (ASSETS.md). */
 .hand {
-  font-family: var(--font-ui);
-  font-size: 1.2rem;
-  font-style: italic;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.35;
+  font-family: var(--font-hand), var(--font-ui), cursive;
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
   color: #1c2340;
 }
 
 .sign {
   margin-top: 0.5rem;
-  font-family: var(--font-ui);
+  font-family: var(--font-hand), var(--font-ui), cursive;
   font-size: 1rem;
   color: #1c2340;
   text-align: right;
 }
 
+/* Its translation, typed under it the way a case file transcribes a note. */
 .english {
-  margin-top: -0.3rem;
-  font-family: var(--font-ui);
-  font-size: 0.72rem;
-  font-style: italic;
-  color: #a39d95;
+  width: min(19rem, 86vw);
+  padding-top: 10px;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--paper-2);
+}
+
+.english::before {
+  content: "Translation";
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .kit {
@@ -68,22 +84,31 @@
 
 
 .caption {
-  max-width: 20rem;
-  font-family: var(--font-ui);
-  font-size: 0.78rem;
-  color: #8d8781;
+  width: min(19rem, 86vw);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--text);
 }
 
 .turn {
-  font-family: var(--font-ui);
-  font-size: 0.85rem;
-  padding: 0.7rem 1.3rem;
-  border-radius: 999px;
-  border: 0;
-  background: #e8843c;
-  color: #14100c;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(19rem, 86vw);
+  min-height: 50px;
+  padding: 0 18px 0 20px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--paper-ink);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
 }
+
+.turn::after { content: "→"; font-family: var(--font-mono), monospace; font-weight: 400; }
+.turn:hover { background: #fff; }
 
 /* The ring/silent switch on the phone's side: orange when silent, as on an iPhone. */
 .facedown { position: relative; }
@@ -110,9 +135,10 @@
 .ringer::after { content: ""; position: absolute; inset: -0.8rem -0.9rem; }
 
 .ringerNote {
-  font-family: var(--font-ui);
-  font-size: 0.7rem;
-  color: #8d8781;
+  width: min(19rem, 86vw);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--muted);
 }
 
 /* --- The envelope -------------------------------------------------------------

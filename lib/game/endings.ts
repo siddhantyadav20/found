@@ -1,4 +1,4 @@
-import type { Ending, EndingLine, Flag, Story } from "@/content/types";
+import { RESOLVE, type Ending, type EndingLine, type Flag, type Story } from "@/content/types";
 import { all, has, type CaseState } from "./engine";
 
 /* ===========================================================================
@@ -15,7 +15,11 @@ export const endFlag = (id: EndingId): Flag => `did:end-${id}`;
 export const ENDING_SEEN: Flag = "did:ending-seen";
 
 export function chosen(story: Story, s: CaseState): Ending | undefined {
-  return story.endings.find((e) => has(s, endFlag(e.id)));
+  const acted = story.endings.find((e) => has(s, endFlag(e.id)));
+  if (acted || !has(s, RESOLVE)) return acted;
+  /* Played to its end rather than chosen by one act: the first ending whose
+     flags all hold and none of whose `not` do (Last Local). */
+  return story.endings.find((e) => e.when.flags && all(s, e.when.flags) && !(e.when.not ?? []).some((f) => has(s, f)));
 }
 
 /** A line is read when the player did what it needs, and none of what it can't bear. */

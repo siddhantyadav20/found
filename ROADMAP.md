@@ -722,6 +722,230 @@ to a concept". The design is in CHAPTER1.md's new first section. In short:
 
 ---
 
+## After the review · **done (2026-10-01)**
+
+A review from three standpoints (product, UI, game; PLAYTEST-SHAGUN.md
+#58–83), then all of it fixed at Siddhant's ask. The design is CHAPTER1.md's
+first section. In short:
+- **Game:** words learned before they're offered (`Say.learn`, `wordsFor`);
+  Episode 1's leaks closed and Kunal made a real suspect (`kunal-pose`);
+  hunches with circumstance said so (`FileClaim.backed`); labels that describe;
+  memo 15 a riddle the reel take answers; Sameer tests "I'm M" and can be
+  caught on "khaali"; M rings in Episode 2; the board's contradiction step
+  (`Question.contradiction`, `ODD`); the confrontation before Q11; the night's
+  turns wait for the case file to close and land ten seconds apart; Look again
+  (`Story.lookAgain`).
+- **UI:** the case file's pinned dock, where-to-look first, swimlanes;
+  real unread counts and iOS-only badges (`unreadCount`, `badgeFor`); the
+  LAPATA poster; the notebook on a wide table; Safari pages; the score first
+  on the end card; the Kalam hand on the note; one accent in the case file.
+- **Product:** Newsreader for the trial Canela (`app/fonts.ts`), With help /
+  Detective at the parcel (`DETECTIVE`), "Tell me when it arrives"
+  (`app/api/notify`), the cable after 30 s, "45–60 min", four stock frames
+  withdrawn.
+- **Tests:** 202, with `tests/review.test.ts`. The case page is 671 of 700 KB.
+- **Played in the browser** at phone size through Episode 2 by hand and
+  Episode 3 from a solver's save, and at 1280 × 800 for the notebook.
+- **Left for Siddhant:** the trial fonts are still in git history; the
+  replacement stock frames need approval; voices and faces are S11.
+- **Then your phone, rebuilt** (PLAYTEST-SHAGUN.md #84): Messages (Meera,
+  the courier's return pickup) and Pulse (the feed, the rumour, the draft on
+  top); the record opens from Post or from Attach in Meera's chat; its own
+  rare notifications (`device: "yours"`, `newsOnYours`); a YOURS tab for
+  the edge. Tests 214 (`tests/yours.test.ts`); the case page is 676 of 700 KB.
+
+## The thriller pass (2026-10-17)
+
+After a blind first-time play (PLAYTEST-SHAGUN.md #94–108), Siddhant asked
+for enhancements "not bounded by technical or any other boundaries", written
+as a thriller writer would, and then to start on them. SCRIPT.md stays
+canon: everything below is adaptation (game) unless it says it asks for a
+script change. ✅ started this session · ⬜ open.
+
+**The rule behind the list.** The case is solved by minute 10 and it's still
+worth an hour, because the question keeps changing. What's missing is the
+other half of a thriller: *someone is coming for you*, and *someone you care
+about is already lost*. Every item serves dread, grief or doubt.
+
+### The first sixty seconds
+
+- ✅ **T1 · Cold open on the night.** Before a first parcel, about twenty
+  seconds of captions on black (the game's own convention until voices are
+  recorded): the reel take's minute, 12:31, a boy asking about the light,
+  "Rolling, bhai?", two shots that flash the screen, the dhol playing on.
+  Then "Seven days later, a parcel comes back to your door." Nobody is
+  named, and the minute quietly contradicts Kunal's 11:52 clip. Skippable;
+  once a visit (`components/stage/ColdOpen.tsx`). Real sound waits on S11.
+- ✅ **T2 · It rings in the box.** The recorded buzz plays in step with the
+  parcel's shiver until the strip is pulled; "Something inside is buzzing."
+- ✅ **T3 · Stakes-first opening questions.** Done as: Q1 asks "where is he
+  running to?" and its sentence puts him "on a train tomorrow afternoon"
+  (the RailBook ticket is now evidence, and the 4:55 train pays off in the
+  ending); Q2's decoys are honest misreadings (the caterer's kitchen, the
+  Samastipur bus stand). The original idea: Q1–Q2 collapse into one: "A
+  boy is missing and a stranger's phone says he was burned. Whose phone is
+  it, and what is he running to?" Name, job and city file themselves as
+  they're found (#95).
+
+### The mystery
+
+- ⬜ **T4 · Make the wrong answer cost someone.** Episode 1 ends with Raju
+  asking "Kisne chalayi?" (Who fired it?). The obvious answer, Kunal, sends him to the Sehgals' gate.
+  The route exists; make it the spine, so Episode 2's twist lands on a
+  person, not a score.
+- ⬜ **T5 · Say it in your own words.** Free-text accusations, read by
+  Claude against the chain, answered like a senior detective would ("You've
+  got the gun right and the minute wrong").
+- ⬜ **T6 · A suspect who turns out to be the hero.** Nitin looks bad first:
+  ₹3,000 from Sameer at 12:30 the next day, "Vicky wapas aa gaya" as if relieved.
+  Then the locked chat shows he was the only one who tried.
+- ⬜ **T7 · One thing on the phone that lies.** A screenshot edited by
+  Bhasin's people, betrayed by its own metadata, so the player learns the
+  *phone* can lie, not only its owner.
+- ✅ **T8 · Show the trim.** ("· Trimmed" by its time, and "Trimmed from a
+  longer video" in its info.) The 9-second fire clip says "Trimmed · from a
+  longer video": the door, from minute five; what's behind it waits for
+  Episode 3.
+- ✅ **T9 · Fair play for "his own reel"** (#96). Rangmanch's offer asks him
+  to bring "an updated showreel" on day one: the reel was for *him*, and
+  ambition is why a boy was holding a light in front of a loaded gun.
+
+### Dread: make it about you
+
+- ✅ **T10 · Bhasin has your address** (#103). The parcel went out with the
+  player's address as sender. In Episode 3 Bhasin says so: the courier slip,
+  "pata aapka hai". The epilogue's man at your gate is now a promise kept.
+- ⬜ **T11 · Find My as a hunter.** A second device's dot in Find My moving
+  toward the phone street by street through Episode 3.
+- ✅ **T12 · The knock.** Done as a call on *your* phone: 45 s after
+  Bhasin's "pata aapka hai" (your address), Gate 2's guard rings (it
+  insists): a man in a safari suit at the gate, asking for your flat. Keep
+  the gate shut, ask who sent him ("Bhasin sahab ne bheja hai", Bhasin sahab sent me), or say you
+  don't live here ("woh aapka naam le raha hai", he's saying your name). At 7 AM he's back.
+  His airplane mode doesn't silence yours.
+- ⬜ **T13 · Your own clock.** "7 baje tak" counts down on the player's real
+  clock when they play at night.
+- ⬜ **T14 · Airplane mode as sacrifice.** Coming back online to read
+  Sameer's last message shows Bhasin you're still there.
+
+### People: make it hurt
+
+- ✅ **T15 · Dilip before the light.** One more line in his locked chat, a
+  boy asking if he'll see the sea from Mumbai every day. The player hears
+  him dream before they read "dard ho raha hai" (it hurts).
+- ✅ **T16 · Sameer's why** (#100). After "Mujhe pata tha woh nahi nikla
+  tha" (I knew he hadn't got out), the player can ask "Kyun?" (Why?), and he answers in canon's own motive:
+  their video of his shot, a police case that would be his alone, Monday in
+  Mumbai, and a doctor he let himself believe was coming.
+- ✅ **T17 · Raju isn't hung up on** (#97). Told "goli lagi" (he was shot) on the call, he
+  closes it himself: he'll call back.
+- ✅ **T18 · Mummy pays for his escape.** (The morning's last notification.) In the morning: "Bhasin uncle bol
+  rahe the tu Mumbai chala gaya. Bina bataye?" (Bhasin uncle says you've left for Mumbai. Without telling me?)
+- ✅ **T19 · Meera's own stake.** (3:20 AM, once the record is sent.) One late message: taking this to court
+  ends her at Saket, and she's taking it anyway.
+- ⬜ **T20 · Real faces, real voices** (#94, S11). The single largest jump in
+  grip. Dilip's laugh in one voice note is worth any feature on this list.
+
+### The ending, and the return
+
+- ✅ **T21 · Play the morning, don't read it** (#106). Done: the aftermath is
+  your own lock screen from 3 AM to 7:40 PM; whoever speaks arrives as a
+  notification with the buzz, newest on top; narration sits under the clock;
+  then the last image alone (Raju's photo of Dilip, with his words), black,
+  the card. Originally: The epilogue happens
+  on your phone: Pulse answering your post, the Sehgals' lawyer in your DMs,
+  the guard ringing about the man at the gate, Raju's photo of
+  Dilip at Chhath as the last image.
+- ✅ **T22 · Endings that differ by who you protected.** Done as: named,
+  Nitin writes at 5:30 that Bhasin's people came to his house; kept out, he
+  thanks you. Originally: Nitin named or
+  kept out decides whether he is picked up in the morning.
+- ⬜ **T23 · The aftershock.** Opt-in: a day later, one SMS-style push,
+  "DakRoute: return pickup booked for a parcel you didn't send." Chapter 2
+  starts there.
+- ⬜ **T24 · The label with your name on it.** Chapter 2's card uses the
+  first name the player gave for Pass it on.
+
+### Form and launch
+
+- ⬜ **T25 · Binaural calls,** with a headphones prompt at the parcel.
+- ⬜ **T26 · The phone's owner picks the OS.** Chapter 2's phone is an
+  Android.
+- ⬜ **T27 · The marketing is the game.** The LAPATA poster as a real post
+  from @samastipur.samachar, the Pulse handles as real accounts, SK Films'
+  reel as the teaser. Tagline: "Kisi ke paas proof hai?" (Does anyone have proof?)
+- ⬜ **T28 · A result that is a moral split, not a score.** "I kept Nitin's
+  name out. 61% didn't."
+- ⬜ **T29 · Fifty parcels.** Indian true-crime creators get a sealed,
+  stamped RETURN TO ORIGIN parcel with a QR inside.
+
+### Started this session (fairness and pacing, from the play)
+
+- ✅ #101: the board takes 12:38 in Dilip's lane and 1:22 in the car's, as
+  its own rule allows.
+- ✅ #102: the board's answer ends on the question the player just marked.
+- ✅ #98: your phone's edge shows how many messages wait, even as a sliver.
+- ✅ #104: Q13 says "as insurance against them", not "as a counter-file".
+- ✅ T9, T10, T15, T16, T17 above.
+
+### Then, "complete whatever elevates it" (same day)
+
+- ✅ T1, T2, T3, T8, T12, T18, T19, T21, T22 above, and #107: in Episode 3
+  Nitin writes first ("Bhai? Online dikh raha hai", Bro? You're showing online) and so does Kunal ("Papa bol
+  rahe hain kisi se baat mat karna", Papa says don't talk to anyone), so their routes are found, not missed.
+- Calls on your phone say "Your phone" above the caller.
+- Tests 234 (`tests/thriller-pass.test.ts`); the case page is 690 of 700 KB.
+- Played in the browser: desk → cold open → the buzzing parcel → the new
+  Q1; then from a seeded late Episode 3: Bhasin's address, the guard's
+  call, Q13, posting, and the whole morning to the end card.
+
+## Real media and the room, rebuilt (2026-10-17→18)
+
+Siddhant: "solve the gaps yourself… photos, voices, calls" and "a major
+rehaul… it looks sloppy (AI slop)".
+
+- **Photos** (ASSETS.md "Generated frames"): ten generated fictional frames
+  carry every plot photo (Dilip's portrait, the 12:29 photo, Kunal with the
+  gun, the kada selfie, the crew, the family, the couple, the pheras), six
+  more stock frames, a matching LAPATA photo and Kunal's frame derived from
+  them. Drawn album cards are gone from the phone. `Photo.wide` for
+  landscape frames; the badge zoom no longer lays text over a real photo.
+- **Sound** (ASSETS.md "Sound"): the cold open has a far dhol and two shots;
+  every clip plays its bed and its captioned sounds (`lib/found/nightSound.ts`).
+- **Not done:** voices (no believable Hindi TTS here; needs Weave linked or
+  actors), Raju's Chhath photo and the remaining album frames (credits).
+- **The room** (everything outside the phones): IBM Plex Sans and Mono with
+  Newsreader; tokens in `app/globals.css` (ink, paper, kraft, one stamp red);
+  shared `.label`, `.act`, `.act-quiet`. Rebuilt: the desk (a walnut desk under
+  a lamp, a kraft parcel with a waybill and barcode, the case set as a form,
+  a ledger of your cases), the parcel, the envelope, the charge gate (the
+  phone's own low-battery screen), episode title cards (film titles), the
+  case file (a manila sheet inside his phone, status bar dark over it, a red
+  stamp for each reveal), the home widget, the notebook on wide screens,
+  the end card (a closed case's report), Pass it on, the case number.
+  His phone's own apps stay iOS.
+
+## Case 1: *Last Local* (2026-10-18)
+
+Siddhant, after playing Shagun: "no real ending - no high stakes… very
+confusing… no strong plot". Chosen: a new chapter, played through the phone,
+with a live climax. LAST-LOCAL.md is the design and says what was built.
+
+- A stranger's phone on the last Virar fast, 1:12 to 2:14 AM: her family
+  tracking it, a forged signature on a building that killed fourteen, a man
+  her family warned her about, and their fixer on the train by Borivali.
+- Three episodes by station, each with its title card; four choices at Vasai
+  Road against a 20-second clock; six endings, the morning on your own phone.
+- Played end to end in the browser on 2026-10-18. Fixed on the way: paper
+  documents in Notes, a ZIP shown as a PDF, a status slip that lagged the
+  upload, Shagun's date on Last Local's morning, the ending's name missing
+  from the end card, the case page over budget (each page now gets only its
+  own story).
+
+---
+
+## What only Siddhant can do---
+
 ## What only Siddhant can do
 
 | | |

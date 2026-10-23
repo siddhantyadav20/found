@@ -28,6 +28,7 @@ export type AppId =
   | "mail"
   | "paytap"
   | "casefile"
+  | "findmy"
   // Your phone
   | "yours:chats"
   | "yours:phone"
@@ -141,6 +142,12 @@ export type FileClaim = {
    * player called it, and when.
    */
   readonly hunch?: string;
+  /**
+   * A hunch with circumstance behind it: when the proof tabled includes any
+   * of `by`, the reply says so, rather than treating a reasoned guess as a
+   * wild one (it still can't trace the link).
+   */
+  readonly backed?: { readonly by: readonly string[]; readonly reply: string };
   /** Hunches this claim proves, as "question:claim": it says the player called it. */
   readonly pays?: readonly string[];
   /**
@@ -161,6 +168,15 @@ export type FileClaim = {
 export type Say = {
   readonly line: string;
   readonly blanks: Readonly<Record<string, readonly string[]>>;
+  /**
+   * Where each word is learned, Golden Idol's way: a word listed here is
+   * offered only once one of these pieces of evidence has been seen, so a
+   * name nobody has met, or a twist nobody has found, never sits in the
+   * list waiting to be picked. An entry can also be a whole flag
+   * ("did:answered-raju": a call that said the name aloud). Words not listed
+   * are plain words, always offered.
+   */
+  readonly learn?: Readonly<Record<string, readonly string[]>>;
 };
 
 /** One row on a timeline: an event, the lane it belongs in, and what shows it. */
@@ -220,6 +236,11 @@ export type Link = {
    * to keep it out (the record's "Without his name").
    */
   readonly unnamed?: string;
+  /**
+   * Traced by what the player found or did, without a question to answer it
+   * (Last Local): any one of these sets of flags, all holding.
+   */
+  readonly when?: readonly (readonly Flag[])[];
 };
 
 export type Question =
@@ -246,6 +267,12 @@ export type Question =
        * would "prove" the whole question.
        */
       readonly enough?: readonly (readonly string[])[];
+      /**
+       * Once every row is in its lane, the board asks this, and the player
+       * marks the rows (`odd`) that can't all be true at once. The game
+       * never lights them for anybody.
+       */
+      readonly contradiction?: string;
     })
   | (Asked & {
       readonly kind: "claims";
@@ -308,15 +335,25 @@ export type EndingLine = {
   readonly english?: string;
   /** A time cut before the line: "Nine days later". */
   readonly at?: string;
+  /** Where the lock screen's clock stands for it, as "06:40", when `at` isn't itself a time (T21). */
+  readonly clock?: string;
   /** Somebody saying it, as a message. Without one, it is narration. */
   readonly who?: string;
+  /** A photograph they send with it: the ending's last image, once it exists. */
+  readonly src?: string;
   readonly needs?: readonly Flag[];
   readonly any?: readonly Flag[];
   readonly unless?: readonly Flag[];
 };
 
+/** Recorded voices, by what they belong to ("voice:m-1", "call:raju:0"): a file, and how long it runs. */
+export type Voices = Readonly<Record<string, { readonly src: string; readonly seconds: number }>>;
+
 /** What the player does with the record: send it, post it, or give the phone back unread. */
 export type Act = "send" | "post" | "return";
+
+/** Set by the story when everything the player did should now decide the ending (`Ending.when.flags`). */
+export const RESOLVE = "did:resolve" as const;
 
 /** One of the things a player can do with what they know. */
 export type Ending = {
@@ -327,7 +364,14 @@ export type Ending = {
    * ending in the story's order whose rule fits is the one.
    */
   readonly when: {
-    readonly acts: readonly Act[];
+    /** Chosen by an act on your phone (Shagun's send, post or return). */
+    readonly acts?: readonly Act[];
+    /**
+     * Or chosen by what the player did, once the story says it's over
+     * (`RESOLVE`): all of `flags`, none of `not`, the first that fits.
+     */
+    readonly flags?: readonly Flag[];
+    readonly not?: readonly Flag[];
     /** Links that must be traced and left in. */
     readonly in?: readonly string[];
     /** Links that must still be untraced. */
@@ -439,6 +483,24 @@ export type Attachment =
       readonly src?: string;
       readonly captions?: readonly Caption[];
     }
+  /**
+   * A printed missing-person notice, the kind a family makes at a cyber café
+   * and forwards to every group they're in: drawn as the notice itself, with
+   * its photograph a silhouette until the shoot (ROADMAP S11).
+   */
+  | {
+      readonly kind: "poster";
+      readonly label: string;
+      /** The word across the top, in the script it was printed in: "लापता". */
+      readonly heading: string;
+      readonly subheading?: string;
+      readonly name: string;
+      readonly lines: readonly string[];
+      /** Where to call, masked like every number here. */
+      readonly contact?: string;
+      /** His photograph, printed: a silhouette until there is one. */
+      readonly src?: string;
+    }
   /** A page in someone's own hand, photographed: drawn as paper, in cursive. */
   | {
       readonly kind: "handwriting";
@@ -480,6 +542,11 @@ export type Message = {
   readonly forwarded?: boolean;
   /** How long "typing…" shows before it arrives, in seconds, when it takes someone longer than usual. */
   readonly typing?: number;
+  /**
+   * A link in the message that does something on the player's own phone: the
+   * courier's "Book a return pickup" opens giving the phone back (`return`).
+   */
+  readonly link?: { readonly label: string; readonly to: "return" };
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
@@ -547,6 +614,14 @@ export type Thread = {
   readonly pinned?: boolean;
   /** Unsaved numbers show as numbers, which is how two of them get confused. */
   readonly number?: string;
+  /** Their profile photo, where they've set one; without it, WhatsApp's grey silhouette. */
+  readonly avatar?: string;
+  /**
+   * How many of its last messages from the other side were still unread
+   * when the phone reached the player: what WhatsApp's count says before
+   * anyone opens the chat. Whatever arrives during the night adds to it.
+   */
+  readonly unread?: number;
   /** Moved out of the list into Archived, which is one tap further than most people look. */
   readonly archived?: boolean;
   /**
@@ -607,6 +682,13 @@ export type Photo = {
   readonly camera?: string;
   /** A video: its length and its words. */
   readonly video?: { readonly seconds: number; readonly captions: readonly Caption[] };
+  /**
+   * A clip cut down from something longer, and saying so as Photos does
+   * ("Trimmed"): the door, never what's behind it (ROADMAP T8).
+   */
+  readonly trimmed?: boolean;
+  /** Taken in landscape: the viewer shows it wide rather than cropping it to portrait. */
+  readonly wide?: boolean;
   /**
    * Edited on the phone, and iOS kept the original: Edit › Revert brings it
    * back, and with it whatever the edit cut (`evidence`).
@@ -677,6 +759,26 @@ export type Payment = {
   readonly requires?: readonly Flag[];
 };
 
+/** A post on an Instagram profile: a photograph, or a card of words on a colour. */
+export type ProfilePost = {
+  readonly id: string;
+  /** What the picture shows: its alt text, and what's drawn until there's a photograph. */
+  readonly title: string;
+  readonly src?: string;
+  /** A post that's words on a colour (a story shared to the grid, a fever), drawn in this tint. */
+  readonly card?: string;
+  readonly caption?: string;
+  readonly english?: string;
+  /** When it went up, as Instagram says it: "6 days ago". */
+  readonly when?: string;
+  /** Where, as the post's header says it: "Banyan Farms · 12:24 AM". */
+  readonly place?: string;
+  readonly likes?: number;
+  readonly comments?: readonly { readonly who: string; readonly text: string; readonly english?: string }[];
+  readonly evidence?: string;
+  readonly requires?: readonly Flag[];
+};
+
 /** An Instagram profile: the owner's, or anybody's the story needs. */
 export type Profile = {
   readonly handle: string;
@@ -684,13 +786,15 @@ export type Profile = {
   readonly bio?: string;
   /** The owner's own: its ring says "Your story". */
   readonly own?: boolean;
-  readonly posts: readonly {
-    readonly id: string;
-    readonly title: string;
-    readonly src?: string;
-    readonly caption?: string;
-    readonly evidence?: string;
-  }[];
+  /** The profile photo; without one, the initials. */
+  readonly avatar?: string;
+  readonly followers?: string;
+  readonly following?: string;
+  /** A private account: the head and the bio, and "This account is private" for the grid. */
+  readonly private?: boolean;
+  /** How many posts a private account says it has. */
+  readonly postCount?: number;
+  readonly posts: readonly ProfilePost[];
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
@@ -725,6 +829,14 @@ export type Search = {
   readonly text: string;
   readonly at: string;
   readonly day: string;
+  /** What the results page said, once the phone has the data to load it again. */
+  readonly results?: readonly string[];
+  /**
+   * A page he read and Safari still has open in a tab: it shows without the
+   * network, from the first minute (2026-10-23: the chat-lock help page, so
+   * a player can see how locked chats are found).
+   */
+  readonly page?: { readonly site: string; readonly title: string; readonly lead?: string; readonly steps: readonly string[]; readonly note?: string };
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
 };
@@ -790,14 +902,109 @@ export type SettingsGroup = {
   readonly rows: readonly SettingsRow[];
 };
 
+/** A post on the player's own social app: somebody else's, about the night. */
+export type FeedPost = {
+  readonly id: string;
+  readonly who: string;
+  readonly handle: string;
+  /** When it went up, as the feed says it: "2d", "Tuesday". */
+  readonly when: string;
+  readonly text: string;
+  readonly english?: string;
+  /** A picture or a clip, described until there's a real one. */
+  readonly media?: string;
+  /** The picture itself, once there is one. */
+  readonly src?: string;
+  /** A post that's words on a colour, drawn in this tint. */
+  readonly card?: string;
+  /** Shares, as the night goes on: in Episode 1, 2 and 3. */
+  readonly shares: readonly [number, number, number];
+  readonly requires?: readonly Flag[];
+};
+
+/**
+ * The owner's trip, as a train app's Live Activity keeps it in the Dynamic
+ * Island: the stations, and the flag that says the train is at each one.
+ */
+export type Route = {
+  /** "Virar fast". */
+  readonly train: string;
+  readonly stations: readonly { readonly name: string; readonly at: string; readonly flag?: Flag }[];
+};
+
+/**
+ * A moment the story stops for: the screen is the world, not a phone (the
+ * doors at a station). The player chooses, against a clock if `seconds` is
+ * set; when it runs out, `timeout` is chosen for them.
+ */
+export type Moment = {
+  readonly id: string;
+  readonly after: readonly Flag[];
+  readonly unless?: readonly Flag[];
+  /** The place and time, as a caption: "Vasai Road · 2:03 AM". */
+  readonly where: string;
+  readonly lines: readonly { readonly who?: string; readonly text: string; readonly english?: string }[];
+  readonly options: readonly { readonly id: string; readonly text: string; readonly sets: readonly Flag[]; readonly requires?: readonly Flag[] }[];
+  readonly seconds?: number;
+  readonly timeout?: string;
+};
+
+/** Find My, as the family shares it: who can see this phone, and where each of them is. */
+export type FindMy = {
+  readonly people: readonly {
+    readonly name: string;
+    readonly requires?: readonly Flag[];
+    /** Where they are: the last step whose flag holds, as a station on the route (or a place). */
+    readonly steps: readonly { readonly after?: Flag; readonly at: string; readonly note?: string }[];
+    /** Following this phone. */
+    readonly follows?: readonly Flag[];
+  }[];
+  /** Turning off Share My Location sets these. On this phone, nobody turns it back on. */
+  readonly stopSharing: readonly Flag[];
+};
+
 export type Story = {
   readonly id: string;
   readonly title: string;
   /** Whose phone it is: the name on the account, and what transcripts call them. */
-  readonly owner: { readonly name: string; readonly short: string };
+  /** Whose phone it is; `photo` is his Apple Account picture, at the top of Settings. */
+  readonly owner: { readonly name: string; readonly short: string; readonly photo?: string };
   readonly episodes: readonly [string, string, string];
   readonly clocks: readonly [Clock, Clock, Clock];
+  /**
+   * Before the parcel, the first time: the night itself, heard and never
+   * seen, in captions, the way every voice on the phone is shown. Nobody in
+   * it is named; what it plants pays off later (ROADMAP T1).
+   */
+  readonly coldOpen?: {
+    readonly where: string;
+    readonly lines: readonly {
+      /** Who speaks, as a caption names someone it can't see: "A VOICE". Without one, it's a sound. */
+      readonly who?: string;
+      readonly line: string;
+      readonly english?: string;
+      /** A shot: the screen flashes, and a phone that can buzz does. */
+      readonly flash?: boolean;
+    }[];
+    readonly after: string;
+    /** What's heard under it: a wedding far off (the default), or the train you're on. */
+    readonly bed?: "dhol" | "train";
+  };
   readonly arrival: Arrival;
+  /**
+   * Found on a seat rather than in a parcel: no label, no note, the phone
+   * face down and buzzing. The note scene is skipped (`did:unlock` at once).
+   */
+  readonly seat?: { readonly line: string; readonly note: string; readonly act: string };
+  /** Heard under the whole chapter, low: the train (Last Local). */
+  readonly ambience?: "train";
+  /** False: no case file, no questions. The story is played through the phone. */
+  readonly caseFile?: false;
+  /** What the home screen's widget says instead of a question: the last line whose `requires` hold. */
+  readonly status?: readonly { readonly text: string; readonly requires?: readonly Flag[]; readonly unless?: readonly Flag[] }[];
+  readonly route?: Route;
+  readonly moments?: readonly Moment[];
+  readonly findMy?: FindMy;
   readonly gate: Gate;
   readonly lockScreen: readonly LockNotice[];
   /**
@@ -835,6 +1042,12 @@ export type Story = {
    */
   readonly replay?: { readonly note: string; readonly caption: string };
   /**
+   * "Look again", once it's over (script §20: the urge to reopen earlier
+   * evidence): what was on the phone from the first minute, where, and what
+   * it turned out to mean (CHAPTER1.md K1).
+   */
+  readonly lookAgain?: readonly { readonly what: string; readonly where: AppId; readonly meant: string }[];
+  /**
    * What comes next, on the end card: the next case, as it reaches the
    * player (canon §21: a new mystery, never the missing half of this one).
    */
@@ -843,19 +1056,57 @@ export type Story = {
     readonly from: string;
     readonly lines: readonly { readonly text: string; readonly english?: string }[];
     readonly note: string;
+    /** The next case already exists: where to play it. */
+    readonly href?: string;
+    readonly cta?: string;
   };
   /**
    * Outside the fiction: the end card's last, quiet screen. Every line
    * checked at its source before it's written here (CHAPTER1.md L).
    */
   readonly outside: readonly { readonly text: string; readonly tel?: string; readonly source?: string }[];
+  /** What's said aloud on the phone, recorded: see `Voices`. Without it, the captions are the sound. */
+  readonly voices?: Voices;
+  /**
+   * The end of an episode, said as one (2026-10-23: "episode 1 seems to end
+   * abruptly"): the line it ends on, and the questions the next one opens.
+   * Keyed by the episode that's ending.
+   */
+  readonly recaps?: Readonly<Partial<Record<1 | 2, { readonly cliff: string; readonly english?: string; readonly who?: string; readonly open: readonly string[] }>>>;
+  /**
+   * Instagram's home feed and Explore: other people's posts, and the night
+   * spreading in public (RAAKH, since 2026-10-23, where it replaced your phone).
+   */
+  readonly feed?: readonly FeedPost[];
+  /**
+   * Closing the case from the case file (RAAKH): the record's first line, who
+   * it can be sent to, where it can be posted, and giving the parcel back.
+   */
+  readonly close?: {
+    readonly intro: string;
+    readonly sendTo: string;
+    /** Why the player can reach them: "Her number is on the parcel's label." */
+    readonly sendNote: string;
+    readonly postTo: string;
+    readonly postNote: string;
+    readonly parcel: { readonly note: string; readonly act: string; readonly ask: string };
+  };
   /** Your phone: the app the draft post lives in, its first line, and who a record can be sent to, once they're known. */
-  readonly yours: {
-    readonly social: string;
+  readonly yours?: {
+    /** The social app the draft lives in; none, and your phone is Messages alone. */
+    readonly social?: string;
     readonly intro: string;
     readonly sendTo: string;
     readonly sendRequires: readonly Flag[];
     /** The parcel, and giving the phone back: what it says, what the act is called, and what it asks first. */
     readonly parcel: { readonly note: string; readonly act: string; readonly ask: string };
+    /**
+     * The social app's feed: the night, spreading in public, with the
+     * player's unposted draft at the top. What makes posting early tempting
+     * (CHAPTER1.md H: publish early theory).
+     */
+    readonly feed?: readonly FeedPost[];
+    /** What's trending above the feed: the last line whose `requires` hold. */
+    readonly trending?: readonly { readonly text: string; readonly requires?: readonly Flag[] }[];
   };
 };

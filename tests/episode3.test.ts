@@ -46,10 +46,10 @@ describe("Episode 3", () => {
 describe("Sameer, one last time", () => {
   const last = thread("+91 70••• •2290");
 
-  it("offers the confrontation only with the shot, alive, the car and the lie traced", () => {
+  it("offers the confrontation once the night is on the board (the shot, alive, the car, kept there), before the lie is filed", () => {
     const base = add(opened(), "fired:sameer-last");
     expect(offeredOptions(base, openReply(base, last)!).map((o) => o.id)).toEqual(["rescuer"]);
-    const chain = add(base, "link:shot", "link:alive", "link:car", "link:lie");
+    const chain = add(base, "link:shot", "link:alive", "link:car", "link:kept");
     expect(offeredOptions(chain, openReply(chain, last)!).map((o) => o.id)).toEqual(["rescuer", "confront"]);
   });
 

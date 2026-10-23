@@ -13,6 +13,7 @@ import Clip from "../ios/Clip";
 import frame from "../ios/PhotoFrame.module.css";
 import styles from "../ios/Photos.module.css";
 import paper from "./Photos.module.css";
+import Sketch from "./Sketch";
 import { stamp } from "@/lib/found/time";
 
 /* ===========================================================================
@@ -135,13 +136,14 @@ function Picture({ photo, big, seconds, veiled }: { photo: Photo; big?: boolean;
       className={paper.scene}
       data-big={big || undefined}
       data-video={photo.video ? "" : undefined}
+      data-wide={photo.wide || undefined}
       data-veiled={veiled || undefined}
       style={{ "--hue": hueOf(photo.id) } as CSSProperties}
     >
       {photo.src ? (
         <Image src={photo.src} alt={veiled ? "" : photo.title} fill sizes={big ? "400px" : "140px"} className={frame.image} />
       ) : (
-        !veiled && <span className={paper.sceneTitle}>{photo.title}</span>
+        !veiled && <Sketch id={photo.id} title={photo.title} hue={hueOf(photo.id)} big={big} />
       )}
       {seconds !== undefined && !big && <span className={paper.duration}>{mmss(seconds)}</span>}
     </div>
@@ -234,8 +236,10 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
         style={{ transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})` }}
       >
         <Picture photo={photo} big />
-        {/* Small, at the edge of the frame: nothing anyone would see without leaning in. */}
+        {/* Small, at the edge of the frame: nothing anyone would see without leaning in.
+            A real photograph has the words on it already: only a drawn one needs them laid on. */}
         <span
+          hidden={Boolean(photo.src)}
           className={frame.zoomReveal}
           style={{ left: `${photo.zoom.at.x}%`, top: `${photo.zoom.at.y}%` }}
           data-on={revealed || undefined}
@@ -244,6 +248,8 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
           {photo.zoom.reveal}
         </span>
       </div>
+      {/* Said once, on the photo itself: leaning in is something this frame rewards. */}
+      {zoom.scale === 1 && !revealed && <span className={frame.zoomHint}>Double-tap or pinch to look closer</span>}
     </div>
   );
 }
@@ -267,8 +273,17 @@ function Viewer({
   onRead,
   onRecover,
   onRevert,
+  onStep,
+  place,
+  voice,
 }: {
   photo: Photo;
+  /** The recording under a video, where there is one. */
+  voice?: string;
+  /** Swipe or an arrow key: the photo before (-1) or after (+1), when there is one. */
+  onStep?: (by: -1 | 1) => void;
+  /** Where it is in what's being looked through: "3 of 12". */
+  place?: { at: number; of: number };
   /** How the phone names the day it was taken. */
   day: string;
   state: CaseState;
@@ -292,8 +307,35 @@ function Viewer({
   const zoomed = here ? photo.zoom : undefined;
   const video = Boolean(photo.video);
 
+  /* Left and right through the album, by key or by swipe, as Photos does
+     (2026-10-23). Escape puts it away. A zoomed photo pans instead. */
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") onStep?.(-1);
+      else if (e.key === "ArrowRight") onStep?.(1);
+      else if (e.key === "Escape") onClose();
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [onStep, onClose]);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const onDown = (e: React.PointerEvent) => {
+    if ((e.target as Element).closest("[data-zoomed]")) return;
+    swipe.current = { x: e.clientX, y: e.clientY };
+  };
+  const onUp = (e: React.PointerEvent) => {
+    const from = swipe.current;
+    swipe.current = null;
+    if (!from || (e.target as Element).closest("[data-zoomed]")) return;
+    const dx = e.clientX - from.x;
+    const dy = e.clientY - from.y;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) onStep?.(dx < 0 ? 1 : -1);
+  };
+
   return (
-    <div className={frame.viewer} data-no-swipe>
+    <div className={frame.viewer} data-no-swipe onPointerDown={onDown} onPointerUp={onUp} onPointerCancel={() => (swipe.current = null)}>
       <div className={frame.viewerBar}>
         <button type="button" className={`${frame.round} lg`} onClick={onClose} aria-label="Back" data-back>
           <Chevron back />
@@ -302,10 +344,28 @@ function Viewer({
           {photo.place && <strong>{photo.place}</strong>}
           <span>
             {day} {stamp(photo.at)}
+            {photo.trimmed && " · Trimmed"}
           </span>
         </span>
-        <span />
+        {place && place.of > 1 ? (
+          <span className={frame.viewerCount}>
+            {place.at} of {place.of}
+          </span>
+        ) : (
+          <span />
+        )}
       </div>
+
+      {onStep && place && place.of > 1 && (
+        <>
+          <button type="button" className={`${frame.step} lg`} data-side="prev" onClick={() => onStep(-1)} disabled={place.at <= 1} aria-label="Previous photo">
+            <Chevron back />
+          </button>
+          <button type="button" className={`${frame.step} lg`} data-side="next" onClick={() => onStep(1)} disabled={place.at >= place.of} aria-label="Next photo">
+            <Chevron />
+          </button>
+        </>
+      )}
 
       {zoomed ? (
         <Zoomable photo={{ ...photo, zoom: zoomed }} onFound={() => onRead([zoomed.evidence])} />
@@ -317,7 +377,7 @@ function Viewer({
       )}
 
       {/* Keyed on the length, so a reverted clip starts again from the top. */}
-      {clip && <Clip key={clip.seconds} seconds={clip.seconds} captions={clip.captions} />}
+      {clip && <Clip key={clip.seconds} seconds={clip.seconds} captions={clip.captions} voice={voice} />}
 
       {info && (
         <div className={frame.info}>
@@ -326,6 +386,7 @@ function Viewer({
           </p>
           {photo.camera && <p className={frame.infoCam}>{photo.camera}</p>}
           {revertible(state, photo) && <p className={frame.infoNote}>Edited</p>}
+          {photo.trimmed && <p className={frame.infoNote}>Trimmed from a longer video. The original isn&apos;t in this library.</p>}
           {photo.caption && <p className={frame.infoNote}>{photo.caption}</p>}
           {photo.deletedAt && (
             <p className={frame.infoNote}>
@@ -416,6 +477,16 @@ export default function Photos({
   const [tab, setTab] = useState<Tab>("library");
   const [album, setAlbum] = useState<string | null>(null);
   const [viewing, setViewing] = useState<string | null>(null);
+  /* Photos opens on the newest, as iOS does, where the screenshots that
+     matter are; back from a photo, it's where you left it. */
+  const body = useRef<HTMLDivElement>(null);
+  // Opened on a new place (the Library, an album), it starts at the newest; a photo put away leaves it where it was.
+  useEffect(() => {
+    const el = body.current;
+    if (!el) return;
+    if (tab === "library" && !album) el.scrollTop = el.scrollHeight;
+    else el.scrollTop = 0;
+  }, [tab, album]);
 
   const lib = library(story, state);
   const cal = calendarOf(story, state);
@@ -431,9 +502,28 @@ export default function Photos({
   const list = open?.photos ?? lib.recents;
   const photo = list.find((p) => p.id === viewing);
 
-  if (photo)
-    return (
+  /* Opening a photo: what counts in it is read, whichever way it was reached (a tap, or a swipe from the one beside it). */
+  const show = (p: Photo) => {
+    setViewing(p.id);
+    // Seen in the bin is seen: it counts from the moment it's opened (PLAYTEST.md #44).
+    // What's still in iCloud hasn't been seen, whenever it was tapped.
+    if (loaded(state, p)) {
+      const ids = [p.evidence, ...(p.chat?.lines.map((l) => l.evidence) ?? [])].filter((id): id is string => Boolean(id));
+      if (ids.length) onRead(ids);
+    }
+  };
+  const at = photo ? list.indexOf(photo) : -1;
+  /* The viewer lies over the grid rather than replacing it, so putting a
+     photo away lands exactly where it was opened (2026-10-23). */
+  const viewer = photo && (
       <Viewer
+        key={photo.id}
+        voice={story.voices?.[`clip:${photo.id}`]?.src}
+        place={{ at: at + 1, of: list.length }}
+        onStep={(by) => {
+          const next = list[at + by];
+          if (next) show(next);
+        }}
         day={cal.label(photo.day)}
         photo={photo}
         state={state}
@@ -453,7 +543,7 @@ export default function Photos({
             : undefined
         }
       />
-    );
+  );
 
   const grid = (
     <div className={styles.grid}>
@@ -462,15 +552,7 @@ export default function Photos({
           type="button"
           key={p.id}
           className={styles.thumb}
-          onClick={() => {
-            setViewing(p.id);
-            // Seen in the bin is seen: it counts from the moment it's opened (PLAYTEST.md #44).
-            // What's still in iCloud hasn't been seen, whenever it was tapped.
-            if (loaded(state, p)) {
-              const ids = [p.evidence, ...(p.chat?.lines.map((l) => l.evidence) ?? [])].filter((id): id is string => Boolean(id));
-              if (ids.length) onRead(ids);
-            }
-          }}
+          onClick={() => show(p)}
           aria-label={loaded(state, p) ? `${p.title}, ${cal.label(p.day)} ${stamp(p.at)}` : `${p.video ? "Video" : "Photo"}, ${cal.label(p.day)} ${stamp(p.at)}`}
         >
           <Picture photo={p} seconds={clipOf(state, p)?.seconds} veiled={!loaded(state, p)} />
@@ -482,8 +564,8 @@ export default function Photos({
 
   const row = (a: Album, glyph?: string) => (
     <li key={a.name}>
-      <button type="button" className={app.row} onClick={() => setAlbum(a.name)}>
-        {glyph ? <RowGlyph d={glyph} /> : <span className={styles.albumThumb}>{a.photos.at(-1) && <Picture photo={a.photos.at(-1)!} veiled={!loaded(state, a.photos.at(-1)!)} />}</span>}
+      <button type="button" className={app.row} onClick={() => setAlbum(a.name)} aria-label={`${a.name}, ${a.photos.length}`}>
+        {glyph ? <RowGlyph d={glyph} /> : <span className={styles.albumThumb} aria-hidden="true">{a.photos.at(-1) && <Picture photo={a.photos.at(-1)!} veiled={!loaded(state, a.photos.at(-1)!)} />}</span>}
         <span className={app.rowMain}>
           <span className={app.rowTitle}>{a.name}</span>
         </span>
@@ -495,8 +577,9 @@ export default function Photos({
 
   // An album on the Collections shelf: its newest picture, big, and its name and count under it.
   const card = (name: string, photos: readonly Photo[], onOpen: () => void) => (
-    <button key={name} type="button" className={styles.card} onClick={onOpen}>
-      <span className={styles.cardThumb}>{photos.at(-1) && <Picture photo={photos.at(-1)!} veiled={!loaded(state, photos.at(-1)!)} />}</span>
+    // Named by the album, not by whatever its cover picture's caption says.
+    <button key={name} type="button" className={styles.card} onClick={onOpen} aria-label={`${name}, ${photos.length}`}>
+      <span className={styles.cardThumb} aria-hidden="true">{photos.at(-1) && <Picture photo={photos.at(-1)!} veiled={!loaded(state, photos.at(-1)!)} />}</span>
       <span className={styles.cardName}>{name}</span>
       <span className={styles.cardCount}>{photos.length}</span>
     </button>
@@ -535,7 +618,7 @@ export default function Photos({
         />
       )}
 
-      <div className={app.body} data-tabbed={!open || undefined}>
+      <div ref={body} className={app.body} data-tabbed={!open || undefined}>
         {open ? (
           <>
             {open.bin && <p className={styles.kept}>Photos and videos show the days remaining before they&apos;re deleted.</p>}
@@ -590,6 +673,7 @@ export default function Photos({
           </span>
         </nav>
       )}
+      {viewer}
     </section>
   );
 }

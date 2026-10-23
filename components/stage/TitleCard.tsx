@@ -30,7 +30,7 @@ export default function TitleCard({
 
   return (
     <div className={styles.card} role="status">
-      <p className={styles.eyebrow}>Episode {n}</p>
+      <p className={styles.eyebrow}>Episode {String(n).padStart(2, "0")}</p>
       <p className={styles.line}>{title}</p>
       <p className={styles.sub}>{when}</p>
       <button type="button" className={styles.up} onClick={onDone}>

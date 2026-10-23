@@ -60,6 +60,7 @@
 }
 /* Footage is landscape: the frame fits the width and leaves room for the words. */
 .scene[data-big][data-video] { width: 100%; aspect-ratio: 16 / 9; }
+.scene[data-big][data-wide] { width: 100%; aspect-ratio: 5 / 4; }
 .sceneTitle { font-size: 10px; color: rgba(255, 255, 255, 0.75); padding: 0 6px; text-align: center; }
 .scene[data-big] .sceneTitle { font-size: 15px; }
 

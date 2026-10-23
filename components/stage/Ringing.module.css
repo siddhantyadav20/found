@@ -31,11 +31,12 @@
 .screen:not([data-answered]) { justify-content: space-between; padding-top: 18vh; padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
 
 .extras { display: flex; justify-content: center; gap: 5.5rem; width: 100%; margin-top: auto; margin-bottom: 1.6rem; }
-.extra { position: relative; display: grid; place-items: center; width: 4.6rem; height: 4.6rem; border-radius: 50%; color: #fff; }
+.extra { position: relative; display: grid; place-items: center; width: 4.6rem; height: 4.6rem; padding: 0; border: 0; border-radius: 50%; background: none; color: #fff; font: inherit; cursor: pointer; }
 .extra svg { width: 1.7rem; height: 1.7rem; }
 .screen[data-answered] { justify-content: flex-start; padding-top: 3.5rem; }
 
 .head { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.yours { margin-bottom: 0.3rem; font-family: var(--font-ui); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #9fb2dc; }
 .who { font-family: var(--font-ios); font-size: 2.1rem; font-weight: 500; line-height: 1.15; }
 .sub { font-family: var(--font-ios); font-size: 1rem; color: #a8a39c; }
 .sub[data-timer] { font-variant-numeric: tabular-nums; }
@@ -92,3 +93,34 @@
 
 /* Hung up by hand, once the answer has been read. */
 .end { align-self: center; margin-top: 1.2rem; }
+
+/* The caller still talking: three dots and a word, where the next line will land. */
+.listening {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-family: var(--font-ios);
+  font-size: 0.8rem;
+  color: #8f8a83;
+}
+
+.listening span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: listen 1.2s infinite ease-in-out;
+}
+
+.listening span:nth-child(2) { animation-delay: 0.15s; }
+.listening span:nth-child(3) { animation-delay: 0.3s; margin-right: 6px; }
+
+@keyframes listen {
+  0%, 80%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .listening span { animation: none; opacity: 0.6; }
+}

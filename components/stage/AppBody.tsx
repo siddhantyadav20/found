@@ -7,13 +7,14 @@ import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { CHATS_UNLOCKED, restored, reverted, unlocked } from "@/lib/game/phone";
 import CaseFile from "./CaseFile";
-import { flag, read, save, say } from "./playthrough";
+import { flag, markRead, read, save, say } from "./playthrough";
 
 /* Each app's code arrives when it's first opened, and all of it is fetched
    while the phone sits idle (`preloadApps`), so opening one is still instant
    and the case page stays inside its budget (scripts/check-budget.mjs). */
 const load = {
   chat: () => import("@/components/owner/apps/Chat"),
+  findmy: () => import("@/components/owner/apps/FindMy"),
   instagram: () => import("@/components/owner/apps/Instagram"),
   mail: () => import("@/components/owner/apps/Mail"),
   paytap: () => import("@/components/owner/apps/Paytap"),
@@ -27,6 +28,7 @@ const load = {
 };
 
 const Chat = dynamic(load.chat, { ssr: false });
+const FindMy = dynamic(load.findmy, { ssr: false });
 const Instagram = dynamic(load.instagram, { ssr: false });
 const Mail = dynamic(load.mail, { ssr: false });
 const Paytap = dynamic(load.paytap, { ssr: false });
@@ -70,9 +72,9 @@ export default function AppBody({
     case "instagram":
       return <Instagram story={story} state={state} onHome={onHome} onRead={onRead} onSay={onSay} />;
     case "messages":
-      return <Messages story={story} state={state} onRead={onRead} onHome={onHome} />;
+      return <Messages story={story} state={state} onRead={onRead} onHome={onHome} onMark={markRead} />;
     case "whatsapp":
-      return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} onUnlock={() => flag(CHATS_UNLOCKED)} />;
+      return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} onMark={markRead} onUnlock={() => flag(CHATS_UNLOCKED)} />;
     case "phone":
       return <Recents story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "photos":
@@ -104,6 +106,9 @@ export default function AppBody({
       return <Mail story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "paytap":
       return <Paytap story={story} state={state} onRead={onRead} onHome={onHome} />;
+    case "findmy":
+      // Find My: the phone records what's opened; stopping sharing is a move the story answers.
+      return <FindMy story={story} state={state} onHome={onHome} onStop={(sets) => flag(...sets)} />;
     case "safari":
       return <Safari story={story} state={state} onRead={onRead} onHome={onHome} />;
     default:

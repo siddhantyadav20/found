@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState, ViewTransition } from "react";
+import { useEffect, useRef, useState, ViewTransition } from "react";
 
 import type { CaseMeta } from "@/content/cases";
+import { buzz, warmBuzz } from "@/lib/found/buzz";
 import styles from "./Parcel.module.css";
 
 /* ===========================================================================
@@ -21,6 +22,10 @@ import styles from "./Parcel.module.css";
 const TEAR = 0.55;
 /** How long the parcel takes to come apart before the note is on the table. */
 const TEAR_MS = 850;
+/** The parcel shivers every 1.6 s (Parcel.module.css); it's heard on every other one, for a while. */
+const BUZZ_FIRST_MS = 800;
+const BUZZ_EVERY_MS = 3200;
+const BUZZ_TIMES = 7;
 
 export default function Parcel({
   meta,
@@ -34,9 +39,12 @@ export default function Parcel({
   minutes?: number;
   /** They have finished it before: the parcel is already open, and the label carries a postmark. */
   replay?: boolean;
-  onOpen: () => void;
+  /** Opened, and how they chose to play: with the case file's help, or as a detective. */
+  onOpen: (detective: boolean) => void;
 }) {
   const [pull, setPull] = useState(0);
+  // How to play: the case file's help (where to look, nudges), or none of it.
+  const [detective, setDetective] = useState(false);
   const [tearing, setTorn] = useState(false);
   // A second time, it's already open: the phone just has to be taken out again.
   // (Derived, because a finish is only known once the browser can read it.)
@@ -44,8 +52,25 @@ export default function Parcel({
   const from = useRef<number | null>(null);
   const done = useRef(false);
 
+  /* It rings in the box (ROADMAP T2): the phone inside is heard, in step
+     with the shiver, before anyone has touched the strip. */
+  useEffect(() => {
+    if (torn) return undefined;
+    warmBuzz();
+    let n = 0;
+    let every: number | undefined;
+    const first = window.setTimeout(() => {
+      buzz();
+      every = window.setInterval(() => (++n >= BUZZ_TIMES ? window.clearInterval(every) : buzz()), BUZZ_EVERY_MS);
+    }, BUZZ_FIRST_MS);
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(every);
+    };
+  }, [torn]);
+
   const finish = () => {
-    if (replay) return onOpen();
+    if (replay) return onOpen(detective);
     if (done.current) return;
     done.current = true;
     // Android's own haptic, where there is one: a tear, not a notification.
@@ -56,7 +81,7 @@ export default function Parcel({
     }
     // The strip goes, the parcel opens, the phone comes up out of it; then the note.
     setTorn(true);
-    window.setTimeout(onOpen, TEAR_MS);
+    window.setTimeout(() => onOpen(detective), TEAR_MS);
   };
 
   const move = (x: number, width: number) => {
@@ -127,8 +152,23 @@ export default function Parcel({
         </div>
       </ViewTransition>
 
-      <p className={styles.hint}>{meta.hint}</p>
+      {/* The desk said what this is; here, only what to do with it. */}
+      <p className={styles.hint}>
+        {replay ? "It isn't yours. It still isn't." : "Something inside is buzzing. It isn't yours. Read the label, then pull the strip."}
+      </p>
       {minutes ? <p className={styles.minutes}>About {minutes} minutes, in one sitting.</p> : null}
+
+      {/* How to play, chosen once, before anything is opened (the 2026-10-01 review). */}
+      <div className={styles.mode} role="radiogroup" aria-label="How you play">
+        <button type="button" role="radio" aria-checked={!detective} className={styles.modeOption} onClick={() => setDetective(false)}>
+          <b>With help</b>
+          <span>Where to look, and a nudge when you&apos;re stuck</span>
+        </button>
+        <button type="button" role="radio" aria-checked={detective} className={styles.modeOption} onClick={() => setDetective(true)}>
+          <b>Detective</b>
+          <span>No where-to-look, no nudges. Hints if you ask</span>
+        </button>
+      </div>
 
       {/* The drag is the way in. A pointer isn't always a hand, so keyboards
           and assistive tech get a quiet way too, never the loud one. */}

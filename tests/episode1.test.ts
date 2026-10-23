@@ -45,7 +45,7 @@ describe("Episode 1", () => {
 
   it("won't file Bhasin as the shooter: nothing on the phone puts a gun in his hand", () => {
     const q3 = ep.questions.find((q) => q.id === "q3")!;
-    const bhasin = q3.kind === "file" ? q3.claims.find((c) => c.words?.who === "Vinod Bhasin") : undefined;
+    const bhasin = q3.kind === "file" ? q3.claims.find((c) => c.words?.who === "Bhasin Sehgal") : undefined;
     expect(bhasin?.refuse).toBeTruthy();
   });
 

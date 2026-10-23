@@ -104,7 +104,7 @@
 }
 
 .hand {
-  font-family: "Snell Roundhand", "Segoe Script", "Brush Script MT", "URW Chancery L", cursive;
+  font-family: var(--font-hand), "Snell Roundhand", "Segoe Script", cursive;
   font-size: 17px;
   line-height: 1.35;
 }
@@ -112,7 +112,7 @@
 .sign {
   justify-self: end;
   margin-top: 4px;
-  font-family: "Snell Roundhand", "Segoe Script", "Brush Script MT", "URW Chancery L", cursive;
+  font-family: var(--font-hand), "Snell Roundhand", "Segoe Script", cursive;
   font-size: 18px;
 }
 
@@ -315,4 +315,164 @@ button.setRow {
   font-size: 13px;
   line-height: 1.4;
   color: #8e8e93;
+}
+
+/* --- a missing-person notice -------------------------------------------------
+   Printed at a cyber café and forwarded everywhere: the word across the top in
+   red, a face, the name in bold, the details, a number to call. */
+
+.poster {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 230px;
+  max-width: 100%;
+  padding: 12px 12px 10px;
+  border-radius: 6px;
+  background: #fbf8f1;
+  color: #1b1b1b;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  text-align: center;
+  box-shadow: inset 0 0 0 3px #c4161c, inset 0 0 0 5px #fbf8f1, inset 0 0 0 6px #c4161c;
+}
+
+.posterHead {
+  font-family: var(--font-hand), sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.05;
+  color: #c4161c;
+}
+
+.posterSub {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #c4161c;
+}
+
+.posterFace {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  width: 92px;
+  height: 108px;
+  margin: 6px 0 4px;
+  border: 2px solid #1b1b1b;
+  background: linear-gradient(180deg, #d9d4ca, #bdb6a9);
+  overflow: hidden;
+}
+
+.posterFace svg {
+  width: 84px;
+  fill: #8a8378;
+}
+
+.posterName {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.posterLine {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: #333;
+}
+
+.posterContact {
+  width: 100%;
+  margin-top: 6px;
+  padding: 5px 4px;
+  background: #c4161c;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* Somebody writing back. */
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  margin: 6px 0 2px 2px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--wa-in, #202c33);
+}
+
+.typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8696a0;
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    translate: 0 0;
+  }
+  30% {
+    opacity: 1;
+    translate: 0 -2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing span {
+    animation: none;
+  }
+}
+
+/* A link in a message that does something here: the courier's return pickup. */
+.link {
+  justify-self: start;
+  margin-top: 6px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(10, 132, 255, 0.18);
+  color: #64a8ff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Attaching the record in the chat it goes to. */
+.attach {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #0a84ff;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.attach svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }

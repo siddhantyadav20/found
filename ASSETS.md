@@ -58,13 +58,19 @@ photo of a real person**, from Google or anywhere else.
 | `w-0.jpg` | The mandap going up, marigold strings (4:40 PM) | [Pexels 36652869](https://www.pexels.com/photo/36652869/) |
 | `w-1.jpg` | Ishita's hands, mehendi | [Pexels 29092945](https://www.pexels.com/photo/29092945/) |
 | `w-8.jpg` | The buffet, steam off the tandoor | [Pexels 32558924](https://www.pexels.com/photo/32558924/) |
-| `w-11.jpg` | The sangeet floor from the stage, phones in the air | [Pexels 3727129](https://www.pexels.com/photo/3727129/) |
-| `w-14.jpg` | Confetti cannons | [Pexels 5156622](https://www.pexels.com/photo/5156622/) |
-| `w-dance.jpg` | The dance floor, phones in the air | [Pexels 5152595](https://www.pexels.com/photo/5152595/) |
-| `w-pheras.jpg` | Pheras, late, the fire in the middle; also his Instagram's "Pheras under fairy lights" | [Pexels 8960427](https://www.pexels.com/photo/8960427/) |
 | `w-blur.jpg` | The varmala, out of focus (the bin) | [Pexels 34724759](https://www.pexels.com/photo/34724759/) |
 | `reel-take.jpg` | The reel take's poster: bulbs in the back lawn's trees | [Pexels 35372396](https://www.pexels.com/photo/35372396/) |
 | `fire.jpg` | The fire clip's poster, 4:47 AM: logs, smoke, fairy lights behind. No body | [Pexels 28181582](https://www.pexels.com/photo/28181582/) |
+
+**Withdrawn 2026-10-01** (the review): four frames read as a Western concert
+or club, not a Delhi farmhouse wedding, and Indian players would clock them at
+once. The sangeet floor (`w-11`, a blue-lit concert crowd), the confetti
+cannons (`w-14`, a concert), the dance floor (`w-dance`, a nightclub) and the
+pheras (`w-pheras`, a steel fire pit on tarmac, with no havan kund; it was
+also his Instagram's first post, right before the fire clip). They're titled
+cards again until replacements are approved. What to look for: a sangeet
+floor under marigold and fairy-light canopies, a dhol-led dance floor, a
+havan kund in a mandap; no identifiable faces.
 
 Still titled cards, because each shows a character or no stock fits: the
 cousins, the groom on the mare, the dhol players at the gate, the varmala,
@@ -73,6 +79,79 @@ envelopes), the waiters, Mrs Sehgal, Kunal's friends, Nitin on B cam, the
 empty mandap at midnight, the baraat twice, the couple, the family, **Dilip's
 portrait**, **the 12:29 photo**, his selfies with the kada, and Raju's
 photographs.
+
+## Generated frames (2026-10-17)
+
+Fictional people, generated with Figma's image AI (Gemini 3.1 Flash Image)
+in the file "Found · Shagun photographs", then saved at 760 px in
+`public/found/shagun/`. No real person's face; nothing graphic. Characters
+are held to one description each (Sameer: lean, messy hair, stubble, black
+shirt, **the silver kada on his right wrist**; Dilip: slim, side-parted hair,
+faint moustache, maroon waistcoat; Kunal: gelled hair, beard, gold chain,
+ivory bandhgala; Nitin: backwards cap, black tee, gimbal).
+
+| File | Is |
+|---|---|
+| `w-portrait.jpg` | Dilip's 9:48 PM portrait, CHHOTU on the badge (the zoom sits on it) |
+| `bts.jpg` | The 12:29 photo: Sameer with the revolver raised, Dilip on the LED panel, the tripod |
+| `w-kunal.jpg` | Kunal at 12:20, the revolver beside his face |
+| `w-12.jpg` · `w-13.jpg` | Kunal and friends with the bottle · Nitin on B cam |
+| `w-family.jpg` · `w-couple.jpg` · `w-pheras.jpg` | The Sehgals on stage, Kunal at the end · the couple · the pheras (`wide`) |
+| `ig-selfie.jpg` · `ig-crew.jpg` | His kada selfie · the crew, arms round Nitin and Dilip |
+| `poster-dilip.jpg` | The LAPATA poster's photo: a grayscale crop of the portrait, so they match |
+| `kunal-frame.jpg` | Kunal's frame: the 12:29 set-up a breath later, motion-smeared, mid-flash |
+
+More Pexels stand-ins (faceless, or not a character): `w-baraat.jpg`
+([24334592](https://www.pexels.com/photo/24334592/)), `w-twice.jpg` (a crop
+of the same, the horse's head in the way), `w-15.jpg`
+([14395559](https://www.pexels.com/photo/14395559/)), `ig-haldi.jpg`
+([35508916](https://www.pexels.com/photo/35508916/)), `ig-mirror.jpg`
+([25811159](https://www.pexels.com/photo/25811159/)), `ig-drone.jpg`
+([7605172](https://www.pexels.com/photo/7605172/)).
+
+**Album frames with no photograph are no longer on the phone** (a drawn card
+among photographs read as a storyboard): the cousins, the groom on the mare,
+the dhol players, the varmala, the couple on stage, the envelope changing
+hands, the waiters' line, Mrs Sehgal, the sangeet floor, the confetti, the
+dance floor. They come back as each is generated. **Still to generate**
+(Figma's credits ran out after ten; they reset daily at 05:30 IST): those,
+and **Raju's photo of Dilip at Chhath** (the ending's last image is a
+lit placeholder until it exists).
+
+## Last Local (2026-10-18)
+
+Faceless stock from Pexels, recompressed into `public/found/lastlocal/`:
+
+| File | Pexels | Used |
+|---|---|---|
+| `wallpaper.jpg` | [13074008](https://www.pexels.com/photo/13074008/) Sea Link at night, cropped | Her lock and home screen |
+| `sea.jpg` | [33948766](https://www.pexels.com/photo/33948766/) | Photos: Marine Drive, Friday night |
+| `dadar.jpg` | [39355049](https://www.pexels.com/photo/39355049/) | Photos: Dadar, platform 4, 12:41 AM |
+| `site.jpg` | [35886615](https://www.pexels.com/photo/35886615/) | Photos: a building site at dusk |
+| `door.jpg` | [11555845](https://www.pexels.com/photo/11555845/) | The locked note's recording, through a door |
+
+**Still to make:** Rubina at sixteen (`rubina.jpg`, a generated fictional
+face; then restore `src` on the attachments i-15 and i-20).
+
+## Sound (2026-10-17)
+
+CC0 recordings from Freesound, cut by `scripts/build-samples.mjs` from
+`samples-src/` (git-ignored) into `public/sfx/`. Sections were picked off a
+measured loudness envelope; levels are set in `samples.config.mjs` and
+`lib/found/nightSound.ts` and should be checked by ear.
+
+| Cue | Source | Used |
+|---|---|---|
+| `found-dhol` | [418780](https://freesound.org/s/418780/) "Indian Wedding Dhols", 0:30–0:42, looped | The cold open (far off), Kunal's clip (close), the reel take (far) |
+| `found-shot` | [386745](https://freesound.org/s/386745/) handgun shot | The cold open's flashes; "[two shots]", "[one shot]" in clips |
+| `found-laugh` | [337795](https://freesound.org/s/337795/) small group laughter | "[laughter]", "[cheering]" |
+| `found-fire` | [637523](https://freesound.org/s/637523/) campfire, 0:04–0:14, looped | Both fire clips |
+| `found-train` | [525058](https://freesound.org/s/525058/) Mumbai local interior, 0:21–0:33, looped | Last Local: the cold open (close) and under the whole phone (low) |
+
+"[recording stops]" cuts every sound dead: the reel's second shot is never
+heard. **Voices are still captions:** no human-sounding Hindi speech can be
+made here. Linking Figma to Weave (app.weavy.ai › Profile) would allow
+generated voices; VOICE-SCRIPTS.md has every line for actors.
 
 ## 2. Video — short clips, not a call
 
@@ -128,3 +207,31 @@ The old wallpaper went with S5: Sameer's lock screen is now a generated
 placeholder, `public/found/shagun-wallpaper.jpg` (fairy lights at night),
 until his real one is shot. `scripts/prep-photos.mjs` is the retired
 chapters' photo pipeline and still names the old file; S11 re-points it.
+
+## Raakh frames and voices (2026-10-23)
+
+**Generated** with Figma's image AI (Gemini 3.1 Flash Image / Flash Lite) in
+the file "Found · Raakh photographs" (figma.com/design/Z7NmlD9DUHAJXORvVpmc2w),
+fictional people only, nothing graphic, saved under `public/found/raakh/`:
+
+| File | Is |
+|---|---|
+| `dp-meera.jpg` | Meera's profile photo (a crop of her portrait at a Kalkaji café) |
+| `dilip-chhath.jpg` | Raju's photo of Dilip at Chhath, the Complete Record's last image |
+| `w-3.jpg` · `w-4.jpg` · `w-5.jpg` · `w-9.jpg` · `w-11.jpg` | The groom on the mare · dhol at the gate · the varmala · the waiters' line · the sangeet floor |
+| `key-lawn.jpg` | The empty back lawn after midnight: the site's key art for Raakh |
+| `x-*.jpg` | Instagram Explore: Ladakh, biryani, Old Delhi chai, Goa, gully cricket, Bengaluru rain |
+
+**Crops** of existing frames for profile photos: `dp-sameer` (ig-selfie),
+`dp-kunal` (w-kunal), `dp-nitin` (w-13), `dp-dilip` (w-portrait),
+`dp-bhasin` (w-family, the father on the left), `dp-ishita` (w-couple).
+
+**Voices**: `public/voices/raakh/*.m4a`, 59 recordings (voice notes, memos,
+clips, every call line and answer, the cold open), built by
+`scripts/voices.py` from `scripts/voices.raakh.json` with Microsoft's neural
+voices via edge-tts (hi-IN Madhur at different pitches and paces for Sameer,
+Bhasin, Dilip and the guard; Brian and Andrew Multilingual for Kunal and Raju;
+hi-IN Swara for Meera), filtered per kind (call, voice note, memo, phone
+clip) and timed to the captions. `content/raakh/voices.ts` maps each to its
+key. Stand-ins until the cast is recorded: VOICE-SCRIPTS.md still has every
+line for actors. To rebuild: `python3 -I scripts/voices.py <edge-tts> <work dir>`.

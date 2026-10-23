@@ -95,9 +95,10 @@ describe("what the ending reads back", () => {
     const s = ["car", "lie"].reduce((acc, id) => setRow(ep, acc, id, "anon"), toEnd([...say]));
     const text = lines(actFlags(ep, s, "send"), [...say]);
     expect(text[0]).toMatch(/^Ye complete hai/);
-    expect(text).toContain("Theek hai. Sach hai.");
+    expect(text).toContain("Mera naam nahi hai. …Par sach hai. Shukriya.");
     expect(text).not.toContain("Nitin's name is in it: the one person who tried.");
-    expect(text.at(-2)).toMatch(/Chhath/);
+    expect(text.at(-3)).toMatch(/Chhath/);
+    expect(text.at(-2)).toMatch(/^Isko rakhna/);
     expect(text.at(-1)).toMatch(/He held the light/);
   });
 

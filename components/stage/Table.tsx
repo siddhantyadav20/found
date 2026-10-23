@@ -32,12 +32,15 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, installed } from "@/lib/game/phone";
-import { hasRecord, SAW_RECORD, somethingNew, yourMessages } from "@/lib/game/yours";
+import { DETECTIVE } from "@/lib/game/scene";
+import { newsOnYours, yourMessages, yourUnread } from "@/lib/game/yours";
+import { TRAIN_UNDER, useBed } from "@/lib/found/nightSound";
 import { useNow } from "@/lib/found/now";
 import { longDay, phoneClock, stamp } from "@/lib/found/time";
 import { boundCase, readProgress } from "@/lib/found/progress";
 import { noteBattery } from "@/lib/found/shelf";
 import AppBody, { preloadApps } from "./AppBody";
+import CaseFile from "./CaseFile";
 import { flag, nudged, save } from "./playthrough";
 import styles from "./Stage.module.css";
 
@@ -63,6 +66,32 @@ const bannerText = (banner: string) => banner.split(" · ").slice(1).join(" · "
 /** How long a player can find nothing before the case file offers where to look. */
 const NUDGE_MS = 45_000;
 
+/** The least time between two of the night's turns, so they land one at a time (the 2026-10-01 review). */
+const GAP_MS = 10_000;
+
+/** Wide enough for the case file to lie on the table beside the phones, as a notebook. */
+const NOTEBOOK = "(min-width: 1100px) and (min-height: 640px)";
+
+/* What was open on his phone, kept across a call that takes the screen (the
+   table comes back when it ends, and iOS goes back to the app you were in). */
+let lastOpen: AppId | null = null;
+/** Your phone's news already said at its edge, kept across a call or a reload of the table, so it's said once. */
+let lastTold: string | undefined;
+let lastFired = 0;
+
+/** Whether the table is wide enough for the notebook. */
+function useWide(): boolean {
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(NOTEBOOK);
+    const set = () => setWide(mq.matches);
+    set();
+    mq.addEventListener("change", set);
+    return () => mq.removeEventListener("change", set);
+  }, []);
+  return wide;
+}
+
 type Banner = { app: AppId; from: string; text: string; icon?: AppId };
 
 export default function Table({
@@ -70,31 +99,47 @@ export default function Table({
   meta,
   state,
   replay,
+  review = false,
 }: {
   story: Story;
   meta: CaseMeta;
   state: CaseState;
   /** Finished before: the chain is counted live, so eleven of eleven is a goal. */
   replay?: boolean;
+  /** Looking again, after the end: nothing happens on the phone any more. */
+  review?: boolean;
 }) {
   const now = useNow(60_000);
-  const [openApp, setOpenApp] = useState<AppId | null>(null);
+  const [openApp, setOpenAppHere] = useState<AppId | null>(() => lastOpen);
+  const setOpenApp = (app: AppId | null) => {
+    lastOpen = app;
+    setOpenAppHere(app);
+  };
+  const wide = useWide();
+  const detective = has(state, DETECTIVE);
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [banner, setBanner] = useState<Banner | null>(null);
   const [holding, setHolding] = useState(false);
   const clock = clockNow(story, state, now);
+  // The train you're on, under everything, while the phone is in your hands (Last Local).
+  useBed(story.ambience === "train" && !review ? TRAIN_UNDER : undefined, true);
   // What your phone would show on its lock screen, and whether its edge lights.
-  const fresh = somethingNew(story, state);
-  const yoursNews = !fresh
-    ? undefined
-    : hasRecord(story, state) && !has(state, SAW_RECORD)
-      ? `${story.yours.social} · Your draft is saved.`
-      : "Messages · New message";
+  // RAAKH has no phone of yours (2026-10-23): Instagram and the case file took its jobs.
+  const hasYours = Boolean(story.yours);
+  const yoursNews = hasYours ? newsOnYours(story, state) : undefined;
+  const fresh = Boolean(yoursNews);
+  const unread = hasYours ? yourUnread(story, state) : 0;
   /* On a phone-sized screen yours is only its edge, so whatever lands on it
      is said there, once each: a note that slides out from the edge. */
   const newsKey = yoursNews && `${yoursNews}|${yourMessages(story, state)}`;
-  const [told, setTold] = useState<string | undefined>(undefined);
-  const telling = newsKey && newsKey !== told && !holding ? newsKey : undefined;
+  const [told, setToldHere] = useState<string | undefined>(() => lastTold);
+  const setTold = (key: string | undefined) => {
+    lastTold = key;
+    setToldHere(key);
+  };
+  /* Not over his lock screen in the first second, and not over an app he's
+     reading: said on his home screen, where it can't pass for one of his. */
+  const telling = newsKey && newsKey !== told && !holding && has(state, "did:past-lock") && !openApp ? newsKey : undefined;
   useEffect(() => {
     if (!telling) return undefined;
     const t = window.setTimeout(() => setTold(telling), 6000);
@@ -114,22 +159,28 @@ export default function Table({
   /* Live events: anything the story says is due, once whatever it waits for
      is true: a message, a missed call, the phone beginning to die. */
   const next = dueEvents(story, state)[0];
-  // A quiet event waits while the player is reading something.
-  const held = Boolean(next?.quiet && (openApp || holding));
+  /* A quiet event waits while the player is reading something. Every turn of
+     the night waits while they're writing in the case file: nobody files and
+     reads a banner at once, and nothing ends an episode under someone filing. */
+  const held = review || Boolean(next && ((next.quiet && (openApp || holding)) || openApp === "casefile"));
   useEffect(() => {
     if (!next || held) return undefined;
+    // One at a time: never two of the night's turns on top of each other.
+    const wait = Math.max((next.delay ?? 0) * 1000, GAP_MS - (Date.now() - lastFired));
     const t = window.setTimeout(
       () => {
         const s = readProgress();
         if (!s) return;
+        lastFired = Date.now();
         save(fire(story, s, next.id, Date.now()));
         // Arrived while nobody was looking: into the list, no banner.
         // On the lock screen it lands in the list; it doesn't pop again after unlocking.
-        if (next.banner && !next.at && s.flags.includes("did:past-lock")) {
+        // Your own phone's news is said at its edge (`yoursNews`), never on his screen.
+        if (next.banner && !next.at && next.device === "owner" && s.flags.includes("did:past-lock")) {
           setBanner({ app: next.app, from: bannerFrom(next.banner), text: bannerText(next.banner), icon: next.icon });
         }
       },
-      (next.delay ?? 0) * 1000,
+      wait,
     );
     return () => window.clearTimeout(t);
   }, [next, held, story]);
@@ -139,7 +190,8 @@ export default function Table({
      Stage 4): being lost is not held against anybody. */
   const q = openQuestion(story, state);
   const qid = q?.id;
-  const nudgeDone = !q || has(state, `fired:nudge-${q.id}`);
+  // A detective asked to be left alone.
+  const nudgeDone = !q || detective || review || has(state, `fired:nudge-${q.id}`);
   const nudgeText = q ? `${q.ask} Look in ${whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}.` : "";
   const progress = state.flags.length;
   useEffect(() => {
@@ -155,10 +207,9 @@ export default function Table({
   const dismissBanner = useCallback(() => setBanner(null), []);
 
   /* Found by looking rather than by opening: a zoom into a face, a clip
-     restored from the bin. Say so, once, quietly, so the player knows it
-     counted (PLAYTEST.md #28). */
+     restored from the bin; and since 2026-10-02 anything found at all. Say
+     so, once, quietly, so the player knows it counted (PLAYTEST.md #28). */
   const manual = `${episodeOf(state)}|${caseFile(story, state)
-    .filter((e) => e.manual)
     .map((e) => e.id)
     .join(",")}`;
   const knownManual = useRef(manual);
@@ -168,10 +219,16 @@ export default function Table({
     knownManual.current = manual;
     // A new episode files what was read before it could count, all at once: nothing to say about that.
     if (wasIn !== nowIn) return undefined;
+    // No case file, nothing to note in it: the story is played on the phone (Last Local).
+    if (story.caseFile === false) return undefined;
     const before = new Set(was.split(","));
-    const fresh = story.evidence.find((e) => ids.split(",").includes(e.id) && !before.has(e.id));
-    if (!fresh) return undefined;
-    const t = window.setTimeout(() => setBanner({ app: "casefile", from: "Case file", text: `Noted: ${fresh.label}` }), 350);
+    /* Everything that just counted, not only what was found by looking (the
+       2026-10-02 stress test: opening Settings counted the Apple Account and
+       nothing said so, so players couldn't tell what to put on the table). */
+    const fresh = story.evidence.filter((e) => ids.split(",").includes(e.id) && !before.has(e.id));
+    if (!fresh.length) return undefined;
+    const text = fresh.length === 1 ? `Noted: ${fresh[0].label}` : `Noted ${fresh.length}: ${fresh.map((e) => e.label).join(" · ")}`;
+    const t = window.setTimeout(() => setBanner({ app: "casefile", from: "Case file", text }), 350);
     return () => window.clearTimeout(t);
   }, [manual, story]);
 
@@ -183,8 +240,12 @@ export default function Table({
     setBanner(null);
     const s = readProgress();
     // Opening the app that holds something is how it gets found. What has to
-    // be looked for rather than opened stays hidden until it is.
-    if (s) save(findIn(story, s, app));
+    // be looked for rather than opened stays hidden until it is. When it was
+    // first opened clears what its icon was carrying (missed calls).
+    if (s) {
+      const found = findIn(story, s, app);
+      save(found.at[`opened:${app}`] ? found : { ...found, at: { ...found.at, [`opened:${app}`]: Date.now() } });
+    }
   };
 
   // An offloaded app, downloaded again from its icon. Stable, as Home waits on it.
@@ -202,7 +263,8 @@ export default function Table({
   /* Everything that has arrived since the phone was opened, newest first,
      for Notification Centre and the lock screen, above what was waiting. */
   const arrived: Notice[] = story.events
-    .filter((e) => e.banner && has(state, `fired:${e.id}`))
+    // His phone's notifications only: yours land on yours.
+    .filter((e) => e.banner && e.device === "owner" && has(state, `fired:${e.id}`))
     .map((e) => ({
       key: e.id,
       app: e.app,
@@ -242,7 +304,11 @@ export default function Table({
           wallpaper={meta.wallpaper}
           lock={
             has(state, "did:past-lock") ? undefined : (
-              <LockScreen day={longDay(dayNow(story, state), dateNow(story, state))} clock={phoneClock(clock)} notes={notices} onOpen={() => flag("did:past-lock")} />
+              <LockScreen day={longDay(dayNow(story, state), dateNow(story, state))} clock={phoneClock(clock)} notes={notices} onOpen={(app) => {
+                  flag("did:past-lock");
+                  if (app) onOpenApp(app);
+                }}
+              />
             )
           }
           home={<Home story={story} state={state} onOpen={onOpenApp} onInstall={onInstall} covered={Boolean(openApp)} />}
@@ -271,16 +337,39 @@ export default function Table({
           onAirplane={() => flag(AIRPLANE)}
         />
 
-        <div className={styles.yours}>
-          <button type="button" className={styles.yoursButton} onClick={() => setHolding(true)} aria-label="Pick up your phone">
-            <YourPhone time={phoneClock(clock)} day={dayNow(story, state)} news={yoursNews} />
-          </button>
-          <p className={styles.yoursNote}>Yours.</p>
-        </div>
+        {hasYours && (
+          <div className={styles.yours}>
+            <button type="button" className={styles.yoursButton} onClick={() => setHolding(true)} aria-label="Pick up your phone">
+              <YourPhone time={phoneClock(clock)} day={dayNow(story, state)} news={yoursNews} />
+            </button>
+            <p className={styles.yoursNote}>Yours.</p>
+          </div>
+        )}
+
+        {/* On a wide table, the case file lies beside the phones as a notebook:
+            the evidence on his screen and the sentence in front of you at once. */}
+        {wide && (
+          <section className={styles.notebook} aria-label="Case file">
+            <p className={styles.notebookHead}>Case file</p>
+            <CaseFile story={story} state={state} save={save} />
+          </section>
+        )}
       </div>
 
       {/* On a phone-sized screen, yours is only its edge, at the side. */}
-      <button type="button" className={styles.edge} data-new={fresh || undefined} onClick={pickUp} aria-label={fresh ? "Your phone: something new" : "Your phone"} />
+      {/* Slim while one of his apps is open, so it covers none of it. */}
+      {hasYours && (
+        <button
+          type="button"
+          className={styles.edge}
+          data-new={fresh || undefined}
+          data-slim={openApp ? "" : undefined}
+          onClick={pickUp}
+          aria-label={unread ? `Your phone: ${unread} unread` : fresh ? "Your phone: something new" : "Your phone"}
+        >
+          {unread > 0 && <span className={styles.edgeCount} aria-hidden="true">{unread}</span>}
+        </button>
+      )}
       {telling && yoursNews && (
         <button type="button" className={styles.edgeNote} onClick={pickUp}>
           <strong>Your phone</strong>

@@ -3,6 +3,7 @@
 import { useState, type CSSProperties } from "react";
 
 import { drag } from "@/components/stage/drag";
+import type { AppId } from "@/content/types";
 import type { Notice } from "./Phone";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/LockScreen.module.css";
@@ -10,11 +11,12 @@ import styles from "./ios/LockScreen.module.css";
 /* ===========================================================================
    The found phone's lock screen: the first time the player sees its owner's
    life. Whatever was waiting when it arrived (the chapter's `lockScreen`),
-   and whatever has arrived since. The date, a large Canela clock, the torch
+   and whatever has arrived since. The date, a large clock, the torch
    and the camera in the corners.
 
    The passcode is off, so there is no pad: the swipe opens the phone. That
-   is itself a clue, and Settings will say when it happened.
+   is itself a clue: Settings says it's off, and Notes says when he was
+   getting the phone ready.
 
    The pilot's lock screen (c03aa03), in its "nobody locked it" mode.
    =========================================================================== */
@@ -45,7 +47,8 @@ export default function LockScreen({
   day: string;
   clock: string;
   notes: readonly Notice[];
-  onOpen: () => void;
+  /** Opened, and with a notification tapped, the app it came from (as iOS does). */
+  onOpen: (app?: AppId) => void;
 }) {
   const [lift, setLift] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -64,7 +67,7 @@ export default function LockScreen({
           return;
         }
         setLift(480);
-        window.setTimeout(onOpen, 200);
+        window.setTimeout(() => onOpen(), 200);
       },
     });
 
@@ -74,7 +77,11 @@ export default function LockScreen({
       className={styles.lock}
       data-dragging={dragging || undefined}
       style={{ "--lift": `${lift}px`, "--fade": String(Math.max(0, 1 - lift / 240)) } as CSSProperties}
-      onClick={onOpen}
+      onClick={(e) => {
+        // A tap on a notification opens its app; anywhere else just opens the phone.
+        const app = (e.target as HTMLElement).closest<HTMLElement>("[data-app]")?.dataset.app as AppId | undefined;
+        onOpen(app);
+      }}
       onPointerDown={liftUp}
       aria-label="Swipe up to open"
     >
@@ -85,7 +92,7 @@ export default function LockScreen({
         </span>
         <span className={styles.notes}>
           {notes.map((n) => (
-            <span key={n.key} className={`${styles.note} lg-thick`} data-look={n.look || undefined}>
+            <span key={n.key} className={`${styles.note} lg-thick`} data-look={n.look || undefined} data-app={n.app}>
               <span className={styles.noteIcon}>
                 <AppGlyph app={n.icon ?? n.app} />
               </span>

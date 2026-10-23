@@ -75,11 +75,13 @@ const BUDGET = {
   /** The largest single file allowed in `public/`, in KB. */
   asset: 1200,
   /**
-   * Everything in `public/` together, in MB. About 1.1MB today: Episodes 1
-   * and 2's photographs, two memos and the buzz. Raise it deliberately, in
-   * the commit that adds an episode's assets.
+   * Everything in `public/` together, in MB. Raise it deliberately, in the
+   * commit that adds an episode's assets. Raised from 3 to 6 on 2026-10-23
+   * for Raakh's final cut: 59 voiced lines (1.5MB, AAC at 24kbps), the cast's
+   * faces and the wedding album (5.4MB in all that day). Photos go through
+   * next/image, so a player downloads a fraction of the source.
    */
-  publicTotal: 3,
+  publicTotal: 6,
 };
 
 /** Files that are allowed to be over `asset`, and why. Anything not on this

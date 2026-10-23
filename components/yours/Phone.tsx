@@ -9,9 +9,9 @@ import styles from "./Phone.module.css";
 
    It matches the player's own platform, because it is meant to be theirs:
    an iPhone's lock screen for an iPhone, a Pixel's for Android. It is almost
-   empty on purpose — a plain wallpaper, the time, nothing waiting. ROADMAP S9
-   puts the draft post and the record on it; the emptiness until then is what
-   makes those land.
+   empty on purpose — a plain wallpaper, the time, and only its own rare news
+   (`newsOnYours`): the courier, Pulse, Meera. Picked up, it's two apps
+   (`Sheet.tsx`); the emptiness until then is what makes those land.
 
    Drawn with the found phone's own device frame, a size smaller, so the two read as
    two real phones on one table rather than one phone and a sketch.

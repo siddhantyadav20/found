@@ -27,7 +27,27 @@ import { stamp } from "@/lib/found/time";
 const SHAKE_MS = 420;
 
 /** A photo or video put in a note: as big as the note is wide, a video with its transport under it. */
-function Attachment({ photo }: { photo: Photo }) {
+function Attachment({ photo, voice }: { photo: Photo; voice?: string }) {
+  // A document photographed into the note: the page itself, typed, with its stamp.
+  if (photo.kind === "paper")
+    return (
+      <figure className={styles.attachment}>
+        <div className={styles.doc}>
+          <p className={styles.docTitle}>{photo.title}</p>
+          {photo.lines?.map((l) =>
+            /REJECTED/.test(l) ? (
+              <p key={l} className={styles.docStamp}>
+                {l}
+              </p>
+            ) : (
+              <p key={l} className={l.startsWith("(") ? styles.docAside : styles.docLine}>
+                {l}
+              </p>
+            ),
+          )}
+        </div>
+      </figure>
+    );
   return (
     <figure className={styles.attachment}>
       <div className={frame.frame} data-size={photo.video ? undefined : "full"} data-wide={photo.video ? "" : undefined} style={{ "--hue": photo.video ? 24 : 205 } as CSSProperties}>
@@ -37,7 +57,8 @@ function Attachment({ photo }: { photo: Photo }) {
           <span className={frame.pending}>{photo.title}</span>
         )}
       </div>
-      {photo.video && <Clip seconds={photo.video.seconds} captions={photo.video.captions} />}
+      {photo.video && <Clip seconds={photo.video.seconds} captions={photo.video.captions} voice={voice} />}
+      {photo.src && photo.caption && <figcaption className={styles.attachmentCaption}>{photo.caption}</figcaption>}
     </figure>
   );
 }
@@ -59,9 +80,11 @@ function Open({
   opened,
   onOpened,
   onSeen,
+  voices,
 }: {
   note: Note;
   day: string;
+  voices?: Story["voices"];
   /** Unlocked before, and the save remembers. */
   opened: boolean;
   onOpened: (id: string) => void;
@@ -87,6 +110,7 @@ function Open({
     if (inside) onSeen(inside.split(","));
   }, [inside, onSeen]);
 
+  const numeric = /^\d+$/.test(note.password ?? "");
   if (!open)
     return (
       <div className={styles.locked}>
@@ -95,30 +119,51 @@ function Open({
           <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
         </svg>
         <p className={styles.lockTitle}>This note is locked.</p>
-        <input
-          className={styles.pin}
-          inputMode="numeric"
-          maxLength={4}
-          value={typed}
-          placeholder="Password"
-          data-shake={shaking || undefined}
-          readOnly={shaking}
-          onChange={(e) => {
-            const v = e.target.value.replace(/\D/g, "");
-            setTyped(v);
-            if (v === note.password) {
-              setOpen(true);
-              onOpened(note.id);
-            } else if (note.password && v.length >= note.password.length) {
-              setShaking(true);
-              setMissed(true);
-            }
-          }}
-          aria-label="Note password"
-          aria-invalid={shaking || undefined}
-        />
-        <p className={styles.lockHint}>Enter the password for “{note.title}”.</p>
-        {missed && note.hint && (
+        <span className={numeric ? styles.otpWrap : undefined}>
+          {/* A numeric password is entered as an OTP is, a box a digit, so it's plain it wants numbers (2026-10-23). */}
+          {numeric && (
+            <span className={styles.otp} data-shake={shaking || undefined} aria-hidden="true">
+              {Array.from({ length: note.password!.length }, (_, i) => (
+                <span key={i} className={styles.otpBox} data-on={i === typed.length || undefined} data-full={i < typed.length || undefined}>
+                  {typed[i] ? "•" : ""}
+                </span>
+              ))}
+            </span>
+          )}
+          <input
+            className={numeric ? styles.otpInput : styles.pin}
+            autoComplete={numeric ? "one-time-code" : "off"}
+            autoFocus={numeric}
+            // A PIN gets the number pad; a word gets the keyboard (Last Local's "rubina").
+            inputMode={numeric ? "numeric" : "text"}
+            maxLength={note.password?.length ?? 4}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={typed}
+            placeholder={numeric ? "" : "Password"}
+            data-shake={shaking || undefined}
+            readOnly={shaking}
+            onChange={(e) => {
+              const v = numeric ? e.target.value.replace(/\D/g, "") : e.target.value.trim().toLowerCase();
+              setTyped(v);
+              if (v === note.password?.toLowerCase()) {
+                setOpen(true);
+                onOpened(note.id);
+              } else if (note.password && v.length >= note.password.length) {
+                setShaking(true);
+                setMissed(true);
+              }
+            }}
+            aria-label="Note password"
+            aria-invalid={shaking || undefined}
+          />
+        </span>
+        <p className={styles.lockHint}>
+          {numeric ? `Enter the ${note.password!.length}-digit password for “${note.title}”.` : `Enter the password for “${note.title}”.`}
+        </p>
+        {/* A number's hint is there from the start: a four-digit guess isn't a puzzle, it's a wall. */}
+        {(missed || numeric) && note.hint && (
           <p className={styles.lockClue} aria-live="polite">
             Hint: {note.hint}
           </p>
@@ -139,7 +184,7 @@ function Open({
           {line}
         </p>
       ))}
-      {note.attachments?.map((a) => <Attachment key={a.id} photo={a} />)}
+      {note.attachments?.map((a) => <Attachment key={a.id} photo={a} voice={voices?.[`clip:${a.id}`]?.src} />)}
     </article>
   );
 }
@@ -177,6 +222,7 @@ export default function Notes({
     return (
       <Page title="" onBack={() => setOpen(null)} backLabel="Notes" tint={YELLOW} end={more}>
         <Open
+          voices={story.voices}
           key={here.id}
           note={here}
           day={cal.label(here.day)}

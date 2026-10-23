@@ -1,40 +1,54 @@
-import localFont from "next/font/local";
-import { Inter, Outfit } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Inter, Inter_Tight, Kalam, Newsreader } from "next/font/google";
 
 /**
- * Display face. Only the two weights the design actually uses are shipped
- * (Medium 500 for the 44px/15px display text, Bold 700 for 20/22/28px).
- *
- * NOTE: these are the trial files from the Canela Collection, copied in from
- * outside the repo so the app has no dependency on a personal filesystem path.
- * Swap in the licensed files before the site goes public — and run them
- * through the same conversion as below, or the saving goes with them.
- *
- * WOFF2, not the OTFs they arrived as. Both faces are preloaded on every route
- * because the display face sets the first thing anyone reads, so they sit
- * squarely in the critical path — and as OTFs that was 147KB of it. The same
- * outlines as WOFF2 are 42KB. Nothing else about them changes: same family,
- * same two weights, same metrics.
- *
- *   fonttools:  f = TTFont("CanelaText-Medium.otf"); f.flavor = "woff2"
- *               f.save("CanelaText-Medium.woff2")
+ * Display face: Newsreader (Production Type, SIL Open Font Licence), in the
+ * two weights the design uses (Medium 500 for the 44px/15px display text,
+ * Bold 700 for 20/22/28px). It replaced the Canela trial files on
+ * 2026-10-01: a trial licence can't ship on a public site, and Newsreader's
+ * display cut keeps the same quiet, bookish voice.
  */
-export const canela = localFont({
-  src: [
-    { path: "./fonts/CanelaText-Medium.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/CanelaText-Bold.woff2", weight: "700", style: "normal" },
-  ],
+export const display = Newsreader({
+  subsets: ["latin"],
+  weight: ["500", "700"],
   variable: "--font-display",
   display: "swap",
-  // Keeps the 44px headline from reflowing when the display face swaps in.
-  adjustFontFallback: false,
   fallback: ["Georgia", "Times New Roman", "serif"],
 });
 
-/** UI face — Regular / Medium / SemiBold are all used. Variable, so one file. */
-export const outfit = Outfit({
+/**
+ * A hand, for what someone wrote on paper: the note on the envelope, and any
+ * page photographed into a chat. Kalam (Indian Type Foundry, SIL OFL) was
+ * drawn from Indian handwriting, Latin and Devanagari both. Not preloaded:
+ * the desk never needs it, and the note comes a tap later.
+ */
+export const hand = Kalam({
+  subsets: ["latin", "devanagari"],
+  weight: ["400", "700"],
+  variable: "--font-hand",
+  display: "swap",
+  preload: false,
+});
+
+/**
+ * UI face: IBM Plex Sans (SIL OFL), Regular / Medium / SemiBold. It replaced
+ * Outfit on 2026-10-17: a geometric startup sans read as a template; Plex is
+ * a working typeface, the kind a form or a case file is set in.
+ */
+export const ui = IBM_Plex_Sans({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   variable: "--font-ui",
+  display: "swap",
+});
+
+/**
+ * Field labels, times and numbers outside the phones: IBM Plex Mono (SIL
+ * OFL), the voice of a courier's waybill and a case file's form.
+ */
+export const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -49,4 +63,16 @@ export const phone = Inter({
   variable: "--font-phone",
   display: "swap",
   preload: false,
+});
+
+/**
+ * The site's own voice (2026-10-23): Inter Tight (SIL OFL) for the landing
+ * page's headlines and controls, set tight, as product sites set theirs.
+ * Newsreader stays for the one word in a headline that's the story's.
+ */
+export const sans = Inter_Tight({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
+  display: "swap",
 });

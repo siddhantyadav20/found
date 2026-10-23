@@ -6,18 +6,24 @@ import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
 import { add, has, newCase } from "@/lib/game/engine";
 import { stamp } from "@/lib/found/time";
-import { PLUGGED_IN, sceneOf, titleShown } from "@/lib/game/scene";
+import { DETECTIVE, momentDone, PLUGGED_IN, recapShown, sceneOf, titleShown } from "@/lib/game/scene";
 import { AWAY_MS } from "@/lib/found/keeping";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { useReplay } from "@/lib/found/shelf";
 import type { CaseId } from "@/content/cases";
 import { track } from "@/lib/found/track";
 import Charge from "./Charge";
+import ColdOpen from "./ColdOpen";
+import Moment from "./Moment";
+import Seat from "./Seat";
 import dynamic from "next/dynamic";
 import Away from "./Away";
 import InAppGuard from "./InAppGuard";
 import Note from "./Note";
 import Parcel from "./Parcel";
+import Recap from "./Recap";
+import Loader from "@/components/site/Loader";
+import CaseHeader from "@/components/site/CaseHeader";
 import Ringing from "./Ringing";
 import TitleCard from "./TitleCard";
 import Table from "./Table";
@@ -34,9 +40,21 @@ import styles from "./Stage.module.css";
    component state.
    =========================================================================== */
 
+/* The cold open plays once a visit, before a first parcel (ROADMAP T1). */
+const coldKey = (id: string) => `found:${id}:cold`;
+const noSubscribe = () => () => {};
+function seenCold(id: string): boolean {
+  try {
+    return sessionStorage.getItem(coldKey(id)) === "1";
+  } catch {
+    return false;
+  }
+}
+
 /* The ending and its card: loaded only when a play gets there. */
-const Aftermath = dynamic(() => import("./ending/Aftermath"), { ssr: false });
-const EndCard = dynamic(() => import("./ending/EndCard"), { ssr: false });
+const Aftermath = dynamic(() => import("./ending/Aftermath"), { ssr: false, loading: () => <Loader full label="The morning after" /> });
+const EndCard = dynamic(() => import("./ending/EndCard"), { ssr: false, loading: () => <Loader full label="Closing the file" /> });
+const LookAgain = dynamic(() => import("./ending/LookAgain"), { ssr: false });
 
 export default function Stage() {
   const { id, story, meta, to, minutes, via } = useCase();
@@ -46,6 +64,10 @@ export default function Stage() {
   const replay = useReplay(id as CaseId);
 
   const scene = sceneOf(story, state);
+  const coldSeen = useSyncExternalStore(noSubscribe, () => seenCold(id), () => false);
+  const [coldDone, setColdDone] = useState(false);
+  // After the end: his phone again, to go back through (script §20). A view, not a step in the save.
+  const [looking, setLooking] = useState(false);
 
   /* Opened after a real gap: when they were last here, read once per visit. */
   const [away, setAway] = useState<number | null>(() => {
@@ -54,7 +76,7 @@ export default function Stage() {
     const last = Math.max(s.started, ...Object.values(s.at));
     return Date.now() - last >= AWAY_MS ? last : null;
   });
-  const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "charge";
+  const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "charge" || scene.kind === "recap";
   if (state && away !== null && midCase)
     return (
       <Away
@@ -68,18 +90,45 @@ export default function Stage() {
       />
     );
 
+  if (!state && story.coldOpen && !replay && !coldSeen && !coldDone) {
+    return (
+      <ColdOpen
+        cold={story.coldOpen}
+        voices={story.voices}
+        onDone={() => {
+          try {
+            sessionStorage.setItem(coldKey(id), "1");
+          } catch {
+            // Private browsing: it plays again next time, and that's all.
+          }
+          setColdDone(true);
+        }}
+      />
+    );
+  }
+
+  // Found on a seat: no parcel, no note. Picking it up is opening it.
+  if ((!state || scene.kind === "parcel") && story.seat) {
+    return (
+      <Seat
+        seat={story.seat}
+        onOpen={() => save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened", "did:unlock", "saw:note"))}
+      />
+    );
+  }
+
   if (!state || scene.kind === "parcel") {
     return (
       <div className={styles.stage}>
-        <p className={styles.eyebrow}>
-          Episode 1 · {story.episodes[0]}
-        </p>
+        <CaseHeader meta={meta} episode={story.episodes[0]} />
         <Parcel
           meta={meta}
           to={to}
           minutes={minutes}
           replay={replay}
-          onOpen={() => save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened"))}
+          onOpen={(detective) =>
+            save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened", ...(detective ? [DETECTIVE] : [])))
+          }
         />
         <InAppGuard />
         {/* Private browsing: say so before the night starts, and offer a case number. */}
@@ -97,6 +146,10 @@ export default function Stage() {
        episodes, and the reason anybody goes looking for a cable. */
     case "charge":
       return <Charge gate={story.gate} onPlugged={() => flag(...PLUGGED_IN)} />;
+
+    /* An episode, closed: what the player has to show for it, and what's still open. */
+    case "recap":
+      return <Recap story={story} state={state} episode={scene.episode} onDone={() => flag(recapShown(scene.episode))} />;
 
     /* A new episode: its title, and the minute it opens on, never explained. */
     case "title": {
@@ -116,7 +169,20 @@ export default function Stage() {
       return <Aftermath story={story} state={state} />;
 
     case "end-card":
-      return <EndCard story={story} state={state} />;
+      if (looking)
+        return (
+          <>
+            <Table story={story} meta={meta} state={state} replay={replay} review />
+            <LookAgain story={story} state={state} onDone={() => setLooking(false)} />
+          </>
+        );
+      return <EndCard story={story} state={state} onLookAgain={() => setLooking(true)} />;
+
+    /* The story stops: the doors open, and the player chooses. */
+    case "moment": {
+      const { moment } = scene;
+      return <Moment key={moment.id} moment={moment} state={state} onChoose={(sets) => flag(momentDone(moment.id), ...sets)} />;
+    }
 
     /* A call arriving on its own, on either phone. */
     case "ringing": {
@@ -127,6 +193,7 @@ export default function Stage() {
           state={state}
           // The found phone's calls ring over its own wallpaper; yours, over nothing of his.
           wallpaper={call.device === "owner" ? meta.wallpaper : undefined}
+          voices={story.voices}
           answered={has(state, `did:answered-${call.id}`)}
           onAnswer={() => flag(`did:answered-${call.id}`, ...(call.sets ?? []))}
           onDecline={call.insists ? undefined : () => flag(`did:declined-${call.id}`)}

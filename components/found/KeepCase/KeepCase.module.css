@@ -6,25 +6,26 @@
   display: grid;
   gap: 12px;
   padding: 20px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  background: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--line);
   font-family: var(--font-ui), system-ui, sans-serif;
   text-align: left;
   color: #f2ede6;
 }
 
 .card[data-variant="warning"] {
-  background: rgba(255, 138, 61, 0.08);
-  box-shadow: inset 0 0 0 1px rgba(255, 138, 61, 0.3);
+  background: var(--ink-2);
+  box-shadow: inset 0 0 0 1px rgb(196 65 47 / 45%);
 }
 
 .eyebrow {
   margin: 0;
-  font-size: 12px;
-  letter-spacing: 0.16em;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #ff8a3d;
+  color: var(--stamp);
 }
 
 .lede {
@@ -46,12 +47,12 @@
   justify-self: start;
   margin: 2px 0 4px 2px;
   padding: 10px 16px;
-  background: #f1ece2;
+  background: #f6f3ec;
   color: #1b1a18;
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.1em;
+  font-family: var(--font-mono), monospace;
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   rotate: -1deg;
@@ -64,7 +65,7 @@
   width: 156px;
   aspect-ratio: 1;
   border-radius: 8px;
-  background: #f1ece2;
+  background: #f6f3ec;
 }
 
 .row {
@@ -78,7 +79,7 @@
 .whatsapp {
   padding: 12px 22px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius);
   font: inherit;
   font-size: 15px;
   font-weight: 600;
@@ -88,8 +89,8 @@
 
 .primary {
   justify-self: start;
-  background: #fff;
-  color: #111;
+  background: var(--paper);
+  color: var(--paper-ink);
 }
 
 .primary:disabled {

@@ -96,11 +96,14 @@ describe("who fired, said by the player", () => {
     expect(shot.kind === "file" && claimFor(shot, { place: "service lane", who: "Bhasin", which: "first" }).close).toBe(false);
   });
 
-  it("gives a player the locked chats' code, from Sameer or from the memo he deleted", () => {
+  it("gives a player the locked chats' code: from Sameer, from Raju, or from the memo's riddle and the reel take", () => {
     const code = ep.chatLock?.knownWhen ?? [];
-    expect(code).toEqual(expect.arrayContaining([["fired:sameer-code"], ["did:installed-voicememos"]]));
-    expect(ep.memos.find((m) => m.id === "memo-code")?.lines.some((l) => l.line.includes(ep.chatLock!.code))).toBe(true);
-    for (const t of ep.threads.filter((x) => x.name === "Nitin" || x.name === "Chhotu")) expect(t.locked, t.id).toBe(true);
+    expect(code).toEqual(expect.arrayContaining([["fired:sameer-code"], ["did:raju-trusts"], ["did:installed-voicememos", "saw:reel-take"]]));
+    const word = ep.chatLock!.code;
+    // The memo doesn't say it outright (the 2026-10-01 review); the reel take, seconds before the shot, does.
+    expect(ep.memos.find((m) => m.id === "memo-code")?.lines.some((l) => l.line.toLowerCase().includes(word))).toBe(false);
+    expect(ep.photos.find((p) => p.id === "reel-take")?.video?.captions.some((c) => c.line.toLowerCase().includes(word))).toBe(true);
+    for (const t of ep.threads.filter((x) => x.name === "Nitin" || x.name === "Dilip")) expect(t.locked, t.id).toBe(true);
   });
 });
 
@@ -161,13 +164,14 @@ describe("who writes, and when", () => {
     expect(ids.indexOf("said-where")).toBeGreaterThan(ids.indexOf("sn-4"));
     expect(ids.indexOf("sn-5")).toBeGreaterThan(ids.indexOf("sn-12"));
     expect(ids.indexOf("said-shot")).toBeGreaterThan(ids.indexOf("sn-6"));
-    expect(openReply(s, thread)).toBeUndefined();
+    // What's left to say is the catch: "khaali", ten seconds after a round went off.
+    expect(openReply(s, thread)?.id).toBe("sameer-khaali");
   });
 });
 
 describe("Episode 2's finds", () => {
   it("are behind a hard route wherever Sameer tucked them away", () => {
-    for (const id of ["reel-take", "memo", "gun-to-kunal", "chhotu-107", "nitin-car", "nitin-reply"])
+    for (const id of ["reel-take", "memo", "gun-to-kunal", "dilip-107", "nitin-car", "nitin-reply"])
       expect(ep.evidence.find((e) => e.id === id)?.manual, id).toBe(true);
   });
 });

@@ -67,3 +67,8 @@
   left: 0;
   box-shadow: 0 0 0 2px var(--os-bg);
 }
+
+.mono[data-photo] {
+  position: relative;
+  overflow: hidden;
+}

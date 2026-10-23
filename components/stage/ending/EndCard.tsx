@@ -14,25 +14,29 @@ import { commit } from "@/lib/found/progress";
 import { resultOf } from "@/lib/found/result";
 import { markSolved } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
+import { DETECTIVE } from "@/lib/game/scene";
 import PassItOn from "../PassItOn";
+import Notify from "./Notify";
 import styles from "./Ending.module.css";
 
 /* ===========================================================================
    After every ending, the same card (PLAYER-JOURNEY Stage 9):
 
-   1. The chain: every link, traced ones in the record's words and the rest
-      in Sameer's, a line at a time; then the count, which is the share.
+   1. The count, which is the share, large, with the chain as eleven marks;
+      then every link, traced ones in the record's words and the rest in
+      Sameer's, a line at a time.
    2. The one thing only this ending showed, and what others chose.
    3. The replay image, the same for everyone: a note on his phone, its
       cursor still blinking after the last line (CHAPTER1.md J).
-   4. Play again, Pass it on, and keep your case number.
+   4. Look again (his phone, to go back through, with what was there from
+      the first minute), Play again, Pass it on, and keep your case number.
    5. Outside the fiction: the chapter's facts, each checked at its source,
       and what to do if any of this is close to home.
    =========================================================================== */
 
 type Others = Record<string, number> | null;
 
-export default function EndCard({ story, state }: { story: Story; state: CaseState }) {
+export default function EndCard({ story, state, onLookAgain }: { story: Story; state: CaseState; onLookAgain?: () => void }) {
   const { id } = useCase();
   const ending = chosen(story, state);
   // Minutes are measured to the moment the card first appears.
@@ -46,8 +50,8 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
 
   // A finish outlives "Play again", and goes on the shelf if they keep a number.
   useEffect(() => {
-    markSolved(id as CaseId, { episode: episodes, minutes: result.minutes, traced: done.length, at: Date.now() });
-  }, [id, episodes, result.minutes, done.length]);
+    markSolved(id as CaseId, { episode: episodes, minutes: result.minutes, traced: done.length, of: result.links, at: Date.now() });
+  }, [id, episodes, result.minutes, done.length, result.links]);
 
   // What others did, once enough people have, and never as a count.
   useEffect(() => {
@@ -67,8 +71,24 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
     window.scrollTo(0, 0);
   };
 
+  const detective = state.flags.includes(DETECTIVE);
+
   return (
     <div className={`${styles.screen} ${styles.card}`}>
+      {/* The score first: what people screenshot, and what they argue about. */}
+      <section className={`${styles.section} ${styles.score}`} aria-label="Your score">
+        {ending && <p className={styles.eyebrow}>Ending · {ending.row}</p>}
+        {detective && <p className={styles.scoreMode}>Played as a detective</p>}
+        <p className={styles.scoreLine}>
+          You traced {done.length} of {result.links} links.
+        </p>
+        <p className={styles.marks} aria-hidden="true">
+          {story.chain.map((l) => (
+            <span key={l.id} data-traced={done.includes(l.id) || undefined} />
+          ))}
+        </p>
+      </section>
+
       <section className={styles.section} aria-labelledby="chain">
         <p className={styles.eyebrow} id="chain">
           The chain
@@ -94,9 +114,6 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
             );
           })}
         </ol>
-        <p className={styles.count} style={{ animationDelay: `${0.6 + story.chain.length * 0.35}s` }}>
-          You traced {done.length} of {result.links} links.
-        </p>
       </section>
 
       {ending && (
@@ -139,10 +156,22 @@ export default function EndCard({ story, state }: { story: Story; state: CaseSta
             </p>
           ))}
           <p className={styles.only}>{story.next.note}</p>
+          {story.next.href ? (
+            <Link href={story.next.href} className={`act ${styles.nextAct}`}>
+              {story.next.cta ?? "Open it"}
+            </Link>
+          ) : (
+            <Notify caseId={id} />
+          )}
         </section>
       )}
 
       <section className={styles.section}>
+        {onLookAgain && story.lookAgain?.length ? (
+          <button type="button" className={styles.button} onClick={onLookAgain}>
+            Look again
+          </button>
+        ) : null}
         <button type="button" className={styles.button} onClick={playAgain}>
           Play again
         </button>

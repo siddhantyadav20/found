@@ -1,5 +1,6 @@
 import type { CaseId } from "./cases";
-import { story as shagun } from "./shagun/story";
+import { story as lastlocal } from "./lastlocal/story";
+import { story as raakh } from "./raakh/story";
 import type { Story } from "./types";
 
 /**
@@ -8,5 +9,6 @@ import type { Story } from "./types";
  * case's name or route reads `content/cases.ts` instead.
  */
 export const STORIES: Record<CaseId, Story> = {
-  shagun,
+  lastlocal,
+  raakh,
 };

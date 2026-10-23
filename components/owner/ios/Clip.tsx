@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Caption } from "@/content/types";
+import { bedFor, sound, useBed, warmNight } from "@/lib/found/nightSound";
 import { mmss } from "@/lib/game/phone";
+import { useVoice } from "@/lib/found/voice";
 import styles from "./PhotoFrame.module.css";
 
 /* ===========================================================================
@@ -20,15 +22,31 @@ export default function Clip({
   seconds,
   captions,
   onPlayed,
+  voice,
 }: {
   seconds: number;
   captions: readonly Caption[];
+  /** The recording under the captions, where there is one (`Story.voices`). */
+  voice?: string;
   onPlayed?: () => void;
 }) {
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
   const words = useRef<HTMLOListElement>(null);
   const shown = captions.filter((l) => l.at <= elapsed && (playing || elapsed > 0));
+
+  /* Heard as it plays: the bed under it, and each caption's own sound as it
+     comes up. "[recording stops]" cuts the bed dead. */
+  const said = useRef(0);
+  const [cut, setCut] = useState(false);
+  useBed(bedFor(captions), playing && !cut);
+  useVoice(voice, playing && !cut, elapsed);
+  useEffect(() => {
+    if (shown.length < said.current) said.current = shown.length;
+    if (!playing) return;
+    for (const l of shown.slice(said.current)) if (sound(l.line) === "cut") setCut(true);
+    said.current = shown.length;
+  }, [shown, playing]);
 
   useEffect(() => {
     if (!playing) return undefined;
@@ -60,7 +78,12 @@ export default function Clip({
           type="button"
           className={styles.videoPlay}
           onClick={() => {
-            if (ended) setElapsed(0);
+            warmNight();
+            if (ended) {
+              setElapsed(0);
+              said.current = 0;
+              setCut(false);
+            }
             setPlaying((p) => !p);
           }}
           aria-label={playing ? "Pause" : "Play"}
@@ -77,7 +100,13 @@ export default function Clip({
           max={seconds}
           step={0.5}
           value={elapsed}
-          onChange={(e) => setElapsed(Number(e.target.value))}
+          onChange={(e) => {
+            // A scrub moves past what it skipped in silence.
+            const at = Number(e.target.value);
+            said.current = captions.filter((l) => l.at <= at).length;
+            setCut(captions.some((l) => l.at <= at && l.line.toLowerCase().includes("recording stops")));
+            setElapsed(at);
+          }}
           aria-label="Position"
         />
         <span className={styles.videoTime}>{mmss(seconds)}</span>

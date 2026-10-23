@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Stage from "@/components/stage/Stage";
 import SaveScript from "@/components/found/SaveScript";
 import { CaseProvider } from "@/components/found/StoryContext";
+import { STORIES } from "@/content/stories";
 import { CASES, FEATURED } from "@/content/cases";
 import { displayName } from "@/lib/found/dropName";
 import { readDrop } from "@/lib/found/dropStore";
@@ -35,7 +36,7 @@ export default async function DropPage({ params }: PageProps<"/d/[code]">) {
   const drop = await readDrop(code);
   const id = drop?.case ?? FEATURED;
   return (
-    <CaseProvider id={id} via={drop ? code : undefined} to={drop?.to} minutes={await estimatedMinutes(id)}>
+    <CaseProvider id={id} story={STORIES[id]} via={drop ? code : undefined} to={drop?.to} minutes={await estimatedMinutes(id)}>
       <SaveScript caseId={id} />
       <Stage />
     </CaseProvider>

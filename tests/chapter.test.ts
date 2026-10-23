@@ -18,7 +18,7 @@ import { blanksOf, homeIcons } from "@/lib/game/engine";
  * surviving any one closed route) are in tests/ship.test.ts.
  */
 
-const ep = STORIES.shagun;
+const ep = STORIES.raakh;
 
 describe("every question", () => {
   it("has three hints, the last of them the answer", () => {
@@ -228,18 +228,18 @@ describe("the arrival", () => {
 
 describe("how the phone came to the player (O1: returned to origin)", () => {
   it("wears a courier's label to Meera, stamped as returned", () => {
-    const label = CASES.shagun.label!;
+    const label = CASES.raakh.label!;
     expect(label.to).toBe("Meera Arora");
-    expect(label.address).toMatch(/Saket Courts/);
-    // No chamber number: a real one could be a real lawyer's.
-    expect(label.address).not.toMatch(/\d/);
+    expect(label.address).toMatch(/Kalkaji/);
+    // No house number: a real one could be a real person's.
+    expect(label.address).not.toMatch(/\d{1,3}[,/-]/);
     expect(label.stamp[0]).toBe("RETURN TO ORIGIN");
   });
 
   it("is what Sameer works out when he's told it isn't M, and what giving it back means", () => {
     const told = ep.threads.flatMap((t) => t.replies ?? []).flatMap((r) => r.options).find((o) => o.id === "not-m")!;
     expect(told.then?.map((m) => m.text).join(" ")).toMatch(/Parcel wapas aa gaya\?/);
-    expect(ep.yours.parcel.act).toMatch(/courier/i);
+    expect(ep.close?.parcel.act).toMatch(/courier/i);
     expect(ep.endings.find((e) => e.id === "returned")?.lines.map((l) => l.text).join(" ")).toMatch(/not the sender/);
   });
 });
@@ -251,7 +251,7 @@ describe("the phone itself", () => {
   });
 
   it("is its owner's, with the case file in the dock", () => {
-    expect(ep.owner.name).toBe("Sameer Khurana");
+    expect(ep.owner.name).toBe("Sameer Khurrana");
     expect(ep.home.dock.map((i) => i.app)).toContain("casefile");
   });
 

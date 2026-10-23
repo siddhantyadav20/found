@@ -2,24 +2,30 @@
    two phones on it. */
 
 .stage {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
+  justify-content: flex-start;
+  gap: 18px;
   min-height: 100dvh;
-  padding: 2rem 1rem calc(2rem + env(safe-area-inset-bottom));
-  text-align: center;
-  color: #efeae4;
-  background: #0b0b0c;
+  padding: calc(18px + env(safe-area-inset-top)) var(--gutter) calc(32px + env(safe-area-inset-bottom));
+  color: var(--text);
+  background: var(--ink);
 }
 
 .eyebrow {
-  font-family: var(--font-ui);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  align-self: stretch;
+  max-width: 22rem;
+  width: 100%;
+  margin-inline: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #8d8781;
+  color: var(--paper-2);
 }
 
 
@@ -103,7 +109,7 @@
   font-family: var(--font-ui);
   font-size: 0.78rem;
   font-weight: 600;
-  color: #e8843c;
+  color: var(--stamp);
 }
 
 .guardStay {
@@ -157,20 +163,37 @@
 }
 
 /* Your phone's edge, at the right of a phone-sized screen: tap to pick it up. */
+/* Your phone, at the edge of the screen: a tab that says whose it is, so it's
+   found without being explained (the rebuild of 2026-10-01). */
 .edge {
   position: fixed;
   top: 50%;
   right: 0;
   z-index: 40;
-  width: 12px;
-  height: 88px;
-  margin-top: -44px;
+  width: 22px;
+  height: 104px;
+  margin-top: -52px;
   padding: 0;
   border: 0;
-  border-radius: 9px 0 0 9px;
+  border-radius: 10px 0 0 10px;
   background: linear-gradient(90deg, #3b3f47, #1b1d22);
   box-shadow: -1px 0 0 rgba(255, 255, 255, 0.12) inset, -4px 0 12px rgba(0, 0, 0, 0.35);
   cursor: pointer;
+}
+
+.edge::after {
+  content: "YOURS";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(236, 233, 228, 0.7);
 }
 
 /* A bigger target than it looks. */
@@ -180,10 +203,49 @@
   inset: -12px 0 -12px -20px;
 }
 
+/* While one of his apps is open: a sliver at the very edge, over nothing. */
+.edge[data-slim] {
+  width: 6px;
+}
+
+.edge[data-slim]::after {
+  content: none;
+}
+
+/* …and its bigger target stays off the app's own buttons. */
+.edge[data-slim]::before {
+  inset: -12px 0 -12px -4px;
+}
+
 /* Something new on it: the screen's light at the edge. */
 .edge[data-new] {
   background: linear-gradient(90deg, #6f86b8, #1b1d22);
   animation: glow 2.4s ease-in-out infinite;
+}
+
+/* How many messages wait on yours: an iOS badge on the tab, kept even as a
+   sliver beside one of his apps (PLAYTEST-SHAGUN.md #98). */
+.edgeCount {
+  position: absolute;
+  top: -7px;
+  left: -9px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #ff3b30;
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 0 0 1.5px #1b1d22;
+  pointer-events: none;
+}
+
+.edge[data-slim] .edgeCount {
+  left: -14px;
 }
 
 @keyframes glow { 50% { box-shadow: -1px 0 0 rgba(255, 255, 255, 0.2) inset, -6px 0 18px rgba(111, 134, 184, 0.55); } }
@@ -196,7 +258,7 @@
 .edgeNote {
   position: fixed;
   top: 50%;
-  right: 18px;
+  right: 28px;
   z-index: 40;
   display: grid;
   gap: 2px;
@@ -204,7 +266,9 @@
   padding: 0.6rem 0.8rem;
   border: 0;
   border-radius: 0.8rem;
-  background: rgb(44 46 52 / 97%);
+  /* Your phone's own blue, never his notification grey. */
+  background: rgb(38 48 74 / 97%);
+  border-left: 3px solid #8fa6dc;
   color: #ece9e4;
   font-family: var(--font-ui);
   font-size: 0.78rem;
@@ -277,3 +341,47 @@
 .rows span { font-size: 0.75rem; color: #9a948c; }
 
 .soon { font-size: 0.8rem; line-height: 1.55; color: #9a948c; }
+
+/* --- the notebook ----------------------------------------------------------
+   On a wide table the case file lies beside the two phones: the evidence on
+   his screen, the sentence in front of you, both at once (the 2026-10-01
+   review). It wears the phone's Notes look, so it carries the phone's own
+   colours with it. */
+
+.notebook {
+  /* The same manila sheet as the case file app (CaseFile.module.css). */
+  --os-panel: #f7f2e7;
+  --os-panel-2: #e2d9c6;
+  --os-text: #1d1a16;
+  --os-accent: #b3382a;
+  --os-danger: #b3382a;
+  --ios-grey: rgb(29 26 22 / 58%);
+
+  align-self: stretch;
+  width: min(26rem, 32vw);
+  max-height: calc(100cqh - 3rem);
+  margin: 1.5rem 0;
+  padding: 0 1rem;
+  overflow-y: auto;
+  border-radius: 2px;
+  color: #1d1a16;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 27px, rgb(29 26 22 / 5%) 27px 28px),
+    #ebe3d2;
+  box-shadow: 0 24px 50px rgb(0 0 0 / 55%);
+  rotate: 0.6deg;
+}
+
+.notebookHead {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  margin: 0 -1rem 0.6rem;
+  padding: 1rem 1rem 0.7rem;
+  border-bottom: 1px solid rgb(29 26 22 / 18%);
+  background: #ebe3d2;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}

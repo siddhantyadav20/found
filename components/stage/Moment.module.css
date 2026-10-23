@@ -1,0 +1,129 @@
+/* A moment the story stops for: black, captions, choices of one weight. */
+
+.moment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 100dvh;
+  padding: calc(48px + env(safe-area-inset-top)) var(--gutter) calc(28px + env(safe-area-inset-bottom));
+  background: #050505;
+  color: var(--text);
+}
+
+.moment > * {
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+}
+
+.clock {
+  position: absolute;
+  inset: env(safe-area-inset-top) 0 auto 0;
+  height: 3px;
+  max-width: none;
+  background: var(--line);
+}
+
+.clock span {
+  display: block;
+  height: 100%;
+  background: var(--stamp);
+  transition: width 1s linear;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-block: auto;
+}
+
+.where {
+  margin-bottom: 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--stamp);
+}
+
+.told,
+.said {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  animation: in 0.6s ease-out both;
+}
+
+.told {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 21px;
+  line-height: 1.4;
+}
+
+.said {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.who {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.english {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.options {
+  display: grid;
+  gap: 8px;
+  animation: in 0.5s ease-out both;
+}
+
+.left {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  color: var(--stamp);
+}
+
+.option {
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.option:hover { border-color: var(--paper-2); background: var(--ink-2); }
+.option:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
+
+.skip {
+  align-self: flex-start;
+  width: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@keyframes in {
+  from { opacity: 0; translate: 0 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .told, .said, .options { animation: none; }
+}

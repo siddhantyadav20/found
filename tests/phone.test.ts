@@ -16,7 +16,7 @@ import { SHOW_HIDDEN, clipOf, inBin, library, memos, mmss, restored, reverted, r
 const shot = (id: string, more: Partial<Photo> = {}): Photo => ({ id, at: "12:31", day: "Sunday", kind: "scene", title: id, ...more });
 
 const story: Story = {
-  ...STORIES.shagun,
+  ...STORIES.raakh,
   photos: [
     shot("portrait", { album: "Sehgal wedding", favorite: true }),
     shot("bts", { album: "WhatsApp" }),
@@ -50,8 +50,8 @@ describe("Photos", () => {
   });
 
   it("lays the Library out oldest first, by when each was taken, whatever order the story lists them in", () => {
-    const out = library(STORIES.shagun, start()).recents.map((p) => `${p.day} ${p.at}`);
-    expect(out.indexOf("Sunday 00:29")).toBeLessThan(out.indexOf("Sunday 01:20"));
+    const out = library(STORIES.raakh, start()).recents.map((p) => `${p.day} ${p.at}`);
+    expect(out.indexOf("Sunday 00:29")).toBeLessThan(out.indexOf("Sunday 04:47"));
     expect(out.indexOf("22/11 23:40")).toBeLessThan(out.indexOf("Sunday 00:29"));
   });
 
@@ -103,19 +103,19 @@ describe("how the phone writes things", () => {
 
 describe("what arrives during the night", () => {
   it("is stamped when it arrived, on the story's clock, never in the future", () => {
-    const s = fire(STORIES.shagun, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
+    const s = fire(STORIES.raakh, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
     // The chapter opens at 11:40 PM; six minutes in, that's 11:46, whatever the script's own guess.
-    expect(arrivedAt(STORIES.shagun, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
-    expect(arrivedAt(STORIES.shagun, s, { at: "00:06" })).toBe("00:06");
-    expect(arrivedAt(STORIES.shagun, s, { at: "00:06", with: "never-fired" })).toBe("00:06");
+    expect(arrivedAt(STORIES.raakh, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
+    expect(arrivedAt(STORIES.raakh, s, { at: "00:06" })).toBe("00:06");
+    expect(arrivedAt(STORIES.raakh, s, { at: "00:06", with: "never-fired" })).toBe("00:06");
   });
 
   it("keeps the time it arrived by once the next episode's clock has taken over", () => {
-    let s = fire(STORIES.shagun, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
+    let s = fire(STORIES.raakh, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
     s = { ...add(s, "ep:2"), began: { 2: 20 * 60_000 } };
-    s = fire(STORIES.shagun, s, "sameer-online", 23 * 60_000);
-    expect(arrivedAt(STORIES.shagun, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
-    expect(arrivedAt(STORIES.shagun, s, { at: "00:33", with: "sameer-online" })).toBe("00:35");
+    s = fire(STORIES.raakh, s, "sameer-online", 23 * 60_000);
+    expect(arrivedAt(STORIES.raakh, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
+    expect(arrivedAt(STORIES.raakh, s, { at: "00:33", with: "sameer-online" })).toBe("00:35");
   });
 });
 

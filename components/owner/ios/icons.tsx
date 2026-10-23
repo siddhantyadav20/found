@@ -119,6 +119,18 @@ const ART: Record<AppId, (id: string) => ReactNode> = {
       </g>
     </>
   ),
+  // Find My: rings round a dot, on green.
+  findmy: (id) => (
+    <>
+      <defs>
+        <Vertical id={`${id}b`} from="#64e07f" to="#20a94a" />
+      </defs>
+      <Tile fill={`url(#${id}b)`} />
+      <circle cx="50" cy="50" r="31" fill="none" stroke="#fff" strokeWidth="7" opacity="0.55" />
+      <circle cx="50" cy="50" r="18" fill="none" stroke="#fff" strokeWidth="7" opacity="0.8" />
+      <circle cx="50" cy="50" r="7" fill="#fff" />
+    </>
+  ),
   settings: (id) => (
     <>
       <defs>

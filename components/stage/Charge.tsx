@@ -12,7 +12,7 @@ import styles from "./Charge.module.css";
 
    It asks once, warmly, and then waits: no nagging, no timer, no way to fail
    it. Where the browser won't say whether a charger is in (Safari, Firefox),
-   there is a cable on screen after two minutes and the beat reads the same.
+   there is a cable on screen after thirty seconds and the beat reads the same.
    The words are the chapter's own (`story.gate`).
    =========================================================================== */
 
@@ -23,7 +23,8 @@ export default function Charge({ gate, onPlugged }: { gate: Gate; onPlugged: () 
   useEffect(() => {
     let live = true;
     void getBattery().then((b) => live && setBattery(b));
-    const t = window.setTimeout(() => setWaited(true), 120_000);
+    // Thirty seconds, not two minutes: one-handed in bed, nobody waits longer at a wall they aren't near.
+    const t = window.setTimeout(() => setWaited(true), 30_000);
     return () => {
       live = false;
       window.clearTimeout(t);
@@ -40,11 +41,14 @@ export default function Charge({ gate, onPlugged }: { gate: Gate; onPlugged: () 
     return () => battery.removeEventListener("chargingchange", check);
   }, [battery, onPlugged]);
 
-  // No battery to read, one already charging, or two minutes of nothing: a cable they can tap.
+  // No battery to read, one already charging, or thirty seconds of nothing: a cable they can tap.
   const cable = battery === null || Boolean(battery?.charging) || waited;
 
   return (
     <div className={styles.charge}>
+      <span className={styles.cell} aria-hidden="true">
+        <span />
+      </span>
       <p className={styles.level}>{gate.level}</p>
       {gate.lines.map((line) => (
         <p key={line} className={styles.line}>
@@ -55,14 +59,14 @@ export default function Charge({ gate, onPlugged }: { gate: Gate; onPlugged: () 
       <p className={styles.ask}>{gate.ask}</p>
 
       {cable ? (
-        <button type="button" className={styles.cable} onClick={onPlugged}>
+        <button type="button" className={`act ${styles.cable}`} onClick={onPlugged}>
           Plug it in
         </button>
       ) : (
         <>
           <p className={styles.waiting}>Waiting for a charger…</p>
           {/* Nobody should give up at a wall socket they aren't near. */}
-          <p className={styles.nearby}>No charger nearby? In two minutes you can plug it in here.</p>
+          <p className={styles.nearby}>No charger nearby? In thirty seconds you can plug it in here.</p>
         </>
       )}
     </div>

@@ -15,7 +15,7 @@ import { eventsFor, reportFlag } from "@/lib/found/events";
  */
 
 const ep: Story = {
-  ...STORIES.shagun,
+  ...STORIES.raakh,
   endings: [
     {
       id: "complete",

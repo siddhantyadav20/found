@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 
 import type { Story, Thread } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
+import { readKey, unreadCount } from "@/lib/game/chat";
+import { all, dateNow, type CaseState } from "@/lib/game/engine";
 import { calendarOf } from "@/lib/game/phone";
 import { Page, SearchField } from "../AppView";
 import { Chevron } from "../ios/AppBar";
@@ -33,6 +34,7 @@ function ThreadView({
   label,
   onBack,
   onRead,
+  onMark,
 }: {
   thread: Thread;
   state: CaseState;
@@ -40,12 +42,18 @@ function ThreadView({
   label: (day: string | undefined) => string;
   onBack: () => void;
   onRead: (ids: readonly string[]) => void;
+  onMark?: (key: string, count: number) => void;
 }) {
   const shown = thread.messages.filter((m) => all(state, m.requires));
   const ids = shown.map((m) => m.evidence).filter(Boolean).join(",");
   useEffect(() => {
     if (ids) onRead(ids.split(","));
   }, [ids, onRead]);
+  // Read: the unread dot goes, as it does.
+  const key = readKey(thread);
+  useEffect(() => {
+    if ((state.at[key] ?? -1) < shown.length) onMark?.(key, shown.length);
+  }, [key, shown.length, onMark, state.at]);
 
   return (
     <section className={app.view} data-push aria-label={thread.name}>
@@ -112,11 +120,13 @@ export default function Messages({
   state,
   onRead,
   onHome,
+  onMark,
 }: {
   story: Story;
   state: CaseState;
   onRead: (ids: readonly string[]) => void;
   onHome?: () => void;
+  onMark?: (key: string, count: number) => void;
 }) {
   const [folder, setFolder] = useState<Folder>("inbox");
   const [open, setOpen] = useState<string | null>(null);
@@ -127,7 +137,7 @@ export default function Messages({
   const cal = calendarOf(story, state);
   const here = threads.find((t) => t.id === open);
 
-  if (here) return <ThreadView thread={here} state={state} label={cal.label} onBack={() => setOpen(null)} onRead={onRead} />;
+  if (here) return <ThreadView thread={here} state={state} label={cal.label} onBack={() => setOpen(null)} onRead={onRead} onMark={onMark} />;
 
   const inFolder = threads.filter((t) => (t.folder ?? "inbox") === folder);
   const junk = threads.filter((t) => t.folder === "junk").reduce((n, t) => n + t.messages.filter((m) => all(state, m.requires)).length, 0);
@@ -155,7 +165,7 @@ export default function Messages({
           return (
             <li key={t.id}>
               <button type="button" className={list.thread} onClick={() => setOpen(t.id)}>
-                <span className={list.unread} />
+                <span className={list.unread} data-on={unreadCount(state, t, dateNow(story, state)) > 0 || undefined} />
                 <Avatar name={t.name} size="row" />
                 <span className={list.main}>
                   <span className={list.top}>

@@ -24,7 +24,7 @@ export default function Away({ story, state, last, onBack }: { story: Story; sta
       <p className={styles.sub}>
         Episode {ep} · {story.episodes[ep - 1]}
       </p>
-      <button type="button" className={styles.up} onClick={onBack}>
+      <button type="button" className={`act ${styles.back}`} onClick={onBack}>
         Pick it back up
       </button>
     </div>

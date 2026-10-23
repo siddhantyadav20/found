@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { siteUrl } from "@/lib/origin";
-import { canela, outfit, phone } from "./fonts";
+import { display, hand, mono, phone, sans, ui } from "./fonts";
 import "./globals.css";
 import "./ios.css";
+import Splash from "@/components/site/Splash";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
@@ -31,11 +32,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${canela.variable} ${outfit.variable} ${phone.variable}`}
+      className={`${display.variable} ${hand.variable} ${ui.variable} ${mono.variable} ${phone.variable} ${sans.variable}`}
       // SaveScript marks a returning player's page before React sees it.
       suppressHydrationWarning
     >
-      <body>{children}</body>
+      <body>
+        <Splash />
+        {children}
+      </body>
     </html>
   );
 }

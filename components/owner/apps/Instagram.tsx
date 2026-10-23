@@ -1,31 +1,43 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import type { Profile, ReplyOption, Story } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
+import type { FeedPost, Profile, ProfilePost, ReplyOption, Story } from "@/content/types";
+import { all, episodeOf, type CaseState } from "@/lib/game/engine";
 import { Chevron } from "../ios/AppBar";
 import Chat from "./Chat";
 import styles from "./Instagram.module.css";
+import Sketch from "./Sketch";
 
 /* ===========================================================================
-   Instagram, drawn as Instagram draws itself on an iPhone, not as iOS would:
-   black, its script wordmark, the heart and Direct at the top; stories in
-   their gradient rings; the feed, a post at a time with its action row;
-   Direct messages when there are any; and its own flat bar at the foot. A
-   ring, or a name over a post, opens that profile: the counts, the bio, the
-   buttons, and the grid, where a photographer keeps his best work and a
-   groom's brother keeps his wedding.
+   Instagram, drawn as Instagram draws itself on an iPhone: black, its script
+   wordmark, stories in their gradient rings, the feed a post at a time, and
+   its own bar at the foot with Home, Explore and the owner's profile.
+
+   Since 2026-10-23 (RAAKH) it does what "your phone" used to: it's where the
+   night goes public, and where faces meet names. Photos holds what the owner
+   shot and kept; Instagram holds what people put out: his polished posts,
+   other people's, private accounts, and anybody who can be searched for.
+
+   A post that proves something counts once it has been on screen long
+   enough to read (`onRead`), in the feed or opened from a grid.
    =========================================================================== */
 
 const initials = (name: string) =>
   name
-    .split(" ")
+    .split(/[\s._]+/)
+    .filter(Boolean)
     .map((w) => w[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
+/** A steady colour per account, for the ones without a photograph. */
+const hue = (s: string) => [...s].reduce((n, c) => (n * 31 + c.charCodeAt(0)) % 360, 7);
+
+/** 18400 → "18.4K", as Instagram counts. */
+const count = (n: number) => (n >= 10_000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K` : n.toLocaleString("en-IN"));
 
 /** Instagram's own glyphs, drawn at 24 units, outlined as the app draws them. */
 const G = {
@@ -39,6 +51,8 @@ const G = {
   grid: "M3 3h18v18H3ZM9 3v18M15 3v18M3 9h18M3 15h18",
   tag: "M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-6.5 8c.8-3.4 3.4-5.3 6.5-5.3s5.7 1.9 6.5 5.3M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z",
   dots: "M5 12h.01M12 12h.01M19 12h.01",
+  lock: "M7 10.5V8a5 5 0 0 1 10 0v2.5M5.5 10.5h13v10h-13Z",
+  plus: "M12 5v14M5 12h14",
 };
 
 function Glyph({ d, className }: { d: string; className?: string }) {
@@ -49,133 +63,257 @@ function Glyph({ d, className }: { d: string; className?: string }) {
   );
 }
 
-function Tile({ post, big }: { post: Profile["posts"][number]; big?: boolean }) {
+/** Whoever wrote a post, however much the story knows about them. */
+type Who = { handle: string; name: string; avatar?: string; own?: boolean };
+
+function Avatar({ who, size, ring = true }: { who: Who; size?: "post" | "profile" | "row"; ring?: boolean }) {
+  return (
+    <span className={styles.ring} data-own={who.own || !ring || undefined} data-size={size}>
+      <span className={styles.face} style={who.avatar ? undefined : { background: `hsl(${hue(who.handle)} 32% 30%)` }}>
+        {who.avatar ? <Image src={who.avatar} alt="" fill sizes="90px" className={styles.image} /> : initials(who.name)}
+      </span>
+    </span>
+  );
+}
+
+/** The picture: a photograph, words on a colour, or a drawing of what it would show. */
+function Media({ post, big }: { post: { title: string; src?: string; card?: string; text?: string }; big?: boolean }) {
+  if (post.src)
+    return (
+      <span className={styles.tile} data-big={big || undefined}>
+        <Image src={post.src} alt={post.title} fill sizes={big ? "420px" : "140px"} className={styles.image} />
+      </span>
+    );
+  if (post.card)
+    return (
+      <span className={styles.tile} data-big={big || undefined} data-card style={{ background: post.card }}>
+        <span className={styles.cardText}>{post.text ?? post.title}</span>
+      </span>
+    );
   return (
     <span className={styles.tile} data-big={big || undefined}>
-      {post.src ? (
-        <Image src={post.src} alt={post.title} fill sizes={big ? "400px" : "130px"} className={styles.image} />
-      ) : (
-        <span className={styles.tileTitle}>{post.title}</span>
-      )}
+      <Sketch id={post.title} title={post.title} hue={hue(post.title)} big={big} />
     </span>
   );
 }
 
-function Face({ profile, size }: { profile: Pick<Profile, "name" | "own">; size?: "post" | "profile" }) {
-  return (
-    <span className={styles.ring} data-own={profile.own || undefined} data-size={size}>
-      <span className={styles.face}>{initials(profile.name)}</span>
-    </span>
-  );
-}
+/** One post as the feed shows it: who, the picture, the actions, the caption, a comment or two. */
+type Shown = {
+  key: string;
+  who: Who;
+  title: string;
+  src?: string;
+  card?: string;
+  caption?: string;
+  english?: string;
+  when?: string;
+  place?: string;
+  likes?: number;
+  comments?: ProfilePost["comments"];
+  evidence?: string;
+  suggested?: boolean;
+};
 
-/** One post as the feed shows it: who, the picture, the actions, the caption. */
-function Post({ profile, post, onProfile }: { profile: Profile; post: Profile["posts"][number]; onProfile?: () => void }) {
+function Post({ post, onProfile, onSeen }: { post: Shown; onProfile?: () => void; onSeen?: (evidence: string) => void }) {
+  const [english, setEnglish] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  /* Read once it has been most of the way on screen for a moment: scrolled
+     past at speed, it hasn't been seen. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !post.evidence || !onSeen) return undefined;
+    let t: number | undefined;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        window.clearTimeout(t);
+        if (e.isIntersecting) t = window.setTimeout(() => onSeen(post.evidence!), 700);
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      window.clearTimeout(t);
+    };
+  }, [post.evidence, onSeen]);
+  const words = post.caption;
   return (
-    <article className={styles.post}>
+    <article className={styles.post} ref={ref}>
+      {post.suggested && <p className={styles.suggested}>Suggested for you</p>}
       <header className={styles.postHead}>
         <button type="button" className={styles.postWho} onClick={onProfile} disabled={!onProfile}>
-          <Face profile={profile} size="post" />
-          <b>{profile.handle}</b>
+          <Avatar who={post.who} size="post" />
+          <span className={styles.postWhoText}>
+            <b>{post.who.handle}</b>
+            {post.place && <span className={styles.place}>{post.place}</span>}
+          </span>
         </button>
         <Glyph d={G.dots} className={styles.dots} />
       </header>
-      <Tile post={post} big />
+      <Media post={{ title: post.title, src: post.src, card: post.card, text: post.card ? post.caption : undefined }} big />
       <div className={styles.actions} aria-hidden="true">
         <Glyph d={G.heart} />
         <Glyph d={G.comment} />
         <Glyph d={G.send} />
         <Glyph d={G.save} className={`${styles.glyph} ${styles.saveGlyph}`} />
       </div>
-      {post.caption && (
+      {post.likes !== undefined && <p className={styles.likes}>{count(post.likes)} likes</p>}
+      {words && !post.card && (
         <p className={styles.caption}>
-          <b>{profile.handle}</b> {post.caption}
+          <b>{post.who.handle}</b> {words}
         </p>
       )}
+      {post.english && (
+        <button type="button" className={styles.translate} onClick={() => setEnglish((e) => !e)}>
+          {english ? post.english : "See translation"}
+        </button>
+      )}
+      {post.comments?.map((c) => (
+        <p key={c.who + c.text} className={styles.comment}>
+          <b>{c.who}</b> {c.text}
+          {c.english && <span className={styles.commentEnglish}> · {c.english}</span>}
+        </p>
+      ))}
+      {post.when && <p className={styles.when}>{post.when}</p>}
     </article>
   );
 }
+
+const fromProfile = (p: Profile, post: ProfilePost): Shown => ({
+  key: `${p.handle}/${post.id}`,
+  who: { handle: p.handle, name: p.name, avatar: p.avatar, own: p.own },
+  title: post.title,
+  src: post.src,
+  card: post.card,
+  caption: post.caption,
+  english: post.english,
+  when: post.when,
+  place: post.place,
+  likes: post.likes,
+  comments: post.comments,
+  evidence: post.evidence,
+});
+
+const fromFeed = (f: FeedPost, episode: number, profiles: readonly Profile[]): Shown => {
+  const known = profiles.find((p) => p.handle === f.handle);
+  return {
+    key: `feed/${f.id}`,
+    who: { handle: f.handle, name: f.who, avatar: known?.avatar },
+    title: f.media ?? f.text,
+    src: f.src,
+    card: f.card,
+    caption: f.text,
+    english: f.english,
+    when: f.when,
+    likes: f.shares[Math.min(2, Math.max(0, episode - 1))],
+    // The night's own posts come from accounts he doesn't follow.
+    suggested: Boolean(f.requires?.length),
+  };
+};
 
 function ProfileView({
   profile,
   onBack,
   onRead,
+  backLabel = "Back",
 }: {
   profile: Profile;
   onBack: () => void;
   onRead: (ids: readonly string[]) => void;
+  backLabel?: string;
 }) {
   const [post, setPost] = useState<string | null>(null);
+  // Where the grid was when a post was opened, so closing it goes back there.
+  const body = useRef<HTMLDivElement>(null);
+  const scroll = useRef(0);
   const open = profile.posts.find((p) => p.id === post);
+  useEffect(() => {
+    if (!open && body.current) body.current.scrollTop = scroll.current;
+  }, [open]);
+  const who = { handle: profile.handle, name: profile.name, avatar: profile.avatar, own: profile.own };
 
   return (
     <div className={styles.app} data-push>
       <header className={styles.bar}>
-        <button type="button" className={styles.back} onClick={open ? () => setPost(null) : onBack} data-back aria-label="Back">
+        <button type="button" className={styles.back} onClick={open ? () => setPost(null) : onBack} data-back aria-label={open ? "Back to the grid" : backLabel}>
           <Chevron back />
         </button>
         <span className={styles.handleBar}>{open ? "Posts" : profile.handle}</span>
         <Glyph d={G.dots} className={styles.dots} />
       </header>
 
-      <div className={styles.body}>
+      <div className={styles.body} ref={body}>
         {open ? (
-          <Post profile={profile} post={open} />
+          <Post post={fromProfile(profile, open)} onSeen={(id) => onRead([id])} />
         ) : (
           <>
             <div className={styles.profileHead}>
-              <Face profile={profile} size="profile" />
+              <Avatar who={who} size="profile" ring={!profile.private} />
               <span className={styles.stats}>
                 <span>
-                  <b>{profile.posts.length}</b>posts
+                  <b>{profile.postCount ?? profile.posts.length}</b>posts
                 </span>
                 <span>
-                  <b>{profile.own ? "2,418" : "391"}</b>followers
+                  <b>{profile.followers ?? "391"}</b>followers
                 </span>
                 <span>
-                  <b>{profile.own ? "311" : "208"}</b>following
+                  <b>{profile.following ?? "208"}</b>following
                 </span>
               </span>
             </div>
             <p className={styles.name}>{profile.name}</p>
             {profile.bio && <p className={styles.bio}>{profile.bio}</p>}
             <div className={styles.buttons} aria-hidden="true">
-              <span>{profile.own ? "Edit profile" : "Follow"}</span>
+              <span data-blue={!profile.own && !profile.private ? "" : undefined}>{profile.own ? "Edit profile" : profile.private ? "Follow" : "Following"}</span>
               <span>{profile.own ? "Share profile" : "Message"}</span>
             </div>
-            <div className={styles.gridTabs} aria-hidden="true">
-              <span data-on>
-                <Glyph d={G.grid} />
-              </span>
-              <span>
-                <Glyph d={G.reels} />
-              </span>
-              <span>
-                <Glyph d={G.tag} />
-              </span>
-            </div>
-            <div className={styles.grid}>
-              {profile.posts.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  className={styles.gridCell}
-                  onClick={() => {
-                    setPost(p.id);
-                    if (p.evidence) onRead([p.evidence]);
-                  }}
-                  aria-label={p.title}
-                >
-                  <Tile post={p} />
-                </button>
-              ))}
-            </div>
+            {profile.private ? (
+              <div className={styles.private}>
+                <span className={styles.privateLock}>
+                  <Glyph d={G.lock} />
+                </span>
+                <b>This account is private</b>
+                <span>Follow this account to see their photos and videos.</span>
+              </div>
+            ) : (
+              <>
+                <div className={styles.gridTabs} aria-hidden="true">
+                  <span data-on>
+                    <Glyph d={G.grid} />
+                  </span>
+                  <span>
+                    <Glyph d={G.reels} />
+                  </span>
+                  <span>
+                    <Glyph d={G.tag} />
+                  </span>
+                </div>
+                <div className={styles.grid}>
+                  {profile.posts.map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      className={styles.gridCell}
+                      onClick={() => {
+                        scroll.current = body.current?.scrollTop ?? 0;
+                        setPost(p.id);
+                      }}
+                      aria-label={p.title}
+                    >
+                      <Media post={{ title: p.title, src: p.src, card: p.card, text: p.caption }} />
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
     </div>
   );
 }
+
+type Tab = "home" | "explore" | "me" | "messages";
 
 export default function Instagram({
   story,
@@ -190,20 +328,151 @@ export default function Instagram({
   onRead: (ids: readonly string[]) => void;
   onSay?: (option: ReplyOption, replyId: string) => void;
 }) {
+  const [tab, setTab] = useState<Tab>("home");
   const [handle, setHandle] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [explored, setExplored] = useState<string | null>(null);
   const profiles = story.profiles.filter((p) => all(state, p.requires)).sort((a, b) => Number(Boolean(b.own)) - Number(Boolean(a.own)));
+  const own = profiles.find((p) => p.own);
   const open = profiles.find((p) => p.handle === handle);
+  const episode = episodeOf(state);
   const visit = (p: Profile) => {
     setHandle(p.handle);
     if (p.evidence) onRead([p.evidence]);
   };
-  /* The feed the app opens on. A post that proves something stays out of it:
-     that has to be opened in the grid, not scrolled past. */
-  const feed = profiles.flatMap((p) => p.posts.filter((post) => !post.evidence).map((post) => ({ p, post })));
+  const seen = (id: string) => onRead([id]);
+
+  // The night's posts, once their thread is known; then the people he follows and the rest of the world, in turn.
+  const feed = (story.feed ?? []).filter((f) => all(state, f.requires));
+  const night = feed.filter((f) => f.requires?.length).map((f) => fromFeed(f, episode, profiles));
+  const world = feed.filter((f) => !f.requires?.length).map((f) => fromFeed(f, episode, profiles));
+  // The people he follows, a post of each in turn, then his own latest two.
+  const friends = profiles.filter((p) => !p.private && !p.own);
+  const followed: Shown[] = [];
+  for (let i = 0; i < 3; i++) for (const p of friends) if (p.posts[i]) followed.push(fromProfile(p, p.posts[i]));
+  if (own) followed.push(...own.posts.slice(0, 2).map((post) => fromProfile(own, post)));
+  const mixed: Shown[] = [...night];
+  for (let i = 0; i < Math.max(followed.length, world.length); i++) {
+    if (followed[i]) mixed.push(followed[i]);
+    if (world[i]) mixed.push(world[i]);
+  }
   const messages = story.threads.some((t) => t.app === "instagram" && all(state, t.requires));
-  const own = profiles.find((p) => p.own);
 
   if (open) return <ProfileView key={open.handle} profile={open} onBack={() => setHandle(null)} onRead={onRead} />;
+  if (tab === "me" && own) return <ProfileView key="me" profile={own} onBack={() => setTab("home")} onRead={onRead} backLabel="Home" />;
+
+  // Explore: search for anyone by name, and a grid of everything public.
+  const wanted = query.trim().toLowerCase().replace(/^@/, "");
+  const found = wanted ? profiles.filter((p) => p.handle.includes(wanted) || p.name.toLowerCase().includes(wanted)) : [];
+  const tiles: Shown[] = [...night, ...world, ...profiles.filter((p) => !p.private && !p.own).flatMap((p) => p.posts.map((post) => fromProfile(p, post)))];
+  const exploredPost = tiles.find((t) => t.key === explored);
+
+  const nav = (
+    <nav className={styles.tabBar}>
+      <button type="button" aria-label="Home" aria-pressed={tab === "home"} onClick={() => { setTab("home"); setExplored(null); }}>
+        <Glyph d={G.home} className={`${styles.glyph} ${tab === "home" ? styles.on : ""}`} />
+      </button>
+      <button type="button" aria-label="Search and explore" aria-pressed={tab === "explore"} onClick={() => { setTab("explore"); setExplored(null); }}>
+        <Glyph d={G.search} className={`${styles.glyph} ${tab === "explore" ? styles.on : ""}`} />
+      </button>
+      <span aria-hidden="true">
+        <Glyph d={G.reels} />
+      </span>
+      <button type="button" aria-label="Messages" aria-pressed={tab === "messages"} onClick={() => setTab("messages")}>
+        <Glyph d={G.send} className={`${styles.glyph} ${tab === "messages" ? styles.on : ""}`} />
+      </button>
+      <button type="button" className={styles.me} aria-label="Your profile" onClick={() => setTab("me")}>
+        {own?.avatar ? <Image src={own.avatar} alt="" fill sizes="30px" className={styles.image} /> : own ? initials(own.name) : ""}
+      </button>
+    </nav>
+  );
+
+  if (tab === "explore")
+    return (
+      <div className={styles.app}>
+        <header className={styles.bar}>
+          <button type="button" className={styles.back} onClick={exploredPost ? () => setExplored(null) : () => setTab("home")} data-back aria-label="Back">
+            <Chevron back />
+          </button>
+          {exploredPost ? (
+            <span className={styles.handleBar}>Explore</span>
+          ) : (
+            <input
+              className={styles.search}
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search"
+              aria-label="Search Instagram"
+              autoComplete="off"
+              spellCheck={false}
+            />
+          )}
+          <span />
+        </header>
+        <div className={styles.body}>
+          {exploredPost ? (
+            <Post
+              post={exploredPost}
+              onSeen={seen}
+              onProfile={(() => {
+                const p = profiles.find((x) => x.handle === exploredPost.who.handle);
+                return p ? () => visit(p) : undefined;
+              })()}
+            />
+          ) : wanted ? (
+            <ul className={styles.results}>
+              {found.map((p) => (
+                <li key={p.handle}>
+                  <button type="button" className={styles.result} onClick={() => visit(p)}>
+                    <Avatar who={p} size="row" ring={false} />
+                    <span>
+                      <b>{p.handle}</b>
+                      <span>
+                        {p.name}
+                        {p.private ? " · Private" : ""}
+                        {p.followers ? ` · ${p.followers} followers` : ""}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+              {!found.length && <li className={styles.noResults}>No results for “{query.trim()}”.</li>}
+            </ul>
+          ) : (
+            <div className={styles.explore}>
+              {tiles.map((t, i) => (
+                <button key={t.key} type="button" className={styles.gridCell} data-tall={i % 7 === 2 || undefined} onClick={() => setExplored(t.key)} aria-label={t.title}>
+                  <Media post={{ title: t.title, src: t.src, card: t.card, text: t.card ? t.caption : undefined }} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {nav}
+      </div>
+    );
+
+  if (tab === "messages")
+    return (
+      <div className={styles.app}>
+        <header className={styles.bar}>
+          <button type="button" className={styles.back} onClick={() => setTab("home")} data-back aria-label="Back">
+            <Chevron back />
+          </button>
+          <span className={styles.handleBar}>{own?.handle ?? "Messages"}</span>
+          <span />
+        </header>
+        <div className={styles.body}>
+          {messages ? (
+            <Chat story={story} state={state} app="instagram" chrome={false} onRead={onRead} onSay={onSay} />
+          ) : (
+            <p className={styles.noResults}>No messages yet. Messages you send and receive will appear here.</p>
+          )}
+        </div>
+        {nav}
+      </div>
+    );
 
   return (
     <div className={styles.app}>
@@ -214,48 +483,32 @@ export default function Instagram({
         <span className={styles.wordmark}>Instagram</span>
         <span className={styles.barEnd} aria-hidden="true">
           <Glyph d={G.heart} />
-          <Glyph d={G.send} />
+          <Glyph d={G.plus} />
         </span>
       </header>
 
       <div className={styles.body}>
-        <ul className={styles.rings} aria-label="Profiles">
-          {(profiles.length ? profiles : [{ handle: "", name: story.owner.name, own: true, posts: [] }]).map((p) => (
-            <li key={p.handle || "own"}>
-              <button
-                type="button"
-                className={styles.storyButton}
-                onClick={() => p.handle && visit(p as Profile)}
-                aria-label={p.own ? "Your profile" : `${p.name}'s profile`}
-              >
-                <Face profile={p} />
-                {p.own && <span className={styles.addStory}>+</span>}
-              </button>
-              <span className={styles.handle}>{p.own ? "Your story" : p.handle}</span>
-            </li>
-          ))}
+        <ul className={styles.rings} aria-label="Stories">
+          {profiles
+            .filter((p) => !p.private)
+            .map((p) => (
+              <li key={p.handle}>
+                <button type="button" className={styles.storyButton} onClick={() => visit(p)} aria-label={p.own ? "Your profile" : `${p.name}'s profile`}>
+                  <Avatar who={p} />
+                  {p.own && <span className={styles.addStory}>+</span>}
+                </button>
+                <span className={styles.handle}>{p.own ? "Your story" : p.handle}</span>
+              </li>
+            ))}
         </ul>
 
-        {feed.map(({ p, post }) => (
-          <Post key={post.id} profile={p} post={post} onProfile={() => visit(p)} />
-        ))}
-
-        {messages && (
-          <>
-            <h3 className={styles.section}>Messages</h3>
-            <Chat story={story} state={state} app="instagram" chrome={false} onRead={onRead} onSay={onSay} />
-          </>
-        )}
+        {mixed.map((post) => {
+          const p = profiles.find((x) => x.handle === post.who.handle);
+          return <Post key={post.key} post={post} onSeen={seen} onProfile={p ? () => visit(p) : undefined} />;
+        })}
+        <p className={styles.caughtUp}>You&apos;re all caught up</p>
       </div>
-
-      {/* Instagram's own bar at the foot: home, reels, Direct, search, you. */}
-      <nav className={styles.tabBar} aria-hidden="true">
-        <Glyph d={G.home} className={`${styles.glyph} ${styles.on}`} />
-        <Glyph d={G.reels} />
-        <Glyph d={G.send} />
-        <Glyph d={G.search} />
-        <span className={styles.me}>{own ? initials(own.name) : ""}</span>
-      </nav>
+      {nav}
     </div>
   );
 }

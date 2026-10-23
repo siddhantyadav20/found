@@ -24,6 +24,12 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31_536_000,
   },
 
+  /* Chapter 1 was called Shagun until 2026-10-23. Links already passed around
+     on WhatsApp keep working. */
+  async redirects() {
+    return [{ source: "/c/shagun", destination: "/c/raakh", permanent: true }];
+  },
+
   /* The boring four. No CSP yet: a useful one needs a nonce and a real pass. */
   async headers() {
     return [

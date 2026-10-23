@@ -143,7 +143,17 @@
   cursor: pointer;
 }
 
-.choice[aria-pressed="true"] { border-color: #ece8e1; background: rgba(236, 232, 225, 0.12); }
+/* Chosen: filled, with a tick, so In and Leave out can't be mistaken for each
+   other. The same fill whichever is chosen: the record never signals which
+   choice is right (PLAYER-JOURNEY Stage 8). */
+.choice[aria-pressed="true"] {
+  border-color: #ece8e1;
+  background: #ece8e1;
+  color: #141414;
+  font-weight: 600;
+}
+.choice[aria-pressed="true"]::before { content: "✓ "; }
+.choice[aria-pressed="false"] { color: #a39d94; }
 
 /* The acts, drawn alike. */
 .acts { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -174,3 +184,104 @@
   font-size: 16px;
   line-height: 1.45;
 }
+
+/* --- the rebuild of 2026-10-01 -------------------------------------------- */
+
+.badged { position: relative; display: block; }
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: #ff3b30;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+}
+
+.trending {
+  margin: -6px 0 14px;
+  font-size: 13px;
+  color: #b8a6ff;
+}
+
+/* Your draft, on top of everybody else's posts. */
+.draft {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 12px;
+  border: 1px dashed #4a4170;
+  border-radius: 16px;
+  background: rgba(90, 63, 214, 0.08);
+}
+
+.draft .post { margin: 0; }
+
+.feed {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feedPost {
+  display: grid;
+  gap: 6px;
+  padding: 14px 2px;
+  border-top: 1px solid #22252b;
+}
+
+.feedWho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.feedWho b { flex-shrink: 0; white-space: nowrap; }
+
+/* The handle gives way first, as a feed's does: one line, cut short. */
+.feedWho span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  color: #8a857e;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feedAvatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #2b2f38;
+  color: #cfc9c0;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feedText { margin: 0; font-size: 15px; line-height: 1.45; }
+.feedEnglish { margin: 0; font-size: 13px; line-height: 1.4; color: #9a948c; }
+
+.feedMedia {
+  margin: 2px 0 0;
+  padding: 26px 14px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, #3b3329 0%, #15130f 75%);
+  color: #d9d2c6;
+  font-size: 13px;
+  text-align: center;
+}
+
+.feedShares { margin: 0; font-size: 13px; color: #8a857e; font-variant-numeric: tabular-nums; }

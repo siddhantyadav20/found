@@ -295,3 +295,168 @@ are stalls.
     - The locked note drops typed letters silently on a laptop.
     - Raju's "Kaunse hospital mein?" hangs while you press End.
     - The proof list grows to about 40 rows to scroll on a phone.
+
+---
+
+# Shagun — reviewed as product, UI and game, 2026-10-01
+
+Played from a cleared browser at 375 × 812, from the desk, unseeded, start to
+finish (Raju answered, Mummy told the truth, Sameer told "I'm M", Raju trusted,
+Nitin protected, Sameer confronted, Raju told, the record sent to Meera):
+**The Complete Record, 10 of 11, in 28 minutes** (driven faster than a thumb).
+Then the desk after a finish, and the table at 1280 × 800. Asked for a review
+from three standpoints; Siddhant then asked for all of it fixed, the same day.
+
+The verdict, in one line: the story carries it; the game around it handed the
+player the answers (word lists, labels, the case file's own replies), Episode 1
+still gave Episode 2 away, and every reveal came after the player had typed it.
+
+## Product
+
+| # | Issue | Status |
+|---|---|---|
+| 58 | Public before safe: the *trial* Canela files were in the public repo and on found-game.vercel.app | ✅ Swapped for Newsreader (OFL, `next/font/google`), the files removed. **Still in git history**: rewriting it is Siddhant's call |
+| 59 | Nothing brings a finisher back: Chapter 2 announced with no way to hear about it | ✅ "Tell me when it arrives" on the end card (`app/api/notify`, through `lib/mail.ts`; nothing stored) |
+| 60 | The voices are silent (voice notes, calls, memos, clips). The review said "nearly silent": wrong, the phone's tones are synthesised and there | ➖ Recordings are S11. A low tone now sits under each reveal (`lib/found/tones.ts` `moment`) |
+| 61 | One difficulty, built for lost players | ✅ With help / Detective, chosen at the parcel: Detective has no where-to-look, no nudge, proof in the order found, and the share says "As a detective." |
+| 62 | The score won't spread: hints and word lists put 10–11 of 11 in everyone's hands | ✅ Partly by design changes below (word lists, Kunal, the board); the end card leads with the count and eleven marks |
+| 63 | "60 min" on the desk; a play takes ~45 | ✅ "45–60 min" |
+| 64 | Chrome on an unplugged phone waited 2 minutes for the cable | ✅ 30 seconds |
+| 65 | "Someone left this for you" shown to desk players; the desk's "10 links traced" had no "of 11" | ✅ |
+
+## UI
+
+| # | Issue | Status |
+|---|---|---|
+| 66 | Placeholders flatten the peaks; the LAPATA poster was a brown blur | ✅ The poster is a printed notice (लापता, a silhouette, the number). Faces stay S11 |
+| 67 | Four stock frames read as a Western concert or club (one a fire pit on tarmac, as the first Instagram post) | ✅ Removed (ASSETS.md says why and what to look for); replacements need Siddhant's approval |
+| 68 | The case file's answer sat below a 15–40 row proof list | ✅ A dock pinned to the bottom: File it, Hint, "N on the table", and the reply. Where-to-look apps first, the rest folded |
+| 69 | Badges counted evidence, on apps iOS never badges; WhatsApp's unread counted evidence (M showed "3" for his own notes; new messages got none); "Passcode turned off Thu 11:41 PM" isn't iOS | ✅ Real unread counts (`lib/game/chat.ts`), badges only on WhatsApp, Messages and Phone; the passcode time removed |
+| 70 | The five-lane board was a list | ✅ Swimlanes: a cell per lane under each row; the dots line up into each person's night |
+| 71 | Desktop left the table empty, the case file inside his phone | ✅ On a wide table the case file lies beside the phones as a notebook |
+| 72 | Smaller: two CTAs on the desk; the desk's line repeated on the parcel; the note in italic type; three button colours; In / Leave out hard to tell apart; Safari rows did nothing; album buttons named by their cover; no "typing…" while someone's reply was on its way; the end card opened on eleven rows | ✅ All. One wasn't a bug: the call "returning to the lock screen" had come in over the lock screen. An app open when a call rings is now kept |
+
+## Game
+
+| # | Issue | Status |
+|---|---|---|
+| 73 | Word lists named people not yet met and printed the twist (Q9 offered "Sameer told Nitin…" whole) | ✅ `Say.learn`: a word is offered once something that teaches it has been seen; Q9 is built from words ("{who} {why}") |
+| 74 | Episode 1 gave Episode 2 away: the shot list ("Dilip — light"), Sethi ("holding the light"), Safari's 1:57 "kitne ghante" | ✅ "C — light", Sethi says "with your crew", the 1:57 search gone. Kept: 12:44–1:56 (canon reveal #6) |
+| 75 | No wrong theory survives a careful read | ✅ Kunal at 12:20 on the back lawn with the revolver, in plain view; "Kunal's reel" offered (and refused) at Q5 |
+| 76 | The game told a reasoning player "nothing here says so" | ✅ A hunch backed by circumstance says so (`FileClaim.backed`) |
+| 77 | Reveals echoed: the line came after the case file had said it | ✅ Sameer can be asked once the board is done ("Beech mein tumne usko kya bola?"); his line is a route for Q11 |
+| 78 | Labels concluded ("answering nothing", "Dilip beside him"); Q12 cited a kada the clip never showed | ✅ Labels describe; the 12:29 photo and the fire clip show what the answers say |
+| 79 | Transcription puzzles: Q2 on the poster, Q11's time on the title card, the board lighting its own odd rows, memo 15 saying the code | ✅ The poster names no venue; Q11 has no time blank; the board asks the player to mark what can't all be true; memo 15 is a riddle the reel take answers |
+| 80 | "Mujhe laga khaali hai" never caught; Raju at 11:31 knowing the phone changed hands; Nitin knowing what was deleted; Sameer believing "I'm M" | ✅ A reply catches "khaali"; Raju wonders; Nitin reasons it; Sameer asks what M called him (her old messages say "Sammy") |
+| 81 | Timers ignored the player: three banners in fifteen seconds under the case file, the phone dying before Sameer was read | ✅ Nothing fires while the case file is open; ten seconds between turns; the phone dies once his first message is read (or, unread, later) |
+| 82 | Meera only ever met at the ending | ✅ M rings his phone in Episode 2, with her bias; her number lands on yours |
+| 83 | After the end the phone was gone | ✅ "Look again": the phone, with what was there from minute one (tap to see what it meant) and the untraced links' proof |
+
+Tests: `tests/review.test.ts` holds the new behaviour. Still for a person on a
+phone: whether the harvested word lists feel fair, whether Kunal holds as a
+suspect for an Episode-1 genre player, and whether Detective is hard enough.
+
+## Your phone, after the review
+
+| # | Issue | Status |
+|---|---|---|
+| 84 | "What is the point of your phone?" Three tiles (Messages, the record, the parcel) that were menus, a "your draft is saved" that wasn't news, and on a phone an unmarked 6px edge | ✅ Rebuilt as two apps, as a person has them. **Messages:** Meera, and the courier (DakRoute) whose SMS has "Book a return pickup" from minute one, and writes again in Episode 3 (7–9 AM, even under airplane mode). **Pulse:** an ordinary Saturday feed until the player has heard him; then the night in public, the Kunal rumour climbing each episode (1.2k → 8.4k → 31k), the family's lawyers, then the family's story; the player's draft on top, "Review and post". The record opens from posting, or "Attach the record" in Meera's chat. Its own notifications are rare (trending, the rumour, the family's story, the courier), said on its edge and never on his screen, and lapse rather than arrive an episode late. The edge is a labelled YOURS tab. Unread is per chat, as on his phone. Funnel: `did:opened-yours`, `did:opened-pulse` |
+
+Tests: `tests/yours.test.ts`. Played at phone size: the courier from minute
+one, the return pickup to its ending, Attach in Meera's chat, Pulse from an
+empty night to Episode 3, posting early to The Wrong Story; at 1024 wide, the
+lock screen of the phone beside his. Found and fixed on the way: the first
+feed named Dilip and the shooting before Episode 1 had asked (gated on what's
+been found); the courier "typing…"; a long handle wrapping.
+
+# Shagun — stress-tested as a UX designer would, 2026-10-02
+
+Played at 375 × 812 from a fresh start through Episode 1, then from saves into
+Episodes 2 and 3, trying every option: wrong words, extra proof, dead buttons,
+the codes, the board. Siddhant: "I find the game challenging to play." Most of
+it wasn't the mystery; it was the case file's feedback.
+
+| # | Issue | Status |
+|---|---|---|
+| 85 | Every sentence opened with only decoys ("S is a DJ"): the right word hides until learned, and only grey text said so (the "Rohan" bug was one case) | ✅ Locked "Not found yet" chips stand for each word still to learn (`wordsToCome`); Raju's call, his chat, Sethi and M's chat now teach "Sameer Khurana" |
+| 86 | Wrong answers didn't say what was wrong; too much proof didn't say how much; File it went grey with no reason; the board said "9 rows are in the wrong lane" and not which; hint 1 pointed at what was already right | ✅ The wrong word is named, with where the right one is (`wordsOff`, `whereWordsAre`); "One thing on the table doesn't"; "That's what happened. Nothing on the table proves it yet" (`UNPROVED`); the reason under a grey File it; With help marks the rows in the wrong lane (Detective keeps the count); Hint points at the wrong word first, free |
+| 87 | Finds were silent: opening Settings counted the Apple Account with no word | ✅ "Noted" for every find, not only those found by looking |
+| 88 | The badge zoom had nothing to aim at: a caption on brown | ✅ The waiter is drawn with a blank badge where the zoom reveals CHHOTU, and "Double-tap or pinch to look closer" |
+| 89 | Photos and Instagram posts were captions on gradients beside real stock frames: they looked broken | ✅ Drawn sketches (`components/owner/apps/Sketch.tsx`): the waiter, Kunal with the revolver, the 12:29 set-up, and the night for the rest, captioned |
+| 90 | The board's rows were bare quotes; lanes mean "whose night", which nothing said | ✅ Each row says who said it, and the board says what a lane is |
+| 91 | 23–45 proof rows, no way to find one | ✅ A search over what's been found |
+| 92 | The YOURS tab covered WhatsApp badges, Settings chevrons and the case file; your phone's note sat on his lock screen at second one and came back after every call; the Episode 2 banner ran under the clock; the stamp covered Meera's name | ✅ A 6px sliver while his apps are open; the note waits for his home screen, says once, in your phone's blue; a short fade-in drop; the stamp lifted |
+| 93 | Dead or misleading controls: Remind Me / Message, a silent 15 s call, a lock-screen notification that only unlocked, a silent Recover, Photos opening at the oldest, an unlabelled case file | ✅ Both decline as on iOS; "Connecting… / Listening…"; a notification opens its app; "…is back in All Recordings"; Photos opens at the newest and keeps its place; "Answer it in the case file ›" on the card and a label in the dock |
+
+Not a bug: "now" on every notification came from seeded saves, which carry no
+event times. Tests: `tests/review.test.ts` (wordsToCome, wordsOff, UNPROVED).
+
+# Shagun — played blind as a first-time player, 2026-10-17
+
+> Claude, in the in-app browser at 375 × 812, from a cleared browser, With
+> help (the default), reading everything before answering, as a genre player
+> would. Not the human playtest.
+
+About 50 minutes: Episode 1 ≈ 12, Episode 2 ≈ 18, Episode 3 ≈ 20. Raju told
+the truth, "Haan" to Sameer (passed "Sammy"), Sameer confronted on the second
+shot and at 1:49, Bhasin asked why, Nitin left out of the post, posted on
+Pulse. **11 of 11.**
+
+**The five questions asked of this play.**
+
+1. **Gripping from the first minute?** Yes, the strongest stretch in the game:
+   the parcel, the note, *its ringer is on*, Raju ringing before the first app
+   is open, 47 missed calls, and "Unhone usko jala diya" in M's chat by minute
+   two. Then it dips. Q1 and Q2 ask for a name, a job, a city and "waiter at
+   the wedding" (against "railway station") just after the player has heard a
+   boy was burned.
+2. **Can a first-time player tell what to do, and what do they do?** Yes.
+   The Open question card and "Answer it in the case file ›" are clear. What
+   I did: read every chat, every mail and note, then filled sentences. I was
+   stuck twice. At Q5 "KS reel" reads as Kunal's, and the right word needs
+   Episode 2's take. At Q8 nothing on his phone says chats can be locked
+   until Hint 2, or Sameer gives the code two minutes later.
+3. **Does each episode's end make sense?** Yes. Ep 1: he's alive, and the
+   phone dies. Ep 2: "why did the car leave empty?", filed as a hunch, is the
+   best cliffhanger in the chapter. Ep 3: "Everything on this phone is true.
+   The order is his." But Sameer is never asked *why* he lied at 1:52, the
+   one thing a player wants from him at the end.
+4. **Do hints, notifications and reveals arrive on time?** Mostly. Events
+   land 10–15 s after leaving the case file; the code comes when you're
+   stuck; the battery falling 9 → 2 % is real tension. The misses are below
+   (#97–#100).
+5. **Do all three make sense, hold, and end on a note that brings players
+   back?** The chain is coherent and fair: the silver kada in an Episode 1
+   selfie pays off in Episode 3's fire clip. The end card's "Is baar label pe
+   naam tumhara hai" is the best line in the game. What stops it booming: the
+   photos are drawings with captions, the threat to *you* never peaks (the
+   parcel carries your address, and the game barely uses it), and the ending
+   is read, not played.
+
+| # | Where | Issue | Sev | Status |
+|---|---|---|---|---|
+| 94 | Photos, Instagram | Most frames are drawn sketches with their caption on them. Among real stock, the phone reads as a storyboard. This is the single biggest immersion cost | M | 🟨 Ten generated frames carry every plot photo; drawn cards are off the phone; the rest wait on credits (ASSETS.md) |
+| 95 | Ep 1, Q1–Q2 | Clerical questions straight after the murder is read; Q2's decoys (Rangmanch interview, railway station) can't be chosen in earnest | m | ✅ Q1: "where is he running to?", "on a train tomorrow afternoon" (the ticket is evidence); Q2's decoys: the caterer's kitchen, the Samastipur bus stand |
+| 96 | Ep 2, Q5 | "Kunal's reel" is the natural reading of "KS reel" + "reel mein Papa wali", and nothing on the phone says the reel was for *him* until the take | M | ✅ Rangmanch's offer asks for "an updated showreel" (T9); tabling the offer beside the reel isn't wrong. "Kunal's reel" stays the refused near miss (#75) |
+| 97 | Ep 2, Raju's second call | The "goli lagi" answer ends on "Which hospital?" with only End: the player hangs up on a grieving brother without choosing to | M | ✅ Raju closes it himself: "Maa ko abhi kuch nahi bolunga. Main phir phone karta hoon." (I won't tell Maa anything yet. I'll call you again.) |
+| 98 | Ep 2–3, your phone | Meera's 8 messages went unseen. The edge note shows once, for 6 s, only on his home screen, and the tab is a 6 px sliver while an app is open | M | ✅ The edge carries an iOS badge with the unread count, at full size and as a sliver (`yourUnread`) |
+| 99 | Ep 2, Bhasin 12:40 | His first threat landed while the case file was open and only ever showed in Notification Centre | p | ➖ by design (nothing fires under the case file); the threat is restated in Ep 3 |
+| 100 | Ep 3, Sameer's last | Meant to come after the board and before Q11, it arrives after Q13 for a player who stays in the case file. Then it gives the line, and no *why* | M | ✅ After the line, "Kyun?" (Why?), and he answers in canon's motive (SCRIPT.md §6): Kunal's video of his shot, a case that would be his alone, Mumbai on Monday, Bhasin's doctor he chose to believe, "Woh mujhe bhaiya bolta tha." (He called me bhaiya.) The order stays as #77 set it |
+| 101 | Ep 3, Q10 board | 12:38 "Ladke ko service room le jao" is what was done *to Dilip* as much as what Bhasin did; 1:22 "service gate pe laata hoon" is the car's as much as Nitin's. The board's own rule ("where they were, what was done to them, what they did") allows both, and the game marks them wrong | M | ✅ `orLane`: 12:38 also in Dilip's lane, 1:22 also the car's |
+| 102 | Ep 3, Q10 reply | The answer restates the board and lets the contradiction the player just marked pass in silence | m | ✅ The reply ends on it as a question ("And at 1:49 Sameer was in that room… What was he told?"), leaving the line his to say (#77) |
+| 103 | Ep 3, Bhasin | "Aapke liye achha hoga" is the whole threat. The parcel's return address is the player's, and he doesn't use it until a line in the epilogue | M | ✅ With "Location dekh li hai" (I've seen the location): "Courier company mein bhi humare log hain. Parcel pe bhejne wale ka pata aapka hai na?" (We have people at the courier company too. The sender's address on that parcel is yours, isn't it?) (T10) |
+| 104 | Ep 3, Q13 | "as a counter-file" is the script's word, not a player's | m | ✅ "as insurance against them" |
+| 105 | Ep 3, Q11 | The 1:56 ambulance search looked folded under "Everything else you've found" | p | ➖ not a bug: Safari is in Q11's where-to-look; it was folded only because Safari hadn't been opened yet |
+| 106 | Endings | The consequences are read as prose (lawyers, the man in a safari suit, the train), not lived on either phone | m | ✅ The morning is played on your lock screen (T21), with the guard, Nitin, Meera, the train and Mummy |
+| 107 | Nitin, Kunal | Their Ep 3 routes (trust, the screenshot, Kunal's "Lakdi tu khud dhoke laaya tha") never surfaced: I read Nitin's chat before they existed and nothing called me back | m | ✅ In Episode 3 Nitin and Kunal write first (`nitin-reaches`, `kunal-writes`) |
+| 108 | Hint | On Q5 the first Hint showed the wrong-word line, not a hint | p | ➖ by design (#86: Hint points at the wrong word first, free) |
+
+Also added (ROADMAP "The thriller pass"): Dilip asking if he'll see the sea
+from Mumbai every day, in his locked chat (T15). Tests:
+`tests/thriller-pass.test.ts`; 225 pass. Played in the browser from a seeded
+Episode 3 save: the badge on the edge, and Sameer's why with its typing.
+
+Same day, "complete whatever elevates it": the cold open, the buzzing parcel,
+the knock, the morning played on your phone, Mummy, Meera's stake, Nitin's
+cost, the trim, and Nitin and Kunal writing first (ROADMAP "The thriller
+pass"). Tests 234.

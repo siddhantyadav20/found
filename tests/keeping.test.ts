@@ -130,9 +130,9 @@ describe("the desk remembers", () => {
   });
 
   it("says something arrived only to someone who has been before", () => {
-    expect(arrivals(null, ["shagun", "case-two"])).toEqual([]);
-    expect(arrivals(["shagun"], ["shagun", "case-two"])).toEqual(["case-two"]);
-    expect(arrivals(["shagun", "case-two"], ["shagun", "case-two"])).toEqual([]);
+    expect(arrivals(null, ["raakh", "case-two"])).toEqual([]);
+    expect(arrivals(["raakh"], ["raakh", "case-two"])).toEqual(["case-two"]);
+    expect(arrivals(["raakh", "case-two"], ["raakh", "case-two"])).toEqual([]);
   });
 
   it("welcomes a player back after half an hour away", () => {
@@ -148,19 +148,19 @@ describe("the shelf", () => {
     const n = await createShelf();
     expect(n).toMatch(SHAPE);
     const s = add(fresh(), "did:unlock");
-    expect(await putShelf(n, "shagun", { save: s, solved: { episode: 1, minutes: 31, traced: 2, at: 1 } })).toBe(true);
+    expect(await putShelf(n, "raakh", { save: s, solved: { episode: 1, minutes: 31, traced: 2, at: 1 } })).toBe(true);
 
     const shelf = await readShelf(n);
-    expect(shelf?.saves["shagun"]?.flags).toEqual(s.flags);
-    expect(shelf?.solved["shagun"]?.minutes).toBe(31);
+    expect(shelf?.saves["raakh"]?.flags).toEqual(s.flags);
+    expect(shelf?.solved["raakh"]?.minutes).toBe(31);
 
     // Start over: the save goes, the finish stays.
-    await putShelf(n, "shagun", { save: null });
+    await putShelf(n, "raakh", { save: null });
     const after = await readShelf(n);
-    expect(after?.saves["shagun"]).toBeUndefined();
-    expect(after?.solved["shagun"]?.traced).toBe(2);
+    expect(after?.saves["raakh"]).toBeUndefined();
+    expect(after?.solved["raakh"]?.traced).toBe(2);
 
-    expect(await putShelf("2222-2222-2222", "shagun", { save: s })).toBe(false);
+    expect(await putShelf("2222-2222-2222", "raakh", { save: s })).toBe(false);
     expect(await readShelf("2222-2222-2222")).toBeNull();
   });
 });
@@ -186,7 +186,7 @@ describe("in-app browsers", () => {
   });
 
   it("and everything here is counted, by name, and nothing else", () => {
-    for (const e of KEEPING) expect(eventsFor(STORIES["shagun"])).toContain(e);
+    for (const e of KEEPING) expect(eventsFor(STORIES["raakh"])).toContain(e);
   });
 });
 

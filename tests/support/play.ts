@@ -7,6 +7,7 @@ import {
   fire,
   homeIcons,
   newCase,
+  ODD,
   openApp,
   openQuestion,
   see,
@@ -16,7 +17,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, CHATS_UNLOCKED, installed, offload, unlocked } from "@/lib/game/phone";
-import { PLUGGED_IN, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
+import { PLUGGED_IN, recapShown, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
 
 /**
  * A player, played the way a person can: open every app, open what's inside
@@ -25,7 +26,7 @@ import { PLUGGED_IN, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
  * happen (CHAPTER1.md F). It never sets a flag the game itself wouldn't.
  */
 
-export const ep = STORIES.shagun;
+export const ep = STORIES.raakh;
 const apps = [...new Set(homeIcons(ep).map((i) => i.app))] as AppId[];
 
 /**
@@ -82,7 +83,9 @@ export function solve(s: CaseState, q: Question, style: Style = {}): CaseState {
       throw new Error(`${q.id}: no claim can be filed`);
     }
     case "timeline": {
-      const placed = q.rows.filter((r) => seen(s, r.evidence)).map((r) => `${r.id}@${r.lane}`);
+      const known = q.rows.filter((r) => seen(s, r.evidence));
+      // Every row in its lane, and (where the board asks) the rows that can't all be true marked.
+      const placed = [...known.map((r) => `${r.id}@${r.lane}`), ...known.filter((r) => r.odd).map((r) => ODD(r.id))];
       const r = answer(ep, s, q.id, placed);
       if (!r.ok) throw new Error(`${q.id}: ${r.reply}`);
       return r.state;
@@ -109,12 +112,21 @@ export function play(
       s = add(s, ...PLUGGED_IN);
       continue;
     }
+    if (scene.kind === "recap") {
+      s = add(s, recapShown(scene.episode));
+      continue;
+    }
     if (scene.kind === "title") {
       s = add(s, titleShown(scene.episode));
       continue;
     }
     if (scene.kind === "ringing") {
-      s = add(s, `did:declined-${scene.call.id}`);
+      const { call } = scene;
+      // A player lets a call ring out; one that keeps ringing gets answered, with its first answer.
+      const first = call.insists ? call.reply?.options[0] : undefined;
+      s = call.insists
+        ? add(s, `did:answered-${call.id}`, ...(call.sets ?? []), ...(first?.sets ?? []), `did:done-${call.id}`)
+        : add(s, `did:declined-${call.id}`);
       continue;
     }
     s = look(s);

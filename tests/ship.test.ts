@@ -79,7 +79,7 @@ describe("every piece of evidence", () => {
   it("is reachable by some way of playing", () => {
     // Each reply option opens something the others don't; between them, everything.
     const ways: (readonly Flag[])[] = [
-      ["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:told-sameer-shot", "did:gave-rescuer", "did:wrote-meera"],
+      ["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:told-sameer-shot", "did:caught-khaali", "did:gave-rescuer", "did:wrote-meera"],
       ["did:exposed-nitin", "did:asked-sameer-after", "did:confronted-sameer"],
       ["did:confronted-kunal"],
     ];
