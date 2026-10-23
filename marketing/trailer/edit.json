@@ -355,10 +355,11 @@
   {
    "t0": 0.45,
    "t1": 2.35,
-   "hi": "ये फ़ोन आपका नहीं है।",
+   "hi": "ये फ़ोन\nआपका नहीं है।",
    "en": "THIS PHONE ISN'T YOURS.",
    "style": "bi",
-   "over": true
+   "over": true,
+   "pos": "mid"
   },
   {
    "t0": 2.6,
@@ -366,7 +367,8 @@
    "hi": "22 नवंबर · नई दिल्ली",
    "en": "22 NOVEMBER · NEW DELHI",
    "style": "place",
-   "over": true
+   "over": true,
+   "pos": "low"
   },
   {
    "t0": 9.35,
@@ -374,15 +376,17 @@
    "hi": "एक गोली हवा में।",
    "en": "ONE SHOT IN THE AIR.",
    "style": "bi",
-   "over": false
+   "over": false,
+   "pos": "low"
   },
   {
    "t0": 11.7,
    "t1": 14.05,
-   "hi": "एक लड़का, जो कभी घर नहीं लौटा।",
+   "hi": "एक लड़का,\nजो कभी घर नहीं लौटा।",
    "en": "ONE BOY NEVER WENT HOME.",
    "style": "bi",
-   "over": true
+   "over": true,
+   "pos": "low"
   },
   {
    "t0": 16.0,
@@ -390,15 +394,17 @@
    "hi": "पाँच दिन बाद",
    "en": "FIVE DAYS LATER",
    "style": "place",
-   "over": true
+   "over": true,
+   "pos": "low"
   },
   {
    "t0": 18.6,
    "t1": 20.6,
-   "hi": "उसका फ़ोन आपके दरवाज़े तक पहुँचा।",
+   "hi": "उसका फ़ोन\nआपके दरवाज़े तक पहुँचा।",
    "en": "HIS PHONE ARRIVED AT YOUR DOOR.",
    "style": "bi",
-   "over": false
+   "over": false,
+   "pos": "low"
   },
   {
    "t0": 23.4,
@@ -406,15 +412,17 @@
    "hi": "इसमें सब सच है।",
    "en": "EVERYTHING ON IT IS TRUE.",
    "style": "bi",
-   "over": true
+   "over": true,
+   "pos": "low"
   },
   {
    "t0": 25.9,
    "t1": 28.2,
-   "hi": "पर सब कुछ सही क्रम में नहीं है।",
+   "hi": "पर सब कुछ\nसही क्रम में नहीं है।",
    "en": "NOT EVERYTHING IS IN THE RIGHT ORDER.",
    "style": "bi",
-   "over": false
+   "over": false,
+   "pos": "low"
   },
   {
    "t0": 38.2,
@@ -422,7 +430,8 @@
    "hi": "M? Tu hai?",
    "en": "",
    "style": "message",
-   "over": false
+   "over": false,
+   "pos": "low"
   },
   {
    "t0": 40.6,
@@ -430,7 +439,8 @@
    "hi": "",
    "en": "",
    "style": "title",
-   "over": false
+   "over": false,
+   "pos": "low"
   }
  ],
  "type": [

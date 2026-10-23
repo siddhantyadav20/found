@@ -26,13 +26,15 @@
   #card { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 70px; }
   #card.black { background: #000; }
   #card.over { justify-content: flex-end; padding-bottom: 560px;
-    background: linear-gradient(transparent 45%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.55) 78%, transparent 92%); }
+    background: linear-gradient(transparent 42%, rgba(0,0,0,.68) 58%, rgba(0,0,0,.68) 78%, transparent 92%); }
+  #card.over.mid { justify-content: center; padding-bottom: 0;
+    background: linear-gradient(transparent 30%, rgba(0,0,0,.6) 42%, rgba(0,0,0,.6) 58%, transparent 70%); }
   .hi { font-family: Hind, sans-serif; font-stretch: 100%; font-weight: 700; font-size: 88px; line-height: 1.22; letter-spacing: -.005em;
     text-shadow: 0 4px 40px rgba(0,0,0,.85); }
-  .en { margin-top: 26px; font-weight: 500; font-size: 26px; letter-spacing: .34em; margin-right: -.34em; color: rgba(246,241,234,.8);
+  .en { margin-top: 26px; white-space: nowrap; font-weight: 500; font-size: 28px; letter-spacing: .16em; margin-right: -.16em; color: rgba(246,241,234,.8);
     text-shadow: 0 2px 20px rgba(0,0,0,.9); }
   .place .hi { font-weight: 600; font-size: 66px; letter-spacing: .02em; }
-  .place .en { font-size: 22px; letter-spacing: .5em; margin-right: -.5em; }
+  .place .en { font-size: 26px; letter-spacing: .42em; margin-right: -.42em; }
   .message { width: 100%; text-align: left; font-family: Inter, sans-serif; font-stretch: 100%; }
   .message small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 22px; letter-spacing: .45em; color: rgba(246,241,234,.5); margin: 0 0 26px 8px; }
   .message .bubble { display: inline-block; padding: 34px 50px; border-radius: 56px 56px 56px 14px; background: #232325; font-size: 84px; color: #fff; }
@@ -52,7 +54,7 @@
   #title .hi { top: 600px; font-family: "Tiro Devanagari Hindi", serif; font-weight: 400; font-size: 270px; line-height: 1.25; text-shadow: 0 0 80px rgba(0,0,0,.7); }
   #title h1 { top: 955px; font-weight: 700; font-size: 74px; letter-spacing: .45em; margin-right: -.45em; }
   #title .tag { top: 1100px; font-family: Hind, sans-serif; font-stretch: 100%; font-weight: 600; font-size: 52px; }
-  #title .what { top: 1185px; font-weight: 500; font-size: 22px; letter-spacing: .4em; margin-right: -.4em; color: rgba(246,241,234,.75); }
+  #title .what { top: 1185px; white-space: nowrap; font-weight: 500; font-size: 24px; letter-spacing: .22em; margin-right: -.22em; color: rgba(246,241,234,.75); }
   #title .cta { top: 1290px; left: 50%; right: auto; transform: translateX(-50%); white-space: nowrap; padding: 22px 44px; border: 3px solid #e8a25b; border-radius: 80px;
     font-weight: 700; font-size: 30px; letter-spacing: .28em; }
   #title .cta b { font-family: Hind, sans-serif; font-stretch: 100%; font-size: 40px; letter-spacing: 0; margin-right: 18px; }
@@ -205,7 +207,7 @@ function drawCard(t) {
   const el = $("card");
   if (!c) { el.style.display = "none"; return null; }
   el.style.display = "flex";
-  el.className = "layer" + (c.over ? " over" : " black");
+  el.className = "layer" + (c.over ? " over" : " black") + (c.pos === "mid" ? " mid" : "");
   if (c.style === "message") {
     // Typing… then the message.
     const typing = t < c.t0 + .8;
@@ -226,7 +228,7 @@ function drawCard(t) {
   }
   if (el.dataset.key !== String(c.t0)) {
     el.dataset.key = c.t0;
-    el.innerHTML = `<div class="${c.style}"><div class="hi">${c.hi}</div>${c.en ? `<div class="en">${c.en}</div>` : ""}</div>`;
+    el.innerHTML = `<div class="${c.style}"><div class="hi">${c.hi.replace(/\n/g, "<br>")}</div>${c.en ? `<div class="en">${c.en}</div>` : ""}</div>`;
   }
   const inner = el.firstElementChild;
   const pin = smooth(ramp(t, c.t0 + .05, c.t0 + .55)), pout = smooth(ramp(t, c.t1 - .35, c.t1));

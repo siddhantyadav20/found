@@ -38,13 +38,13 @@ def shot(t0, t1, slot, seed=0.0):
                       exposure=e, warmth=w, sat=s, haze=haze, streak=streak))
 
 
-def card(t0, t1, hi, en="", style="bi", over=False):
-    cards.append(dict(t0=t0, t1=t1, hi=hi, en=en, style=style, over=over))
+def card(t0, t1, hi, en="", style="bi", over=False, pos="low"):
+    cards.append(dict(t0=t0, t1=t1, hi=hi, en=en, style=style, over=over, pos=pos))
 
 
 # ---- Hook: his phone wakes in the dark, buzzing, and it isn't yours.
 shot(0.0, 2.4, "phone_dark")
-card(.45, 2.35, "ये फ़ोन आपका नहीं है।", "THIS PHONE ISN'T YOURS.", over=True)
+card(.45, 2.35, "ये फ़ोन\nआपका नहीं है।", "THIS PHONE ISN'T YOURS.", over=True, pos="mid")
 cues += [dict(t=0, sfx="tick_start"), dict(t=.15, sfx="buzz"), dict(t=1.15, sfx="buzz"), dict(t=.45, sfx="hook_hit")]
 
 # ---- Delhi in smog; a band somewhere.
@@ -64,7 +64,7 @@ card(9.35, 11.4, "एक गोली हवा में।", "ONE SHOT IN THE 
 
 # ---- The morning after: fog, the tune again on a harmonium, the poster.
 shot(11.4, 14.2, "fog_road")
-card(11.7, 14.05, "एक लड़का, जो कभी घर नहीं लौटा।", "ONE BOY NEVER WENT HOME.", over=True)
+card(11.7, 14.05, "एक लड़का,\nजो कभी घर नहीं लौटा।", "ONE BOY NEVER WENT HOME.", over=True)
 cues += [dict(t=11.4, sfx="hit"), dict(t=11.4, sfx="wind", until=14.2), dict(t=11.4, sfx="harmonium", until=20.6), dict(t=11.4, sfx="tanpura", until=25.9)]
 shakes.append(dict(t=11.4, amp=.25, decay=6.0))
 shot(14.2, 15.8, "poster")
@@ -74,7 +74,7 @@ cues += [dict(t=14.2, sfx="soft_hit")]
 shot(15.8, 18.6, "rain_street")
 card(16.0, 18.3, "पाँच दिन बाद", "FIVE DAYS LATER", "place", over=True)
 cues += [dict(t=15.8, sfx="street", until=18.6), dict(t=18.0, sfx="knock")]
-card(18.6, 20.6, "उसका फ़ोन आपके दरवाज़े तक पहुँचा।", "HIS PHONE ARRIVED AT YOUR DOOR.")
+card(18.6, 20.6, "उसका फ़ोन\nआपके दरवाज़े तक पहुँचा।", "HIS PHONE ARRIVED AT YOUR DOOR.")
 cues += [dict(t=18.6, sfx="hit")]
 shakes.append(dict(t=18.6, amp=.25, decay=6.0))
 
@@ -87,7 +87,7 @@ shot(23.2, 25.8, "rain_glass")
 card(23.4, 25.65, "इसमें सब सच है।", "EVERYTHING ON IT IS TRUE.", over=True)
 cues += [dict(t=23.2, sfx="rain", until=25.8)]
 turn = 25.9
-card(turn, 28.2, "पर सब कुछ सही क्रम में नहीं है।", "NOT EVERYTHING IS IN THE RIGHT ORDER.")
+card(turn, 28.2, "पर सब कुछ\nसही क्रम में नहीं है।", "NOT EVERYTHING IS IN THE RIGHT ORDER.")
 cues += [dict(t=turn, sfx="braam")]
 shakes.append(dict(t=turn, amp=.55, decay=3.0))
 
