@@ -129,7 +129,10 @@ async function drawPicture(s, t, frame, flash) {
     const i = (offset + Math.floor((t - s.t0) * E.fps)) % f.frames;
     const img = await footImage(`${f.dir}/${String(i + 1).padStart(5, "0")}.jpg`);
     gl.bindTexture(gl.TEXTURE_2D, ftex);
+    // Images load top row first; GL textures start at the bottom.
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.generateMipmap(gl.TEXTURE_2D);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     source = ftex;
@@ -152,7 +155,8 @@ async function drawPicture(s, t, frame, flash) {
   gl.uniform2f(post.u.OUTR, 1080, 1920);
   gl.uniform1f(post.u.T, t);
   gl.uniform1f(post.u.flash, flash);
-  gl.uniform1f(post.u.exposure, s.exposure * (f ? .9 : 1));
+  gl.uniform1f(post.u.exposure, s.exposure);
+  gl.uniform1f(post.u.foot, f ? 1 : 0);
   gl.uniform1f(post.u.warmth, s.warmth);
   gl.uniform1f(post.u.sat_, s.sat);
   gl.uniform1f(post.u.seed, frame % 97);

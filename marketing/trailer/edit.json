@@ -8,9 +8,9 @@
    "scene": "phone",
    "slot": "phone_dark",
    "seed": 0.0,
-   "exposure": 1.3,
+   "exposure": 1.15,
    "warmth": 0.2,
-   "sat": 0.7
+   "sat": 0.8
   },
   {
    "t0": 3.2,
@@ -18,9 +18,9 @@
    "scene": "gate",
    "slot": "delhi_fog",
    "seed": 0.0,
-   "exposure": 1.3,
-   "warmth": 0.7,
-   "sat": 0.8
+   "exposure": 0.8,
+   "warmth": 0.55,
+   "sat": 0.45
   },
   {
    "t0": 6.2,
@@ -28,9 +28,9 @@
    "scene": "bulbs",
    "slot": "wedding_lights",
    "seed": 0.0,
-   "exposure": 1.15,
+   "exposure": 1.0,
    "warmth": 0.8,
-   "sat": 0.9
+   "sat": 0.95
   },
   {
    "t0": 8.2,
@@ -38,7 +38,7 @@
    "scene": "fireworks",
    "slot": "baraat_fireworks",
    "seed": 0.0,
-   "exposure": 1.15,
+   "exposure": 1.05,
    "warmth": 0.7,
    "sat": 0.9
   },
@@ -48,19 +48,19 @@
    "scene": "dawn",
    "slot": "dawn_smoke",
    "seed": 0.0,
-   "exposure": 1.1,
+   "exposure": 0.68,
    "warmth": 0.0,
-   "sat": 0.4
+   "sat": 0.3
   },
   {
    "t0": 17.2,
    "t1": 21.4,
-   "scene": "door",
-   "slot": "parcel_door",
+   "scene": "traffic",
+   "slot": "night_street",
    "seed": 0.0,
-   "exposure": 1.25,
+   "exposure": 0.75,
    "warmth": 0.6,
-   "sat": 0.8
+   "sat": 0.7
   },
   {
    "t0": 23.6,
@@ -68,8 +68,8 @@
    "scene": "screen",
    "slot": "phone_hand",
    "seed": 0.0,
-   "exposure": 1.2,
-   "warmth": 0.4,
+   "exposure": 1.1,
+   "warmth": 0.3,
    "sat": 0.8
   },
   {
@@ -78,7 +78,7 @@
    "scene": "rain",
    "slot": "rain_glass",
    "seed": 0.0,
-   "exposure": 1.25,
+   "exposure": 0.95,
    "warmth": 0.3,
    "sat": 0.9
   },
@@ -86,351 +86,291 @@
    "t0": 32.4,
    "t1": 33.6,
    "scene": "rain",
-   "slot": "rain_glass",
+   "slot": "m_rain",
    "seed": 0.0,
-   "exposure": 1.25,
-   "warmth": 0.3,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 33.6,
    "t1": 34.584,
    "scene": "fire",
-   "slot": "fire",
+   "slot": "m_fire",
    "seed": 0.37,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 34.584,
    "t1": 35.391,
    "scene": "traffic",
-   "slot": "night_road",
+   "slot": "m_traffic",
    "seed": 0.74,
-   "exposure": 1.2,
-   "warmth": 0.5,
+   "exposure": 0.95,
+   "warmth": 0.55,
    "sat": 0.85
   },
   {
    "t0": 35.391,
    "t1": 36.053,
    "scene": "embers",
-   "slot": "smoke",
+   "slot": "m_embers",
    "seed": 1.11,
-   "exposure": 1.1,
-   "warmth": 0.6,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 36.053,
    "t1": 36.595,
    "scene": "gate",
-   "slot": "delhi_fog",
+   "slot": "m_gate",
    "seed": 1.48,
-   "exposure": 1.3,
-   "warmth": 0.7,
-   "sat": 0.8
+   "exposure": 0.75,
+   "warmth": 0.5,
+   "sat": 0.45
   },
   {
    "t0": 36.595,
    "t1": 37.04,
-   "scene": "fireworks",
-   "slot": "baraat_fireworks",
+   "scene": "fire",
+   "slot": "m_fire2",
    "seed": 1.85,
-   "exposure": 1.15,
-   "warmth": 0.7,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 37.04,
    "t1": 37.405,
-   "scene": "fire",
-   "slot": "fire",
+   "scene": "traffic",
+   "slot": "m_street",
    "seed": 2.22,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 37.405,
    "t1": 37.704,
-   "scene": "bulbs",
-   "slot": "wedding_lights",
+   "scene": "fireworks",
+   "slot": "m_fireworks",
    "seed": 2.59,
-   "exposure": 1.15,
-   "warmth": 0.8,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 37.704,
    "t1": 37.949,
-   "scene": "traffic",
-   "slot": "night_road",
+   "scene": "bulbs",
+   "slot": "m_bokeh",
    "seed": 2.96,
-   "exposure": 1.2,
-   "warmth": 0.5,
+   "exposure": 0.95,
+   "warmth": 0.55,
    "sat": 0.85
   },
   {
    "t0": 37.949,
    "t1": 38.15,
-   "scene": "dawn",
-   "slot": "dawn_smoke",
+   "scene": "traffic",
+   "slot": "m_smog",
    "seed": 3.33,
-   "exposure": 1.1,
-   "warmth": 0.0,
+   "exposure": 0.8,
+   "warmth": 0.4,
    "sat": 0.4
   },
   {
    "t0": 38.15,
    "t1": 38.315,
-   "scene": "phone",
-   "slot": "phone_dark",
+   "scene": "embers",
+   "slot": "m_sparkler",
    "seed": 3.7,
-   "exposure": 1.3,
-   "warmth": 0.2,
-   "sat": 0.7
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 38.315,
    "t1": 38.455,
-   "scene": "rain",
-   "slot": "rain_glass",
+   "scene": "traffic",
+   "slot": "m_bridge",
    "seed": 4.07,
-   "exposure": 1.25,
-   "warmth": 0.3,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 38.455,
    "t1": 38.595,
    "scene": "fire",
-   "slot": "fire",
+   "slot": "m_coals",
    "seed": 4.44,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 38.595,
    "t1": 38.735,
-   "scene": "traffic",
-   "slot": "night_road",
+   "scene": "fire",
+   "slot": "m_fire3",
    "seed": 4.81,
-   "exposure": 1.2,
-   "warmth": 0.5,
+   "exposure": 0.95,
+   "warmth": 0.55,
    "sat": 0.85
   },
   {
    "t0": 38.735,
    "t1": 38.875,
-   "scene": "embers",
-   "slot": "smoke",
+   "scene": "rain",
+   "slot": "m_rain",
    "seed": 5.18,
-   "exposure": 1.1,
-   "warmth": 0.6,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 38.875,
    "t1": 39.015,
-   "scene": "gate",
-   "slot": "delhi_fog",
+   "scene": "fire",
+   "slot": "m_fire",
    "seed": 5.55,
-   "exposure": 1.3,
-   "warmth": 0.7,
-   "sat": 0.8
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 39.015,
    "t1": 39.155,
-   "scene": "fireworks",
-   "slot": "baraat_fireworks",
+   "scene": "traffic",
+   "slot": "m_traffic",
    "seed": 5.92,
-   "exposure": 1.15,
-   "warmth": 0.7,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 39.155,
    "t1": 39.295,
-   "scene": "fire",
-   "slot": "fire",
+   "scene": "embers",
+   "slot": "m_embers",
    "seed": 6.29,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 39.295,
    "t1": 39.435,
-   "scene": "bulbs",
-   "slot": "wedding_lights",
+   "scene": "gate",
+   "slot": "m_gate",
    "seed": 6.66,
-   "exposure": 1.15,
-   "warmth": 0.8,
-   "sat": 0.9
+   "exposure": 0.75,
+   "warmth": 0.5,
+   "sat": 0.45
   },
   {
    "t0": 39.435,
    "t1": 39.575,
-   "scene": "traffic",
-   "slot": "night_road",
+   "scene": "fire",
+   "slot": "m_fire2",
    "seed": 7.03,
-   "exposure": 1.2,
-   "warmth": 0.5,
+   "exposure": 0.95,
+   "warmth": 0.55,
    "sat": 0.85
   },
   {
    "t0": 39.575,
    "t1": 39.715,
-   "scene": "dawn",
-   "slot": "dawn_smoke",
+   "scene": "traffic",
+   "slot": "m_street",
    "seed": 7.4,
-   "exposure": 1.1,
-   "warmth": 0.0,
-   "sat": 0.4
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 39.715,
    "t1": 39.855,
-   "scene": "phone",
-   "slot": "phone_dark",
+   "scene": "fireworks",
+   "slot": "m_fireworks",
    "seed": 7.77,
-   "exposure": 1.3,
-   "warmth": 0.2,
-   "sat": 0.7
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 39.855,
    "t1": 39.995,
-   "scene": "rain",
-   "slot": "rain_glass",
+   "scene": "bulbs",
+   "slot": "m_bokeh",
    "seed": 8.14,
-   "exposure": 1.25,
-   "warmth": 0.3,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 39.995,
    "t1": 40.135,
-   "scene": "fire",
-   "slot": "fire",
+   "scene": "traffic",
+   "slot": "m_smog",
    "seed": 8.51,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
+   "exposure": 0.8,
+   "warmth": 0.4,
+   "sat": 0.4
   },
   {
    "t0": 40.135,
    "t1": 40.275,
-   "scene": "traffic",
-   "slot": "night_road",
+   "scene": "embers",
+   "slot": "m_sparkler",
    "seed": 8.88,
-   "exposure": 1.2,
-   "warmth": 0.5,
+   "exposure": 0.95,
+   "warmth": 0.55,
    "sat": 0.85
   },
   {
    "t0": 40.275,
    "t1": 40.415,
-   "scene": "embers",
-   "slot": "smoke",
+   "scene": "traffic",
+   "slot": "m_bridge",
    "seed": 9.25,
-   "exposure": 1.1,
-   "warmth": 0.6,
-   "sat": 0.9
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 40.415,
    "t1": 40.555,
-   "scene": "gate",
-   "slot": "delhi_fog",
+   "scene": "fire",
+   "slot": "m_coals",
    "seed": 9.62,
-   "exposure": 1.3,
-   "warmth": 0.7,
-   "sat": 0.8
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85
   },
   {
    "t0": 40.555,
    "t1": 40.695,
-   "scene": "fireworks",
-   "slot": "baraat_fireworks",
-   "seed": 9.99,
-   "exposure": 1.15,
-   "warmth": 0.7,
-   "sat": 0.9
-  },
-  {
-   "t0": 40.695,
-   "t1": 40.835,
    "scene": "fire",
-   "slot": "fire",
-   "seed": 10.36,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
-  },
-  {
-   "t0": 40.835,
-   "t1": 40.975,
-   "scene": "bulbs",
-   "slot": "wedding_lights",
-   "seed": 10.73,
-   "exposure": 1.15,
-   "warmth": 0.8,
-   "sat": 0.9
-  },
-  {
-   "t0": 40.975,
-   "t1": 41.115,
-   "scene": "traffic",
-   "slot": "night_road",
-   "seed": 11.1,
-   "exposure": 1.2,
-   "warmth": 0.5,
+   "slot": "m_fire3",
+   "seed": 9.99,
+   "exposure": 0.95,
+   "warmth": 0.55,
    "sat": 0.85
   },
   {
-   "t0": 41.115,
-   "t1": 41.255,
-   "scene": "dawn",
-   "slot": "dawn_smoke",
-   "seed": 11.47,
-   "exposure": 1.1,
-   "warmth": 0.0,
-   "sat": 0.4
-  },
-  {
-   "t0": 41.255,
-   "t1": 41.395,
+   "t0": 40.7,
+   "t1": 41.6,
    "scene": "phone",
    "slot": "phone_dark",
-   "seed": 11.84,
-   "exposure": 1.3,
+   "seed": 0.0,
+   "exposure": 1.15,
    "warmth": 0.2,
-   "sat": 0.7
-  },
-  {
-   "t0": 41.395,
-   "t1": 41.535,
-   "scene": "rain",
-   "slot": "rain_glass",
-   "seed": 12.21,
-   "exposure": 1.25,
-   "warmth": 0.3,
-   "sat": 0.9
-  },
-  {
-   "t0": 41.535,
-   "t1": 41.6,
-   "scene": "fire",
-   "slot": "fire",
-   "seed": 12.58,
-   "exposure": 1.0,
-   "warmth": 0.6,
-   "sat": 0.95
+   "sat": 0.8
   },
   {
    "t0": 45.6,
@@ -438,7 +378,7 @@
    "scene": "embers",
    "slot": "title_embers",
    "seed": 3.0,
-   "exposure": 0.45,
+   "exposure": 0.22,
    "warmth": 0.6,
    "sat": 0.9
   }
@@ -474,8 +414,8 @@
    "over": true
   },
   {
-   "t0": 17.4,
-   "t1": 19.2,
+   "t0": 17.6,
+   "t1": 19.8,
    "lines": [
     "FIVE DAYS LATER"
    ],
@@ -546,9 +486,19 @@
    "text": "1:53 AM"
   },
   {
+   "t0": 36.595,
+   "t1": 37.04,
+   "text": "LAPATA"
+  },
+  {
    "t0": 37.04,
    "t1": 37.405,
-   "text": "LAPATA"
+   "text": "4:47 AM"
+  },
+  {
+   "t0": 40.7,
+   "t1": 41.6,
+   "text": "4. NITIN \u2014"
   }
  ],
  "cues": [
@@ -613,33 +563,13 @@
    "note": 0
   },
   {
-   "t": 17.9,
+   "t": 17.2,
+   "sfx": "city",
+   "until": 21.2
+  },
+  {
+   "t": 20.3,
    "sfx": "knock"
-  },
-  {
-   "t": 18.7,
-   "sfx": "step",
-   "n": 0
-  },
-  {
-   "t": 19.15,
-   "sfx": "step",
-   "n": 1
-  },
-  {
-   "t": 19.6,
-   "sfx": "step",
-   "n": 2
-  },
-  {
-   "t": 20.05,
-   "sfx": "step",
-   "n": 3
-  },
-  {
-   "t": 20.5,
-   "sfx": "step",
-   "n": 4
   },
   {
    "t": 21.4,
@@ -813,39 +743,9 @@
    "n": 27
   },
   {
-   "t": 40.695,
+   "t": 40.7,
    "sfx": "cut",
    "n": 28
-  },
-  {
-   "t": 40.835,
-   "sfx": "cut",
-   "n": 29
-  },
-  {
-   "t": 40.975,
-   "sfx": "cut",
-   "n": 30
-  },
-  {
-   "t": 41.115,
-   "sfx": "cut",
-   "n": 31
-  },
-  {
-   "t": 41.255,
-   "sfx": "cut",
-   "n": 32
-  },
-  {
-   "t": 41.395,
-   "sfx": "cut",
-   "n": 33
-  },
-  {
-   "t": 41.535,
-   "sfx": "cut",
-   "n": 34
   },
   {
    "t": 32.4,
@@ -975,34 +875,6 @@
   },
   {
    "t": 40.555,
-   "d": 0.035
-  },
-  {
-   "t": 40.695,
-   "d": 0.035
-  },
-  {
-   "t": 40.835,
-   "d": 0.035
-  },
-  {
-   "t": 40.975,
-   "d": 0.035
-  },
-  {
-   "t": 41.115,
-   "d": 0.035
-  },
-  {
-   "t": 41.255,
-   "d": 0.035
-  },
-  {
-   "t": 41.395,
-   "d": 0.035
-  },
-  {
-   "t": 41.535,
    "d": 0.035
   }
  ],

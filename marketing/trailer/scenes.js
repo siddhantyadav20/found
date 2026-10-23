@@ -517,7 +517,7 @@ export const fragments = Object.fromEntries(Object.entries(SCENES).map(([k, v]) 
 
 export const POST = `#version 300 es
 precision highp float;
-uniform sampler2D S; uniform vec2 OUTR; uniform float T, flash, exposure, warmth, sat_, seed;
+uniform sampler2D S; uniform vec2 OUTR; uniform float T, flash, exposure, warmth, sat_, seed, foot;
 out vec4 O;
 float h21(vec2 p){ vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
 vec3 aces(vec3 x){ return clamp((x * (2.51 * x + .03)) / (x * (2.43 * x + .59) + .14), 0., 1.); }
@@ -529,14 +529,16 @@ void main(){
   float ca = .004 * dot(c, c) * 4.;
   vec3 col = vec3(texture(S, uv + c * ca).r, texture(S, uv).g, texture(S, uv - c * ca).b);
   vec3 bl = textureLod(S, uv, 3.).rgb * .45 + textureLod(S, uv, 5.).rgb * .35 + textureLod(S, uv, 6.5).rgb * .3;
-  col += max(bl - .2, 0.) * vec3(1., .78, .62) * .9;
+  // Footage is already display-referred: decode it, and bloom only its brightest.
+  if (foot > .5) col = pow(col, vec3(2.2));
+  col += max(bl - (foot > .5 ? .75 : .2), 0.) * vec3(1., .78, .62) * (foot > .5 ? .5 : .9);
   col *= exposure;
   float l = dot(col, vec3(.299, .587, .114));
   col = mix(vec3(l), col, sat_);
   // Teal in the shadows, amber in the highlights.
   col += (1. - smoothstep(0., .35, l)) * vec3(-.004, .01, .016);
   col *= mix(vec3(1.), vec3(1.06, .98, .9), warmth * smoothstep(.2, .9, l));
-  col = aces(col * 1.1);
+  col = foot > .5 ? pow(aces(col * 1.6), vec3(1. / 1.6)) : aces(col * 1.1);
   col *= 1. - .55 * pow(length(c * vec2(1.1, .8)) * 1.25, 2.4);
   float g = h21(gl_FragCoord.xy * .5 + seed * 17.13) - .5;
   col += g * .07 * (1. - .6 * dot(col, vec3(.33)));

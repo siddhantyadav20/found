@@ -23,8 +23,8 @@ LOOK = {
 # Footage is graded gentler than the drawn scenes: exposure, warmth, saturation.
 FOOT_LOOK = {
     "phone_dark": (1.15, .2, .8), "phone_hand": (1.1, .3, .8), "delhi_fog": (.8, .55, .45), "m_gate": (.75, .5, .45),
-    "wedding_lights": (1.0, .8, .95), "baraat_fireworks": (1.05, .7, .9), "dawn_smoke": (.9, 0., .3), "night_street": (.95, .6, .7),
-    "rain_glass": (1.0, .3, .9), "title_embers": (.45, .6, .9), "m_smog": (.8, .4, .4),
+    "wedding_lights": (1.0, .8, .95), "baraat_fireworks": (1.05, .7, .9), "dawn_smoke": (.68, 0., .3), "night_street": (.75, .6, .7),
+    "rain_glass": (.95, .3, .9), "title_embers": (.22, .6, .9), "m_smog": (.8, .4, .4),
 }
 FOOT_DEFAULT = (.95, .55, .85)
 
@@ -110,7 +110,7 @@ while t < m1 - hold - .05:
     d = max(.14, d * .82)
     i += 1
 # The list he left for M, stopping where he stopped.
-shot(m1 - hold, m1, "phone", "m_phone")
+shot(m1 - hold, m1, "phone", "phone_dark")
 type_.append(dict(t0=round(m1 - hold, 3), t1=m1, text="4. NITIN —"))
 cues.append(dict(t=round(m1 - hold, 3), sfx="cut", n=i))
 cues += [dict(t=m0, sfx="shepard", until=m1), dict(t=m0, sfx="tick_fast", until=m1)]
@@ -120,7 +120,7 @@ silence = [[m1, 42.8]]
 card(42.8, 45.4, ["M? Tu hai?"], "message")
 cues += [dict(t=43.0, sfx="ping")]
 shot(45.6, 52.0, "embers", "title_embers", seed=3.0)
-shots[-1]["exposure"] = min(shots[-1]["exposure"], .45)
+shots[-1]["exposure"] = min(shots[-1]["exposure"], .22)
 card(45.6, 52.0, [], "title")
 cues += [dict(t=45.6, sfx="title_hit"), dict(t=46.4, sfx="piano", note=1), dict(t=48.4, sfx="piano", note=0), dict(t=51.4, sfx="last_tick")]
 
