@@ -94,7 +94,7 @@ if (stills) {
 
 const silent = path.join(out, "video.mp4");
 const ff = spawn("ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(EDIT.fps), "-c:v", "mjpeg", "-i", "-",
-  "-c:v", "libx264", "-preset", "slow", "-crf", "23", "-tune", "grain", "-pix_fmt", "yuv420p", "-movflags", "+faststart", silent],
+  "-c:v", "libx264", "-preset", "slow", "-crf", "23", "-maxrate", "7M", "-bufsize", "10M", "-pix_fmt", "yuv420p", "-movflags", "+faststart", silent],
   { stdio: ["pipe", "inherit", "inherit"] });
 const frames = Math.round(EDIT.duration * EDIT.fps);
 for (let i = Math.round(from * EDIT.fps); i < frames; i++) {
