@@ -1,99 +1,106 @@
 # Shagun — the cinematic trailer
 
-A 52-second vertical trailer (1080×1920, 30 fps, stereo, −14 LUFS for
-Instagram), cut the way the modern thriller teaser is cut: a watch ticking
-under everything, words that arrive out of focus, a wedding heard through a
-wall, one shot and the ringing after it, braams on the words, a string
-ostinato and a Shepard tone under a montage that keeps accelerating, a hard
-cut to silence, then the name over a shehnai.
+A 47-second vertical trailer for Indian Reels (1080×1920, 30 fps, stereo,
+−14 LUFS), Hindi first. A stranger's phone wakes in the dark; a Delhi
+wedding's band baaja plays until one shot cuts it dead; the same tune comes
+back slow on a harmonium; a missing boy's poster; his phone at your door;
+a dhol-tasha montage that runs away with itself; silence; *M? Tu hai?*;
+**शगुन**.
 
 ```bash
+node marketing/trailer/inserts.mjs                    # the props (poster, note) → footage/stills/
+python3 marketing/trailer/footage.py                  # Pexels clips and props → footage/<slot>.mp4 (≈25 min)
 python3 marketing/trailer/edit.py                     # edit.py → edit.json (the cut)
 node marketing/trailer/render.mjs --stills            # one PNG per shot and card
 node marketing/trailer/render.mjs --stills --at 9,34  # just those moments
-node marketing/trailer/render.mjs                     # → out/shagun-trailer.mp4 (≈25 min)
+node marketing/trailer/render.mjs                     # → out/shagun-trailer.mp4 (≈40 min)
 ```
 
-Needs Playwright (Chromium), ffmpeg, and Python 3 with numpy. Neither
-`out/` nor `footage/` is committed.
+Needs Playwright (Chromium), ffmpeg, and Python 3 with numpy and Pillow.
+Neither `out/` nor `footage/` is committed.
 
 ## How it's made
 
-- **Picture:** real Pexels footage (see Footage, below), graded in WebGL by
-  `POST` in `scenes.js` at 1080×1920: bloom, halation, chromatic aberration,
-  teal-and-amber split, vignette, grain, gate weave. The words are HTML over
-  it (`trailer.html`).
-- **Sound:** `sound.py` synthesises the score and the effects with numpy:
-  piano, strings, dhol, toms, braams, a shehnai with meend, rain, crows,
-  the gunshot. The only sample is the game's own buzz. Everything low also
-  speaks in the midrange, because phone speakers stop at about 200 Hz.
+- **Picture:** real Pexels footage, plus two props drawn in `inserts.html`
+  (the LAPATA poster, the note on the envelope's back), graded together in
+  WebGL by `POST` in `scenes.js`: bloom, anamorphic streaks, Delhi smog
+  haze, chromatic aberration, teal-and-amber split, vignette, grain, gate
+  weave, and camera shake on the hits. `footage.py` keys Sameer's lock
+  screen into two green-screen phones (the table one wakes on the first
+  buzz and lights the wood around it), slows the fireworks from 50 fps, and
+  crops everything to 9:16 with a push-in. If a clip is missing, a GLSL
+  stand-in from `scenes.js` plays instead.
+- **Words:** HTML over the picture (`trailer.html`), Hindi first in Hind,
+  English under it, sized for a phone with the sound off and kept clear of
+  Reels' caption and buttons. The title is Tiro Devanagari.
+- **Sound:** `sound.py` synthesises everything with numpy except the game's
+  own buzz. One original tune carries it: band baaja in Khamaj at the
+  wedding (two trumpets never quite together, clarinet, tuba, dhol, jhanj),
+  then harmonium in Bhairavi over a tanpura after the shot, and its last
+  phrase under the name. Also: a watch, the gunshot and its echo, ringing,
+  wind, horns, rain, knocks, a heartbeat, strings, a Shepard tone, a
+  dhol-tasha that speeds up through the montage, braams. Everything low
+  also speaks in the midrange, because phone speakers stop at about 200 Hz.
 
 ## The cut
 
-| | Picture | Sound |
-|---|---|---|
-| 0:00 | His phone on a table in the dark, the lock screen lit: *Missed Calls (47)* | A watch starts; one piano note |
-| 0:03 | India Gate in the dusk haze, pushing in · *22 NOVEMBER · NEW DELHI* | Far traffic, horns |
-| 0:06 | Night lights, out of focus | Dhol and shehnai through a wall |
-| 0:08 | Fireworks bursting overhead | In the room: dhol, crowd, a rocket, crackle |
-| 0:10 | White | One shot, its echo off the buildings, then ringing |
-| 0:11 | *ONE SHOT IN THE AIR.* | Silence |
-| 0:13 | Morning: a fog-bound marsh, bare trees · *ONE BOY NEVER WENT HOME.* | A hit, wind, crows, piano E♭ |
-| 0:17 | A street at night, an auto-rickshaw passing · *FIVE DAYS LATER* | Traffic, horns; a knock |
-| 0:21 | *HIS PHONE ARRIVED AT YOUR DOOR.* | A hit |
-| 0:23 | His phone in a hand, *47 Missed Calls* under a thumb | The buzz; a heartbeat |
-| 0:26 | Rain on glass, a red light beyond · *EVERYTHING ON IT IS TRUE.* | Rain; the strings begin |
-| 0:29 | *NOT EVERYTHING IS IN THE RIGHT ORDER.* | Braam |
-| 0:32 | The montage: rain on a windshield, a bonfire, highway trails, embers, India Gate, a street, fireworks, a sparkler, coals… cuts from 1.2 s to 0.14 s, then a held frame of his lock screen · *11:52 PM · LOCAL THANE MAT LE JAANA · 1:53 AM · LAPATA · 4:47 AM · 4. NITIN —* | Ostinato, violins, Shepard tone, a tom and dhol on every cut, the watch running away |
-| 0:41 | Black | Silence |
-| 0:42 | *M? Tu hai?* | One bell |
-| 0:45 | **SHAGUN** · शगुन, over embers · *PLAY FREE · LINK IN BIO* | The biggest braam, a taiko, D minor, the shehnai; one last tick |
+| | Picture | Words | Sound |
+|---|---|---|---|
+| 0:00 | His phone on a dark table; the screen wakes on a buzz and lights the wood | ये फ़ोन आपका नहीं है। · THIS PHONE ISN'T YOURS. | Buzz, a hit, one piano note, a watch |
+| 0:02 | India Gate in smog | 22 नवंबर · नई दिल्ली | Horns; a band somewhere |
+| 0:04 | Diyas, mehndi before marigolds, hennaed hands and bangles, a sparkler, fireworks slowing down | | The band baaja, loud |
+| 0:09 | White | | One shot. Everything stops. Ringing |
+| 0:09 | Black | एक गोली हवा में। · ONE SHOT IN THE AIR. | |
+| 0:11 | A tree-lined road in fog | एक लड़का, जो कभी घर नहीं लौटा। · ONE BOY NEVER WENT HOME. | The tune on a harmonium, in Bhairavi; tanpura |
+| 0:14 | The LAPATA poster on a wall, torchlit | (the poster's own) | |
+| 0:15 | An Indian street at night in the rain | पाँच दिन बाद · FIVE DAYS LATER | Rain, horns; a knock |
+| 0:18 | Black | उसका फ़ोन आपके दरवाज़े तक पहुँचा। · HIS PHONE ARRIVED AT YOUR DOOR. | A hit |
+| 0:20 | His phone in a hand, pushing in on *47 Missed Calls* | | Buzz; a heartbeat |
+| 0:23 | Rain on glass, a red light beyond | इसमें सब सच है। · EVERYTHING ON IT IS TRUE. | Rain; strings drawing breath |
+| 0:25 | Black | पर सब कुछ सही क्रम में नहीं है। · NOT EVERYTHING IS IN THE RIGHT ORDER. | Braam |
+| 0:28 | Montage: windshield rain, a havan, his note, a night street, the poster, a bonfire, bikers, agarbatti smoke, India Gate, embers, fireworks… cuts from 1.3 s down to 0.16 s | 11:52 PM · 1:53 AM · 4:47 AM | Strings, Shepard tone, dhol-tasha speeding up, the watch running away |
+| 0:36 | His lock screen, held | *4. Nitin —* typed, the cursor blinking | Everything stops but one note; keys |
+| 0:37 | Black | | Silence |
+| 0:38 | | *UNKNOWN NUMBER* · typing… · *M? Tu hai?* | One bell |
+| 0:40 | Embers | **शगुन** · SHAGUN · अजनबी का फ़ोन। आपकी तफ़्तीश। · अभी खेलें · FREE · LINK IN BIO | The biggest hit, the tune's last phrase |
+| 0:46 | Black | | One more buzz |
 
 Nothing past Episode 1's first theory is shown or said. No faces, no
 bodies, nothing graphic.
 
 ## Footage
 
-The picture is real footage from Pexels, under the [Pexels licence](https://www.pexels.com/license/)
-(free, commercial use allowed, no attribution required). `footage.py` downloads
-each clip straight from `videos.pexels.com` by id (no API key needed), cuts it
-to 9:16 with a push-in, and keys Sameer's lock screen into the two green-screen
-phones. Each clip was checked by eye: no identifiable face, nothing graphic.
-
-```bash
-python3 marketing/trailer/footage.py            # all slots → footage/<slot>.mp4 (≈20 min)
-python3 marketing/trailer/footage.py rain_glass  # just one
-```
+Real footage from Pexels, under the [Pexels licence](https://www.pexels.com/license/)
+(free, commercial use allowed, no attribution required), downloaded straight
+from `videos.pexels.com` by id. Every clip was checked by eye: no
+identifiable face, nothing graphic. Pexels files newer uploads under a second
+id, so only older clips can be fetched by id alone.
 
 | Slot | What it is | Pexels |
 |---|---|---|
 | `phone_dark` | Green-screen phone on a table, keyed with the lock screen, darkened to night | [4525346](https://www.pexels.com/video/4525346/) |
-| `delhi_fog` | India Gate at dusk | [6587044](https://www.pexels.com/video/6587044/) |
-| `wedding_lights` | Night lights, out of focus | [854088](https://www.pexels.com/video/854088/) |
-| `baraat_fireworks` | Fireworks, vertical | [14875803](https://www.pexels.com/video/14875803/) |
-| `dawn_smoke` | A fog-bound marsh and trees | [11514996](https://www.pexels.com/video/11514996/) |
-| `night_street` | A street at night, an auto-rickshaw | [4182795](https://www.pexels.com/video/4182795/) |
+| `delhi_fog` | India Gate at dusk, graded to smog | [6587044](https://www.pexels.com/video/6587044/) |
+| `w_diyas` | Diyas | [14182074](https://www.pexels.com/video/14182074/) |
+| `w_mehndi` | Mehndi being applied, marigolds behind | [15455199](https://www.pexels.com/video/15455199/) |
+| `w_hands` | Hennaed hands, red bangles | [2078587](https://www.pexels.com/video/2078587/) |
+| `w_sparkler` | A sparkler | [6378175](https://www.pexels.com/video/6378175/) |
+| `w_fireworks` | Fireworks, slowed from 50 fps | [14875803](https://www.pexels.com/video/14875803/) |
+| `fog_road` | A tree-lined road in fog (Matheran) | [1405527](https://www.pexels.com/video/1405527/) |
+| `rain_street` | An Indian street at night in the rain | [9481662](https://www.pexels.com/video/9481662/) |
 | `phone_hand` | Green-screen phone in a hand, keyed with the lock screen | [8566854](https://www.pexels.com/video/8566854/) |
 | `rain_glass` | Rain on glass, a red light beyond | [12680281](https://www.pexels.com/video/12680281/) |
 | `m_rain` | Rain on a windshield at night | [11631455](https://www.pexels.com/video/11631455/) |
+| `m_havan` | A havan fire | [15157494](https://www.pexels.com/video/15157494/) |
+| `m_street` | A city street at night, a clock tower | [13687405](https://www.pexels.com/video/13687405/) |
 | `m_fire` | A bonfire, close | [16753425](https://www.pexels.com/video/16753425/) |
-| `m_traffic` | Highway light trails | [11437954](https://www.pexels.com/video/11437954/) |
+| `m_bikes` | Helmeted riders on a night road | [10597765](https://www.pexels.com/video/10597765/) |
+| `m_incense` | Agarbatti smoke | [1793318](https://www.pexels.com/video/1793318/) |
+| `m_gate` | India Gate at dusk, graded to smog | [6583820](https://www.pexels.com/video/6583820/) |
 | `m_embers` | Embers, out of focus | [4389495](https://www.pexels.com/video/4389495/) |
-| `m_gate` | India Gate at dusk | [6583820](https://www.pexels.com/video/6583820/) |
 | `m_fireworks` | Fireworks over a street | [4832681](https://www.pexels.com/video/4832681/) |
-| `m_bokeh` | Night lights, out of focus | [854088](https://www.pexels.com/video/854088/) |
-| `m_fire2` | A fire, vertical | [11210464](https://www.pexels.com/video/11210464/) |
-| `m_street` | The street at night | [4182795](https://www.pexels.com/video/4182795/) |
-| `m_smog` | A city under smog | [5941316](https://www.pexels.com/video/5941316/) |
-| `m_sparkler` | A sparkler | [6378175](https://www.pexels.com/video/6378175/) |
-| `m_bridge` | Light trails over a bridge | [10194738](https://www.pexels.com/video/10194738/) |
+| `m_traffic` | Highway light trails | [11437954](https://www.pexels.com/video/11437954/) |
 | `m_coals` | Coals | [7571829](https://www.pexels.com/video/7571829/) |
 | `m_fire3` | Burning logs | [11203341](https://www.pexels.com/video/11203341/) |
 | `title_embers` | Embers, under the title | [12605103](https://www.pexels.com/video/12605103/) |
 
-`m_phone` (1190185) is cut but not in the edit. Pexels files newer uploads
-under a second id, so only older clips can be fetched by id alone; the rest
-need the site or an API key.
-
-If a slot's clip is missing, the shot falls back to its scene in `scenes.js`,
-a GLSL stand-in drawn in code, so the trailer always renders.
+`poster`, `m_poster` and `m_note` are the props from `inserts.html`.

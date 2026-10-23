@@ -1,887 +1,739 @@
 {
  "fps": 30,
- "duration": 52.0,
+ "duration": 47.0,
  "shots": [
   {
    "t0": 0.0,
-   "t1": 3.2,
-   "scene": "phone",
+   "t1": 2.4,
    "slot": "phone_dark",
+   "scene": "phone",
    "seed": 0.0,
    "exposure": 1.15,
    "warmth": 0.2,
-   "sat": 0.8
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.25
   },
   {
-   "t0": 3.2,
-   "t1": 6.2,
-   "scene": "gate",
+   "t0": 2.4,
+   "t1": 4.6,
    "slot": "delhi_fog",
+   "scene": "gate",
    "seed": 0.0,
-   "exposure": 0.8,
-   "warmth": 0.55,
-   "sat": 0.45
+   "exposure": 0.6,
+   "warmth": 0.65,
+   "sat": 0.38,
+   "haze": 0.6,
+   "streak": 0.1
   },
   {
-   "t0": 6.2,
-   "t1": 8.2,
+   "t0": 4.6,
+   "t1": 5.5,
+   "slot": "w_diyas",
    "scene": "bulbs",
-   "slot": "wedding_lights",
+   "seed": 0.0,
+   "exposure": 0.95,
+   "warmth": 0.8,
+   "sat": 0.95,
+   "haze": 0,
+   "streak": 0.4
+  },
+  {
+   "t0": 5.5,
+   "t1": 6.5,
+   "slot": "w_mehndi",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.85,
+   "warmth": 0.7,
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.1
+  },
+  {
+   "t0": 6.5,
+   "t1": 7.3,
+   "slot": "w_hands",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.1
+  },
+  {
+   "t0": 7.3,
+   "t1": 8.0,
+   "slot": "w_sparkler",
+   "scene": "embers",
+   "seed": 0.0,
+   "exposure": 0.95,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.5
+  },
+  {
+   "t0": 8.0,
+   "t1": 9.2,
+   "slot": "w_fireworks",
+   "scene": "fireworks",
    "seed": 0.0,
    "exposure": 1.0,
-   "warmth": 0.8,
-   "sat": 0.95
-  },
-  {
-   "t0": 8.2,
-   "t1": 10.4,
-   "scene": "fireworks",
-   "slot": "baraat_fireworks",
-   "seed": 0.0,
-   "exposure": 1.05,
    "warmth": 0.7,
-   "sat": 0.9
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.45
   },
   {
-   "t0": 13.0,
-   "t1": 17.2,
+   "t0": 11.4,
+   "t1": 14.2,
+   "slot": "fog_road",
    "scene": "dawn",
-   "slot": "dawn_smoke",
    "seed": 0.0,
-   "exposure": 0.68,
+   "exposure": 0.72,
    "warmth": 0.0,
-   "sat": 0.3
+   "sat": 0.28,
+   "haze": 0.3,
+   "streak": 0
   },
   {
-   "t0": 17.2,
-   "t1": 21.4,
-   "scene": "traffic",
-   "slot": "night_street",
+   "t0": 14.2,
+   "t1": 15.8,
+   "slot": "poster",
+   "scene": "fire",
    "seed": 0.0,
-   "exposure": 0.75,
-   "warmth": 0.6,
-   "sat": 0.7
+   "exposure": 0.95,
+   "warmth": 0.5,
+   "sat": 0.8,
+   "haze": 0,
+   "streak": 0
   },
   {
-   "t0": 23.6,
-   "t1": 26.4,
-   "scene": "screen",
+   "t0": 15.8,
+   "t1": 18.6,
+   "slot": "rain_street",
+   "scene": "traffic",
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.5,
+   "sat": 0.8,
+   "haze": 0.15,
+   "streak": 0.4
+  },
+  {
+   "t0": 20.6,
+   "t1": 23.2,
    "slot": "phone_hand",
+   "scene": "screen",
    "seed": 0.0,
    "exposure": 1.1,
    "warmth": 0.3,
-   "sat": 0.8
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.2
   },
   {
-   "t0": 26.4,
-   "t1": 29.4,
-   "scene": "rain",
+   "t0": 23.2,
+   "t1": 25.8,
    "slot": "rain_glass",
+   "scene": "rain",
    "seed": 0.0,
    "exposure": 0.95,
    "warmth": 0.3,
-   "sat": 0.9
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.3
   },
   {
-   "t0": 32.4,
-   "t1": 33.6,
-   "scene": "rain",
+   "t0": 28.2,
+   "t1": 29.5,
    "slot": "m_rain",
+   "scene": "rain",
    "seed": 0.0,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 33.6,
-   "t1": 34.584,
+   "t0": 29.5,
+   "t1": 30.605,
+   "slot": "m_havan",
    "scene": "fire",
-   "slot": "m_fire",
    "seed": 0.37,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 34.584,
-   "t1": 35.391,
-   "scene": "traffic",
-   "slot": "m_traffic",
+   "t0": 30.605,
+   "t1": 31.544,
+   "slot": "m_note",
+   "scene": "fire",
    "seed": 0.74,
    "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
+   "warmth": 0.6,
+   "sat": 0.8,
+   "haze": 0,
+   "streak": 0
   },
   {
-   "t0": 35.391,
-   "t1": 36.053,
-   "scene": "embers",
-   "slot": "m_embers",
+   "t0": 31.544,
+   "t1": 32.343,
+   "slot": "m_street",
+   "scene": "traffic",
    "seed": 1.11,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 36.053,
-   "t1": 36.595,
-   "scene": "gate",
-   "slot": "m_gate",
-   "seed": 1.48,
-   "exposure": 0.75,
-   "warmth": 0.5,
-   "sat": 0.45
-  },
-  {
-   "t0": 36.595,
-   "t1": 37.04,
+   "t0": 32.343,
+   "t1": 33.021,
+   "slot": "m_poster",
    "scene": "fire",
-   "slot": "m_fire2",
+   "seed": 1.48,
+   "exposure": 0.9,
+   "warmth": 0.5,
+   "sat": 0.8,
+   "haze": 0,
+   "streak": 0
+  },
+  {
+   "t0": 33.021,
+   "t1": 33.598,
+   "slot": "m_fire",
+   "scene": "fire",
    "seed": 1.85,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 37.04,
-   "t1": 37.405,
+   "t0": 33.598,
+   "t1": 34.088,
+   "slot": "m_bikes",
    "scene": "traffic",
-   "slot": "m_street",
    "seed": 2.22,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 37.405,
-   "t1": 37.704,
-   "scene": "fireworks",
-   "slot": "m_fireworks",
+   "t0": 34.088,
+   "t1": 34.505,
+   "slot": "m_incense",
+   "scene": "embers",
    "seed": 2.59,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 37.704,
-   "t1": 37.949,
-   "scene": "bulbs",
-   "slot": "m_bokeh",
+   "t0": 34.505,
+   "t1": 34.859,
+   "slot": "m_gate",
+   "scene": "gate",
    "seed": 2.96,
+   "exposure": 0.6,
+   "warmth": 0.6,
+   "sat": 0.38,
+   "haze": 0.55,
+   "streak": 0.1
+  },
+  {
+   "t0": 34.859,
+   "t1": 35.16,
+   "slot": "m_embers",
+   "scene": "embers",
+   "seed": 3.33,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 37.949,
-   "t1": 38.15,
-   "scene": "traffic",
-   "slot": "m_smog",
-   "seed": 3.33,
-   "exposure": 0.8,
-   "warmth": 0.4,
-   "sat": 0.4
-  },
-  {
-   "t0": 38.15,
-   "t1": 38.315,
-   "scene": "embers",
-   "slot": "m_sparkler",
+   "t0": 35.16,
+   "t1": 35.416,
+   "slot": "m_fireworks",
+   "scene": "fireworks",
    "seed": 3.7,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 38.315,
-   "t1": 38.455,
+   "t0": 35.416,
+   "t1": 35.634,
+   "slot": "m_traffic",
    "scene": "traffic",
-   "slot": "m_bridge",
    "seed": 4.07,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 38.455,
-   "t1": 38.595,
-   "scene": "fire",
+   "t0": 35.634,
+   "t1": 35.819,
    "slot": "m_coals",
+   "scene": "fire",
    "seed": 4.44,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 38.595,
-   "t1": 38.735,
-   "scene": "fire",
+   "t0": 35.819,
+   "t1": 35.979,
    "slot": "m_fire3",
+   "scene": "fire",
    "seed": 4.81,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 38.735,
-   "t1": 38.875,
-   "scene": "rain",
+   "t0": 35.979,
+   "t1": 36.2,
    "slot": "m_rain",
+   "scene": "rain",
    "seed": 5.18,
    "exposure": 0.95,
    "warmth": 0.55,
-   "sat": 0.85
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
   },
   {
-   "t0": 38.875,
-   "t1": 39.015,
-   "scene": "fire",
-   "slot": "m_fire",
-   "seed": 5.55,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.015,
-   "t1": 39.155,
-   "scene": "traffic",
-   "slot": "m_traffic",
-   "seed": 5.92,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.155,
-   "t1": 39.295,
-   "scene": "embers",
-   "slot": "m_embers",
-   "seed": 6.29,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.295,
-   "t1": 39.435,
-   "scene": "gate",
-   "slot": "m_gate",
-   "seed": 6.66,
-   "exposure": 0.75,
-   "warmth": 0.5,
-   "sat": 0.45
-  },
-  {
-   "t0": 39.435,
-   "t1": 39.575,
-   "scene": "fire",
-   "slot": "m_fire2",
-   "seed": 7.03,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.575,
-   "t1": 39.715,
-   "scene": "traffic",
-   "slot": "m_street",
-   "seed": 7.4,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.715,
-   "t1": 39.855,
-   "scene": "fireworks",
-   "slot": "m_fireworks",
-   "seed": 7.77,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.855,
-   "t1": 39.995,
-   "scene": "bulbs",
-   "slot": "m_bokeh",
-   "seed": 8.14,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 39.995,
-   "t1": 40.135,
-   "scene": "traffic",
-   "slot": "m_smog",
-   "seed": 8.51,
-   "exposure": 0.8,
-   "warmth": 0.4,
-   "sat": 0.4
-  },
-  {
-   "t0": 40.135,
-   "t1": 40.275,
-   "scene": "embers",
-   "slot": "m_sparkler",
-   "seed": 8.88,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 40.275,
-   "t1": 40.415,
-   "scene": "traffic",
-   "slot": "m_bridge",
-   "seed": 9.25,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 40.415,
-   "t1": 40.555,
-   "scene": "fire",
-   "slot": "m_coals",
-   "seed": 9.62,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 40.555,
-   "t1": 40.695,
-   "scene": "fire",
-   "slot": "m_fire3",
-   "seed": 9.99,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85
-  },
-  {
-   "t0": 40.7,
-   "t1": 41.6,
-   "scene": "phone",
+   "t0": 36.2,
+   "t1": 37.1,
    "slot": "phone_dark",
-   "seed": 0.0,
+   "scene": "phone",
+   "seed": 1.0,
    "exposure": 1.15,
    "warmth": 0.2,
-   "sat": 0.8
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.25
   },
   {
-   "t0": 45.6,
-   "t1": 52.0,
-   "scene": "embers",
+   "t0": 40.6,
+   "t1": 46.0,
    "slot": "title_embers",
+   "scene": "embers",
    "seed": 3.0,
    "exposure": 0.22,
    "warmth": 0.6,
-   "sat": 0.9
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.2
   }
  ],
  "cards": [
   {
-   "t0": 3.6,
-   "t1": 6.0,
-   "lines": [
-    "22 NOVEMBER",
-    "NEW DELHI"
-   ],
+   "t0": 0.45,
+   "t1": 2.35,
+   "hi": "ये फ़ोन आपका नहीं है।",
+   "en": "THIS PHONE ISN'T YOURS.",
+   "style": "bi",
+   "over": true
+  },
+  {
+   "t0": 2.6,
+   "t1": 4.5,
+   "hi": "22 नवंबर · नई दिल्ली",
+   "en": "22 NOVEMBER · NEW DELHI",
    "style": "place",
    "over": true
   },
   {
-   "t0": 10.9,
-   "t1": 13.0,
-   "lines": [
-    "ONE SHOT IN THE AIR."
-   ],
-   "style": "line",
+   "t0": 9.35,
+   "t1": 11.4,
+   "hi": "एक गोली हवा में।",
+   "en": "ONE SHOT IN THE AIR.",
+   "style": "bi",
    "over": false
   },
   {
-   "t0": 13.6,
-   "t1": 16.9,
-   "lines": [
-    "ONE BOY",
-    "NEVER WENT HOME."
-   ],
-   "style": "line",
+   "t0": 11.7,
+   "t1": 14.05,
+   "hi": "एक लड़का, जो कभी घर नहीं लौटा।",
+   "en": "ONE BOY NEVER WENT HOME.",
+   "style": "bi",
    "over": true
   },
   {
-   "t0": 17.6,
-   "t1": 19.8,
-   "lines": [
-    "FIVE DAYS LATER"
-   ],
+   "t0": 16.0,
+   "t1": 18.3,
+   "hi": "पाँच दिन बाद",
+   "en": "FIVE DAYS LATER",
    "style": "place",
    "over": true
   },
   {
-   "t0": 21.4,
-   "t1": 23.6,
-   "lines": [
-    "HIS PHONE",
-    "ARRIVED AT YOUR DOOR."
-   ],
-   "style": "line",
+   "t0": 18.6,
+   "t1": 20.6,
+   "hi": "उसका फ़ोन आपके दरवाज़े तक पहुँचा।",
+   "en": "HIS PHONE ARRIVED AT YOUR DOOR.",
+   "style": "bi",
    "over": false
   },
   {
-   "t0": 26.8,
-   "t1": 29.2,
-   "lines": [
-    "EVERYTHING ON IT",
-    "IS TRUE."
-   ],
-   "style": "line",
+   "t0": 23.4,
+   "t1": 25.65,
+   "hi": "इसमें सब सच है।",
+   "en": "EVERYTHING ON IT IS TRUE.",
+   "style": "bi",
    "over": true
   },
   {
-   "t0": 29.6,
-   "t1": 32.4,
-   "lines": [
-    "NOT EVERYTHING IS",
-    "IN THE RIGHT ORDER."
-   ],
-   "style": "line",
+   "t0": 25.9,
+   "t1": 28.2,
+   "hi": "पर सब कुछ सही क्रम में नहीं है।",
+   "en": "NOT EVERYTHING IS IN THE RIGHT ORDER.",
+   "style": "bi",
    "over": false
   },
   {
-   "t0": 42.8,
-   "t1": 45.4,
-   "lines": [
-    "M? Tu hai?"
-   ],
+   "t0": 38.2,
+   "t1": 40.6,
+   "hi": "M? Tu hai?",
+   "en": "",
    "style": "message",
    "over": false
   },
   {
-   "t0": 45.6,
-   "t1": 52.0,
-   "lines": [],
+   "t0": 40.6,
+   "t1": 46.0,
+   "hi": "",
+   "en": "",
    "style": "title",
    "over": false
   }
  ],
  "type": [
   {
-   "t0": 32.4,
-   "t1": 33.6,
+   "t0": 28.2,
+   "t1": 29.5,
    "text": "11:52 PM"
   },
   {
-   "t0": 34.584,
-   "t1": 35.391,
-   "text": "LOCAL THANE\nMAT LE JAANA."
-  },
-  {
-   "t0": 36.053,
-   "t1": 36.595,
+   "t0": 31.544,
+   "t1": 32.343,
    "text": "1:53 AM"
   },
   {
-   "t0": 36.595,
-   "t1": 37.04,
-   "text": "LAPATA"
-  },
-  {
-   "t0": 37.04,
-   "t1": 37.405,
+   "t0": 33.598,
+   "t1": 34.088,
    "text": "4:47 AM"
   },
   {
-   "t0": 40.7,
-   "t1": 41.6,
-   "text": "4. NITIN \u2014"
+   "t0": 35.979,
+   "t1": 36.2,
+   "text": "11:52 PM"
+  },
+  {
+   "t0": 36.2,
+   "t1": 37.1,
+   "text": "4. Nitin —",
+   "kind": "typed"
   }
  ],
  "cues": [
   {
-   "t": 0.0,
+   "t": 0,
    "sfx": "tick_start"
   },
   {
-   "t": 0.0,
-   "sfx": "piano",
-   "note": 0
-  },
-  {
-   "t": 0.6,
+   "t": 0.15,
    "sfx": "buzz"
   },
   {
-   "t": 1.6,
+   "t": 1.15,
    "sfx": "buzz"
   },
   {
-   "t": 2.6,
-   "sfx": "buzz"
+   "t": 0.45,
+   "sfx": "hook_hit"
   },
   {
-   "t": 3.2,
+   "t": 2.4,
    "sfx": "city",
-   "until": 6.2
+   "until": 4.6
   },
   {
-   "t": 4.0,
-   "sfx": "piano",
-   "note": 0
+   "t": 2.4,
+   "sfx": "band",
+   "open": 4.6,
+   "until": 9.2
   },
   {
-   "t": 6.2,
-   "sfx": "wedding",
-   "open": 8.2,
-   "until": 10.4
+   "t": 8.0,
+   "sfx": "crackle",
+   "until": 9.2
   },
   {
-   "t": 10.4,
+   "t": 9.2,
    "sfx": "gunshot"
   },
   {
-   "t": 13.0,
+   "t": 11.4,
    "sfx": "hit"
   },
   {
-   "t": 13.0,
+   "t": 11.4,
    "sfx": "wind",
-   "until": 17.2
+   "until": 14.2
   },
   {
-   "t": 13.6,
-   "sfx": "piano",
-   "note": 1
+   "t": 11.4,
+   "sfx": "harmonium",
+   "until": 20.6
   },
   {
-   "t": 15.6,
-   "sfx": "piano",
-   "note": 0
+   "t": 11.4,
+   "sfx": "tanpura",
+   "until": 25.9
   },
   {
-   "t": 17.2,
-   "sfx": "city",
-   "until": 21.2
+   "t": 14.2,
+   "sfx": "soft_hit"
   },
   {
-   "t": 20.3,
+   "t": 15.8,
+   "sfx": "street",
+   "until": 18.6
+  },
+  {
+   "t": 18.0,
    "sfx": "knock"
   },
   {
-   "t": 21.4,
+   "t": 18.6,
    "sfx": "hit"
   },
   {
-   "t": 23.7,
+   "t": 20.75,
    "sfx": "buzz"
   },
   {
-   "t": 24.7,
+   "t": 21.75,
    "sfx": "buzz"
   },
   {
-   "t": 23.6,
+   "t": 20.6,
    "sfx": "heart",
-   "until": 29.6
+   "until": 25.9
   },
   {
-   "t": 26.4,
+   "t": 23.2,
    "sfx": "rain",
-   "until": 29.4
+   "until": 25.8
   },
   {
-   "t": 26.4,
-   "sfx": "strings",
-   "until": 41.6
-  },
-  {
-   "t": 29.6,
+   "t": 25.9,
    "sfx": "braam"
   },
   {
-   "t": 32.4,
+   "t": 28.2,
    "sfx": "cut",
    "n": 0
   },
   {
-   "t": 33.6,
+   "t": 29.5,
    "sfx": "cut",
    "n": 1
   },
   {
-   "t": 34.584,
+   "t": 30.605,
    "sfx": "cut",
    "n": 2
   },
   {
-   "t": 35.391,
+   "t": 31.544,
    "sfx": "cut",
    "n": 3
   },
   {
-   "t": 36.053,
+   "t": 32.343,
    "sfx": "cut",
    "n": 4
   },
   {
-   "t": 36.595,
+   "t": 33.021,
    "sfx": "cut",
    "n": 5
   },
   {
-   "t": 37.04,
+   "t": 33.598,
    "sfx": "cut",
    "n": 6
   },
   {
-   "t": 37.405,
+   "t": 34.088,
    "sfx": "cut",
    "n": 7
   },
   {
-   "t": 37.704,
+   "t": 34.505,
    "sfx": "cut",
    "n": 8
   },
   {
-   "t": 37.949,
+   "t": 34.859,
    "sfx": "cut",
    "n": 9
   },
   {
-   "t": 38.15,
+   "t": 35.16,
    "sfx": "cut",
    "n": 10
   },
   {
-   "t": 38.315,
+   "t": 35.416,
    "sfx": "cut",
    "n": 11
   },
   {
-   "t": 38.455,
+   "t": 35.634,
    "sfx": "cut",
    "n": 12
   },
   {
-   "t": 38.595,
+   "t": 35.819,
    "sfx": "cut",
    "n": 13
   },
   {
-   "t": 38.735,
+   "t": 35.979,
    "sfx": "cut",
    "n": 14
   },
   {
-   "t": 38.875,
-   "sfx": "cut",
-   "n": 15
+   "t": 28.2,
+   "sfx": "strings",
+   "until": 36.2
   },
   {
-   "t": 39.015,
-   "sfx": "cut",
-   "n": 16
+   "t": 28.2,
+   "sfx": "drums",
+   "until": 36.2
   },
   {
-   "t": 39.155,
-   "sfx": "cut",
-   "n": 17
-  },
-  {
-   "t": 39.295,
-   "sfx": "cut",
-   "n": 18
-  },
-  {
-   "t": 39.435,
-   "sfx": "cut",
-   "n": 19
-  },
-  {
-   "t": 39.575,
-   "sfx": "cut",
-   "n": 20
-  },
-  {
-   "t": 39.715,
-   "sfx": "cut",
-   "n": 21
-  },
-  {
-   "t": 39.855,
-   "sfx": "cut",
-   "n": 22
-  },
-  {
-   "t": 39.995,
-   "sfx": "cut",
-   "n": 23
-  },
-  {
-   "t": 40.135,
-   "sfx": "cut",
-   "n": 24
-  },
-  {
-   "t": 40.275,
-   "sfx": "cut",
-   "n": 25
-  },
-  {
-   "t": 40.415,
-   "sfx": "cut",
-   "n": 26
-  },
-  {
-   "t": 40.555,
-   "sfx": "cut",
-   "n": 27
-  },
-  {
-   "t": 40.7,
-   "sfx": "cut",
-   "n": 28
-  },
-  {
-   "t": 32.4,
+   "t": 28.2,
    "sfx": "shepard",
-   "until": 41.6
+   "until": 36.2
   },
   {
-   "t": 32.4,
+   "t": 28.2,
    "sfx": "tick_fast",
-   "until": 41.6
+   "until": 36.2
   },
   {
-   "t": 43.0,
+   "t": 36.2,
+   "sfx": "typing",
+   "n": 10
+  },
+  {
+   "t": 38.3,
+   "sfx": "dots"
+  },
+  {
+   "t": 39.0,
    "sfx": "ping"
   },
   {
-   "t": 45.6,
+   "t": 40.6,
    "sfx": "title_hit"
   },
   {
-   "t": 46.4,
-   "sfx": "piano",
-   "note": 1
+   "t": 41.2,
+   "sfx": "harmonium_end"
   },
   {
-   "t": 48.4,
-   "sfx": "piano",
-   "note": 0
-  },
-  {
-   "t": 51.4,
+   "t": 45.4,
    "sfx": "last_tick"
+  },
+  {
+   "t": 46.1,
+   "sfx": "end_buzz"
   }
  ],
  "flashes": [
   {
-   "t": 10.4,
-   "d": 0.07
+   "t": 9.2,
+   "d": 0.067,
+   "k": 1.0
   },
   {
-   "t": 36.595,
-   "d": 0.035
+   "t": 34.505,
+   "d": 0.034,
+   "k": 0.8
   },
   {
-   "t": 37.04,
-   "d": 0.035
+   "t": 35.416,
+   "d": 0.034,
+   "k": 0.8
   },
   {
-   "t": 37.405,
-   "d": 0.035
+   "t": 35.979,
+   "d": 0.034,
+   "k": 0.8
+  }
+ ],
+ "shakes": [
+  {
+   "t": 9.2,
+   "amp": 1.0,
+   "decay": 5.0
   },
   {
-   "t": 37.704,
-   "d": 0.035
+   "t": 11.4,
+   "amp": 0.25,
+   "decay": 6.0
   },
   {
-   "t": 37.949,
-   "d": 0.035
+   "t": 18.6,
+   "amp": 0.25,
+   "decay": 6.0
   },
   {
-   "t": 38.15,
-   "d": 0.035
+   "t": 25.9,
+   "amp": 0.55,
+   "decay": 3.0
   },
   {
-   "t": 38.315,
-   "d": 0.035
-  },
-  {
-   "t": 38.455,
-   "d": 0.035
-  },
-  {
-   "t": 38.595,
-   "d": 0.035
-  },
-  {
-   "t": 38.735,
-   "d": 0.035
-  },
-  {
-   "t": 38.875,
-   "d": 0.035
-  },
-  {
-   "t": 39.015,
-   "d": 0.035
-  },
-  {
-   "t": 39.155,
-   "d": 0.035
-  },
-  {
-   "t": 39.295,
-   "d": 0.035
-  },
-  {
-   "t": 39.435,
-   "d": 0.035
-  },
-  {
-   "t": 39.575,
-   "d": 0.035
-  },
-  {
-   "t": 39.715,
-   "d": 0.035
-  },
-  {
-   "t": 39.855,
-   "d": 0.035
-  },
-  {
-   "t": 39.995,
-   "d": 0.035
-  },
-  {
-   "t": 40.135,
-   "d": 0.035
-  },
-  {
-   "t": 40.275,
-   "d": 0.035
-  },
-  {
-   "t": 40.415,
-   "d": 0.035
-  },
-  {
-   "t": 40.555,
-   "d": 0.035
+   "t": 40.6,
+   "amp": 0.7,
+   "decay": 2.5
   }
  ],
  "silence": [
   [
-   41.6,
-   42.8
+   37.1,
+   38.2
   ]
  ]
 }

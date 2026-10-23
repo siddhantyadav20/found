@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="utf-8">
 <title>Shagun trailer</title>
@@ -7,10 +7,11 @@
 <style>
   /* One 1080×1920 frame of the trailer, drawn by renderAt(t) from edit.json
      (render.mjs injects it as window.EDIT, with any footage it found). The
-     picture is WebGL (scenes.js); the words are HTML over it. */
+     picture is WebGL (scenes.js: footage, or a drawn stand-in, through POST);
+     the words are HTML over it, sized to be read on a phone with the sound off. */
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
-  body { color: #f4efe8; font-family: Archivo, Inter, sans-serif; font-stretch: 125%; -webkit-font-smoothing: antialiased; }
+  body { color: #f6f1ea; font-family: Archivo, Inter, sans-serif; font-stretch: 125%; -webkit-font-smoothing: antialiased; }
   .layer { position: absolute; inset: 0; }
   #gl { width: 1080px; height: 1920px; }
 
@@ -19,24 +20,43 @@
   #missed b { display: block; font-size: 52px; font-weight: 600; color: #fff; }
   #missed span { display: block; margin-top: 6px; font-size: 36px; color: rgba(255,255,255,.7); }
 
-  #card { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  /* Cards: Hindi first, big; the English under it, small and tracked. Over the
+     picture they sit in the lower middle, clear of Reels' caption and buttons,
+     on a shadow of their own. */
+  #card { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 70px; }
   #card.black { background: #000; }
-  #card.over { justify-content: flex-end; padding-bottom: 470px; }
-  .place { font-weight: 300; font-size: 30px; letter-spacing: .5em; line-height: 2.2; margin-right: -.5em; color: rgba(244,239,232,.9); text-shadow: 0 0 30px rgba(0,0,0,.9); }
-  .line { white-space: nowrap; font-weight: 500; font-size: 42px; letter-spacing: .2em; line-height: 1.5; margin-right: -.2em; text-shadow: 0 0 30px rgba(0,0,0,.9); }
-  .message { font-family: Inter, sans-serif; font-stretch: 100%; font-size: 64px; }
-  .message small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 22px; letter-spacing: .5em; color: rgba(244,239,232,.45); margin-bottom: 34px; }
-  #type { display: none; align-items: center; justify-content: center; text-align: center; white-space: pre-line;
-    font-weight: 700; font-size: 74px; letter-spacing: .14em; line-height: 1.2; padding: 0 60px; text-shadow: 0 0 40px rgba(0,0,0,.7); }
+  #card.over { justify-content: flex-end; padding-bottom: 560px;
+    background: linear-gradient(transparent 45%, rgba(0,0,0,.55) 62%, rgba(0,0,0,.55) 78%, transparent 92%); }
+  .hi { font-family: Hind, sans-serif; font-stretch: 100%; font-weight: 700; font-size: 88px; line-height: 1.22; letter-spacing: -.005em;
+    text-shadow: 0 4px 40px rgba(0,0,0,.85); }
+  .en { margin-top: 26px; font-weight: 500; font-size: 26px; letter-spacing: .34em; margin-right: -.34em; color: rgba(246,241,234,.8);
+    text-shadow: 0 2px 20px rgba(0,0,0,.9); }
+  .place .hi { font-weight: 600; font-size: 66px; letter-spacing: .02em; }
+  .place .en { font-size: 22px; letter-spacing: .5em; margin-right: -.5em; }
+  .message { width: 100%; text-align: left; font-family: Inter, sans-serif; font-stretch: 100%; }
+  .message small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 22px; letter-spacing: .45em; color: rgba(246,241,234,.5); margin: 0 0 26px 8px; }
+  .message .bubble { display: inline-block; padding: 34px 50px; border-radius: 56px 56px 56px 14px; background: #232325; font-size: 84px; color: #fff; }
+  .message .dots { display: inline-flex; gap: 16px; padding: 44px 50px; border-radius: 56px 56px 56px 14px; background: #232325; }
+  .message .dots i { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.55); }
+
+  #type { display: none; align-items: center; justify-content: center; text-align: center; white-space: pre-line; padding: 0 60px; }
+  #type .stamp { font-family: "JetBrains Mono", monospace; font-stretch: 100%; font-weight: 500; font-size: 120px; letter-spacing: .04em;
+    text-shadow: 0 0 50px rgba(0,0,0,.8); }
+  #type .stamp small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 24px; letter-spacing: .5em; margin: 8px -.5em 0 0; opacity: .75; }
+  #type .typed { font-family: Inter, sans-serif; font-stretch: 100%; font-weight: 600; font-size: 92px; padding: 30px 46px; background: rgba(0,0,0,.55); border-radius: 18px; }
+  #type .cursor { display: inline-block; width: 8px; height: 92px; margin-left: 8px; vertical-align: -14px; background: #e8b730; }
 
   #title { display: none; text-align: center; }
-  #title .found { position: absolute; left: 0; right: 0; top: 640px; font-weight: 300; font-size: 26px; letter-spacing: .8em; color: #e8a25b; margin-right: -.8em; }
-  #title .hi { position: absolute; left: 0; right: 0; top: 700px; font-family: Hind, sans-serif; font-stretch: 100%; font-weight: 300; font-size: 52px; letter-spacing: .3em; color: rgba(244,239,232,.6); }
-  #title h1 { position: absolute; left: 0; right: 0; top: 820px; font-weight: 700; font-size: 128px; letter-spacing: .2em; margin-right: -.2em; }
-  #title .what { position: absolute; left: 0; right: 0; top: 1050px; font-weight: 300; font-size: 26px; letter-spacing: .38em; line-height: 2; color: rgba(244,239,232,.8); margin-right: -.38em; }
-  #title .rule { position: absolute; left: 50%; top: 1270px; width: 120px; height: 2px; margin-left: -60px; background: rgba(244,239,232,.35); }
-  #title .cta { position: absolute; left: 0; right: 0; top: 1300px; font-weight: 500; font-size: 30px; letter-spacing: .42em; margin-right: -.42em; }
-  #title .fine { position: absolute; left: 0; right: 0; top: 1400px; font-weight: 300; font-size: 20px; letter-spacing: .3em; color: rgba(244,239,232,.4); }
+  #title > * { position: absolute; left: 0; right: 0; }
+  #title .found { top: 560px; font-weight: 500; font-size: 24px; letter-spacing: .6em; margin-right: -.6em; color: #e8a25b; }
+  #title .hi { top: 600px; font-family: "Tiro Devanagari Hindi", serif; font-weight: 400; font-size: 270px; line-height: 1.25; text-shadow: 0 0 80px rgba(0,0,0,.7); }
+  #title h1 { top: 955px; font-weight: 700; font-size: 74px; letter-spacing: .45em; margin-right: -.45em; }
+  #title .tag { top: 1100px; font-family: Hind, sans-serif; font-stretch: 100%; font-weight: 600; font-size: 52px; }
+  #title .what { top: 1185px; font-weight: 500; font-size: 22px; letter-spacing: .4em; margin-right: -.4em; color: rgba(246,241,234,.75); }
+  #title .cta { top: 1290px; left: 50%; right: auto; transform: translateX(-50%); white-space: nowrap; padding: 22px 44px; border: 3px solid #e8a25b; border-radius: 80px;
+    font-weight: 700; font-size: 30px; letter-spacing: .28em; }
+  #title .cta b { font-family: Hind, sans-serif; font-stretch: 100%; font-size: 40px; letter-spacing: 0; margin-right: 18px; }
+  #title .fine { top: 1420px; font-weight: 400; font-size: 20px; letter-spacing: .3em; color: rgba(246,241,234,.45); }
 
   #bars::before, #bars::after { content: ""; position: absolute; left: 0; right: 0; height: 90px; background: #000; }
   #bars::before { top: 0; } #bars::after { bottom: 0; }
@@ -49,12 +69,12 @@
 <div class="layer" id="type"></div>
 <div class="layer" id="card"></div>
 <div class="layer" id="title">
-  <div class="found">FOUND · CHAPTER ONE</div>
+  <div class="found">FOUND · अध्याय एक · CHAPTER ONE</div>
   <div class="hi">शगुन</div>
   <h1>SHAGUN</h1>
-  <div class="what">A MYSTERY YOU PLAY<br>ON A STRANGER'S PHONE</div>
-  <div class="rule"></div>
-  <div class="cta">PLAY FREE · LINK IN BIO</div>
+  <div class="tag">अजनबी का फ़ोन। आपकी तफ़्तीश।</div>
+  <div class="what">A MYSTERY YOU PLAY ON A STRANGER'S PHONE</div>
+  <div class="cta"><b>अभी खेलें</b>FREE · LINK IN BIO</div>
   <div class="fine">16+ · NOTHING GRAPHIC IS SHOWN</div>
 </div>
 <div class="layer" id="black"></div>
@@ -111,7 +131,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 const fbo = gl.createFramebuffer();
 gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-// Footage, when there is some, goes in its own texture and through the same POST.
+// Footage goes in its own texture and through the same POST.
 const ftex = gl.createTexture();
 
 const footFrames = {};
@@ -120,7 +140,14 @@ async function footImage(src) {
   return footFrames[src];
 }
 
-async function drawPicture(s, t, frame, flash) {
+// The camera taking a hit: decaying shake from each of E.shakes.
+function shakeAt(t) {
+  let a = 0;
+  for (const s of E.shakes || []) if (t >= s.t) a += s.amp * Math.exp(-(t - s.t) * s.decay);
+  return [a * (Math.sin(t * 83) * .6 + Math.sin(t * 137 + 1) * .4), a * (Math.sin(t * 71 + 2) * .6 + Math.sin(t * 151) * .4)];
+}
+
+async function drawPicture(s, t, frame, flash, shake) {
   let source = tex;
   const f = FOOT[s.slot];
   if (f) {
@@ -159,6 +186,9 @@ async function drawPicture(s, t, frame, flash) {
   gl.uniform1f(post.u.foot, f ? 1 : 0);
   gl.uniform1f(post.u.warmth, s.warmth);
   gl.uniform1f(post.u.sat_, s.sat);
+  gl.uniform1f(post.u.haze, s.haze || 0);
+  gl.uniform1f(post.u.streak, s.streak || 0);
+  gl.uniform2f(post.u.shake, shake[0] * .012, shake[1] * .008);
   gl.uniform1f(post.u.seed, frame % 97);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
@@ -176,18 +206,52 @@ function drawCard(t) {
   if (!c) { el.style.display = "none"; return null; }
   el.style.display = "flex";
   el.className = "layer" + (c.over ? " over" : " black");
+  if (c.style === "message") {
+    // Typing… then the message.
+    const typing = t < c.t0 + .8;
+    const k = typing ? "dots" : "msg";
+    if (el.dataset.key !== `${c.t0}${k}`) {
+      el.dataset.key = `${c.t0}${k}`;
+      el.innerHTML = `<div class="message"><small>UNKNOWN NUMBER · 2%</small>${typing ? `<span class="dots"><i></i><i></i><i></i></span>` : `<span class="bubble">${c.hi}</span>`}</div>`;
+    }
+    const inner = el.firstElementChild;
+    inner.style.opacity = smooth(ramp(t, c.t0, c.t0 + .2)) * (1 - smooth(ramp(t, c.t1 - .35, c.t1)));
+    if (typing) el.querySelectorAll(".dots i").forEach((d, i) => { d.style.opacity = .35 + .65 * (Math.sin((t - c.t0) * 12 - i * 1.2) * .5 + .5); });
+    else {
+      const p = ease(ramp(t, c.t0 + .8, c.t0 + 1.05));
+      el.querySelector(".bubble").style.transform = `scale(${.85 + .15 * p})`;
+      el.querySelector(".bubble").style.transformOrigin = "0 100%";
+    }
+    return c;
+  }
   if (el.dataset.key !== String(c.t0)) {
     el.dataset.key = c.t0;
-    el.innerHTML = c.style === "message"
-      ? `<div class="message"><small>UNKNOWN NUMBER · 2%</small>${c.lines[0]}</div>`
-      : `<div class="${c.style}">${c.lines.join("<br>")}</div>`;
+    el.innerHTML = `<div class="${c.style}"><div class="hi">${c.hi}</div>${c.en ? `<div class="en">${c.en}</div>` : ""}</div>`;
   }
   const inner = el.firstElementChild;
-  const pin = smooth(ramp(t, c.t0 + .1, c.t0 + .9)), pout = smooth(ramp(t, c.t1 - .45, c.t1));
+  const pin = smooth(ramp(t, c.t0 + .05, c.t0 + .55)), pout = smooth(ramp(t, c.t1 - .35, c.t1));
   inner.style.opacity = pin * (1 - pout);
-  inner.style.filter = `blur(${(1 - pin) * 10 + pout * 6}px)`;
-  inner.style.transform = `scale(${1.03 - pin * .03 + ramp(t, c.t0, c.t1) * .02})`;
+  inner.style.filter = `blur(${(1 - pin) * 12 + pout * 6}px)`;
+  inner.style.transform = `translateY(${(1 - pin) * 18}px) scale(${1.02 - pin * .02 + ramp(t, c.t0, c.t1) * .03})`;
+  const en = inner.querySelector(".en");
+  if (en) en.style.opacity = smooth(ramp(t, c.t0 + .35, c.t0 + .85));
   return c;
+}
+
+function drawType(t) {
+  const ty = E.type.find((x) => t >= x.t0 && t < x.t1);
+  const el = $("type");
+  el.style.display = ty ? "flex" : "none";
+  if (!ty) return;
+  if (ty.kind === "typed") {
+    // Typed out, one key at a time, to where it stops; the cursor keeps blinking.
+    const n = Math.floor(clamp((t - ty.t0) / .45) * ty.text.length);
+    const blink = Math.floor((t - ty.t0) * 3) % 2 === 0 || n < ty.text.length;
+    el.innerHTML = `<div class="typed">${ty.text.slice(0, n)}<span class="cursor" style="opacity:${blink ? 1 : 0}"></span></div>`;
+  } else {
+    el.innerHTML = `<div class="stamp">${ty.text}</div>`;
+    el.firstElementChild.style.opacity = 1 - ramp(t, ty.t1 - .05, ty.t1);
+  }
 }
 
 function drawTitle(t) {
@@ -195,45 +259,49 @@ function drawTitle(t) {
   const on = t >= c.t0;
   $("title").style.display = on ? "block" : "none";
   if (!on) return;
-  for (const [sel, d] of [[".found", .2], [".hi", .6], ["h1", 0], [".what", 1.6], [".rule", 2.2], [".cta", 2.4], [".fine", 2.9]]) {
+  for (const [sel, d] of [[".hi", 0], [".found", .5], ["h1", .25], [".tag", 1.3], [".what", 1.7], [".cta", 2.3], [".fine", 2.8]]) {
     const el = $("title").querySelector(sel);
-    const p = smooth(ramp(t, c.t0 + d, c.t0 + d + .9));
-    el.style.opacity = p; el.style.filter = `blur(${(1 - p) * 8}px)`;
+    const p = smooth(ramp(t, c.t0 + d, c.t0 + d + .8));
+    el.style.opacity = p; el.style.filter = `blur(${(1 - p) * 10}px)`;
   }
+  const hi = $("title").querySelector(".hi");
+  const ph = ease(ramp(t, c.t0, c.t0 + 1.2));
+  hi.style.transform = `scale(${1.12 - .12 * ph})`;
   const h = $("title").querySelector("h1");
-  const ph = ease(ramp(t, c.t0, c.t0 + 1.4));
-  h.style.letterSpacing = `${.6 - ph * .4}em`; h.style.marginRight = `${-(.6 - ph * .4)}em`;
+  const pt = ease(ramp(t, c.t0 + .25, c.t0 + 1.8));
+  h.style.letterSpacing = `${.9 - pt * .45}em`; h.style.marginRight = `${-(.9 - pt * .45)}em`;
+  $("title").style.opacity = 1 - ramp(t, c.t1 - .3, c.t1);
 }
 
 window.renderAt = async function (t) {
   const frame = Math.round(t * E.fps);
-  const fl = E.flashes.find((x) => t >= x.t && t < x.t + x.d + .15);
-  const flash = fl ? (t < fl.t + fl.d ? 1 : 1 - ramp(t, fl.t + fl.d, fl.t + fl.d + .15)) : 0;
+  // Flashes: a white frame; the gunshot's also burns off slowly.
+  const fl = E.flashes.find((x) => t >= x.t && t < x.t + x.d + (x.d > .05 ? .25 : 0));
+  const flash = fl ? (t < fl.t + fl.d ? fl.k : fl.k * (1 - ramp(t, fl.t + fl.d, fl.t + fl.d + .25))) : 0;
   const silent = E.silence.some(([a, b]) => t >= a && t < b);
   const s = silent ? null : E.shots.find((x) => t >= x.t0 && t < x.t1);
   const card = drawCard(t);
-  if (s && !(card && !card.over)) await drawPicture(s, t, frame, flash); else blank(flash);
+  const shake = shakeAt(t);
+  if (s && !(card && !card.over)) await drawPicture(s, t, frame, flash, shake); else blank(flash);
 
-  // A breath of black at each cut that isn't part of the montage.
+  // A breath of black around the longer shots; the quick ones cut hard.
   let dip = 0;
-  if (s && s.t1 - s.t0 > .9) dip = Math.max(1 - ramp(t, s.t0, s.t0 + .25), ramp(t, s.t1 - .15, s.t1));
-  if (t < .6) dip = Math.max(dip, 1 - ramp(t, 0, .6));
+  if (s && s.t1 - s.t0 > 1.5) dip = Math.max(1 - ramp(t, s.t0, s.t0 + .2), ramp(t, s.t1 - .12, s.t1));
+  if (t < .25) dip = Math.max(dip, 1 - ramp(t, 0, .25));
   $("black").style.opacity = dip;
 
-  // The notification, held in the same hand as the picture.
-  const m = s && s.scene === "screen" && !FOOT[s.slot];
+  // The notification, for the drawn stand-in only (footage carries its own).
+  const m = s && !FOOT[s.slot] && s.scene === "screen";
   $("missed").style.display = m ? "block" : "none";
   if (m) {
     const L = t - s.t0, fp = smooth(ramp(L, .2, 1.4));
-    const hx = (Math.sin(L * 1.3) * .006 + Math.sin(L * 3.1) * .002) * 1920, hy = Math.cos(L * 1.1) * .005 * 1920;
-    $("missed").style.transform = `translate(${-hx}px, ${hy}px)`;
     $("missed").style.filter = `blur(${(1 - fp) * 14}px)`;
     $("missed").style.opacity = .35 + fp * .65;
   }
-  const ty = E.type.find((x) => t >= x.t0 && t < x.t1);
-  $("type").style.display = ty ? "flex" : "none";
-  if (ty) { $("type").textContent = ty.text; $("type").style.opacity = 1 - ramp(t, ty.t1 - .06, ty.t1); }
+  drawType(t);
   drawTitle(t);
+  const words = `translate(${shake[0] * 10}px, ${shake[1] * 8}px)`;
+  $("card").style.transform = words; $("type").style.transform = words;
 };
 window.ready = true;
 </script>

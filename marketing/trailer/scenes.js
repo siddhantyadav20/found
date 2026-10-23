@@ -517,22 +517,41 @@ export const fragments = Object.fromEntries(Object.entries(SCENES).map(([k, v]) 
 
 export const POST = `#version 300 es
 precision highp float;
-uniform sampler2D S; uniform vec2 OUTR; uniform float T, flash, exposure, warmth, sat_, seed, foot;
+uniform sampler2D S; uniform vec2 OUTR, shake; uniform float T, flash, exposure, warmth, sat_, seed, foot, haze, streak;
 out vec4 O;
 float h21(vec2 p){ vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
+float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+  return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + 1.), f.x), f.y); }
 vec3 aces(vec3 x){ return clamp((x * (2.51 * x + .03)) / (x * (2.43 * x + .59) + .14), 0., 1.); }
+vec3 src(vec2 uv, float lod){ vec3 c = textureLod(S, uv, lod).rgb; return foot > .5 ? pow(c, vec3(2.2)) : c; }
 void main(){
   vec2 uv = gl_FragCoord.xy / OUTR;
   vec2 c = uv - .5;
   vec2 weave = (vec2(h21(vec2(seed, 1.)), h21(vec2(seed, 2.))) - .5) * .0012;
-  uv += weave;
-  float ca = .004 * dot(c, c) * 4.;
+  // The camera taking a hit: offset, and a touch of zoom so no edge shows.
+  uv = .5 + (uv - .5) * (1. - length(shake) * 1.5) + weave + shake;
+  float ca = .004 * dot(c, c) * 4. + length(shake) * .6;
   vec3 col = vec3(texture(S, uv + c * ca).r, texture(S, uv).g, texture(S, uv - c * ca).b);
   vec3 bl = textureLod(S, uv, 3.).rgb * .45 + textureLod(S, uv, 5.).rgb * .35 + textureLod(S, uv, 6.5).rgb * .3;
   // Footage is already display-referred: decode it, and bloom only its brightest.
-  if (foot > .5) col = pow(col, vec3(2.2));
-  col += max(bl - (foot > .5 ? .75 : .2), 0.) * vec3(1., .78, .62) * (foot > .5 ? .5 : .9);
+  if (foot > .5) { col = pow(col, vec3(2.2)); bl = pow(bl, vec3(2.2)); }
+  col += max(bl - (foot > .5 ? .55 : .2), 0.) * vec3(1., .78, .62) * (foot > .5 ? .6 : .9);
+  // Anamorphic streaks: the brightest points smeared sideways, blue.
+  if (streak > 0.) {
+    vec3 st = vec3(0);
+    for (int k = -7; k <= 7; k++) {
+      float fk = float(k);
+      st += max(src(uv + vec2(fk * .035, 0), 4.) - .45, 0.) * exp(-abs(fk) * .3);
+    }
+    col += st * vec3(.45, .65, 1.) * streak * .35;
+  }
   col *= exposure;
+  // Delhi's smog: a warm, moving murk that eats contrast and lifts the blacks.
+  if (haze > 0.) {
+    float f = n2(uv * vec2(3., 6.) + vec2(T * .05, T * .02)) * .6 + n2(uv * vec2(7., 14.) - vec2(T * .08, 0)) * .4;
+    vec3 smog = vec3(.36, .3, .25) * (.7 + .5 * (1. - uv.y));
+    col = mix(col, smog * .55, haze * (.35 + .45 * f));
+  }
   float l = dot(col, vec3(.299, .587, .114));
   col = mix(vec3(l), col, sat_);
   // Teal in the shadows, amber in the highlights.
