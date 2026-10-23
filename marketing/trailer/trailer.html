@@ -35,11 +35,11 @@
     text-shadow: 0 2px 20px rgba(0,0,0,.9); }
   .place .hi { font-weight: 600; font-size: 66px; letter-spacing: .02em; }
   .place .en { font-size: 26px; letter-spacing: .42em; margin-right: -.42em; }
-  .message { width: 100%; text-align: left; font-family: Inter, sans-serif; font-stretch: 100%; }
-  .message small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 22px; letter-spacing: .45em; color: rgba(246,241,234,.5); margin: 0 0 26px 8px; }
-  .message .bubble { display: inline-block; padding: 34px 50px; border-radius: 56px 56px 56px 14px; background: #232325; font-size: 84px; color: #fff; }
-  .message .dots { display: inline-flex; gap: 16px; padding: 44px 50px; border-radius: 56px 56px 56px 14px; background: #232325; }
-  .message .dots i { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.55); }
+  .message { width: 100%; text-align: center; font-family: Inter, sans-serif; font-stretch: 100%; }
+  .message small { display: block; font-family: Archivo, sans-serif; font-stretch: 125%; font-size: 28px; letter-spacing: .4em; margin-right: -.4em; color: rgba(246,241,234,.55); margin-bottom: 34px; }
+  .message .bubble { display: inline-block; padding: 44px 70px; border-radius: 72px 72px 72px 18px; background: #262628; font-size: 120px; font-weight: 500; color: #fff; }
+  .message .dots { display: inline-flex; gap: 22px; padding: 60px 70px; border-radius: 72px 72px 72px 18px; background: #262628; }
+  .message .dots i { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.55); }
 
   #type { display: none; align-items: center; justify-content: center; text-align: center; white-space: pre-line; padding: 0 60px; }
   #type .stamp { font-family: "JetBrains Mono", monospace; font-stretch: 100%; font-weight: 500; font-size: 120px; letter-spacing: .04em;
@@ -222,7 +222,7 @@ function drawCard(t) {
     else {
       const p = ease(ramp(t, c.t0 + .8, c.t0 + 1.05));
       el.querySelector(".bubble").style.transform = `scale(${.85 + .15 * p})`;
-      el.querySelector(".bubble").style.transformOrigin = "0 100%";
+      el.querySelector(".bubble").style.transformOrigin = "50% 100%";
     }
     return c;
   }
