@@ -291,17 +291,17 @@ for c in cues("buzz"):
     put_wet(buzz / max(1e-6, np.abs(buzz).max()), c["t"], .8, wet=.15, secs=.6, seed=2)
 
 # ---- Delhi at night: a far rumble, and horns.
-c = cue("city")
-secs = c["until"] - c["t"]
-rumble = band(noise(secs), 40, 300) * 1.5
-fade = np.interp(T(secs), [0, .5, secs - .5, secs], [0, 1, 1, 0])
-put(rumble * fade, c["t"], .25)
-for i, at in enumerate([.3, .9, 1.25, 1.9, 2.4]):
-    d = rng.uniform(.12, .4)
-    f = rng.choice([392, 440, 466, 523])
-    h = np.sign(np.sin(2 * np.pi * f * T(d))) * .5 + np.sign(np.sin(2 * np.pi * f * 1.26 * T(d))) * .5
-    h = band(h, 300, 1800) * env(len(h), .01, 0, 1, .04)
-    put_wet(h, c["t"] + at, .07, wet=.7, secs=2.0, tone=2500, seed=3, pan=rng.uniform(-.7, .7))
+for c in cues("city"):
+    secs = c["until"] - c["t"]
+    rumble = band(noise(secs), 40, 300) * 1.5 + band(noise(secs), 300, 2500) * .25
+    fade = np.interp(T(secs), [0, .5, secs - .5, secs], [0, 1, 1, 0])
+    put(rumble * fade, c["t"], .25)
+    for at in np.arange(.3, secs - .3, .55) + rng.uniform(-.15, .15, len(np.arange(.3, secs - .3, .55))):
+        d = rng.uniform(.12, .4)
+        f = rng.choice([392, 440, 466, 523])
+        h = np.sign(np.sin(2 * np.pi * f * T(d))) * .5 + np.sign(np.sin(2 * np.pi * f * 1.26 * T(d))) * .5
+        h = band(h, 300, 1800) * env(len(h), .01, 0, 1, .04)
+        put_wet(h, c["t"] + at, .07, wet=.7, secs=2.0, tone=2500, seed=3, pan=rng.uniform(-.7, .7))
 
 # ---- the wedding: dhol, crowd, shehnai; through the wall, then in the room.
 c = cue("wedding")
