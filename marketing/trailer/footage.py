@@ -1,21 +1,21 @@
-"""Fetches the trailer's real footage from Pexels and cuts each slot's clip.
+"""Fetches the trailer's footage and cuts each slot's clip.
 
-    python3 marketing/trailer/footage.py          # → footage/<slot>.mp4, 1220×2060, 30 fps
-    python3 marketing/trailer/footage.py fire ash # just those slots
+    python3 marketing/trailer/footage.py               # → footage/<slot>.mp4, 1220×2060, 30 fps
+    python3 marketing/trailer/footage.py w_dhol a_fire # just those slots
 
-Every Pexels clip is under the Pexels licence (free, commercial use allowed,
-no attribution required), downloaded straight from videos.pexels.com by id,
-and checked by eye before it goes in: no identifiable face. Nothing is
-composited: every phone, hand, flame and clock here is really there.
+All of it is real and Indian wherever a place shows: a wedding's pheras and
+havan, Durga Puja's dhak, Diwali's fireworks, Delhi's fog and barricades.
+Pexels clips (Pexels licence: free, commercial use allowed, no attribution
+required) are downloaded from videos.pexels.com by id, Mixkit clips (Mixkit
+licence: free, commercial use allowed) from assets.mixkit.co; the game's own
+clips and the props from inserts.mjs fill the rest. Every clip was checked by
+eye: no identifiable face, nothing graphic.
 
 A slot's clip is cut from its source at `start` for `dur` seconds, cropped
 to 9:16 around `x` (0 = left edge, 1 = right) and `y`, and pushed in from
 `zoom[0]` to `zoom[1]`. `speed` below 1 is slow motion (from a 50 or 60 fps
-source); `blur` throws it out of focus; `dark` lowers it. A `still` (from
-inserts.mjs) or a game `image` becomes a handheld shot of it.
-
-`panels` stacks three shots in one frame, each a 2:1 strip with black between,
-all moving at once: the split screen the tension references use. render.mjs
+source); `blur` throws it out of focus; `dark` lowers it. A `still` becomes a
+handheld shot of it. `panels` stacks three shots in one frame. render.mjs
 turns these into frames; trailer.html grades them.
 """
 
@@ -33,48 +33,51 @@ FOOT = HERE / "footage"
 SRC = FOOT / "src"
 OW, OH, FPS = 1220, 2060, 30
 V = "https://videos.pexels.com/video-files/{id}/{id}-{r}.mp4"
+MK = "https://assets.mixkit.co/videos/{id}/{id}-720.mp4"
 
 G = "public/found/raakh/"
 CLIPS = {
-    # slot: source, start, dur, crop, push-in, extras. id = Pexels; file/image = the game's own; still = a prop.
-    # I. Lights out. A bulb dies; on a table of letters in the dark, a phone that isn't yours lights up.
-    "bulb":      dict(id=853772, r="hd_1920_1080_25fps", start=4.8, dur=2.2, x=.5, zoom=(1.0, 1.06)),
-    "phone":     dict(id=7821643, r="hd_1920_1080_30fps", start=2.8, dur=4.2, x=.48, y=.55, zoom=(1.12, 1.26), blur=6),
-    "parcel":    dict(still="parcel.png", dur=1.6, zoom=(1.04, 1.12)),
-    # II. The night, in hands and flames.
-    "match":     dict(id=8618706, r="hd_1080_1920_30fps", start=4.6, dur=1.2, zoom=(1.0, 1.08)),
-    "mehndi":    dict(id=15455199, r="hd_1080_1920_30fps", start=2.0, dur=.6, zoom=(1.0, 1.06)),
-    "lamp":      dict(id=19971139, r="hd_1080_1920_60fps", start=1.5, dur=.6, speed=.6, zoom=(1.0, 1.06)),
-    "bangles":   dict(id=2078587, r="hd_1920_1080_24fps", start=.5, dur=.6, x=.42, zoom=(1.0, 1.08)),
-    "lighter":   dict(id=2544525, r="hd_1920_1080_24fps", start=9.7, dur=.6, x=.5, zoom=(1.1, 1.16)),
-    "sparkler":  dict(id=6378175, r="hd_1080_1920_25fps", start=2.0, dur=.6, speed=.7, zoom=(1.0, 1.06)),
-    "havan":     dict(id=15157494, r="hd_1920_1080_25fps", start=.8, dur=.6, x=.45, zoom=(1.0, 1.08)),
-    "diyas":     dict(id=14182074, r="hd_1080_1920_30fps", start=1.0, dur=.6, zoom=(1.08, 1.0)),
-    "fireworks": dict(id=14875803, r="hd_1080_1920_50fps", start=4.0, dur=.6, speed=.6, zoom=(1.0, 1.06)),
-    "bokeh":     dict(id=854088, r="hd_1920_1080_25fps", start=1.0, dur=.6, x=.5, zoom=(1.1, 1.18)),
-    "reel":      dict(file=G + "clip-reel-take.mp4", start=0.0, dur=1.2, zoom=(1.0, 1.08), blur=11, dark=.8),
-    # III. After: someone searching in the dark, the gravel, the jerrycan, the fire, and it going out.
-    "torch":     dict(id=18359612, r="hd_1920_1080_60fps", start=0.0, dur=2.4, x=.3, zoom=(1.0, 1.08)),
-    "gravel":    dict(file=G + "clip-fire-whole.mp4", start=1.0, dur=2.0, zoom=(1.0, 1.06)),
-    "jerrycan":  dict(file=G + "clip-fire-whole.mp4", start=11.0, dur=1.8, zoom=(1.0, 1.08)),
-    "fire":      dict(file=G + "clip-fire.mp4", start=1.0, dur=2.4, zoom=(1.0, 1.1)),
-    "candle":    dict(id=4055408, r="hd_1920_1080_30fps", start=1.4, dur=1.8, x=.7, zoom=(1.0, 1.1)),
-    "smoke":     dict(id=7034152, r="hd_1920_1080_25fps", start=1.4, dur=1.8, x=.5, zoom=(1.0, 1.1)),
-    # IV. You, putting it together; the clock.
-    "board":     dict(id=8369880, r="hd_720_1366_25fps", start=2.0, dur=1.6, zoom=(1.0, 1.08)),
-    "back":      dict(id=8369883, r="hd_1366_720_25fps", start=3.0, dur=1.4, x=.5, zoom=(1.0, 1.08)),
-    "alarm":     dict(id=11267667, r="hd_1080_1920_30fps", start=1.0, dur=1.0, zoom=(1.0, 1.1)),
-    "seconds":   dict(id=7033786, r="hd_1920_1080_25fps", start=2.0, dur=.8, x=.45, zoom=(1.0, 1.06)),
-    "glass":     dict(id=12680281, r="hd_1920_1080_30fps", start=7.0, dur=.3, x=.3, zoom=(1.0, 1.04)),
-    "note":      dict(still="note.png", dur=.3, zoom=(1.1, 1.08)),
-    "poster":    dict(still="poster.png", dur=.3, zoom=(1.2, 1.16)),
-    # V. Three at once: the clock, his phone, the poster.
-    "three":     dict(dur=4.0, panels=[
-        dict(id=7033786, r="hd_1920_1080_25fps", start=4.0, x=.45, zoom=(1.0, 1.1)),
-        dict(id=7821643, r="hd_1920_1080_30fps", start=4.4, speed=.7, x=.5, y=.55, zoom=(1.3, 1.45), blur=4),
-        dict(still="poster.png", x=.5, y=.2, zoom=(2.2, 2.5)),
-    ]),
-    "title_embers": dict(id=12605103, r="uhd_3840_2160_25fps", start=2.0, dur=6.0, x=.5, zoom=(1.0, 1.06)),
+    # slot: source, start, dur, crop, push-in, extras. id = Pexels; mk = Mixkit; file/image = the game's own; still = a prop.
+    # I. Cold open: Delhi in fog; a phone that isn't yours; the parcel.
+    "o_city":     dict(mk=9678, start=3.0, dur=2.5, x=.5, zoom=(1.0, 1.08)),
+    "o_phone":    dict(id=7821643, r="hd_1920_1080_30fps", start=2.4, dur=3.4, x=.48, y=.55, zoom=(1.12, 1.24), blur=6),
+    "o_parcel":   dict(still="parcel.png", dur=1.6, zoom=(1.04, 1.12)),
+    # II. The wedding: the pheras, the havan, the dhak, sparklers, fireworks.
+    "w_diya":     dict(id=19971137, r="hd_1080_1920_60fps", start=1.0, dur=1.0, zoom=(1.0, 1.08)),
+    "w_dhol":     dict(id=5691239, r="hd_1280_720_30fps", start=.4, dur=.5, x=.55, zoom=(1.0, 1.06)),
+    "w_pheras":   dict(id=15157549, r="hd_1920_1080_25fps", start=8.0, dur=.5, x=.5, zoom=(1.0, 1.06)),
+    "w_rice":     dict(id=15157543, r="hd_1920_1080_25fps", start=2.6, dur=.5, x=.5, zoom=(1.0, 1.06)),
+    "w_sparkler": dict(id=6971607, r="hd_1280_720_30fps", start=2.0, dur=.5, x=.5, zoom=(1.0, 1.08)),
+    "w_chunni":   dict(id=15157545, r="hd_1920_1080_25fps", start=1.0, dur=.5, x=.5, zoom=(1.0, 1.06)),
+    "w_sparklers": dict(id=10718916, r="hd_720_1280_30fps", start=4.0, dur=.5, zoom=(1.0, 1.06)),
+    "w_feet":     dict(id=15157550, r="hd_1920_1080_25fps", start=1.0, dur=.5, x=.35, zoom=(1.0, 1.06)),
+    "w_fireworks": dict(id=14182088, r="hd_1080_1920_30fps", start=15.3, dur=.5, zoom=(1.0, 1.06)),
+    "w_havan":    dict(id=15157547, r="hd_1920_1080_25fps", start=3.0, dur=.5, x=.5, zoom=(1.0, 1.06)),
+    "w_anar":     dict(id=14182087, r="hd_1080_1920_60fps", start=3.0, dur=.5, zoom=(1.0, 1.06)),
+    "w_mehndi":   dict(id=15455198, r="hd_1080_1920_30fps", start=1.0, dur=.5, zoom=(1.0, 1.06)),
+    "w_gun":      dict(id=5243197, r="hd_1920_1080_25fps", start=5.0, dur=1.5, x=.62, zoom=(1.1, 1.2)),
+    "w_raise":    dict(file=G + "clip-reel-take.mp4", start=1.5, dur=1.0, zoom=(1.08, 1.14), blur=18, dark=.8),
+    # III. After: a field in the morning fog, a torch, a corridor, the jerrycan, the fire, smoke.
+    "a_field":    dict(mk=26140, start=18.0, dur=2.4, x=.6, zoom=(1.0, 1.08)),
+    "a_torch":    dict(id=18359612, r="hd_1920_1080_60fps", start=0.0, dur=2.0, x=.3, zoom=(1.0, 1.08)),
+    "a_door":     dict(id=15365457, r="hd_1080_1920_30fps", start=2.0, dur=1.4, zoom=(1.0, 1.08)),
+    "a_jerrycan": dict(file=G + "clip-fire-whole.mp4", start=11.0, dur=1.6, zoom=(1.0, 1.08)),
+    "a_fire":     dict(id=3948683, r="hd_1080_1920_30fps", start=4.0, dur=2.4, zoom=(1.0, 1.08)),
+    "a_ash":      dict(id=5691247, r="hd_1080_1920_30fps", start=1.0, dur=2.2, zoom=(1.0, 1.08)),
+    # IV. The build: each plays a moment, so each is cut long enough for its longest use.
+    "m_rider":    dict(id=10597765, r="hd_1920_1080_25fps", start=3.0, dur=1.0, x=.5, zoom=(1.0, 1.08)),
+    "m_poster":   dict(still="poster.png", dur=1.0, zoom=(1.2, 1.14)),
+    "m_auto":     dict(id=12518558, r="hd_1080_1920_30fps", start=8.0, dur=1.0, zoom=(1.0, 1.06)),
+    "m_car":      dict(id=15722036, r="hd_1920_1080_24fps", start=9.0, dur=1.0, x=.6, zoom=(1.0, 1.08)),
+    "m_cracker":  dict(id=16510383, r="hd_1080_1920_60fps", start=1.5, dur=1.0, zoom=(1.0, 1.06)),
+    "m_trails":   dict(id=13837044, r="hd_1366_720_24fps", start=1.0, dur=1.0, x=.5, zoom=(1.0, 1.06)),
+    "m_aarti":    dict(id=13953530, r="hd_1920_1080_50fps", start=6.0, dur=1.0, x=.55, zoom=(1.0, 1.06)),
+    "m_clock":    dict(id=8322053, r="hd_720_1366_25fps", start=4.0, dur=1.0, zoom=(1.0, 1.06)),
+    "m_road":     dict(id=5691244, r="hd_720_1280_30fps", start=15.0, dur=1.0, zoom=(1.0, 1.06)),
+    "m_city":     dict(id=20319188, r="hd_1920_1080_30fps", start=3.0, dur=1.0, x=.5, zoom=(1.1, 1.16)),
+    # V. Seven.
+    "s_dawn":     dict(id=10401761, r="hd_1920_1080_24fps", start=10.0, dur=4.2, x=.5, zoom=(1.0, 1.1)),
+    "title_ash":  dict(id=12298312, r="hd_1920_1080_24fps", start=2.0, dur=6.0, x=.5, zoom=(1.0, 1.06)),
 }
 
 
@@ -84,10 +87,16 @@ def frames_of(spec, dur):
         im = Image.open(FOOT / "stills" / spec["still"] if "still" in spec else ROOT / spec["image"]).convert("RGB")
         a = np.asarray(im)
         return im.width, im.height, (a for _ in range(int(dur * FPS) + 1))
-    src = ROOT / spec["file"] if "file" in spec else SRC / f"{spec['id']}-{spec['r']}.mp4"
+    if "file" in spec:
+        src = ROOT / spec["file"]
+    elif "mk" in spec:
+        src = SRC / f"mixkit-{spec["mk"]}-720.mp4"
+    else:
+        src = SRC / f"{spec['id']}-{spec['r']}.mp4"
     if not src.exists():
         SRC.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["curl", "-sS", "-f", "-o", str(src), V.format(id=spec["id"], r=spec["r"])], check=True)
+        url = MK.format(id=spec["mk"]) if "mk" in spec else V.format(id=spec["id"], r=spec["r"])
+        subprocess.run(["curl", "-sS", "-f", "-o", str(src), url], check=True)
     info = json.loads(subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
                                       "-of", "json", str(src)], capture_output=True, check=True).stdout)["streams"][0]
     W, H = info["width"], info["height"]
@@ -142,7 +151,7 @@ def encoder(slot):
 
 
 def describe(spec):
-    return (f"pexels {spec['id']} {spec['start']}s" if "id" in spec else f"game clip {spec['file']} {spec['start']}s" if "file" in spec
+    return (f"pexels {spec['id']} {spec['start']}s" if "id" in spec else f"mixkit {spec['mk']} {spec['start']}s" if "mk" in spec else f"game clip {spec['file']} {spec['start']}s" if "file" in spec
             else f"game image {spec['image']}" if "image" in spec else f"prop {spec['still']}")
 
 
