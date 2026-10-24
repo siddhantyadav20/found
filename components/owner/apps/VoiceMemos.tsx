@@ -8,6 +8,7 @@ import { calendarOf, memos, mmss } from "@/lib/game/phone";
 import { Page } from "../AppView";
 import app from "../ios/App.module.css";
 import { Chevron } from "../ios/AppBar";
+import { useVoice } from "@/lib/found/voice";
 import styles from "./VoiceMemos.module.css";
 import { stamp } from "@/lib/found/time";
 
@@ -49,9 +50,10 @@ function Skip({ back }: { back?: boolean }) {
   );
 }
 
-function Player({ memo }: { memo: Memo }) {
+function Player({ memo, voice }: { memo: Memo; voice?: string }) {
   const [elapsed, setElapsed] = useState(0);
   const [playing, setPlaying] = useState(false);
+  useVoice(voice, playing, elapsed);
   const words = useRef<HTMLOListElement>(null);
   const bars = wave(memo.id);
   const total = memo.seconds;
@@ -165,6 +167,8 @@ export default function VoiceMemos({
 }) {
   const [folder, setFolder] = useState<"all" | "deleted" | null>(null);
   const [open, setOpen] = useState<string | null>(null);
+  // What Recover just moved, said where the player is looking (it used to vanish without a word).
+  const [recovered, setRecovered] = useState<string | null>(null);
   const { recordings, bin } = memos(story, state);
   const cal = calendarOf(story, state);
 
@@ -199,12 +203,18 @@ export default function VoiceMemos({
       onBack={() => {
         setFolder(null);
         setOpen(null);
+        setRecovered(null);
       }}
       backLabel="Voice Memos"
       tint="#ff453a"
       tabbed={folder === "all"}
     >
       {folder === "deleted" && <p className={styles.keep}>Recordings are kept for 30 days before they&apos;re gone.</p>}
+      {recovered && (
+        <p className={styles.keep} role="status">
+          “{recovered}” is back in All Recordings.
+        </p>
+      )}
       {list.length === 0 ? (
         <p className={app.empty}>No recordings.</p>
       ) : (
@@ -227,7 +237,7 @@ export default function VoiceMemos({
                   <span>{mmss(m.seconds)}</span>
                 </span>
               </button>
-              {open === m.id && <Player key={m.id} memo={m} />}
+              {open === m.id && <Player key={m.id} memo={m} voice={story.voices?.[`memo:${m.id}`]?.src} />}
               {open === m.id && folder === "deleted" && (
                 <button
                   type="button"
@@ -235,6 +245,7 @@ export default function VoiceMemos({
                   onClick={() => {
                     onRestore(m.id);
                     setOpen(null);
+                    setRecovered(m.title);
                   }}
                 >
                   Recover

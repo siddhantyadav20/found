@@ -46,6 +46,8 @@ export type Solved = {
   readonly minutes: number | null;
   /** How many links of the chain were traced, as the share says it. */
   readonly traced: number;
+  /** Out of how many: "10 of 11 links traced". Older finishes didn't keep it. */
+  readonly of?: number;
   readonly at: number;
 };
 
@@ -144,7 +146,7 @@ export type CaseLine = { readonly status: string; readonly result: string | null
 /** How the desk and the restore page describe one of your cases. */
 export function describeCase(save: CaseState | null, solved: Solved | null, now: number): CaseLine {
   const result = solved
-    ? `Solved Episode ${solved.episode}${solved.minutes ? ` in ${solved.minutes} min` : ""} · ${solved.traced} link${solved.traced === 1 ? "" : "s"} traced`
+    ? `Solved Episode ${solved.episode}${solved.minutes ? ` in ${solved.minutes} min` : ""} · ${solved.traced}${solved.of ? ` of ${solved.of}` : ""} link${(solved.of ?? solved.traced) === 1 ? "" : "s"} traced`
     : null;
   if (!save) return { status: "Back in its parcel", result, cta: "Play again" };
   const p = summarise(save);

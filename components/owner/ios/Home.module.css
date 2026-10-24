@@ -54,25 +54,98 @@
   cursor: pointer;
 }
 
+/* The case file's widget: a slip of its paper on his glass, so the game's
+   one thing on his home screen is never mistaken for his (2026-10-17). */
+.widget[class] {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 21px, rgb(29 26 22 / 6%) 21px 22px),
+    #f2ecdf;
+  color: #1d1a16;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
 .widgetLabel {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #b3382a;
+}
+
+.widgetGo {
+  margin-top: 6px;
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--os-accent);
+  font-weight: 500;
+  color: rgb(29 26 22 / 62%);
 }
 
 .widgetText {
-  font-family: var(--font-ios-display);
-  font-size: 21px;
-  font-weight: 600;
-  line-height: 1.18;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
+
+/* m-Indicator's widget: the train, the next station, the line so far. */
+.train {
+  display: grid;
+  gap: 6px;
+  margin: 0 24px 10px;
+  padding: 12px 15px 13px;
+  border-radius: 22px;
+  color: var(--os-text);
+}
+
+.trainHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(235 235 245 / 60%);
+}
+
+.trainHead b { color: #ff9f0a; }
+
+.trainNext { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+.trainNext b { font-weight: 700; }
+
+.trainLine {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 10px;
+}
+
+.trainLine i {
+  flex: 1;
+  height: 3px;
+  background: rgb(255 255 255 / 22%);
+}
+
+.trainLine i[data-past] { background: #ff9f0a; }
+
+.trainLine i[data-here] {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff9f0a;
+  box-shadow: 0 0 0 3px rgb(255 159 10 / 30%);
+}
+
+p.widget { cursor: default; }
 
 /* Pages swipe sideways and snap, like a home screen. */
 .pages {
   display: flex;
-  margin-top: 26px;
+  /* The top row's badges sit 6px above their icons, and a sideways scroller
+     clips anything outside it: so the room for them is inside (2026-10-23). */
+  margin-top: 16px;
+  padding-top: 10px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
@@ -214,6 +287,13 @@
 
 .dock .label {
   display: none;
+}
+
+/* Except the case file's: the one icon here no phone has. */
+.dock [data-named] .label {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
 }
 
 /* --- An offloaded app ---------------------------------------------------------

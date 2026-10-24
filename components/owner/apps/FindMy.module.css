@@ -1,0 +1,206 @@
+/* Find My, People: a map of the line, then the list, then Me. iOS's own look. */
+
+.map {
+  position: relative;
+  height: 300px;
+  margin: 0 0 16px;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    repeating-linear-gradient(30deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(-60deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 30px),
+    #2b2f2c;
+}
+
+/* The sea, to the west. */
+.sea {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: #1d3346;
+}
+
+/* The Western line, drawn north. */
+.line {
+  position: absolute;
+  left: 46%;
+  top: 14%;
+  bottom: 14%;
+  width: 4px;
+  border-radius: 2px;
+  background: #6a6f78;
+}
+
+.station {
+  position: absolute;
+  left: calc(46% + 12px);
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(235 235 245 / 55%);
+}
+
+.station i {
+  position: absolute;
+  left: -15px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid #6a6f78;
+  border-radius: 50%;
+  background: #2b2f2c;
+}
+
+.station[data-past] { color: rgb(235 235 245 / 85%); }
+.station[data-past] i { border-color: #0a84ff; }
+
+/* This iPhone: the blue dot, breathing. */
+.me {
+  position: absolute;
+  left: calc(46% + 2px);
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  translate: -50% -50%;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #0a84ff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 50%);
+  transition: top 1.2s ease-in-out;
+}
+
+.pulse {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: rgb(10 132 255 / 25%);
+  animation: breathe 2s ease-in-out infinite;
+}
+
+@keyframes breathe { 50% { scale: 0.6; opacity: 0.4; } }
+
+/* Someone else: a lettered pin. Following this phone: red, and close. */
+.pin {
+  position: absolute;
+  left: calc(46% - 26px);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  translate: -50% -50%;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #8e8e93;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  transition: top 1.6s ease-in-out;
+}
+
+.pin[data-following] { background: #ff453a; }
+
+.people {
+  display: grid;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  border-radius: 14px;
+  background: var(--os-panel);
+}
+
+.person {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.person + .person { box-shadow: inset 0 0.5px 0 var(--ios-separator); }
+
+.avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #8e8e93, #636366);
+  color: #fff;
+  font-weight: 600;
+}
+
+.person[data-following] .avatar { background: linear-gradient(160deg, #ff6b5e, #d1342a); }
+
+.who { display: grid; gap: 1px; flex: 1; min-width: 0; font-size: 15px; }
+.who b { font-weight: 600; }
+.who span { color: var(--ios-grey); font-size: 14px; }
+.who .following { color: #ff6b5e; font-size: 13px; }
+.who .note { font-size: 13px; }
+
+.when { font-size: 13px; color: var(--ios-grey); }
+
+.me2 { display: grid; gap: 0; }
+
+.meHead {
+  margin: 0 4px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ios-grey);
+  text-transform: uppercase;
+}
+
+.meRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px 14px 0 0;
+  background: var(--os-panel);
+  font-size: 16px;
+}
+
+.meValue { color: var(--ios-grey); }
+
+.stopRow {
+  padding: 12px 14px;
+  border-radius: 0 0 14px 14px;
+  background: var(--os-panel);
+  box-shadow: inset 0 0.5px 0 var(--ios-separator);
+  color: #ff453a;
+  font-size: 16px;
+  text-align: left;
+}
+
+.confirm {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px 14px;
+  border-radius: 0 0 14px 14px;
+  background: var(--os-panel);
+  box-shadow: inset 0 0.5px 0 var(--ios-separator);
+  font-size: 14px;
+  color: var(--ios-grey);
+}
+
+.stop {
+  padding: 10px;
+  border-radius: 12px;
+  background: rgb(255 69 58 / 18%);
+  color: #ff453a;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cancel {
+  padding: 8px;
+  color: var(--ios-blue);
+  font-size: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; }
+}

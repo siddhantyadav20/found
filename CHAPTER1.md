@@ -1,4 +1,4 @@
-# FOUND — "Shagun" · Delhi
+# FOUND — "Raakh" (was "Shagun") · Delhi
 ## Chapter One, adapted for the game (2026-09-22)
 
 **The story is [SCRIPT.md](SCRIPT.md)**, the Master Narrative Pass, copied word for
@@ -22,6 +22,201 @@ score and share line is **links traced** ("I traced 9 of 11 links"). On
 origin** (M).
 
 ---
+
+## Seven o'clock: the living witness (2026-10-24)
+
+**This section supersedes everything below wherever they disagree**, including
+the final cut beneath it. Why it exists is in [RAAKH-REVIEW.md](RAAKH-REVIEW.md):
+Episode 3 used to be a deduction exercise with nothing at stake, and the
+chapter ended on a form. Now it ends on a reversal, a deadline and a choice.
+
+**The reversal.** Nobody burned a body. At 2:55 AM Bhasin's car took Dilip
+out of the service room (Pappu in his group: "Sir gaadi nikal gayi"), and at
+4:47 Sameer burned a mattress, sheets and Dilip's clothes on the back plot,
+believing it was the boy. Every clue was already on the phone: the fire
+clip's "Uske kapde bhi", the jerrycan beside a rolled mattress, the 2:55 car.
+- **Q12** asks what Sameer did at the fire and what burned. "Dilip's body" is
+  his version; the truth is a mattress, sheets and clothes ("No body.").
+- **The witness**: after Q13, Dilip's own number writes in (a nurse at Bedi
+  Nursing Home, Fatehpur Beri, holding his phone and a bag with his maroon
+  waistcoat). In airplane mode Raju rings *your* phone and relays it instead.
+- **Q14**: "The patient is Dilip. Bhasin's car took him out at 2:55, and
+  nobody burned a body." Proved by the belongings and the badge, or the
+  nurse's voice note and his portrait, or the car and either. Link **Still
+  alive** (`alive-now`): the chain is **12 links**, 8 on the spine.
+
+**The deadline.** They move him at seven, under the name Deepak. Sister Anita
+needs two people: one who can identify him, one Bhasin is afraid of.
+
+**The decider** (`moments` in episode3.ts): two calls, full screen, against a
+clock (40 s, then 30 s). Meera (the DCP at Saket isn't Bhasin's man), Raju
+(he can identify him), Sameer (he goes only if you made him face 1:52 first),
+112 (the local SHO rings Bhasin), or a post from his Instagram (900 shares, and
+the back gate opens once). Saved with **Meera + Raju**, **Meera + a confronted
+Sameer** or **Raju + a confronted Sameer**; anything else, or the clock
+running out, and he's gone at 6:58. Played live: 3:24 AM (inside Sister Anita's shift, which ends at 3:30), a white Gypsy at the
+front gate, Room 6, "…Bhaiya. Light ready hai."
+
+**The record, after.** The finale is **4:40 AM, Sunday**, its line told from
+the way seven went. Every ending opens with what had already happened, then
+the record's replies, then the morning (6:40 Raju, 6:58 / 7:00 the back
+gate), in clock order (tests/endings.test.ts holds it). The last image is
+Raju's: Dilip awake ("Ab achhi photo hai"), or Dilip at Chhath ("Jab tak woh
+mil nahi jaata"). The end card leads with the fate ("Dilip Kumar Mahto is
+alive." / "…is still missing."), and so does the share line ("I got there
+before seven.").
+
+**The ending, as the review set it out** (2026-10-24, second pass):
+- Saved: Raju's photo of Dilip awake, then **Dilip's own voice note** to whoever has the phone ("Jo bhi ye phone rakhta hai… shukriya"), heard as it lands.
+- Lost: at 6:58 the Innova leaves with its lights off ("Le gaye", "Unka phone bhi le gaye"); **three weeks later** (the lock screen moves to Sunday 21 December) Raju sends the reprinted LAPATA poster, its new line ("last seen alive: Fatehpur Beri") underlined by hand.
+- Losing him is told at the hour it happened (late-police 3:09, late-post 3:12, late-meera 3:24, late-raju 3:50, late-froze 3:00, late-clock 3:30), never at 6:58 before the 4:40 finale.
+- The recognition, said once in the Complete Record: "Sameer arranged this phone so his part would end before a death. Bhasin arranged the night so there would be a death for it to end before."
+- **The record waits** (`Story.hold`): from the twist until the night's last moment has played, the case file and the home screen say "they move him at seven", and Send/Post aren't offered.
+
+**Around it** (the review's enhancement list):
+- **Real time** (`Story.realtime`, chosen at the parcel): once Q14 is filed, a four-minute countdown sits over the phone ("Sister Anita's shift ends at 3:30") with *Make the calls*; the player can still go back into the phone (to confront Sameer) while it runs; at zero, he's lost (late-clock). The nurse says when her shift ends in every mode (nu-10).
+- **Everyone's outcome**: `fate:yes|no` are counted; once 50 have played, the end card says "{n}% of everyone who's played got there before seven."
+- **Your night** (`content/raakh/night.ts`): the player's choices as a timeline on the end card, shared as a version with no names or spoilers.
+- **Episode drops** (`lib/found/release.ts`): `NEXT_PUBLIC_RELEASE_RAAKH_3=<ISO time>` holds Episode 3 behind the Episode 2 recap with a countdown and "tell me the moment it's out". Unset, nothing is held.
+- **Trailers** (`scripts/trailers.py`): built, but held back from the site on 2026-10-24; neither the Chapter 2 teaser nor the Raakh trailer ships.
+- **Voice actors**: VOICE-SCRIPTS.md is generated from the voice spec, per actor, file by file, so a real recording drops in with no code change.
+
+**The first minute** (rebuilt): your table under a lamp, drawn rather than
+photographed; a kraft mailer with its waybill to Meera Arora, Kalkaji, and
+the courier's RETURN TO ORIGIN stamp; a strip to pull. Inside, the shagun
+envelope lifts and turns over in 3D, beside the torn mailer and his phone
+face down with a cracked corner, which buzzes on the wood.
+
+**Footage.** The reel take, Kunal's dance-floor clip, the fire and the whole
+fire play as real video (`public/found/raakh/clip-*.mp4`, `scripts/clips.py`):
+picture, the wedding or the fire under it, and the voices, with the captions
+following the footage.
+
+---
+
+## The final cut: Raakh (2026-10-23)
+
+**This section supersedes everything below wherever they disagree.** Siddhant
+renamed the chapter **Raakh** (राख, ash; route `/c/raakh`, `/c/shagun`
+redirects), made it Chapter 1 ahead of Last Local (now Chapter 2, which the
+end card opens), and fixed the cast. SCRIPT.md is still untouched; where this
+cast differs from it, this cast is the game's.
+
+**The cast**
+- **Sameer Khurrana, 27** (born 14 March 1998): wedding **planner**, SK Weddings, South Delhi; plans the weddings and shoots the brand's reels. Offer: Senior Wedding Producer, Rangmanch Weddings, Mumbai. Instagram @sk.weddings.
+- **Kunal Sehgal, 25**: his friend since college; **the bride's brother**. Brought his father's licensed revolver to the reel.
+- **Bhasin Sehgal, 58**: Kunal and Ishita's father, retired from the police, runs Sehgal Enterprises; paid for the wedding and ran the cover-up. "Bhasin Uncle" to Sameer's mother.
+- **Dilip Kumar Mahto, 19**: catering worker (Sethi Caterers), Samastipur; held the light. **Never "Chhotu"**: his chat, badge and poster say Dilip.
+- **Nitin Kumar, 23**: SK Weddings' crew member and **editor**; had a 102° fever and **wasn't at the wedding**, which is why Dilip held the light. From his bed in Laxmi Nagar he sent his friend Vicky's car to the service gate.
+- **Meera Arora, 28**: advocate (Saket District Courts), Sameer's ex, **lives in Kalkaji**; the parcel went to her home there while she was at a wedding in Jaipur.
+- Chats only: Mummy (Neelam Khurrana), Raju Mahto (Dilip's brother), Mr Sethi; Pappu and Ramesh in Bhasin's group.
+
+**The phone**
+- Faces: profile photos on WhatsApp, Settings and Instagram (generated fictional people, ASSETS.md "Raakh frames").
+- **Instagram replaces "your phone"** for this chapter: a home feed and Explore (the night going public once its thread is known, and an ordinary feed from everywhere), search, private accounts (Meera), and the posts Photos no longer has (the couple, the family, the pheras, the baraat; Kunal's revolver at 12:24, `kunal-pose`; Nitin's fever post).
+- **Meera** rings in Episode 2, unblocks Sameer and writes in the M chat: his passwords are his birthday; airplane mode once Bhasin has the location.
+- **The locked note** "Agar kuch hua" takes **1403** (his birthday, Settings › his name › Personal Information; hint "birthday · ddmm"), entered in OTP boxes. Opened early, its contents count in Episode 3.
+- **Safari** keeps the WhatsApp Help page on hiding locked chats open in a tab, readable from minute one.
+- **Photos**: left/right by arrow keys or swipe, "n of N", and the grid stays where it was.
+- **Voices**: every voice note, memo, clip and call is voiced (neural Hindi TTS from the captions, `scripts/voices.py`), timed to the captions.
+
+**The case file**
+- Every word of every blank is offered from the start (no locked words).
+- A whole sentence is read back at once: the wrong word is struck in red, with where the right one is shown, or a near miss answered in its own words.
+- Proof is step 2, a short list of what bears on the question, and a failed filing says what's missing and which app has it, or which item doesn't belong.
+- Q10 is a sentence (service room, Bhasin's orders, awake at 1:14); its answer names 1:49, 1:53 and 1:56 as the moments that don't fit.
+- A progress strip (episode, a dot per question, links traced) heads every question.
+- **Closing the case** is the case file's last page: the record's rows, then send to Meera, post on his Instagram, or hand it back to the courier (any time).
+
+**Episodes end as episodes**: a recap (filed, found, links, hunches called, the cliffhanger line, what's still open) before the charger and before Episode 3's title.
+
+---
+
+## The thriller pass (2026-10-17)
+
+After a blind first play (PLAYTEST-SHAGUN.md #94–108; the full list is
+ROADMAP "The thriller pass"). SCRIPT.md is untouched; every line below is
+(game):
+
+- **Sameer's why.** After "Mujhe pata tha woh nahi nikla tha" (I knew he hadn't got out), the player
+  can ask "Kyun?" (Why?). He answers with canon's motive (§6: protect career, not be
+  the sole face of it): Kunal's video of his shot, a case that would be his
+  alone, Mumbai on Monday, Bhasin's doctor he chose to believe, and "Woh
+  mujhe bhaiya bolta tha." (He called me bhaiya.) Still his version: it explains, it doesn't excuse.
+- **Bhasin has the player's address.** With "Location dekh li hai" (I've seen the location): the
+  parcel's sender line is the player's (O1), and his people reach the
+  courier. The epilogue's man at the gate keeps that promise.
+- **The showreel.** Rangmanch's offer asks him to bring one on day one: the
+  reel on the back lawn was for him, and ambition is why a boy was holding a
+  light in front of a loaded gun.
+- **Dilip before the light.** 18/11: "Mumbai mein samundar roz dikhega?" (Will I see the sea every day in Mumbai?)
+- **Raju on the call** closes it himself rather than being hung up on.
+- **The board** takes 12:38 in Dilip's lane and 1:22 in the car's; its
+  answer ends on the question the player marked. Q13 reads "as insurance
+  against them".
+- **The cold open.** Before a first parcel: 12:31 at Banyan Farms in
+  captions, a boy asking about the light, "Rolling, bhai?", two shots, the
+  dhol playing on. Nobody named; no "pakki".
+- **The train, from Q1.** Sameer is "on a train tomorrow afternoon"; the
+  RailBook ticket is evidence; the 4:55 departure closes the ending.
+- **The knock.** At 2:40 the guard at the player's own gate rings: a man
+  in a safari suit asking for their flat, "from the courier". He comes back
+  at 7.
+- **Nitin and Kunal write first** in Episode 3, seeing his phone online.
+- **The morning, on your phone.** The ending's lines arrive as your lock
+  screen's notifications; Meera files at Saket against her senior's advice;
+  a named Nitin has Bhasin's people at his door; Mummy writes to a son
+  already on the train. The fire clip in Favorites says it's trimmed.
+
+---
+
+## After the review (2026-10-01)
+
+**This section supersedes the ones below wherever they disagree.** A review
+from three standpoints (PLAYTEST-SHAGUN.md #58–83) found the game handing the
+player its answers. Siddhant asked for all of it fixed. SCRIPT.md is untouched:
+what changed is what the phone shows when, and how the player says it.
+
+- **Words are learned (Golden Idol).** A sentence's blanks offer a word only
+  once something on the phone has taught it (`Say.learn`): no name before
+  it's met, no twist before what shows it. Q9 is built from words ("{who}
+  {why}"), so "Sameer told Nitin" is the player's to assemble. Q11 has no time
+  to fill in (the title card says it).
+- **Episode 1 no longer gives Episode 2 away.** The shot list reads *"12:15 —
+  KS reel. back lawn… C — light"*; Mr Sethi asks if Chhotu was *"with your
+  crew"*; Safari's 1:57 *"goli lagne ke baad kitne ghante"* is gone (12:44–1:56
+  stay: canon reveal #6). The poster names no venue and no job.
+- **The wrong story, for the right reasons (script §23).** In plain view:
+  Kunal at 12:20 on the back lawn, a revolver by his face (`kunal-pose`). Q5
+  offers "Kunal's reel", and refuses it: whose tripod, whose take.
+- **The passcode** shows only *Off*: iOS doesn't say when. Q4's *Thursday
+  night* comes from "For M".
+- **The code** (*pakki*): memo 15 is a riddle (*"woh jo woh roz poochta
+  tha"*), answered by the reel take, where the boy asks *"Bhaiya… Mumbai pakki
+  na?"* seconds before the shot. Raju, trusted, says it too; Sameer still
+  gives it away.
+- **Claiming to be M is tested.** M's chat keeps her messages from before the
+  block (*"Sammy, ghar pahunch ke message kar dena"*); Sameer asks what she
+  called him. Right, he believes; wrong, *"Tu M nahi hai."*
+- **"Mujhe laga khaali hai" can be caught**: he'd fired a round from it ten
+  seconds before. He admits *"Pata tha usme goli hai."*
+- **M rings his phone in Episode 2**, after the reel is known: the courier
+  told her about the parcel. Her bias shows at once (*"darpok hai, par jhooth
+  nahi bolta"*); her number lands on the player's phone; Nitin hears her name
+  as a reason however she was met.
+- **The board asks its own question.** Lanes are cells under each row; once
+  they're right, the player marks what can't all be true (1:49, 1:53, 1:56).
+  Nothing lights for them.
+- **The line is the climax, not an echo.** Sameer's "Sab dekh liya?" comes
+  after the board; he can be *asked* (*"Beech mein tumne usko kya bola?"*), and
+  his answer is a way to file Q11.
+- **The night waits for the player.** Nothing arrives while the case file is
+  open; turns land ten seconds apart; the phone dies once his first message
+  has been read.
+- **Help is chosen.** At the parcel: *With help* or *Detective* (no
+  where-to-look, no nudges).
+- **Look again.** After the end card: his phone, with what was there from the
+  first minute (K1, tap for what it meant), and where the untraced links were.
 
 ## Chapter 1 as its first players get it (2026-09-25)
 
@@ -529,6 +724,7 @@ the evidence can support*. Then
 - **How Meera is reached:** her name is on the parcel's label from minute one. Her number is on his phone: WhatsApp's contact info on the pinned M chat, with her About line, *"Meera Arora · Advocate, Saket Courts"*. The player writes to her from their own phone, and she explains why she never took it: *"Courier wale ka phone aaya tha. Main ek shaadi mein thi, shehar se bahar."*
 - **The record's defaults:** traced links in; a version the player filed, in as fact, in their own words; anything else out. The draft post is the record as posted.
 - **Return to Sender** hands it back to the courier as *"not the sender"*. It goes to a shelf of parcels nobody will claim.
+- **Your phone, rebuilt (2026-10-01):** two apps. **Messages**: Meera, and the courier's SMS (*"Not yours? Book a return pickup."*), which is how Return to Sender is reached, from minute one and again in Episode 3. **Pulse**: the night in public, the Kunal rumour first and loudest (the *publish early theory* row, made visible), with the draft post on top. The record opens from posting it or attaching it in Meera's chat. The phone's own notifications are few and only its own.
 
 **Variables:** `LINKS` (count), `LIE`, `FIRE`, `PRICE`, `EDIT`, `PUBLIC`
 (posted rather than sent), `NITIN` (protected / exposed / never),

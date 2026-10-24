@@ -122,3 +122,18 @@ export function received(): void {
   const v = voice();
   if (v) play(v, [{ f: 1046.5, at: 0, len: 0.2, peak: 0.035 }, { f: 1318.5, at: 0.09, len: 0.28, peak: 0.035 }]);
 }
+
+/**
+ * Under a reveal ("Sameer.", "Alive.", "He knew."): one low struck note and
+ * its fifth, left to ring. Not music, and not a sting: the room going quiet
+ * around a word (the 2026-10-01 review).
+ */
+export function moment(): void {
+  const v = voice();
+  if (v)
+    play(v, [
+      { f: 110, at: 0, len: 3.2, peak: 0.07 },
+      { f: 164.8, at: 0.04, len: 2.6, peak: 0.035 },
+      { f: 440, at: 0, len: 0.4, peak: 0.012 },
+    ]);
+}

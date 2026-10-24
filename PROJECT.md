@@ -6,8 +6,9 @@ thriller with a psychological edge, played in one sitting, made for India.
 The product is the shape: **you are handed a stranger's device, and
 everything on it is true, but not everything on it is in the right order.**
 
-- Chapter One is *Shagun*. The canon is [SCRIPT.md](SCRIPT.md); the game
-  adaptation is [CHAPTER1.md](CHAPTER1.md).
+- Chapter 1 is *Raakh* (was *Shagun* until 2026-10-23); Chapter 2 is *Last
+  Local*. The canon is [SCRIPT.md](SCRIPT.md); the game adaptation, with the
+  final cast, is [CHAPTER1.md](CHAPTER1.md) ("The final cut").
 - How it feels, screen by screen: [PLAYER-JOURNEY.md](PLAYER-JOURNEY.md).
 - What gets built, in order: [ROADMAP.md](ROADMAP.md).
 
@@ -65,8 +66,9 @@ The Blue Room before it.
   release. No real person's face, voice or name.
 - **Audience 16+, India first, free for now**; a paywall only once there are
   repeat players, and cheap (around ₹50 a case).
-- **Local only** until the product is good and has multiple storylines: no
-  GitHub remote, no Vercel project, no domain.
+- **Deployed for friends, not launched.** It went to GitHub and Vercel on
+  2026-09-26 for a playtest (found-game.vercel.app); a domain and a public
+  launch wait until the product is good and has more than one story.
 - **Responsibility rules, non-negotiable** (PLAYER-JOURNEY Part 3): nothing
   real is ever asked for; no notification imitates police, a bank or a
   messenger; every brand in the crime is fictional; the end card carries the

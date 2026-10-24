@@ -75,16 +75,24 @@ const BUDGET = {
   /** The largest single file allowed in `public/`, in KB. */
   asset: 1200,
   /**
-   * Everything in `public/` together, in MB. About 1.1MB today: Episodes 1
-   * and 2's photographs, two memos and the buzz. Raise it deliberately, in
-   * the commit that adds an episode's assets.
+   * Everything in `public/` together, in MB. Raise it deliberately, in the
+   * commit that adds an episode's assets. Raised from 3 to 6 on 2026-10-23
+   * for Raakh's final cut: 59 voiced lines (1.5MB, AAC at 24kbps), the cast's
+   * faces and the wedding album (5.4MB in all that day). Photos go through
+   * next/image, so a player downloads a fraction of the source.
+   * Raised from 6 to 11 on 2026-10-24 for the footage: four clips as real
+   * video (4MB of H.264 at 420kbps, loaded only when a clip is played) and
+   * the Episode 3 frames for the living witness (about 1MB).
    */
-  publicTotal: 3,
+  publicTotal: 11,
 };
 
 /** Files that are allowed to be over `asset`, and why. Anything not on this
  *  list has to fit the budget or earn a line here. */
-const ALLOWED_LARGE = {};
+const ALLOWED_LARGE = {
+  "found/raakh/clip-fire-whole.mp4":
+    "31 seconds of video, the longest clip in the chapter; it loads only when the locked note's clip is played (preload=metadata).",
+};
 
 const KB = 1024;
 const MB = 1024 * 1024;

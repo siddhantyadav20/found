@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { add, episodeOf, homeIcons, newCase, see, seen, settle, type CaseState } from "@/lib/game/engine";
 import { installed, library, loaded, memos, offload, SHOW_HIDDEN, syncPaused, unlocked } from "@/lib/game/phone";
-import { episode3 } from "@/content/shagun/episode3";
 import { ep, play } from "./support/play";
 
 /**
@@ -12,7 +11,7 @@ import { ep, play } from "./support/play";
  *   Episode 2's: the 12:29 photo and the reel take still in iCloud, and
  *   Voice Memos, with the memo in its bin, offloaded.
  *   Episode 3's: the whole fire clip and Kunal's frame in his locked note,
- *   whose password (0152) nothing on the phone gives before Episode 3.
+ *   whose password is his birthday (1403), in Settings; what's inside counts in Episode 3.
  */
 
 const start = (): CaseState => add(newCase("layers", 0), "did:opened", "did:unlock", "saw:note", "did:past-lock");
@@ -33,10 +32,13 @@ describe("Episode 1's phone", () => {
     expect(offload(s, voiceMemos)).toBe("offloaded");
   });
 
-  it("keeps the locked note's password out of reach, and its hint to itself", () => {
+  it("locks the note with his birthday, which Settings shows under his name", () => {
     expect(insurance.locked).toBe(true);
-    expect(insurance.hint).toBeTruthy();
-    expect(insurance.knownAfter).toEqual(["ep:3"]);
+    expect(insurance.hint).toMatch(/birthday/);
+    expect(insurance.knownAfter).toEqual(["saw:apple-account"]);
+    const account = ep.settings[0].rows[0];
+    expect(account.detail?.rows.find((r) => r.label === "Date of Birth")?.value).toBe("14 March 1998");
+    expect(insurance.password).toBe("1403");
   });
 
   it("shows only his hidden EMI notices in Hidden", () => {
@@ -45,25 +47,6 @@ describe("Episode 1's phone", () => {
     for (const p of hidden) expect(p.evidence, p.id).toBeUndefined();
   });
 
-  it("never gives the password: nothing a player can read before Episode 3 says 1:52", () => {
-    const early = (requires?: readonly string[]) => !(requires ?? []).includes("ep:3");
-    // Episode 3's own chats only arrive in Episode 3.
-    const third = new Set(episode3.threads.map((t) => t.id));
-    const readable = [
-      ...ep.threads.filter((t) => !third.has(t.id) && early(t.requires)).flatMap((t) => t.messages.filter((m) => early(m.requires))),
-      ...ep.photos,
-      ...ep.notes.filter((n) => n.id !== "insurance"),
-      ...ep.mail,
-      ...ep.memos,
-      ...ep.searches,
-      ...ep.calls,
-      ...ep.payments,
-      ...ep.settings,
-    ];
-    // 1:52 or 0152 on its own, not inside Kunal's 11:52.
-    const said = JSON.stringify(readable).match(/(?<!\d)(?:0?1:52|0152)(?!\d)/);
-    expect(said?.[0]).toBeUndefined();
-  });
 });
 
 describe("the turn to Episode 2", () => {
@@ -86,8 +69,8 @@ describe("the turn to Episode 2", () => {
 });
 
 describe("the locked note", () => {
-  it("opens with the minute of the lie and counts what's in it, in Episode 3", () => {
-    expect(insurance.password).toBe("0152");
+  it("opens with his birthday and counts what's in it, in Episode 3", () => {
+    expect(insurance.password).toBe("1403");
     const ids = (insurance.attachments ?? []).map((a) => a.evidence);
     expect(ids).toEqual(["fire-original", "frame"]);
     const at3 = add(start(), "ep:2", "ep:3");
@@ -97,7 +80,7 @@ describe("the locked note", () => {
     }
   });
 
-  it("opened early by a lucky guess, counts once Episode 3 opens", () => {
+  it("opened early, counts once Episode 3 opens", () => {
     const guessed = see(ep, add(start(), unlocked("insurance")), "frame");
     expect(seen(guessed, "frame")).toBe(false);
     expect(seen(settle(ep, add(guessed, "ep:2", "ep:3")), "frame")).toBe(true);

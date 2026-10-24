@@ -1,0 +1,122 @@
+/* The cold open: black, captions, and two flashes. */
+
+.cold {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 3rem 1.6rem calc(3rem + env(safe-area-inset-bottom));
+  background: #000;
+  color: #efeae4;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.skip {
+  position: absolute;
+  top: calc(1rem + env(safe-area-inset-top));
+  right: 1rem;
+  padding: 0.4rem 0.2rem;
+  border: 0;
+  background: none;
+  color: #6f6a63;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.captions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
+.where {
+  margin-bottom: 0.8rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7d7870;
+  animation: in 1.2s ease-out both;
+}
+
+.sound,
+.said {
+  animation: in 0.7s ease-out both;
+  transition: opacity 1.2s ease;
+}
+
+.sound {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #8a847c;
+}
+
+.said {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.35;
+}
+
+/* What's further up fades, the way a caption leaves the screen. */
+.sound[data-old],
+.said[data-old] { opacity: 0.35; }
+
+.who {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7d7870;
+}
+
+.english {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: #8a847c;
+}
+
+.after {
+  max-width: 20rem;
+  margin: 0 auto;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.35;
+  text-align: center;
+  animation: in 1.4s ease-out both;
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  background: #fff6e8;
+  pointer-events: none;
+  animation: flash 0.42s ease-out both;
+}
+
+@keyframes in {
+  from { opacity: 0; transform: translateY(0.4rem); }
+}
+
+@keyframes flash {
+  from { opacity: 0.85; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .where, .sound, .said, .after { animation: none; }
+  /* A flash is still the shot; dimmer, and no faster. */
+  .flash { animation: flash-quiet 0.6s ease-out both; }
+  @keyframes flash-quiet { from { opacity: 0.25; } to { opacity: 0; } }
+}

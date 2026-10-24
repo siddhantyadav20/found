@@ -1,31 +1,93 @@
-/* The full-screen moments between the table's: a title card, and coming back
-   after a gap. Night, because the whole chapter is one. */
+/* The full-screen moments between the table's: an episode's title card, and
+   coming back after a gap. Set as a film sets its titles: low, left, large,
+   on black with grain (rebuilt 2026-10-17). */
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem;
+  justify-content: flex-end;
+  gap: 12px;
   min-height: 100dvh;
-  padding: 2rem 1.4rem calc(2rem + env(safe-area-inset-bottom));
-  text-align: center;
-  background: radial-gradient(circle at 50% 30%, #1b1d26 0%, #07080a 70%);
-  color: #efeae4;
+  padding: 40px var(--gutter) calc(56px + env(safe-area-inset-bottom));
+  background: #050505;
+  color: var(--text);
+  overflow: hidden;
 }
 
-.eyebrow { font-family: var(--font-ui); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a847c; }
-.line { font-family: var(--font-display); font-size: 1.6rem; line-height: 1.3; max-width: 20rem; }
-.sub { font-family: var(--font-ui); font-size: 0.85rem; color: #8a847c; }
+/* Film grain, barely there. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(3) infinite;
+}
+
+@keyframes grain {
+  33% { translate: 3% -2%; }
+  66% { translate: -2% 3%; }
+}
+
+.card > * {
+  position: relative;
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  animation: in 0.8s ease-out both;
+}
+
+.line {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(40px, 12vw, 72px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  animation: in 1s 0.2s ease-out both;
+}
+
+.sub {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  color: var(--muted);
+  animation: in 1s 0.5s ease-out both;
+}
 
 .up {
-  margin-top: 1rem;
-  font-family: var(--font-ui);
-  font-size: 0.85rem;
-  padding: 0.7rem 1.4rem;
-  border: 0;
-  border-radius: 999px;
-  background: #efeae4;
-  color: #07080a;
-  cursor: pointer;
+  margin-top: 18px;
+  width: 100%;
+  padding: 6px 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
 }
+
+.up::after { content: " →"; }
+.up:hover { color: var(--text); }
+
+@keyframes in {
+  from { opacity: 0; translate: 0 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card::before, .eyebrow, .line, .sub { animation: none; }
+}
+
+.back { width: 100%; max-width: 34rem; margin-top: 14px; }

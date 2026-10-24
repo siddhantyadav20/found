@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
-import type { Story } from "@/content/types";
+import type { Flag, Story } from "@/content/types";
 import { add, newCase } from "@/lib/game/engine";
 import { chosen, finish, linesFor } from "@/lib/game/endings";
 import { eventsFor, reportFlag } from "@/lib/found/events";
@@ -15,7 +15,7 @@ import { eventsFor, reportFlag } from "@/lib/found/events";
  */
 
 const ep: Story = {
-  ...STORIES.shagun,
+  ...STORIES.raakh,
   endings: [
     {
       id: "complete",
@@ -62,4 +62,37 @@ describe("an ending reads the night back", () => {
     expect(lines()).toEqual(["Everyone is named.", "Nobody asks Nitin anything."]);
     expect(lines(add(newCase("t", 0), "did:nitin-protected"))).toEqual(["Everyone is named.", "Nitin is named too."]);
   });
+});
+
+/* Seven o'clock (2026-10-24): the record goes out at 4:40 AM, and the
+   morning after it is told in the order the clock gives it, whichever way
+   seven went. */
+describe("Raakh's endings keep time", () => {
+  const minutes = (at?: string, clock?: string): number | undefined => {
+    const m = (clock ?? at ?? "").match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?/);
+    if (!m) return undefined;
+    const h = (Number(m[1]) % 12) + (m[3] === "PM" ? 12 : 0);
+    return h * 60 + Number(m[2]);
+  };
+  const nights: readonly (readonly Flag[])[] = [
+    ["did:saved", "did:call-meera", "did:call-raju"],
+    ["did:saved", "did:sameer-went", "did:call-sameer"],
+    ["did:lost", "did:call-police"],
+    ["did:lost", "did:call-post"],
+    ["did:lost", "did:sameer-stayed"],
+  ];
+  const record: readonly Flag[] = ["did:sent", "did:posted", "did:named-witness", "did:protect-nitin", "fired:bhasin-near", "did:done-guard-calls", "did:named-dilip"];
+  for (const e of STORIES.raakh.endings)
+    for (const night of nights)
+      it(`${e.id}, ${night.join(" ")}`, () => {
+        const s = add(newCase("t", 0), ...night, ...record);
+        let last = -1;
+        for (const l of linesFor(s, e.lines)) {
+          if (l.at?.startsWith("The next") || l.at?.endsWith("later")) last = Math.max(last, 24 * 60);
+          const t = minutes(l.at, l.clock);
+          if (t === undefined) continue;
+          expect(t + (last >= 24 * 60 ? 24 * 60 : 0), `${l.at}: ${l.text}`).toBeGreaterThanOrEqual(last);
+          last = t + (last >= 24 * 60 ? 24 * 60 : 0);
+        }
+      });
 });

@@ -1,8 +1,10 @@
 # Found
 
-Mysteries played on a stranger's phone. **Chapter One is *Shagun*:** a Delhi
-wedding photographer's phone arrives with a note addressed to someone else,
-and everything on it is true, but not in the right order.
+Mysteries played on a stranger's phone. **Chapter 1 is *Raakh*** (called
+*Shagun* until 2026-10-23): a Delhi wedding planner's phone arrives with a
+note addressed to someone else, and everything on it is true, but not in the
+right order. **Chapter 2 is *Last Local*** (Mumbai). The front page is a
+landing page (`components/site/`) with both chapters.
 
 - The story (canon, never edited): `SCRIPT.md`
 - The game adaptation: `CHAPTER1.md`
@@ -10,11 +12,14 @@ and everything on it is true, but not in the right order.
 - The build plan, phase by phase: `ROADMAP.md`
 - The decisions behind all of it: `PROJECT.md`
 
-**Where the code is (2026-09-23):** ROADMAP S1 is done. *Shagun* is the only
-case, a stub that plays its arrival and an empty phone; its episodes arrive
-in S6–S8. The retired *Don't Cut the Call* is at the git tag
-`dont-cut-the-call`. Found was piloted inside the portfolio at `sidbuilds.in/found` and became
-its own app on 2026-09-15.
+**The final cut (2026-10-23):** the cast fixed, faces and voices, Instagram in
+place of your phone, a simpler case file, episode recaps (CHAPTER1.md, "The
+final cut"). **Where the code was (2026-10-01):** *Shagun* plays whole, three episodes to
+four endings, and is live for a friends' playtest at found-game.vercel.app.
+The last pass was the review of 2026-10-01 (ROADMAP, "After the review"). The
+retired *Don't Cut the Call* is at the git tag `dont-cut-the-call`. Found was
+piloted inside the portfolio at `sidbuilds.in/found` and became its own app on
+2026-09-15.
 
 ## Running it
 
@@ -69,7 +74,7 @@ tests/                   Vitest: the engine, the chapter's laws, keeping, sharin
 ## Things worth knowing
 
 - **Each case's save lives in `localStorage` under `found:<case>:save`**
-  (`found:shagun:save`). Saves
+  (`found:raakh:save`). Saves
   carry a version, and a save of another version is dropped, not upgraded.
 - **Testing a drop in one browser:** the sender's own save would resume on
   their own link, so set it aside first (copy the case's save out,
@@ -94,7 +99,8 @@ tests/                   Vitest: the engine, the chapter's laws, keeping, sharin
   without it. "What others did" stays hidden until 50 people have answered.
 - **`.env.local` is not Vercel.** Every production variable has to be set in
   the Vercel project too, and only reaches the next deploy.
-- **Canela is the trial licence** (`app/fonts.ts`), as in the portfolio. Swap
-  in licensed files before this goes public.
+- **The display face is Newsreader** (OFL, through `next/font/google`), and
+  the note's hand is Kalam. The Canela trial files were removed on 2026-10-01;
+  they're still in git history.
 - **The share card only renders in a build.** `next dev` 500s on
   `opengraph-image`; check it with `npm run build && npm start`.

@@ -64,7 +64,7 @@ function progress(st: DropStatus | undefined): string {
 let offered = false;
 
 export default function PassItOn({ result }: { result: Result | null }) {
-  const { id, meta } = useCase();
+  const { id, meta, via } = useCase();
   const [name, setName] = useState("");
   const [phase, setPhase] = useState<"address" | "sealing" | "sealed">("address");
   const [link, setLink] = useState<{ url: string; to: string } | null>(null);
@@ -173,7 +173,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
       <p className={styles.eyebrow} id="pass-it-on">
         Pass it on
       </p>
-      <p className={styles.lede}>Someone left this for you. Leave it for someone else.</p>
+      <p className={styles.lede}>{via ? "Someone left this for you. Leave it for someone else." : "Leave it for someone. Their name goes on the label."}</p>
 
       {result && (
         <p className={styles.result}>
@@ -199,7 +199,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
               maxLength={NAME_MAX + 8}
               autoComplete="off"
               autoCapitalize="words"
-              placeholder="Their first name (optional)"
+              placeholder="First name, or leave it"
             />
             <button type="submit" className={styles.primary} disabled={phase === "sealing"}>
               {phase === "sealing" ? "Sealing…" : "Seal it"}

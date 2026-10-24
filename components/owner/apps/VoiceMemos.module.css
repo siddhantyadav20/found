@@ -50,7 +50,8 @@
 
 .item[data-open] {
   margin: 4px -4px 10px;
-  padding: 0 4px;
+  /* Padded at the foot, so Recover's own margin stays inside the card (it collapsed through it). */
+  padding: 0 4px 2px;
   border-bottom: 0;
   border-radius: 16px;
   background: var(--os-panel);

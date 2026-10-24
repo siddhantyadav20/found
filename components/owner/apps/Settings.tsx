@@ -253,7 +253,7 @@ export default function Settings({
   const [account, ...groups] = story.settings;
   const owner = account?.rows[0] ?? { title: story.owner.name, sub: "Apple Account, iCloud and more" };
 
-  const opened = groups.flatMap((g) => g.rows).find((r) => r.title === page);
+  const opened = page === owner.title && "detail" in owner ? owner : groups.flatMap((g) => g.rows).find((r) => r.title === page);
   if (opened?.detail)
     return <Detail row={{ ...opened, detail: opened.detail }} state={state} onBack={() => setPage(null)} onAct={onAct} />;
 
@@ -273,8 +273,17 @@ export default function Settings({
       {/* The owner's name on the profile card, the way the top of Settings looks. */}
       <ul className={app.group}>
         <li>
-          <div className={s.profile}>
-            <Avatar name={owner.title} size="head" />
+          {/* The card opens the account's own page when the chapter wrote one (his birthday, in RAAKH). */}
+          <button
+            type="button"
+            className={s.profile}
+            disabled={!("detail" in owner && owner.detail)}
+            onClick={() => {
+              setPage(owner.title);
+              if ("evidence" in owner && owner.evidence) onRead?.([owner.evidence]);
+            }}
+          >
+            <Avatar name={owner.title} size="head" src={story.owner.photo} />
             <span className={app.rowMain}>
               <span className={s.profileName}>{owner.title}</span>
               {/* What sits under the name goes on its own line, so the name keeps its line. */}
@@ -283,7 +292,8 @@ export default function Settings({
                 {owner.value && ` · ${owner.value}`}
               </span>
             </span>
-          </div>
+            {"detail" in owner && owner.detail && <Chevron />}
+          </button>
         </li>
       </ul>
 

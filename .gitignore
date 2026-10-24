@@ -35,3 +35,6 @@ next-env.d.ts
 
 # Claude Code's per-machine permission allowlist.
 .claude/settings.local.json
+
+# Trailers for social (scripts/trailers.py): large, rebuilt on demand, shared by hand.
+/marketing/*.mp4

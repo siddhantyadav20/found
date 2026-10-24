@@ -150,8 +150,9 @@ this?*), because question one teaches that the case file exists.
 
 **UX rules**
 - **The case file is the record:** one question at a time, free *where to
-  look*, three hints, the 45-second idle nudge, and badges only for
-  reachable-but-unseen evidence. *(carried over)*
+  look*, three hints and the 45-second idle nudge (none of it for a player
+  who chose Detective at the parcel). Badges are iOS's own (unread messages,
+  missed calls), never a count of what's left to find (since 2026-10-01).
 - **Answers are filed as claims, with their sources beside them.**
 - **Only what can be proven now is offered.** A claim the phone can't yet
   support isn't on the board, so the board never gives away what comes
@@ -208,16 +209,28 @@ The board, Nitin, 1:56, Revert, Hidden, the line.
 ## Stage 8 · The record (57:00–59:00)
 
 On **your phone**: the record, link by link, with sources. Tick in, tick
-out, then **send** it (to Meera, with the phone) or **post** it.
+out, then **send** it (to Meera, with the phone) or **post** it. It's opened
+the way a person would: **"Review and post"** on the draft at the top of
+Pulse, or **"Attach the record"** in Meera's chat. Giving the phone back is
+the courier's own text, *"Not yours? Book a return pickup."*, there from the
+first minute.
 
 **Psychology and the one rule that matters: no signalling.** *(carried over)*
 Send and post have identical weight, the order is fixed, the copy is flat,
 and there is **no "recommended", no colour coding, no praise**. Ticking the
 lie *out* is a choice the interface treats exactly like ticking it in.
 
-**Your phone is only its edge** on a phone-sized screen, at the right; tap
-it to pick it up. It lights only when something on it is new. On a desktop
-it's the phone lying beside his.
+**Your phone is only its edge** on a phone-sized screen: a tab at the right
+labelled YOURS; tap it to pick it up. It lights only when something on it is
+new, and says what in a note that slides out once. On a desktop it's the
+phone lying beside his, with the same news on its lock screen. **It speaks
+rarely** (2026-10-01): the night trending, the rumour spreading, the
+family's story, the courier's pickup slot. Never on his screen, never "your
+draft is saved".
+
+**Pulse is the wrong story, told loudly.** An ordinary Saturday feed until
+the player has heard him, so it never answers Episode 1 for them; then
+Kunal's name, climbing every episode, beside their own unposted draft.
 
 **What you filed is what goes out.** A version of Sameer's that the player
 filed goes into the record as fact, in their own words, until they change

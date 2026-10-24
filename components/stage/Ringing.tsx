@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
-import type { IncomingCall, ReplyOption } from "@/content/types";
+import type { IncomingCall, ReplyOption, Voices } from "@/content/types";
 import { has, type CaseState } from "@/lib/game/engine";
 import { connected, ended, ringtone } from "@/lib/found/tones";
+import { say } from "@/lib/found/voice";
 import styles from "./Ringing.module.css";
 
 /* ===========================================================================
@@ -46,8 +47,11 @@ export default function Ringing({
   onDecline,
   onSay,
   wallpaper,
+  voices,
 }: {
   call: IncomingCall;
+  /** The story's recordings: each line of the call, and each answer, said aloud. */
+  voices?: Voices;
   /** The phone's wallpaper, blurred behind the call as iOS shows it. */
   wallpaper?: string;
   state: CaseState;
@@ -77,11 +81,20 @@ export default function Ringing({
     return ringtone();
   }, [answered]);
 
-  /* They talk. The player listens, one line at a time, with no way to hurry them. */
+  /* They talk. The player listens, one line at a time, with no way to hurry
+     them: each line is heard (where it's recorded) and the next waits for it. */
+  const voiceOf = (i: number) => voices?.[`call:${call.id}:${call.lines.indexOf(lines[i])}`];
+  useEffect(() => {
+    if (!answered || said === 0) return undefined;
+    return say(voiceOf(said - 1)?.src);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answered, said]);
   useEffect(() => {
     if (!answered || said >= lines.length) return undefined;
-    const t = window.setTimeout(() => setSaid((n) => n + 1), said === 0 ? 900 : 3400);
+    const heardFor = said === 0 ? 0 : (voiceOf(said - 1)?.seconds ?? 0) * 1000 + 450;
+    const t = window.setTimeout(() => setSaid((n) => n + 1), said === 0 ? 900 : Math.max(3400, heardFor));
     return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answered, said, lines.length]);
 
   /* What was said gets its answer, a line at a time, at reading speed. Then
@@ -89,10 +102,15 @@ export default function Ringing({
   const [heard, setHeard] = useState(0);
   const answers = useMemo(() => chosen?.then ?? [], [chosen]);
   useEffect(() => {
+    if (!chosen || heard === 0) return undefined;
+    return say(voices?.[`msg:${answers[heard - 1]?.id}`]?.src);
+  }, [chosen, heard, answers, voices]);
+  useEffect(() => {
     if (!chosen || heard >= answers.length) return undefined;
-    const t = window.setTimeout(() => setHeard((n) => n + 1), heard === 0 ? 900 : reactionMs(answers[heard - 1]));
+    const spoken = heard === 0 ? 0 : (voices?.[`msg:${answers[heard - 1]?.id}`]?.seconds ?? 0) * 1000 + 450;
+    const t = window.setTimeout(() => setHeard((n) => n + 1), heard === 0 ? 900 : Math.max(reactionMs(answers[heard - 1]), spoken));
     return () => window.clearTimeout(t);
-  }, [chosen, heard, answers]);
+  }, [chosen, heard, answers, voices]);
   const over = Boolean(chosen) && heard >= answers.length;
   const hangUp = () => {
     ended();
@@ -106,6 +124,8 @@ export default function Ringing({
       style={wallpaper ? ({ "--wallpaper": `url(${wallpaper})` } as CSSProperties) : undefined}
     >
       <div className={styles.head}>
+        {/* Yours, not his: said once, in your phone's own blue. */}
+        {call.device === "yours" && <p className={styles.yours}>Your phone</p>}
         <p className={styles.who}>{call.from}</p>
         {answered ? (
           <p className={styles.sub} data-timer>
@@ -125,6 +145,16 @@ export default function Ringing({
               {l.english && <span className={styles.english}>{l.english}</span>}
             </p>
           ))}
+
+          {/* They're still talking: said where the player is waiting, so the pause doesn't read as a stall. */}
+          {said < lines.length && (
+            <p className={styles.listening} role="status">
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+              {said === 0 ? "Connecting…" : "Listening…"}
+            </p>
+          )}
 
           {chosen && (
             <p className={styles.line} data-mine>
@@ -170,26 +200,30 @@ export default function Ringing({
         </div>
       ) : (
         <>
-        {/* iOS 26 offers these two over the answer buttons; here they only set the scene. */}
-        <div className={styles.extras} aria-hidden="true">
-          <span className={styles.button}>
-            <span className={`${styles.extra} lg`}>
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="13" r="7" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M12 9.5V13l2.2 1.6M5 4.5 3 6.5M19 4.5l2 2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
+        {/* iOS 26 offers these two over the answer buttons. Both decline the
+            call, as on iOS (the 2026-10-02 stress test found them dead); a
+            call that can't be refused doesn't offer them. */}
+        {onDecline && (
+          <div className={styles.extras}>
+            <span className={styles.button}>
+              <button type="button" className={`${styles.extra} lg`} onClick={onDecline} aria-label="Remind Me">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="13" r="7" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M12 9.5V13l2.2 1.6M5 4.5 3 6.5M19 4.5l2 2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </button>
+              <span>Remind Me</span>
             </span>
-            <span>Remind Me</span>
-          </span>
-          <span className={styles.button}>
-            <span className={`${styles.extra} lg`}>
-              <svg viewBox="0 0 24 24">
-                <path d="M12 4.5c4.7 0 8 2.9 8 6.6s-3.3 6.6-8 6.6c-.9 0-1.8-.1-2.6-.3L5.2 19.3l1-3C4.8 15 4 13.3 4 11.1c0-3.7 3.3-6.6 8-6.6Z" fill="currentColor" />
-              </svg>
+            <span className={styles.button}>
+              <button type="button" className={`${styles.extra} lg`} onClick={onDecline} aria-label="Message">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 4.5c4.7 0 8 2.9 8 6.6s-3.3 6.6-8 6.6c-.9 0-1.8-.1-2.6-.3L5.2 19.3l1-3C4.8 15 4 13.3 4 11.1c0-3.7 3.3-6.6 8-6.6Z" fill="currentColor" />
+                </svg>
+              </button>
+              <span>Message</span>
             </span>
-            <span>Message</span>
-          </span>
-        </div>
+          </div>
+        )}
         <div className={styles.buttons}>
           {onDecline && (
             <span className={styles.button}>

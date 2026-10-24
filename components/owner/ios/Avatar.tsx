@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import styles from "./Avatar.module.css";
 
 /** Initials the way iOS takes them: the first letter, or first and last for two words. */
@@ -31,7 +33,10 @@ export default function Avatar({
   unknown = false,
   group = false,
   size = "row",
+  src,
 }: {
+  /** A photograph, where the contact has one. */
+  src?: string;
   name: string;
   unknown?: boolean;
   group?: boolean;
@@ -49,6 +54,12 @@ export default function Avatar({
       </span>
     );
   }
+  if (src)
+    return (
+      <span className={styles.mono} data-size={size} data-photo aria-hidden="true">
+        <Image src={src} alt="" fill sizes="80px" style={{ objectFit: "cover" }} />
+      </span>
+    );
   return (
     <span className={styles.mono} data-size={size} aria-hidden="true">
       {unknown ? <Person /> : initials(name)}

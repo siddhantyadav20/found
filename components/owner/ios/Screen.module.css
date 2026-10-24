@@ -682,9 +682,21 @@
   animation: drop 0.5s cubic-bezier(0.2, 1.1, 0.3, 1) both;
 }
 
+/* Thicker than the widgets' glass: a banner lands over anything, a title
+   included, and its words have to win (2026-10-24 QA). */
+.banner:global(.lg-thick) {
+  background:
+    var(--lg-fill),
+    rgb(30 30 34 / 78%);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  backdrop-filter: blur(24px) saturate(1.8);
+}
+
+/* A short drop, faded in: from far above, it slid under the status bar and
+   its text ran through the clock on the way down (2026-10-02 stress test). */
 @keyframes drop {
   from {
-    translate: 0 -130%;
+    translate: 0 -24px;
     opacity: 0;
   }
 }
@@ -874,16 +886,19 @@
 
 /* The chain, counted live on a replay: outside the fiction, and small. */
 .chainCount {
+  /* A replay's running count: tucked under the status bar, clear of every
+     app's tab bar and the dock (2026-10-17). */
   position: fixed;
-  left: 50%;
-  bottom: calc(26px + env(safe-area-inset-bottom));
+  right: 14px;
+  top: calc(54px + env(safe-area-inset-top));
   z-index: 40;
-  translate: -50% 0;
-  padding: 4px 10px;
-  border-radius: 999px;
+  padding: 3px 7px;
+  border: 1px solid rgb(196 65 47 / 70%);
+  border-radius: 2px;
   background: rgb(0 0 0 / 55%);
-  color: #f2f2f7;
-  font: 600 11px/1.2 var(--font-ui), system-ui, sans-serif;
-  letter-spacing: 0.02em;
+  color: #f2c9c1;
+  font: 500 10px/1.2 var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   pointer-events: none;
 }

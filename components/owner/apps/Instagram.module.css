@@ -163,6 +163,8 @@
 }
 
 .face {
+  position: relative;
+  overflow: hidden;
   display: grid;
   place-items: center;
   width: 100%;
@@ -406,6 +408,12 @@
 }
 
 .me {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
   display: grid;
   place-items: center;
   width: 28px;
@@ -415,4 +423,294 @@
   box-shadow: 0 0 0 1px #f5f5f5;
   font-size: 10px;
   font-weight: 700;
+}
+
+/* --- Since 2026-10-23: the feed, Explore, search, private accounts ---------- */
+
+.ring[data-size="row"] {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  background: none;
+}
+
+.ring[data-size="row"] .face {
+  border: 0;
+  font-size: 15px;
+}
+
+.postWhoText {
+  display: grid;
+  justify-items: start;
+  line-height: 1.2;
+}
+
+.place {
+  font-size: 11.5px;
+  color: #c7c7c7;
+}
+
+.suggested {
+  margin: 14px 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a8a8a8;
+}
+
+.tile[data-card] {
+  background: #222;
+}
+
+.cardText {
+  padding: 0 14%;
+  font-size: clamp(13px, 5.2cqw, 21px);
+  font-weight: 600;
+  line-height: 1.32;
+  text-align: center;
+  white-space: pre-line;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.grid .cardText,
+.explore .cardText {
+  padding: 0 8%;
+  font-size: 9.5px;
+}
+
+.likes {
+  margin: 2px 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.translate {
+  display: block;
+  margin: 3px 12px 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #a8a8a8;
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comment {
+  margin: 3px 12px 0;
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+
+.commentEnglish {
+  color: #a8a8a8;
+}
+
+.when {
+  margin: 5px 12px 0;
+  font-size: 11px;
+  color: #a8a8a8;
+}
+
+.caughtUp {
+  margin: 18px 0 30px;
+  font-size: 13px;
+  color: #a8a8a8;
+  text-align: center;
+}
+
+.buttons span[data-blue] {
+  background: #0095f6;
+}
+
+.private {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 14px 24px;
+  padding: 30px 0;
+  border-top: 0.5px solid #262626;
+  font-size: 14px;
+  color: #a8a8a8;
+  text-align: center;
+}
+
+.private b {
+  color: #f5f5f5;
+  font-size: 15px;
+}
+
+.privateLock {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin-bottom: 4px;
+  border: 2px solid #f5f5f5;
+  border-radius: 50%;
+  color: #f5f5f5;
+}
+
+.search {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #262626;
+  color: #f5f5f5;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.search::placeholder {
+  color: #8e8e8e;
+}
+
+.results {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.result > span:last-child {
+  display: grid;
+  font-size: 13.5px;
+  color: #a8a8a8;
+}
+
+.result b {
+  font-size: 14px;
+  color: #f5f5f5;
+}
+
+.noResults {
+  margin: 24px 16px;
+  font-size: 14px;
+  color: #a8a8a8;
+  text-align: center;
+}
+
+/* Explore: three across, with a tall tile every so often, as Instagram lays it out. */
+.explore {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: dense;
+  gap: 2px;
+}
+
+.explore .gridCell[data-tall] {
+  grid-row: span 2;
+}
+
+.explore .gridCell[data-tall] .tile {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+.tabBar button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tabBar .me {
+  width: 28px;
+  height: 28px;
+}
+
+.tile {
+  container-type: inline-size;
+}
+
+/* --- the owner's Archive (2026-10-24) ------------------------------------ */
+
+.archiveRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 32px);
+  margin: 0 16px 14px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: #1a1a1a;
+  color: #f5f5f5;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.archiveRow > span {
+  flex: 1;
+  display: grid;
+  font-size: 12.5px;
+  color: #a8a8a8;
+}
+
+.archiveRow b {
+  font-size: 14px;
+  color: #f5f5f5;
+}
+
+.archiveRow svg:last-child {
+  width: 8px;
+  height: 14px;
+  color: #8e8e8e;
+}
+
+.archivedNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 12px 0;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  font-size: 12px;
+  color: #a8a8a8;
+}
+
+.archivedGlyph {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* The Archive's own page (2026-10-24 QA): who can see it, then the grid. */
+.archiveNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: rgb(255 255 255 / 60%);
+}
+
+.archiveNote svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
 }

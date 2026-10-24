@@ -4,7 +4,6 @@ import { createContext, useContext, useMemo } from "react";
 
 import { CASES, type CaseId, type CaseMeta } from "@/content/cases";
 import type { Story } from "@/content/types";
-import { STORIES } from "@/content/stories";
 
 /* ===========================================================================
    Which case this page is playing.
@@ -32,20 +31,36 @@ export type CaseContext = {
 
 const Ctx = createContext<CaseContext | null>(null);
 
+/* The script arrives from the server as data, so a case page carries only its
+   own story, not every case's. Kept here too for the save's front door
+   (components/stage/playthrough.ts), which runs outside React. */
+let playing: Story | null = null;
+
+/** The story this page is playing, once its provider has rendered. */
+export const playingStory = (): Story | null => playing;
+
+/** Idempotent, so cheap enough to call while rendering (as `bindProgress` is). */
+function bindStory(story: Story): void {
+  playing = story;
+}
+
 export function CaseProvider({
   id,
+  story,
   via,
   to,
   minutes,
   children,
 }: {
   id: CaseId;
+  story: Story;
   via?: string;
   to?: string;
   minutes?: number;
   children: React.ReactNode;
 }) {
-  const value = useMemo(() => ({ id, story: STORIES[id], meta: CASES[id], via, to, minutes }), [id, via, to, minutes]);
+  bindStory(story);
+  const value = useMemo(() => ({ id, story, meta: CASES[id], via, to, minutes }), [id, story, via, to, minutes]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

@@ -1,17 +1,23 @@
 "use client";
 
+import { holding } from "@/lib/game/hold";
 import { useEffect, useState } from "react";
 
 import type { AppId, HomeIcon, Story } from "@/content/types";
-import { answered, needsRevisit, openQuestion, unseenIn, type CaseState } from "@/lib/game/engine";
+import { badgeFor } from "@/lib/game/chat";
+import { answered, needsRevisit, openQuestion, type CaseState } from "@/lib/game/engine";
 import { offload } from "@/lib/game/phone";
+import { stationOf, statusOf } from "@/lib/game/route";
 import Alert from "./ios/Alert";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Home.module.css";
 
 /* ===========================================================================
-   Her home screen, with one thing a real phone wouldn't have: the widget at
-   the top is the player's open question.
+   His home screen, with one thing a real phone wouldn't have: the widget at
+   the top is the player's open question. The badges are iOS's own (unread
+   messages, missed calls), never a count of what's left to find: that would
+   be a checklist, and a phone that doesn't draw badges on Notes or Photos
+   (the 2026-10-01 review).
 
    It is the quiet answer to "what am I supposed to be doing", it is always
    one tap from the case file, and it is the reason nobody has to be told how
@@ -73,7 +79,7 @@ export default function Home({
   const { pages, dock } = story.home;
 
   const icon = ({ app, label, ...rest }: HomeIcon) => {
-    const unseen = unseenIn(story, state, app);
+    const unseen = badgeFor(story, state, app);
     const where = offload(state, { app, label, ...rest });
     const busy = fetching?.app === app;
     return (
@@ -81,6 +87,8 @@ export default function Home({
         key={`${app}-${label}`}
         type="button"
         className={styles.icon}
+        // The case file isn't an app anyone knows: its name stays under it, even in the dock.
+        data-named={app === "casefile" || undefined}
         data-offloaded={where !== "installed" || undefined}
         data-busy={busy ? (fetching?.comes ? "loading" : "waiting") : undefined}
         // The dock draws no labels, as iOS doesn't; a screen reader still gets one.
@@ -118,14 +126,63 @@ export default function Home({
     );
   };
 
+  const where = stationOf(story, state);
+  const status = statusOf(story, state);
+
   return (
     <div className={styles.home} data-covered={covered || undefined} inert={covered} aria-hidden={covered || undefined}>
-      <button type="button" className={`${styles.widget} lg-thick`} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
-        <span className={styles.widgetLabel}>{open ? (needsRevisit(open, state) ? "Revisit" : "Open question") : "Case file"}</span>
-        <span className={styles.widgetText}>
-          {open ? open.ask : allAsked ? "Everything's asked. What you do with it is on your phone." : "Look around. What you open, you keep."}
-        </span>
-      </button>
+      {story.caseFile === false ? (
+        <>
+          {/* Her trip, as the train app keeps it on her home screen (Last Local). */}
+          {where && story.route && (
+            <div className={`${styles.train} lg-thick`}>
+              <span className={styles.trainHead}>
+                <b>m-Indicator</b>
+                <span>{story.route.train}</span>
+              </span>
+              <span className={styles.trainNext}>
+                {where.next ? (
+                  <>
+                    Next: <b>{where.next.name}</b> · {where.next.at}
+                  </>
+                ) : (
+                  <>
+                    Arrived: <b>{where.here}</b>
+                  </>
+                )}
+              </span>
+              <span className={styles.trainLine} aria-hidden="true">
+                {story.route.stations.map((st, i) => (
+                  <i key={st.name} data-past={i <= where.index || undefined} data-here={i === where.index || undefined} />
+                ))}
+              </span>
+            </div>
+          )}
+          {/* The game's one line: what's going on, never a question. */}
+          {status && (
+            <p className={`${styles.widget} lg-thick`} role="status">
+              <span className={styles.widgetLabel}>Right now</span>
+              <span className={styles.widgetText}>{status}</span>
+            </p>
+          )}
+        </>
+      ) : (
+        <button type="button" className={`${styles.widget} lg-thick`} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
+          <span className={styles.widgetLabel}>{open ? (needsRevisit(open, state) ? "Revisit" : "Open question") : "Case file"}</span>
+          <span className={styles.widgetText}>
+            {open
+              ? open.ask
+              : holding(story, state)
+                ? story.hold?.widget
+                : allAsked
+                  ? story.close
+                    ? "Everything's asked. Close the case in the case file."
+                    : "Everything's asked. What you do with it is on your phone."
+                  : "Look around. What you open, you keep."}
+          </span>
+          {open && <span className={styles.widgetGo}>Answer it in the case file ›</span>}
+        </button>
+      )}
 
       <div
         className={styles.pages}

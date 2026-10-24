@@ -1,4 +1,5 @@
-import { meta, teaser } from "./shagun";
+import { meta as lastlocal, teaser as lastlocalTeaser } from "./lastlocal";
+import { meta, teaser } from "./raakh";
 
 /* ===========================================================================
    Every case Found has, in the light form: names, routes, share lines, and
@@ -14,6 +15,11 @@ export type CaseMeta = {
   readonly href: string;
   readonly title: string;
   readonly cta: string;
+  /** Its number on the site, and its city. */
+  readonly chapter: number;
+  readonly city: string;
+  /** The landing page's line for it: the premise, without the twist. */
+  readonly logline: string;
   readonly hint: string;
   readonly description: string;
   /** The found phone's lock screen, and the time the desk shows on it. */
@@ -37,15 +43,19 @@ export type CaseMeta = {
     readonly to: string;
     readonly address: string;
     readonly phone?: string;
-    /** The sender, as written: for Shagun, a stranger's name over your own address. */
+    /** The sender, as written: for Raakh, a stranger's name over your own address. */
     readonly from?: string;
     readonly stamp: readonly [string, string];
   };
   /**
    * Something besides the phone in the parcel, drawn on the passed-on
-   * parcel's share image: Shagun's wedding envelope.
+   * parcel's share image: Raakh's wedding envelope.
    */
   readonly envelope?: { readonly front: string; readonly small: string };
+  /** The table it arrives on, photographed: the sealed parcel, and what was inside it, opened (2026-10-24). */
+  readonly scene?: { readonly parcel: string; readonly open: string };
+  /** What lies on the desk: a sealed parcel (the default), or the phone itself. */
+  readonly object?: "parcel" | "phone";
   /** How many links the chain has, for the share images (which never load a story). */
   readonly links: number;
   /** What keeps landing on this case's lock screen. The desk cycles it. */
@@ -53,7 +63,8 @@ export type CaseMeta = {
 };
 
 export const CASES = {
-  shagun: { ...meta, teaser },
+  raakh: { ...meta, teaser },
+  lastlocal: { ...lastlocal, teaser: lastlocalTeaser },
 } as const satisfies Record<string, CaseMeta>;
 
 export type CaseId = keyof typeof CASES;
@@ -61,6 +72,6 @@ export type CaseId = keyof typeof CASES;
 export const CASE_IDS = Object.keys(CASES) as CaseId[];
 
 /** The case the desk puts in front of you. */
-export const FEATURED: CaseId = "shagun";
+export const FEATURED: CaseId = "raakh";
 
 export const isCaseId = (x: unknown): x is CaseId => typeof x === "string" && Object.hasOwn(CASES, x);

@@ -1,7 +1,6 @@
 import type { Flag, ReplyOption, Story } from "@/content/types";
 import { add, see, settle, stamp, type CaseState } from "@/lib/game/engine";
-import { STORIES } from "@/content/stories";
-import type { CaseId } from "@/content/cases";
+import { playingStory } from "@/components/found/StoryContext";
 import { reportFlag } from "@/lib/found/events";
 import { boundCase, commit, readProgress } from "@/lib/found/progress";
 import { track } from "@/lib/found/track";
@@ -26,7 +25,8 @@ export function save(given: CaseState): void {
   const before = readProgress();
   const bound = boundCase();
   // Anything found by an act already done counts as soon as it can.
-  const next = bound ? settle(STORIES[bound as CaseId], given) : given;
+  const story = playingStory();
+  const next = bound && story ? settle(story, given) : given;
   // Nothing changed: writing anyway would stamp a new time, re-render every
   // reader, and let an effect that marks things read loop forever.
   if (before && next === before) return;
@@ -36,11 +36,11 @@ export function save(given: CaseState): void {
   commit(stamped);
 
   const id = boundCase();
-  if (!id) return;
+  if (!id || !story) return;
   const had = new Set(before?.flags ?? []);
   for (const f of stamped.flags) {
     if (had.has(f)) continue;
-    const event = reportFlag(f, STORIES[id as CaseId]);
+    const event = reportFlag(f, story);
     if (event) track({ case: id, event, via: stamped.via, seconds: (now - stamped.started) / 1000 });
   }
 }
@@ -75,4 +75,10 @@ export function wrong(question: string): void {
 export function nudged(question: string): void {
   const id = boundCase();
   if (id) track({ case: id, event: `nudge:${question}`, via: readProgress()?.via });
+}
+
+/** How far the player has read a chat: what its unread count starts from (lib/game/chat.ts). */
+export function markRead(key: string, count: number): void {
+  const s = readProgress();
+  if (s && (s.at[key] ?? -1) < count) save({ ...s, at: { ...s.at, [key]: count } });
 }

@@ -280,6 +280,14 @@
   font-weight: 600;
 }
 
+.avatar[data-photo] {
+  position: relative;
+}
+
+.avatarPhoto {
+  object-fit: cover;
+}
+
 .avatar[data-size="head"] {
   width: 36px;
   height: 36px;

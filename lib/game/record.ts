@@ -75,7 +75,7 @@ export function endingFor(story: Story, s: CaseState, act: Act): Ending | undefi
   const rows = recordRows(story, s);
   const row = (id: string) => rows.find((r) => r.link.id === id);
   return story.endings.find(({ when }) => {
-    if (!when.acts.includes(act)) return false;
+    if (!when.acts?.includes(act)) return false;
     if (when.untraced?.some((id) => row(id)?.traced)) return false;
     // In without a witness's name is still in.
     if (when.in?.some((id) => !(row(id)?.traced && (row(id)?.choice === "in" || row(id)?.choice === "anon")))) return false;

@@ -20,6 +20,7 @@ import {
   sideQuestions,
   STRUCK,
   TOO_MUCH,
+  UNPROVED,
   WRONG,
   type CaseState,
 } from "@/lib/game/engine";
@@ -35,7 +36,7 @@ import {
  * These are made up, on the chapter's own phone.
  */
 const ep: Story = {
-  ...STORIES.shagun,
+  ...STORIES.raakh,
   evidence: [
     { id: "poster", device: "owner", app: "whatsapp", label: "A missing-person poster" },
     { id: "portrait", device: "owner", app: "photos", label: "A waiter with a tray, 9:48 PM" },
@@ -68,7 +69,7 @@ describe("picking the proof", () => {
     const s = found("poster", "portrait", "invoice");
     expect(answer(ep, s, q.id, ["poster", "portrait"]).ok).toBe(true);
     expect(answer(ep, s, q.id, ["poster"]).reply).toBe(PARTLY);
-    expect(answer(ep, s, q.id, ["poster", "portrait", "invoice"]).reply).toBe(TOO_MUCH);
+    expect(answer(ep, s, q.id, ["poster", "portrait", "invoice"]).reply).toContain(TOO_MUCH);
     expect(answer(ep, s, q.id, ["invoice"]).reply).toBe(WRONG);
 
     // And nothing can be tabled that was never found.
@@ -86,7 +87,7 @@ describe("picking the proof", () => {
     // Both routes at once: everything on the table proves it.
     expect(answer(story, s, "who-is-he", ["poster", "portrait", "caterer"]).ok).toBe(true);
     // A whole route, beside something that proves nothing.
-    expect(answer(story, s, "who-is-he", ["poster", "caterer", "invoice"]).reply).toBe(TOO_MUCH);
+    expect(answer(story, s, "who-is-he", ["poster", "caterer", "invoice"]).reply).toContain(TOO_MUCH);
     // Nothing but true things, and still no whole route.
     expect(answer(story, s, "who-is-he", ["portrait", "caterer"]).reply).toBe(PARTLY);
   });
@@ -94,7 +95,7 @@ describe("picking the proof", () => {
   /* What a player tabled in the playtest of 2026-09-24 (PLAYTEST-SHAGUN.md
      #12–13): every item true, and each once turned away. */
   describe("in the chapter, proved more than it needs", () => {
-    const shagun = STORIES.shagun;
+    const shagun = STORIES.raakh;
     const has = (...ids: string[]): CaseState => {
       for (const id of ids) expect(shagun.evidence.some((e) => e.id === id), id).toBe(true);
       return add(start(), "ep:2", "ep:3", ...ids.map((id) => `saw:${id}` as const));
@@ -103,7 +104,7 @@ describe("picking the proof", () => {
     it("takes the Apple Account, his Instagram and the invoice for whose phone it is", () => {
       const s = has("apple-account", "sk-films", "invoice", "poster");
       expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "invoice"] }).ok).toBe(true);
-      expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster"] }).reply).toBe(TOO_MUCH);
+      expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster"] }).reply).toContain(TOO_MUCH);
     });
 
     it("takes all three voice notes with the fire for his version", () => {
@@ -224,8 +225,8 @@ describe("filing a claim, and the owner's version of it", () => {
 
   it("wants the proof that goes with the claim, not any proof", () => {
     const s = found("poster", "portrait", "invoice");
-    expect(answer(story, s, "the-car", { claim: "told", proof: ["poster"] }).reply).toBe(WRONG);
-    expect(answer(story, s, "the-car", { claim: "told", proof: ["portrait", "invoice", "poster"] }).reply).toBe(TOO_MUCH);
+    expect(answer(story, s, "the-car", { claim: "told", proof: ["poster"] }).reply).toBe(UNPROVED);
+    expect(answer(story, s, "the-car", { claim: "told", proof: ["portrait", "invoice", "poster"] }).reply).toContain(TOO_MUCH);
     expect(answer(story, s, "the-car", { claim: "nobody", proof: ["poster"] }).ok).toBe(false);
     expect(answer(story, s, "the-car", ["poster"]).ok).toBe(false);
   });
@@ -333,7 +334,7 @@ describe("help", () => {
 
 describe("finding things", () => {
   const phone: Story = {
-    ...STORIES.shagun,
+    ...STORIES.raakh,
     evidence: [
       { id: "on-screen", device: "owner", app: "settings", label: "Seen on opening" },
       { id: "in-a-chat", device: "owner", app: "whatsapp", label: "Inside a chat", within: true },

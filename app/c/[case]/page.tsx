@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Stage from "@/components/stage/Stage";
 import SaveScript from "@/components/found/SaveScript";
 import { CaseProvider } from "@/components/found/StoryContext";
+import { STORIES } from "@/content/stories";
 import { CASES, CASE_IDS, isCaseId } from "@/content/cases";
 import { estimatedMinutes } from "@/lib/found/store";
 
@@ -38,7 +39,7 @@ export default async function CasePage({ params }: PageProps<"/c/[case]">) {
   const { case: id } = await params;
   if (!isCaseId(id)) notFound();
   return (
-    <CaseProvider id={id} minutes={await estimatedMinutes(id)}>
+    <CaseProvider id={id} story={STORIES[id]} minutes={await estimatedMinutes(id)}>
       <SaveScript caseId={id} />
       <Stage />
     </CaseProvider>

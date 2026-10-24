@@ -90,14 +90,19 @@ describe("what the ending reads back", () => {
     return [...linesFor(done, e.lines), ...linesFor(done, e.last)].map((l) => l.text);
   };
 
-  it("in The Complete Record: Meera reading it, Nitin if his name was kept out, Raju's photograph if you told him", () => {
+  it("in The Complete Record: Meera reading it, Nitin if his name was kept out, and Raju's photograph of Dilip, awake", () => {
     const say = ["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:told-raju"] as const;
     const s = ["car", "lie"].reduce((acc, id) => setRow(ep, acc, id, "anon"), toEnd([...say]));
-    const text = lines(actFlags(ep, s, "send"), [...say]);
-    expect(text[0]).toMatch(/^Ye complete hai/);
-    expect(text).toContain("Theek hai. Sach hai.");
+    // Got there before seven (the moments come after the questions this stops at).
+    const text = lines([...actFlags(ep, s, "send"), "did:saved"], [...say]);
+    expect(text[0]).toMatch(/Dilip Kumar Mahto is alive/);
+    expect(text).toContain("Ye complete hai. Isliye kisi ko pasand nahi aayega.");
+    expect(text).toContain("Mera naam nahi hai. …Par sach hai. Shukriya.");
     expect(text).not.toContain("Nitin's name is in it: the one person who tried.");
-    expect(text.at(-2)).toMatch(/Chhath/);
+    expect(text.at(-4)).toMatch(/awake/);
+    expect(text.at(-3)).toMatch(/^Isko rakhna/);
+    // The last voice is his, to whoever had the phone.
+    expect(text.at(-2)).toMatch(/shukriya/);
     expect(text.at(-1)).toMatch(/He held the light/);
   });
 

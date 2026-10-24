@@ -241,3 +241,108 @@
     animation: none;
   }
 }
+
+/* A screenshot's words, as the note keeps them under the picture. */
+.attachmentCaption {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgb(235 235 245 / 60%);
+}
+
+/* A document photographed into a note: white paper, typed, a stamp in red. */
+.doc {
+  display: grid;
+  gap: 6px;
+  padding: 16px 16px 18px;
+  border-radius: 4px;
+  background: #f4f1ea;
+  color: #1d1b18;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.45;
+  rotate: -0.6deg;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 35%);
+}
+
+.docTitle {
+  margin-bottom: 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgb(29 27 24 / 25%);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.docLine { margin: 0; }
+
+.docStamp {
+  justify-self: start;
+  margin: 4px 0;
+  padding: 3px 8px;
+  border: 2px solid #b3382a;
+  color: #b3382a;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  rotate: -4deg;
+}
+
+.docAside {
+  margin: 0;
+  font-family: var(--font-hand), cursive;
+  font-size: 15px;
+  color: #3b4a8a;
+}
+
+/* --- a numeric password, as an OTP (2026-10-23) ---------------------------- */
+
+.otp {
+  display: flex;
+  gap: 10px;
+}
+
+.otp[data-shake] {
+  animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.otpBox {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 56px;
+  border: 1.5px solid rgba(118, 118, 128, 0.45);
+  border-radius: 12px;
+  background: rgba(118, 118, 128, 0.16);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--os-text);
+}
+
+.otpBox[data-on] {
+  border-color: var(--ios-yellow, #ffd60a);
+  box-shadow: 0 0 0 3px rgb(255 214 10 / 22%);
+}
+
+.otpBox[data-full] {
+  border-color: rgba(118, 118, 128, 0.7);
+}
+
+/* The real field lies over the boxes, invisible, so a tap anywhere on them types, and the number pad comes up. */
+.otpWrap {
+  position: relative;
+  display: block;
+}
+
+.otpInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font-size: 16px;
+  opacity: 0.01;
+  cursor: text;
+}

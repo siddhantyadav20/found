@@ -4,7 +4,7 @@ import { STORIES } from "@/content/stories";
 import type { Story } from "@/content/types";
 import { add, battery, clockNow, dayNow, minutesSince, newCase, stamp, type CaseState } from "@/lib/game/engine";
 import { ENDING_SEEN, finish } from "@/lib/game/endings";
-import { NEEDS_CHARGE, PLUGGED_IN, sceneOf, titleShown } from "@/lib/game/scene";
+import { NEEDS_CHARGE, PLUGGED_IN, sceneOf, titleShown, recapShown } from "@/lib/game/scene";
 
 /**
  * Where the player is, decided by the save alone, so a reload always lands
@@ -12,7 +12,7 @@ import { NEEDS_CHARGE, PLUGGED_IN, sceneOf, titleShown } from "@/lib/game/scene"
  * card, a call, the ending and the card.
  */
 
-const ep = STORIES.shagun;
+const ep = STORIES.raakh;
 const opened = (): CaseState => add(newCase("t", 0), "did:opened");
 const MIN = 60_000;
 
@@ -27,14 +27,18 @@ describe("the way in", () => {
 describe("between episodes", () => {
   const unlocked = () => add(opened(), "did:unlock");
 
-  it("waits on the charger, then shows each new episode's title once", () => {
+  it("closes each episode on its recap, waits on the charger, then shows each new episode's title once", () => {
     let s = add(unlocked(), NEEDS_CHARGE);
+    expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 1 });
+    s = add(s, recapShown(1));
     expect(sceneOf(ep, s).kind).toBe("charge");
     s = add(s, ...PLUGGED_IN);
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 2 });
     s = add(s, titleShown(2));
     expect(sceneOf(ep, s).kind).toBe("table");
     s = add(s, "ep:3");
+    expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 2 });
+    s = add(s, recapShown(2));
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 3 });
     expect(sceneOf(ep, add(s, titleShown(3))).kind).toBe("table");
   });

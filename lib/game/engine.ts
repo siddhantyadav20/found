@@ -146,6 +146,140 @@ export function claimFor(q: Question, words: Readonly<Record<string, string>>): 
   return { close: names.length > 1 && best === names.length - 1 };
 }
 
+/**
+ * The words a blank offers: all of them, from the start (2026-10-23). Words
+ * used to be "learned" (`Say.learn`) and the rest shown as locked slots,
+ * and players couldn't say what hadn't occurred to them. The phone still
+ * has to prove the sentence; the words are only the player's vocabulary.
+ * `Say.learn` stays in the data: it's where each word is shown, which is
+ * what a wrong word is answered with (`whereWordsAre`).
+ */
+export function wordsFor(q: Question, blank: string): string[] {
+  if (q.kind !== "file" || !q.say) return [];
+  return [...(q.say.blanks[blank] ?? [])];
+}
+
+/**
+ * A finished (or half-finished) sentence, read back blank by blank, so a
+ * wrong word can be pointed at instead of "that isn't what the phone shows"
+ * (2026-10-23: "wrong choices are not clear to the users").
+ *
+ * - `claim`: the claim the words file, if they file one.
+ * - `wrong`: the blanks that keep it from being something the phone bears
+ *   out, measured against the nearest real answer.
+ * - `why`: what to say about it: a refused near miss says its own line.
+ */
+export function readSentence(
+  q: Question,
+  words: Readonly<Record<string, string>>,
+): { claim?: FileClaim; wrong: string[]; why?: string; whole: boolean } {
+  if (q.kind !== "file" || !q.say) return { wrong: [], whole: false };
+  const names = blanksOf(q.say.line);
+  const whole = names.every((n) => words[n]);
+  const real = q.claims.filter((c) => c.words && !c.refuse);
+  const exact = q.claims.find((c) => c.words && names.every((n) => c.words?.[n] === words[n]));
+  if (exact && !exact.refuse) return { claim: exact, wrong: [], whole };
+  // The nearest real answer: the most blanks in common, and the truth before a version or a hunch on a tie.
+  const fits = (c: FileClaim) => names.filter((n) => words[n] && c.words?.[n] === words[n]).length;
+  const rank = (c: FileClaim) => fits(c) * 4 + (c.version ? 0 : c.hunch ? 1 : 2);
+  const nearest = real.toSorted((a, b) => rank(b) - rank(a))[0];
+  const wrong = nearest ? names.filter((n) => words[n] && nearest.words?.[n] !== words[n]) : [];
+  // Only a whole sentence is judged; half a sentence is still being said.
+  if (!whole) return { wrong: [], whole };
+  if (exact?.refuse) return { claim: exact, wrong, why: exact.refuse, whole };
+  const first = wrong[0];
+  return { wrong, why: first ? `“${words[first]}” isn't what the phone shows.` : UNSAID, whole };
+}
+
+/** Every piece of evidence any answer to this question could stand on, or sit beside. */
+export function bearsOn(q: Question): string[] {
+  switch (q.kind) {
+    case "file":
+      return [...new Set(q.claims.flatMap((c) => [...c.proof, ...(c.orProof ?? []).flat(), ...(c.also ?? [])]))];
+    case "pick":
+      return [...new Set([...q.proof, ...(q.orProof ?? []).flat()])];
+    case "timeline":
+      return q.rows.map((r) => r.evidence);
+    case "claims":
+      return q.claims.map((c) => c.proof).filter((x): x is string => Boolean(x));
+    case "type":
+      return [];
+  }
+}
+
+/**
+ * What the case file offers as proof for a question: what the player has
+ * found that bears on it, and a few other things from where to look, so the
+ * table is a short list to think about and not thirty things to scroll
+ * (2026-10-23: "everything you reveal looks overwhelming").
+ */
+export function proofChoices(story: Story, s: CaseState, q: Question, decoys = 3): Evidence[] {
+  const near = new Set(bearsOn(q));
+  const found = caseFile(story, s);
+  const relevant = found.filter((e) => near.has(e.id));
+  const apps = new Set(q.whereToLook);
+  const others = found.filter((e) => !near.has(e.id) && apps.has(e.app)).slice(-decoys);
+  return [...relevant, ...others];
+}
+
+/** How many things on the phone bear on this question that the player hasn't found (or can't count) yet. */
+export const proofToCome = (story: Story, s: CaseState, q: Question): number =>
+  bearsOn(q).filter((id) => {
+    const e = story.evidence.find((x) => x.id === id);
+    return e && reachable(s, e) && !seen(s, id);
+  }).length;
+
+/** The routes a claim can be proved by, shortest first. */
+const routesOf = (c: FileClaim): (readonly string[])[] => [c.proof, ...(c.orProof ?? [])].toSorted((a, b) => a.length - b.length);
+
+/**
+ * The proof on the table, read back against a claim: what doesn't belong,
+ * and what the nearest way of proving it still needs (2026-10-23: say what's
+ * missing, and where it is).
+ */
+export function readProof(
+  story: Story,
+  s: CaseState,
+  c: FileClaim,
+  picked: readonly string[],
+): { ok: boolean; stray: string[]; missing: string[]; need: number } {
+  const routes = routesOf(c);
+  const proves = (id: string) => (c.also ?? []).includes(id) || routes.some((r) => r.includes(id));
+  const stray = picked.filter((p) => !proves(p));
+  const nearest =
+    routes.toSorted((a, b) => b.filter((id) => picked.includes(id)).length - a.filter((id) => picked.includes(id)).length || a.length - b.length)[0] ?? [];
+  const missing = nearest.filter((id) => !picked.includes(id));
+  return { ok: !stray.length && !missing.length && picked.length > 0, stray, missing, need: routes[0]?.length ?? 1 };
+}
+
+/** Where a missing piece of proof lives, said plainly, and whether it's been found yet. */
+export function whereMissing(story: Story, s: CaseState, ids: readonly string[]): { app: AppId; found: boolean }[] {
+  return ids
+    .map((id) => story.evidence.find((e) => e.id === id))
+    .filter((e): e is Evidence => Boolean(e))
+    .map((e) => ({ app: e.app, found: seen(s, e.id) }));
+}
+
+/**
+ * The words of a finished sentence that no answer uses in that blank: what
+ * to point at when it isn't what the phone shows. Refused near misses don't
+ * count as answers here, so their words are "off" only when no real answer
+ * shares them.
+ */
+export function wordsOff(q: Question, words: Readonly<Record<string, string>>): string[] {
+  if (q.kind !== "file" || !q.say) return [];
+  const real = q.claims.filter((c) => c.words && !c.refuse);
+  return blanksOf(q.say.line).filter((b) => words[b] && !real.some((c) => c.words?.[b] === words[b]));
+}
+
+/** Where the words a blank is looking for are learned: the apps that teach them. */
+export function whereWordsAre(story: Story, q: Question, blank: string): AppId[] {
+  if (q.kind !== "file" || !q.say) return [];
+  const want = new Set(q.claims.filter((c) => !c.refuse && c.words?.[blank]).map((c) => c.words![blank]));
+  const ids = [...want].flatMap((w) => q.say!.learn?.[w] ?? []).filter((id) => !id.includes(":"));
+  return [...new Set(ids.map((id) => story.evidence.find((e) => e.id === id)?.app).filter((a): a is AppId => Boolean(a)))];
+}
+
 /** When the story's clock says a claim was filed, for a player who called something early. */
 export const FILED_AT = (q: string, c: string) => `filed:${q}:${c}`;
 
@@ -220,14 +354,26 @@ export type Answer = { readonly state: CaseState; readonly ok: boolean; readonly
 export type Given = readonly string[] | string | { readonly claim: string; readonly proof: readonly string[] };
 
 export const WRONG = "Not quite. Look again.";
-export const TOO_MUCH = "Some of that proves it. Take out what doesn't.";
+export const TOO_MUCH = "Some of that proves it.";
+/** Said with how many have to come off, so the player isn't left guessing which half of the table is wrong. */
+export const tooMuch = (n: number) =>
+  n === 1 ? `${TOO_MUCH} One thing on the table doesn't: take it off.` : `${TOO_MUCH} ${n} things on the table don't: take them off.`;
 export const PARTLY = "That's part of it. Something's missing.";
+/** The sentence is right; the table doesn't hold it up yet. */
+export const UNPROVED = "That's what happened. Nothing on the table proves it yet.";
 export const UNCHECKED = "Check each of them on the phone before you decide.";
 export const STRUCK = "That's the line you struck. What you found since says otherwise.";
 export const UNSAID = "That isn't what the phone shows.";
 export const CLOSE = "Close. One part of that isn't what the phone shows.";
 export const THIN = "The board can't show that yet. Something's missing from it.";
 export const UNPLACED = "Every row needs a lane first.";
+/** The lanes are right; the board isn't answered until the player says what doesn't fit. */
+export const PLACED = "Every row is in its lane.";
+export const NOT_THOSE = "Those can all be true together. Look at the same few minutes, in three lanes.";
+export const ODD_PART = "That's part of it. Something else in those minutes doesn't fit either.";
+
+/** A row marked as one that can't be true alongside the others: "odd:<row>". */
+export const ODD = (row: string) => `odd:${row}`;
 
 /** A timeline with enough on it to prove anything: one of its `enough` routes is all found. */
 export const boardReady = (q: Question, s: CaseState): boolean =>
@@ -251,7 +397,7 @@ function judgeProof(
   const stray = picked.filter((p) => !proves(p)).length;
   if (!stray && routes.some((route) => route.every((id) => picked.includes(id)))) return { ok: true, reply: "" };
   // Something in there proves it, and something else doesn't.
-  if (stray && stray < picked.length) return { ok: false, reply: TOO_MUCH };
+  if (stray && stray < picked.length) return { ok: false, reply: tooMuch(stray) };
   // Everything on the table counts, but no route is whole yet.
   if (!stray) return { ok: false, reply: PARTLY };
   return { ok: false, reply: WRONG };
@@ -284,12 +430,32 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
          judged against that and not against the whole script: every known
          row in its own lane, and nothing else. */
       const known = q.rows.filter((r) => seen(s, r.evidence));
-      const laneOf = new Map(picked.map((p) => [p.slice(0, p.indexOf("@")), p.slice(p.indexOf("@") + 1)]));
+      const placed = picked.filter((p) => p.includes("@"));
+      const marked = new Set(picked.filter((p) => p.startsWith("odd:")).map((p) => p.slice(4)));
+      const laneOf = new Map(placed.map((p) => [p.slice(0, p.indexOf("@")), p.slice(p.indexOf("@") + 1)]));
       const unplaced = known.filter((r) => !laneOf.has(r.id)).length;
       const off = known.filter((r) => laneOf.has(r.id) && laneOf.get(r.id) !== r.lane && laneOf.get(r.id) !== r.orLane).length;
-      ok = known.length > 0 && picked.length === known.length && !unplaced && !off;
+      const lanesRight = known.length > 0 && placed.length === known.length && !unplaced && !off;
       // How far off, never which: the board is still theirs to fix (PLAYTEST-SHAGUN.md #53).
-      if (!ok) reply = unplaced ? UNPLACED : off === 1 ? "One row is in the wrong lane." : off ? `${off} rows are in the wrong lane.` : WRONG;
+      if (!lanesRight) {
+        reply = unplaced ? UNPLACED : off === 1 ? "One row is in the wrong lane." : off ? `${off} rows are in the wrong lane.` : WRONG;
+        break;
+      }
+      /* Then the board's own question: which of these can't all be true. The
+         player marks them; nothing lights them first (PLAYER-JOURNEY Stage 7). */
+      const odd = known.filter((r) => r.odd).map((r) => r.id);
+      // One odd row alone contradicts nothing.
+      if (!q.contradiction || odd.length < 2) {
+        ok = true;
+        break;
+      }
+      if (!marked.size) {
+        reply = `${PLACED} ${q.contradiction}`;
+        break;
+      }
+      const stray = [...marked].some((id) => !odd.includes(id));
+      ok = !stray && odd.every((id) => marked.has(id));
+      if (!ok) reply = stray ? NOT_THOSE : ODD_PART;
       break;
     }
     case "claims": {
@@ -315,11 +481,12 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
       // A Revisit moves on from the version on file; it can't file a version again.
       if (revisiting && c.version) return { state: s, ok: false, reply: STRUCK };
       ({ ok, reply } = judgeProof(s, [c.proof, ...(c.orProof ?? [])], proof, c.also));
-      if (!ok) return { state: s, ok, reply };
+      // The words are right; say so, so the player looks again at the table and not the sentence.
+      if (!ok) return { state: s, ok, reply: reply === WRONG && proof.length ? UNPROVED : reply };
       return {
         state: add(s, `ask:${id}`, `claim:${id}:${c.id}`, ...(c.sets ?? []), ...(revisiting ? [] : (q.sets ?? []))),
         ok: true,
-        reply: c.reply,
+        reply: c.backed && proof.some((p) => c.backed!.by.includes(p)) ? c.backed.reply : c.reply,
       };
     }
   }
@@ -330,7 +497,8 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
 
 /* --- the chain ---------------------------------------------------------- */
 
-export const isTraced = (s: CaseState, link: Link): boolean => has(s, `link:${link.id}`);
+export const isTraced = (s: CaseState, link: Link): boolean =>
+  has(s, `link:${link.id}`) || Boolean(link.when?.some((set) => all(s, set)));
 
 /** The links the player has traced, in the chain's own order. */
 export const traced = (story: Story, s: CaseState): Link[] => story.chain.filter((l) => isTraced(s, l));

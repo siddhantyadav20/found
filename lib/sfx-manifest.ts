@@ -15,7 +15,14 @@
 export type SfxCue =
   /* The phone: a real motor on real wood, played twice per text by
      lib/found/buzz.ts. */
-  "found-buzz";
+  | "found-buzz"
+  /* The night, heard (lib/found/nightSound.ts): the wedding's dhol and a fire
+     as beds, a shot and laughter as the captions name them. */
+  | "found-dhol"
+  | "found-shot"
+  | "found-laugh"
+  | "found-fire"
+  | "found-train";
 
 export type SfxEntry = {
   /** Filenames under `/sfx/`. More than one is a round-robin — see `pick` in
@@ -30,6 +37,11 @@ export type SfxEntry = {
 /* @generated:start — scripts/build-samples.mjs rewrites everything below. */
 export const SFX: Record<SfxCue, SfxEntry> = {
   "found-buzz": { takes: ["found-buzz-1.m4a", "found-buzz-2.m4a"], gain: 1 },
+  "found-dhol": { takes: ["found-dhol-1.m4a"], gain: 0.42, sustained: true },
+  "found-shot": { takes: ["found-shot-1.m4a"], gain: 0.75 },
+  "found-laugh": { takes: ["found-laugh-1.m4a"], gain: 0.32 },
+  "found-train": { takes: ["found-train-1.m4a"], gain: 0.6, sustained: true },
+  "found-fire": { takes: ["found-fire-1.m4a"], gain: 0.55, sustained: true },
 };
 /* @generated:end */
 
