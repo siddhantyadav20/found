@@ -1,6 +1,6 @@
 /* Renders trailer.html into a 1080×1920 Reel, frame by frame, with its sound.
 
-     node marketing/trailer/render.mjs              → marketing/trailer/out/shagun-trailer.mp4
+     node marketing/trailer/render.mjs              → marketing/trailer/out/raakh-trailer.mp4
      node marketing/trailer/render.mjs --stills     → a PNG in each shot and card, to check the cut
      node marketing/trailer/render.mjs --stills --at 9.5,34  → just those moments
      node marketing/trailer/render.mjs --from 30    → only from 30 s on (a quick look at the end)
@@ -111,7 +111,7 @@ console.log("\nframes done");
 
 const wav = path.join(out, "sound.wav");
 execFileSync("python3", [path.join(here, "sound.py"), path.join(here, "edit.json"), wav], { stdio: "inherit" });
-const final = path.join(out, from ? "preview.mp4" : "shagun-trailer.mp4");
+const final = path.join(out, from ? "preview.mp4" : "raakh-trailer.mp4");
 execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", silent, "-ss", String(from), "-i", wav,
   "-c:v", "copy", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000", "-c:a", "aac", "-b:a", "256k", "-shortest", "-movflags", "+faststart", final], { stdio: "inherit" });
 console.log(`→ ${final}`);

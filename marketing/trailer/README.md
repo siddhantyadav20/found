@@ -15,7 +15,7 @@ python3 marketing/trailer/footage.py                  # footage, game pictures a
 python3 marketing/trailer/edit.py                     # edit.py → edit.json (the cut)
 node marketing/trailer/render.mjs --stills            # one PNG per shot and card
 node marketing/trailer/render.mjs --stills --at 9,34  # just those moments
-node marketing/trailer/render.mjs                     # → out/shagun-trailer.mp4 (≈50 min)
+node marketing/trailer/render.mjs                     # → out/raakh-trailer.mp4 (≈50 min)
 ```
 
 Needs Playwright (Chromium), ffmpeg, and Python 3 with numpy and Pillow.
