@@ -517,7 +517,7 @@ export const fragments = Object.fromEntries(Object.entries(SCENES).map(([k, v]) 
 
 export const POST = `#version 300 es
 precision highp float;
-uniform sampler2D S; uniform vec2 OUTR, shake, whip; uniform float T, flash, exposure, warmth, sat_, seed, foot, haze, streak, leak, leakPhase;
+uniform sampler2D S; uniform vec2 OUTR, shake, whip; uniform float T, flash, exposure, warmth, sat_, seed, foot, haze, streak, leak, leakPhase, cool;
 out vec4 O;
 float h21(vec2 p){ vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
 float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
@@ -570,6 +570,8 @@ void main(){
   // Teal in the shadows, amber in the highlights.
   col += (1. - smoothstep(0., .35, l)) * vec3(-.004, .01, .016);
   col *= mix(vec3(1.), vec3(1.06, .98, .9), warmth * smoothstep(.2, .9, l));
+  // Night: teal through the shadows and mids; the brightest things (a flame, a screen) keep their colour.
+  col = mix(col, col * vec3(.7, .97, 1.12) + vec3(0., .004, .011), cool * (1. - smoothstep(.2, .85, l)));
   col = foot > .5 ? pow(aces(col * 1.6), vec3(1. / 1.6)) : aces(col * 1.1);
   col *= 1. - .55 * pow(length(c * vec2(1.1, .8)) * 1.25, 2.4);
   float g = h21(gl_FragCoord.xy * .5 + seed * 17.13) - .5;

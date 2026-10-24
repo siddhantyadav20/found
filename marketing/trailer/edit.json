@@ -1,58 +1,75 @@
 {
  "fps": 30,
- "duration": 60.4,
+ "duration": 54.8,
  "shots": [
   {
-   "t0": 0.6,
-   "t1": 3.6,
-   "slot": "phone_dark",
-   "scene": "phone",
-   "seed": 0.0,
-   "exposure": 1.1,
-   "warmth": 0.2,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 3.6,
-   "t1": 5.2,
-   "slot": "parcel",
-   "scene": "fire",
+   "t0": 0.4,
+   "t1": 2.6,
+   "slot": "bulb",
+   "scene": "embers",
    "seed": 0.0,
    "exposure": 1.0,
    "warmth": 0.7,
-   "sat": 0.85,
+   "sat": 0.9,
    "haze": 0,
-   "streak": 0
+   "streak": 0.4,
+   "cool": 0
   },
   {
-   "t0": 5.2,
-   "t1": 10.0,
-   "slot": "enter",
+   "t0": 3.0,
+   "t1": 7.2,
+   "slot": "phone",
    "scene": "phone",
    "seed": 0.0,
-   "exposure": 1.0,
-   "warmth": 0.45,
-   "sat": 0.85,
+   "exposure": 0.68,
+   "warmth": 0.2,
+   "sat": 0.7,
    "haze": 0,
-   "streak": 0.15
+   "streak": 0.1,
+   "cool": 0.85
   },
   {
-   "t0": 10.0,
-   "t1": 12.4,
-   "slot": "bokeh",
-   "scene": "bulbs",
+   "t0": 7.2,
+   "t1": 8.8,
+   "slot": "parcel",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.85,
+   "warmth": 0.4,
+   "sat": 0.7,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0.5
+  },
+  {
+   "t0": 8.8,
+   "t1": 10.0,
+   "slot": "match",
+   "scene": "fire",
    "seed": 0.0,
    "exposure": 1.0,
    "warmth": 0.7,
    "sat": 0.95,
    "haze": 0,
-   "streak": 0.5
+   "streak": 0.3,
+   "cool": 0
   },
   {
-   "t0": 12.4,
-   "t1": 13.6,
+   "t0": 10.0,
+   "t1": 10.6,
+   "slot": "mehndi",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0
+  },
+  {
+   "t0": 10.6,
+   "t1": 11.2,
    "slot": "lamp",
    "scene": "fire",
    "seed": 0.0,
@@ -60,23 +77,12 @@
    "warmth": 0.7,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.2
+   "streak": 0.2,
+   "cool": 0
   },
   {
-   "t0": 13.6,
-   "t1": 14.8,
-   "slot": "mehndi",
-   "scene": "fire",
-   "seed": 0.0,
-   "exposure": 0.9,
-   "warmth": 0.7,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 14.8,
-   "t1": 16.0,
+   "t0": 11.2,
+   "t1": 11.8,
    "slot": "bangles",
    "scene": "fire",
    "seed": 0.0,
@@ -84,23 +90,25 @@
    "warmth": 0.65,
    "sat": 0.85,
    "haze": 0,
-   "streak": 0
+   "streak": 0,
+   "cool": 0
   },
   {
-   "t0": 16.0,
-   "t1": 17.2,
-   "slot": "diyas",
+   "t0": 11.8,
+   "t1": 12.4,
+   "slot": "lighter",
    "scene": "fire",
    "seed": 0.0,
-   "exposure": 1.0,
-   "warmth": 0.75,
+   "exposure": 1.3,
+   "warmth": 0.7,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.3
+   "streak": 0.4,
+   "cool": 0
   },
   {
-   "t0": 17.2,
-   "t1": 18.4,
+   "t0": 12.4,
+   "t1": 13.0,
    "slot": "sparkler",
    "scene": "embers",
    "seed": 0.0,
@@ -108,11 +116,12 @@
    "warmth": 0.7,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.5
+   "streak": 0.5,
+   "cool": 0
   },
   {
-   "t0": 18.4,
-   "t1": 19.6,
+   "t0": 13.0,
+   "t1": 13.6,
    "slot": "havan",
    "scene": "fire",
    "seed": 0.0,
@@ -120,11 +129,25 @@
    "warmth": 0.7,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.2
+   "streak": 0.2,
+   "cool": 0
   },
   {
-   "t0": 19.6,
-   "t1": 20.8,
+   "t0": 13.6,
+   "t1": 14.2,
+   "slot": "diyas",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 1.0,
+   "warmth": 0.75,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.3,
+   "cool": 0
+  },
+  {
+   "t0": 14.2,
+   "t1": 14.8,
    "slot": "fireworks",
    "scene": "fireworks",
    "seed": 0.0,
@@ -132,23 +155,155 @@
    "warmth": 0.55,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.4
+   "streak": 0.4,
+   "cool": 0
   },
   {
-   "t0": 20.8,
-   "t1": 22.0,
-   "slot": "blur",
-   "scene": "fire",
+   "t0": 14.8,
+   "t1": 15.4,
+   "slot": "bokeh",
+   "scene": "bulbs",
    "seed": 0.0,
-   "exposure": 0.95,
-   "warmth": 0.6,
+   "exposure": 1.0,
+   "warmth": 0.7,
+   "sat": 0.95,
+   "haze": 0,
+   "streak": 0.5,
+   "cool": 0
+  },
+  {
+   "t0": 15.4,
+   "t1": 15.7,
+   "slot": "mehndi",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 0.9,
+   "warmth": 0.7,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.5
+   "streak": 0,
+   "cool": 0
   },
   {
-   "t0": 22.0,
-   "t1": 24.4,
+   "t0": 15.7,
+   "t1": 16.0,
+   "slot": "sparkler",
+   "scene": "embers",
+   "seed": 1.0,
+   "exposure": 0.95,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.5,
+   "cool": 0
+  },
+  {
+   "t0": 16.0,
+   "t1": 16.3,
+   "slot": "havan",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 0.95,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.2,
+   "cool": 0
+  },
+  {
+   "t0": 16.3,
+   "t1": 16.6,
+   "slot": "fireworks",
+   "scene": "fireworks",
+   "seed": 1.0,
+   "exposure": 1.05,
+   "warmth": 0.55,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.4,
+   "cool": 0
+  },
+  {
+   "t0": 16.6,
+   "t1": 16.9,
+   "slot": "match",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 1.0,
+   "warmth": 0.7,
+   "sat": 0.95,
+   "haze": 0,
+   "streak": 0.3,
+   "cool": 0
+  },
+  {
+   "t0": 16.9,
+   "t1": 17.2,
+   "slot": "lamp",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 0.95,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.2,
+   "cool": 0
+  },
+  {
+   "t0": 17.2,
+   "t1": 17.5,
+   "slot": "bangles",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 0.95,
+   "warmth": 0.65,
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0
+  },
+  {
+   "t0": 17.5,
+   "t1": 17.8,
+   "slot": "diyas",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 1.0,
+   "warmth": 0.75,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.3,
+   "cool": 0
+  },
+  {
+   "t0": 17.8,
+   "t1": 18.1,
+   "slot": "lighter",
+   "scene": "fire",
+   "seed": 1.0,
+   "exposure": 1.3,
+   "warmth": 0.7,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.4,
+   "cool": 0
+  },
+  {
+   "t0": 18.1,
+   "t1": 18.4,
+   "slot": "bokeh",
+   "scene": "bulbs",
+   "seed": 1.0,
+   "exposure": 1.0,
+   "warmth": 0.7,
+   "sat": 0.95,
+   "haze": 0,
+   "streak": 0.5,
+   "cool": 0
+  },
+  {
+   "t0": 18.4,
+   "t1": 19.6,
    "slot": "reel",
    "scene": "fire",
    "seed": 0.0,
@@ -156,47 +311,51 @@
    "warmth": 0.5,
    "sat": 0.8,
    "haze": 0,
-   "streak": 0.5
+   "streak": 0.5,
+   "cool": 0.3
   },
   {
-   "t0": 25.6,
-   "t1": 27.6,
-   "slot": "lawn",
-   "scene": "dawn",
+   "t0": 20.8,
+   "t1": 23.2,
+   "slot": "torch",
+   "scene": "traffic",
    "seed": 0.0,
-   "exposure": 0.75,
-   "warmth": 0.25,
-   "sat": 0.55,
-   "haze": 0.1,
-   "streak": 0.15
+   "exposure": 1.2,
+   "warmth": 0.2,
+   "sat": 0.8,
+   "haze": 0,
+   "streak": 0.5,
+   "cool": 0.8
   },
   {
-   "t0": 27.6,
-   "t1": 29.6,
+   "t0": 23.2,
+   "t1": 25.2,
    "slot": "gravel",
    "scene": "fire",
    "seed": 0.0,
-   "exposure": 0.9,
+   "exposure": 0.95,
    "warmth": 0.3,
    "sat": 0.7,
    "haze": 0,
-   "streak": 0.1
+   "streak": 0.1,
+   "cool": 0.7
   },
   {
-   "t0": 29.6,
-   "t1": 31.6,
+   "t0": 25.2,
+   "t1": 27.0,
    "slot": "jerrycan",
    "scene": "fire",
    "seed": 0.0,
    "exposure": 0.85,
-   "warmth": 0.45,
+   "warmth": 0.4,
    "sat": 0.75,
    "haze": 0,
-   "streak": 0
+   "streak": 0,
+   "cool": 0.6
   },
   {
-   "t0": 31.6,
-   "t1": 33.6,
+   "t0": 27.0,
+   "t1": 29.4,
    "slot": "fire",
    "scene": "fire",
    "seed": 0.0,
@@ -204,407 +363,142 @@
    "warmth": 0.6,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.25
+   "streak": 0.25,
+   "cool": 0.6
   },
   {
-   "t0": 33.6,
-   "t1": 35.6,
-   "slot": "ash",
+   "t0": 29.4,
+   "t1": 31.2,
+   "slot": "candle",
    "scene": "embers",
    "seed": 0.0,
-   "exposure": 0.7,
-   "warmth": 0.55,
-   "sat": 0.5,
+   "exposure": 1.1,
+   "warmth": 0.6,
+   "sat": 0.9,
    "haze": 0,
-   "streak": 0
+   "streak": 0.2,
+   "cool": 0.7
   },
   {
-   "t0": 38.0,
-   "t1": 39.0,
-   "slot": "m_glass",
-   "scene": "rain",
+   "t0": 31.2,
+   "t1": 33.0,
+   "slot": "smoke",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 1.0,
+   "warmth": 0.5,
+   "sat": 0.8,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0.7
+  },
+  {
+   "t0": 35.6,
+   "t1": 37.2,
+   "slot": "board",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.4,
+   "sat": 0.75,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0.6
+  },
+  {
+   "t0": 37.2,
+   "t1": 38.6,
+   "slot": "back",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.85,
+   "warmth": 0.35,
+   "sat": 0.7,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0.6
+  },
+  {
+   "t0": 38.6,
+   "t1": 39.6,
+   "slot": "alarm",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 1.0,
+   "warmth": 0.3,
+   "sat": 0.8,
+   "haze": 0,
+   "streak": 0.2,
+   "cool": 0.7
+  },
+  {
+   "t0": 39.6,
+   "t1": 40.4,
+   "slot": "seconds",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.3,
+   "sat": 0.6,
+   "haze": 0,
+   "streak": 0,
+   "cool": 0.6
+  },
+  {
+   "t0": 40.4,
+   "t1": 40.6,
+   "slot": "glass",
+   "scene": "fire",
    "seed": 0.0,
    "exposure": 0.85,
    "warmth": 0.3,
    "sat": 0.75,
    "haze": 0,
-   "streak": 0.3
+   "streak": 0.3,
+   "cool": 0.5
   },
   {
-   "t0": 39.0,
-   "t1": 39.5,
-   "slot": "m_car",
-   "scene": "traffic",
-   "seed": 0.37,
-   "exposure": 1.1,
-   "warmth": 0.3,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 39.5,
-   "t1": 40.0,
-   "slot": "m_aerial",
+   "t0": 40.6,
+   "t1": 40.8,
+   "slot": "note",
    "scene": "fire",
-   "seed": 0.74,
-   "exposure": 1.3,
-   "warmth": 0.4,
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.5,
    "sat": 0.8,
    "haze": 0,
-   "streak": 0.4
+   "streak": 0,
+   "cool": 0.4
   },
   {
-   "t0": 40.0,
-   "t1": 40.5,
-   "slot": "m_note",
-   "scene": "fire",
-   "seed": 1.11,
-   "exposure": 0.95,
-   "warmth": 0.6,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 40.5,
+   "t0": 40.8,
    "t1": 41.0,
-   "slot": "m_pyre",
+   "slot": "poster",
    "scene": "fire",
-   "seed": 1.48,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.4,
+   "sat": 0.7,
    "haze": 0,
-   "streak": 0.2
+   "streak": 0,
+   "cool": 0.5
   },
   {
    "t0": 41.0,
-   "t1": 41.4,
-   "slot": "m_smoke",
-   "scene": "fire",
-   "seed": 1.85,
-   "exposure": 0.8,
-   "warmth": 0.2,
-   "sat": 0.3,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 41.4,
-   "t1": 41.72,
-   "slot": "m_rain",
-   "scene": "rain",
-   "seed": 2.22,
-   "exposure": 0.9,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.3
-  },
-  {
-   "t0": 41.72,
-   "t1": 41.976,
-   "slot": "m_coals",
-   "scene": "fire",
-   "seed": 2.59,
-   "exposure": 0.9,
-   "warmth": 0.6,
-   "sat": 0.9,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 41.976,
-   "t1": 42.181,
-   "slot": "m_incense",
-   "scene": "fire",
-   "seed": 2.96,
-   "exposure": 1.0,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 42.181,
-   "t1": 42.345,
-   "slot": "m_fog",
-   "scene": "fire",
-   "seed": 3.33,
-   "exposure": 0.55,
-   "warmth": 0.3,
-   "sat": 0.45,
-   "haze": 0.2,
-   "streak": 0
-  },
-  {
-   "t0": 42.345,
-   "t1": 42.476,
-   "slot": "m_traffic",
-   "scene": "traffic",
-   "seed": 3.7,
-   "exposure": 1.0,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 42.476,
-   "t1": 42.601,
-   "slot": "m_embers",
-   "scene": "embers",
-   "seed": 4.07,
-   "exposure": 0.95,
-   "warmth": 0.6,
-   "sat": 0.9,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 42.601,
-   "t1": 42.726,
-   "slot": "parcel",
-   "scene": "fire",
-   "seed": 4.44,
-   "exposure": 1.0,
-   "warmth": 0.7,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 42.726,
-   "t1": 42.851,
-   "slot": "m_glass",
-   "scene": "rain",
-   "seed": 4.81,
-   "exposure": 0.85,
-   "warmth": 0.3,
-   "sat": 0.75,
-   "haze": 0,
-   "streak": 0.3
-  },
-  {
-   "t0": 42.851,
-   "t1": 42.976,
-   "slot": "m_pyre",
-   "scene": "fire",
-   "seed": 5.18,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 42.976,
-   "t1": 43.101,
-   "slot": "m_car",
-   "scene": "traffic",
-   "seed": 5.55,
-   "exposure": 1.1,
-   "warmth": 0.3,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 43.101,
-   "t1": 43.226,
-   "slot": "m_coals",
-   "scene": "fire",
-   "seed": 5.92,
-   "exposure": 0.9,
-   "warmth": 0.6,
-   "sat": 0.9,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 43.226,
-   "t1": 43.351,
-   "slot": "m_smoke",
-   "scene": "fire",
-   "seed": 6.29,
-   "exposure": 0.8,
-   "warmth": 0.2,
-   "sat": 0.3,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 43.351,
-   "t1": 43.476,
-   "slot": "m_glass",
-   "scene": "rain",
-   "seed": 6.66,
-   "exposure": 0.85,
-   "warmth": 0.3,
-   "sat": 0.75,
-   "haze": 0,
-   "streak": 0.3
-  },
-  {
-   "t0": 43.476,
-   "t1": 43.601,
-   "slot": "m_car",
-   "scene": "traffic",
-   "seed": 7.03,
-   "exposure": 1.1,
-   "warmth": 0.3,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 43.601,
-   "t1": 43.726,
-   "slot": "m_aerial",
-   "scene": "fire",
-   "seed": 7.4,
-   "exposure": 1.3,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 43.726,
-   "t1": 43.851,
-   "slot": "m_note",
-   "scene": "fire",
-   "seed": 7.77,
-   "exposure": 0.95,
-   "warmth": 0.6,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 43.851,
-   "t1": 43.976,
-   "slot": "m_pyre",
-   "scene": "fire",
-   "seed": 8.14,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 43.976,
-   "t1": 44.101,
-   "slot": "m_smoke",
-   "scene": "fire",
-   "seed": 8.51,
-   "exposure": 0.8,
-   "warmth": 0.2,
-   "sat": 0.3,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 44.101,
-   "t1": 44.226,
-   "slot": "m_rain",
-   "scene": "rain",
-   "seed": 8.88,
-   "exposure": 0.9,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.3
-  },
-  {
-   "t0": 44.226,
-   "t1": 44.351,
-   "slot": "m_coals",
-   "scene": "fire",
-   "seed": 9.25,
-   "exposure": 0.9,
-   "warmth": 0.6,
-   "sat": 0.9,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 44.351,
-   "t1": 44.476,
-   "slot": "m_incense",
-   "scene": "fire",
-   "seed": 9.62,
-   "exposure": 1.0,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 44.476,
-   "t1": 44.601,
-   "slot": "m_fog",
-   "scene": "fire",
-   "seed": 9.99,
-   "exposure": 0.55,
-   "warmth": 0.3,
-   "sat": 0.45,
-   "haze": 0.2,
-   "streak": 0
-  },
-  {
-   "t0": 44.601,
-   "t1": 44.726,
-   "slot": "m_traffic",
-   "scene": "traffic",
-   "seed": 10.36,
-   "exposure": 1.0,
-   "warmth": 0.4,
-   "sat": 0.8,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 44.726,
-   "t1": 44.851,
-   "slot": "m_embers",
-   "scene": "embers",
-   "seed": 10.73,
-   "exposure": 0.95,
-   "warmth": 0.6,
-   "sat": 0.9,
-   "haze": 0,
-   "streak": 0.2
-  },
-  {
-   "t0": 44.851,
    "t1": 45.0,
-   "slot": "parcel",
+   "slot": "three",
    "scene": "fire",
-   "seed": 11.1,
-   "exposure": 1.0,
-   "warmth": 0.7,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0
-  },
-  {
-   "t0": 49.4,
-   "t1": 53.6,
-   "slot": "clock",
-   "scene": "traffic",
    "seed": 0.0,
-   "exposure": 0.85,
-   "warmth": 0.45,
-   "sat": 0.7,
-   "haze": 0.1,
-   "streak": 0.35
+   "exposure": 0.95,
+   "warmth": 0.4,
+   "sat": 0.75,
+   "haze": 0,
+   "streak": 0.1,
+   "cool": 0.55
   },
   {
-   "t0": 53.6,
-   "t1": 59.4,
+   "t0": 48.0,
+   "t1": 54.0,
    "slot": "title_embers",
    "scene": "embers",
    "seed": 3.0,
@@ -612,554 +506,484 @@
    "warmth": 0.6,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.2
+   "streak": 0.2,
+   "cool": 0.2
   }
  ],
  "cards": [
   {
-   "t0": 1.0,
-   "t1": 3.5,
+   "t0": 4.9,
+   "t1": 7.15,
    "lines": [
     [
      "This phone isn't yours.",
-     "main"
+     "typed"
     ]
    ],
-   "style": "card",
+   "style": "typed",
    "over": true,
-   "pos": "mid"
+   "pos": "low",
+   "keys": [
+    5.05,
+    5.105,
+    5.16,
+    5.215,
+    5.27,
+    5.358,
+    5.413,
+    5.468,
+    5.523,
+    5.578,
+    5.633,
+    5.721,
+    5.776,
+    5.831,
+    5.886,
+    5.941,
+    5.996,
+    6.084,
+    6.139,
+    6.194,
+    6.249,
+    6.304,
+    6.359
+   ]
   },
   {
-   "t0": 35.599999999999994,
-   "t1": 37.99999999999999,
+   "t0": 33.2,
+   "t1": 35.5,
    "lines": [
     [
      "Somebody edited",
-     "main"
+     "typed"
     ],
     [
      "the night.",
-     "ember"
+     "typed"
     ]
    ],
-   "style": "card",
+   "style": "typed",
    "over": false,
-   "pos": "low"
+   "pos": "mid",
+   "keys": [
+    33.35,
+    33.405,
+    33.46,
+    33.515,
+    33.57,
+    33.625,
+    33.68,
+    33.735,
+    33.79,
+    33.878,
+    33.933,
+    33.988,
+    34.043,
+    34.098,
+    34.153,
+    34.558,
+    34.613,
+    34.668,
+    34.723,
+    34.811,
+    34.866,
+    34.921,
+    34.976,
+    35.031,
+    35.086
+   ]
   },
   {
-   "t0": 47.0,
-   "t1": 49.4,
-   "lines": [
-    [
-     "M? Tu hai?",
-     "main"
-    ],
-    [
-     "M? Is that you?",
-     "small"
-    ]
-   ],
-   "style": "message",
-   "over": false,
-   "pos": "low"
-  },
-  {
-   "t0": 49.9,
-   "t1": 53.5,
+   "t0": 45.2,
+   "t1": 47.8,
    "lines": [
     [
      "Before seven,",
-     "main"
+     "typed"
     ],
     [
      "you'll have to choose.",
-     "ember"
+     "typed"
     ]
    ],
-   "style": "card",
-   "over": true,
-   "pos": "low"
+   "style": "typed",
+   "over": false,
+   "pos": "mid",
+   "keys": [
+    45.35,
+    45.405,
+    45.46,
+    45.515,
+    45.57,
+    45.625,
+    45.68,
+    45.768,
+    45.823,
+    45.878,
+    45.933,
+    45.988,
+    46.043,
+    46.448,
+    46.503,
+    46.558,
+    46.613,
+    46.668,
+    46.723,
+    46.778,
+    46.866,
+    46.921,
+    46.976,
+    47.031,
+    47.086,
+    47.174,
+    47.229,
+    47.284,
+    47.372,
+    47.427,
+    47.482,
+    47.537,
+    47.592,
+    47.647,
+    47.702
+   ]
   },
   {
-   "t0": 53.6,
-   "t1": 59.4,
+   "t0": 48.0,
+   "t1": 54.0,
    "lines": [],
-   "style": "title",
-   "over": false,
-   "pos": "low"
+   "style": "title"
   }
  ],
  "labels": [
   {
-   "t0": 10.5,
-   "t1": 12.3,
-   "text": "SATURDAY 22 NOVEMBER · DELHI"
+   "t0": 9.0,
+   "t1": 11.200000000000001,
+   "text": "SATURDAY, 22 NOVEMBER",
+   "keys": [
+    9.1,
+    9.14,
+    9.18,
+    9.22,
+    9.26,
+    9.3,
+    9.34,
+    9.38,
+    9.42,
+    9.46,
+    9.5,
+    9.54,
+    9.58,
+    9.62,
+    9.66,
+    9.7,
+    9.74,
+    9.78,
+    9.82,
+    9.86,
+    9.9
+   ]
   }
  ],
  "subs": [],
- "type": [
-  {
-   "t0": 38.0,
-   "t1": 39.0,
-   "text": "11:52 PM"
-  },
-  {
-   "t0": 40.5,
-   "t1": 41.0,
-   "text": "12:32 AM"
-  },
-  {
-   "t0": 41.72,
-   "t1": 41.976,
-   "text": "1:52 AM"
-  },
-  {
-   "t0": 42.181,
-   "t1": 42.345,
-   "text": "4:47 AM"
-  },
-  {
-   "t0": 43.351,
-   "t1": 43.476,
-   "text": "11:52 PM"
-  },
-  {
-   "t0": 43.851,
-   "t1": 43.976,
-   "text": "12:32 AM"
-  },
-  {
-   "t0": 44.226,
-   "t1": 44.351,
-   "text": "1:52 AM"
-  },
-  {
-   "t0": 44.476,
-   "t1": 44.601,
-   "text": "4:47 AM"
-  }
- ],
+ "type": [],
  "cues": [
-  {
-   "t": 0.15,
-   "sfx": "buzz"
-  },
   {
    "t": 0,
    "sfx": "room",
-   "until": 10.0
+   "until": 8.8
   },
   {
-   "t": 1.0,
-   "sfx": "hook"
+   "t": 0.4,
+   "sfx": "hum",
+   "until": 2.3
   },
   {
-   "t": 1.65,
+   "t": 2.3,
+   "sfx": "click"
+  },
+  {
+   "t": 4.4,
    "sfx": "buzz"
   },
   {
-   "t": 3.6,
+   "t": 5.45,
+   "sfx": "buzz"
+  },
+  {
+   "t": 4.4,
+   "sfx": "glow",
+   "until": 8.8
+  },
+  {
+   "t": 4.9,
+   "sfx": "keys",
+   "times": [
+    5.05,
+    5.105,
+    5.16,
+    5.215,
+    5.27,
+    5.358,
+    5.413,
+    5.468,
+    5.523,
+    5.578,
+    5.633,
+    5.721,
+    5.776,
+    5.831,
+    5.886,
+    5.941,
+    5.996,
+    6.084,
+    6.139,
+    6.194,
+    6.249,
+    6.304,
+    6.359
+   ]
+  },
+  {
+   "t": 7.2,
    "sfx": "paper"
   },
   {
-   "t": 5.2,
-   "sfx": "motif"
-  },
-  {
-   "t": 6.8,
-   "sfx": "swipe"
-  },
-  {
-   "t": 7.8,
-   "sfx": "push",
-   "until": 10.0
-  },
-  {
-   "t": 10.0,
-   "sfx": "entry"
-  },
-  {
-   "t": 10.0,
+   "t": 8.8,
    "sfx": "wedding",
-   "until": 24.4,
-   "beat": 0.6
+   "beat": 0.6,
+   "double": 15.4,
+   "until": 18.4
   },
   {
-   "t": 22.6,
+   "t": 9.15,
+   "sfx": "strike"
+  },
+  {
+   "t": 9.0,
+   "sfx": "keys",
+   "times": [
+    9.1,
+    9.14,
+    9.18,
+    9.22,
+    9.26,
+    9.3,
+    9.34,
+    9.38,
+    9.42,
+    9.46,
+    9.5,
+    9.54,
+    9.58,
+    9.62,
+    9.66,
+    9.7,
+    9.74,
+    9.78,
+    9.82,
+    9.86,
+    9.9
+   ],
+   "soft": true
+  },
+  {
+   "t": 18.4,
    "sfx": "stop",
-   "until": 24.4
+   "until": 19.6
   },
   {
-   "t": 24.4,
+   "t": 19.6,
    "sfx": "gunshot"
   },
   {
-   "t": 25.599999999999998,
-   "sfx": "wind",
-   "until": 27.599999999999998
+   "t": 20.8,
+   "sfx": "after",
+   "until": 33.0
   },
   {
-   "t": 27.599999999999998,
-   "sfx": "ostinato",
-   "until": 45.0,
-   "beat": 0.5
+   "t": 20.8,
+   "sfx": "sweep"
   },
   {
-   "t": 27.599999999999998,
+   "t": 23.2,
    "sfx": "steps",
-   "until": 29.599999999999998
+   "until": 25.200000000000003
   },
   {
-   "t": 29.9,
+   "t": 25.5,
    "sfx": "slosh"
   },
   {
-   "t": 31.599999999999998,
+   "t": 27.0,
    "sfx": "fire",
-   "until": 35.599999999999994
+   "until": 29.4
   },
   {
-   "t": 35.599999999999994,
-   "sfx": "braam"
+   "t": 31.0,
+   "sfx": "puff"
   },
   {
-   "t": 38.0,
-   "sfx": "cut",
-   "n": 0
+   "t": 33.0,
+   "sfx": "turn"
   },
   {
-   "t": 39.0,
-   "sfx": "cut",
-   "n": 1
+   "t": 33.2,
+   "sfx": "keys",
+   "times": [
+    33.35,
+    33.405,
+    33.46,
+    33.515,
+    33.57,
+    33.625,
+    33.68,
+    33.735,
+    33.79,
+    33.878,
+    33.933,
+    33.988,
+    34.043,
+    34.098,
+    34.153,
+    34.558,
+    34.613,
+    34.668,
+    34.723,
+    34.811,
+    34.866,
+    34.921,
+    34.976,
+    35.031,
+    35.086
+   ]
   },
   {
-   "t": 39.5,
-   "sfx": "cut",
-   "n": 2
-  },
-  {
-   "t": 40.0,
-   "sfx": "cut",
-   "n": 3
-  },
-  {
-   "t": 40.5,
-   "sfx": "cut",
-   "n": 4
-  },
-  {
-   "t": 41.0,
-   "sfx": "cut",
-   "n": 5
-  },
-  {
-   "t": 41.4,
-   "sfx": "cut",
-   "n": 6
-  },
-  {
-   "t": 41.72,
-   "sfx": "cut",
-   "n": 7
-  },
-  {
-   "t": 41.976,
-   "sfx": "cut",
-   "n": 8
-  },
-  {
-   "t": 42.181,
-   "sfx": "cut",
-   "n": 9
-  },
-  {
-   "t": 42.345,
-   "sfx": "cut",
-   "n": 10
-  },
-  {
-   "t": 42.476,
-   "sfx": "cut",
-   "n": 11
-  },
-  {
-   "t": 42.601,
-   "sfx": "cut",
-   "n": 12
-  },
-  {
-   "t": 42.726,
-   "sfx": "cut",
-   "n": 13
-  },
-  {
-   "t": 42.851,
-   "sfx": "cut",
-   "n": 14
-  },
-  {
-   "t": 42.976,
-   "sfx": "cut",
-   "n": 15
-  },
-  {
-   "t": 43.101,
-   "sfx": "cut",
-   "n": 16
-  },
-  {
-   "t": 43.226,
-   "sfx": "cut",
-   "n": 17
-  },
-  {
-   "t": 43.351,
-   "sfx": "cut",
-   "n": 18
-  },
-  {
-   "t": 43.476,
-   "sfx": "cut",
-   "n": 19
-  },
-  {
-   "t": 43.601,
-   "sfx": "cut",
-   "n": 20
-  },
-  {
-   "t": 43.726,
-   "sfx": "cut",
-   "n": 21
-  },
-  {
-   "t": 43.851,
-   "sfx": "cut",
-   "n": 22
-  },
-  {
-   "t": 43.976,
-   "sfx": "cut",
-   "n": 23
-  },
-  {
-   "t": 44.101,
-   "sfx": "cut",
-   "n": 24
-  },
-  {
-   "t": 44.226,
-   "sfx": "cut",
-   "n": 25
-  },
-  {
-   "t": 44.351,
-   "sfx": "cut",
-   "n": 26
-  },
-  {
-   "t": 44.476,
-   "sfx": "cut",
-   "n": 27
-  },
-  {
-   "t": 44.601,
-   "sfx": "cut",
-   "n": 28
-  },
-  {
-   "t": 44.726,
-   "sfx": "cut",
-   "n": 29
-  },
-  {
-   "t": 44.851,
-   "sfx": "cut",
-   "n": 30
-  },
-  {
-   "t": 37.99999999999999,
-   "sfx": "rise",
+   "t": 35.6,
+   "sfx": "clockwork",
+   "beat": 0.5,
    "until": 45.0
   },
   {
-   "t": 47.1,
-   "sfx": "dots"
+   "t": 35.6,
+   "sfx": "cut"
   },
   {
-   "t": 47.8,
-   "sfx": "ping"
+   "t": 37.2,
+   "sfx": "cut"
   },
   {
-   "t": 49.4,
-   "sfx": "clock",
-   "until": 53.6
+   "t": 38.6,
+   "sfx": "cut"
   },
   {
-   "t": 53.6,
+   "t": 39.6,
+   "sfx": "cut"
+  },
+  {
+   "t": 40.4,
+   "sfx": "cut"
+  },
+  {
+   "t": 40.6,
+   "sfx": "cut"
+  },
+  {
+   "t": 40.8,
+   "sfx": "cut"
+  },
+  {
+   "t": 41.0,
+   "sfx": "three",
+   "until": 45.0
+  },
+  {
+   "t": 45.2,
+   "sfx": "keys",
+   "times": [
+    45.35,
+    45.405,
+    45.46,
+    45.515,
+    45.57,
+    45.625,
+    45.68,
+    45.768,
+    45.823,
+    45.878,
+    45.933,
+    45.988,
+    46.043,
+    46.448,
+    46.503,
+    46.558,
+    46.613,
+    46.668,
+    46.723,
+    46.778,
+    46.866,
+    46.921,
+    46.976,
+    47.031,
+    47.086,
+    47.174,
+    47.229,
+    47.284,
+    47.372,
+    47.427,
+    47.482,
+    47.537,
+    47.592,
+    47.647,
+    47.702
+   ]
+  },
+  {
+   "t": 48.0,
    "sfx": "title"
   },
   {
-   "t": 59.2,
+   "t": 53.8,
    "sfx": "last_tick"
   },
   {
-   "t": 59.55,
+   "t": 54.15,
    "sfx": "end_buzz"
   }
  ],
  "flashes": [
   {
-   "t": 10.0,
-   "d": 0.034,
-   "k": 0.55
-  },
-  {
-   "t": 24.4,
+   "t": 19.6,
    "d": 0.067,
    "k": 1.0
-  },
-  {
-   "t": 42.345,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 42.601,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 42.851,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 43.101,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 43.351,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 43.601,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 43.851,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 44.101,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 44.351,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 44.601,
-   "d": 0.034,
-   "k": 0.6
-  },
-  {
-   "t": 44.851,
-   "d": 0.034,
-   "k": 0.6
   }
  ],
  "shakes": [
   {
-   "t": 24.4,
+   "t": 19.6,
    "amp": 1.0,
    "decay": 5.0
   },
   {
-   "t": 35.599999999999994,
-   "amp": 0.5,
-   "decay": 3.0
-  },
-  {
-   "t": 53.6,
-   "amp": 0.7,
+   "t": 48.0,
+   "amp": 0.6,
    "decay": 2.5
   }
  ],
  "whips": [
   {
-   "t": 13.6,
-   "dir": 1
-  },
-  {
-   "t": 16.0,
-   "dir": -1
-  },
-  {
-   "t": 18.4,
-   "dir": 1
-  },
-  {
-   "t": 39.5,
-   "dir": -1
-  },
-  {
-   "t": 41.0,
-   "dir": 1
-  },
-  {
-   "t": 41.976,
-   "dir": -1
-  },
-  {
-   "t": 42.476,
-   "dir": 1
-  },
-  {
-   "t": 42.851,
-   "dir": -1
-  },
-  {
-   "t": 43.226,
-   "dir": 1
-  },
-  {
-   "t": 43.601,
-   "dir": -1
-  },
-  {
-   "t": 43.976,
-   "dir": 1
-  },
-  {
-   "t": 44.351,
-   "dir": -1
-  },
-  {
-   "t": 44.726,
+   "t": 10.6,
    "dir": 1
   }
  ],
  "leaks": [
   {
-   "t": 10.0,
-   "d": 0.7,
-   "k": 1.0
-  },
-  {
-   "t": 17.2,
-   "d": 0.6,
+   "t": 12.4,
+   "d": 0.5,
    "k": 0.8
   },
   {
-   "t": 20.8,
-   "d": 0.6,
+   "t": 14.2,
+   "d": 0.5,
    "k": 0.8
   }
  ],
@@ -1167,24 +991,7 @@
   [
    0,
    0
-  ],
-  [
-   9.85,
-   0
-  ],
-  [
-   10.5,
-   200
-  ],
-  [
-   99,
-   200
   ]
  ],
- "silence": [
-  [
-   45.0,
-   47.0
-  ]
- ]
+ "silence": []
 }

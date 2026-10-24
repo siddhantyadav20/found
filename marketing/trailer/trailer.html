@@ -40,6 +40,13 @@
   .message .dots i { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.55); }
   .message .tr { display: block; margin-top: 34px; font-family: Newsreader, serif; font-style: italic; font-size: 48px; color: var(--t2); }
 
+  /* Typed cards: a line or two typed out a key at a time, small, in mono, a cursor after. */
+  #card.typed { background: #000; }
+  #card.typed.over { background: linear-gradient(transparent 50%, rgba(0,0,0,.55) 64%, rgba(0,0,0,.55) 80%, transparent 92%); justify-content: flex-end; padding-bottom: 520px; }
+  .typedline { font-family: "IBM Plex Mono", monospace; font-weight: 400; font-size: 46px; line-height: 1.7; letter-spacing: .01em; color: #efece6;
+    white-space: pre; text-shadow: 0 2px 24px rgba(0,0,0,.9); min-height: 78px; }
+  .typedline .cur { display: inline-block; width: 24px; height: 50px; margin-left: 4px; vertical-align: -9px; background: #efece6; }
+
   /* Labels: where and when, mono, an ember dot first. */
   #label { display: none; position: absolute; left: 0; right: 0; top: 250px; text-align: center; font-family: "IBM Plex Mono", monospace; font-weight: 500;
     font-size: 34px; letter-spacing: .12em; text-shadow: 0 2px 20px rgba(0,0,0,.9); }
@@ -225,6 +232,7 @@ async function drawPicture(s, t, frame, flash, shake) {
   gl.uniform1f(post.u.sat_, s.sat);
   gl.uniform1f(post.u.haze, s.haze || 0);
   gl.uniform1f(post.u.streak, s.streak || 0);
+  gl.uniform1f(post.u.cool, s.cool || 0);
   gl.uniform2f(post.u.shake, shake[0] * .012, shake[1] * .008);
   gl.uniform1f(post.u.seed, frame % 97);
   const w = whipAt(t), lk = leakAt(t);
@@ -246,6 +254,24 @@ function drawCard(t) {
   const el = $("card");
   if (!c) { el.style.display = "none"; return null; }
   el.style.display = "flex";
+  if (c.style === "typed") {
+    // One key at a time, on the times edit.py gave the sound; the cursor waits after the last.
+    el.className = "layer typed" + (c.over ? " over" : "");
+    el.style.filter = ""; el.style.opacity = 1 - smooth(ramp(t, c.t1 - .35, c.t1));
+    const n = c.keys.filter((k) => k <= t).length;
+    const blink = Math.floor(t * 2.6) % 2 === 0 || n < c.keys.length;
+    // The cursor sits on the line being typed (or the last, once it's all typed).
+    let before = 0, at = c.lines.length - 1;
+    for (let i = 0; i < c.lines.length; i++) { if (n < before + c.lines[i][0].length) { at = i; break; } before += c.lines[i][0].length; }
+    let html = "", used = 0;
+    c.lines.forEach(([line], i) => {
+      const shown = line.slice(0, Math.max(0, Math.min(line.length, n - used)));
+      html += `<div class="typedline">${shown}${i === at ? `<span class="cur" style="opacity:${blink ? 1 : 0}"></span>` : ""}</div>`;
+      used += line.length;
+    });
+    el.innerHTML = `<div>${html}</div>`;
+    return c;
+  }
   el.className = "layer" + (c.over ? " over" : " black") + (c.pos === "mid" ? " mid" : "");
   if (c.style === "message") {
     // Typing… then the message, and what it means.
@@ -286,7 +312,8 @@ function drawLabel(t) {
   const el = $("label");
   el.style.display = l ? "block" : "none";
   if (!l) return;
-  if (el.dataset.key !== String(l.t0)) { el.dataset.key = l.t0; el.innerHTML = `<i></i>${l.text}`; }
+  const n = l.keys ? l.keys.filter((k) => k <= t).length : l.text.length;
+  el.innerHTML = `<i></i>${l.text.slice(0, n)}`;
   el.style.opacity = smooth(ramp(t, l.t0, l.t0 + .3)) * (1 - smooth(ramp(t, l.t1 - .25, l.t1)));
 }
 

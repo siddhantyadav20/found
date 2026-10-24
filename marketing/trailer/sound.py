@@ -2,20 +2,21 @@
 
     python3 sound.py edit.json out.wav
 
-No voices: the score carries it, and changes with the picture. Four
-movements, on one four-note motif (A, D, F, E):
+No voices: the score carries it, and changes with the picture, on one
+four-note motif (A, D, F, E).
 
-  I.   The phone. A felt piano plays the motif, alone, in a dark room, over a
-       low drone; the buzz; a reversed swell pulls us into the screen.
-  II.  The night. 100 bpm from the moment we're through: a shehnai takes the
-       motif over strings, a tanpura, a dhol and claps, in D (Bhairavi, with
-       a flattened ninth on the way home). It stops dead for the reel; one
-       shot; ringing.
-  III. After. 120 bpm: a cello ostinato and taikos under footsteps on
-       gravel, a jerrycan, the fire; a braam on the turn; then the montage
-       runs away with the drums and a Shepard tone.
-  IV.  Seven. Silence; a message; a clock; the motif back on the piano, and
-       the whole orchestra on the name.
+  I.   Lights out. Room tone; a bulb's hum, then its switch. A phone buzzes on
+       a table of letters and a felt piano plays the motif alone over a cold
+       drone. Typewriter keys under the words.
+  II.  The night. 100 bpm on a match strike: a shehnai takes the motif over a
+       dhol, claps and strings, in D Bhairavi, going double time with the
+       cuts. It stops dead for the reel; one shot; ringing.
+  III. After. No tempo: long held notes, the piano slower, wind, a torch
+       clicking on, footsteps on gravel, a jerrycan, the game's fire, a candle
+       blown out. A low braam on the words.
+  IV.  Putting it together. 120 bpm: a clock, a cello ostinato and taikos,
+       a heartbeat under the three frames, rising; then one tick under the
+       last words, and the whole orchestra on the name.
 
 The game's own buzz, gunshot and fire (public/sfx) are used where they
 happen; everything else is synthesised here with numpy, and sent to three
@@ -370,264 +371,245 @@ def ir(secs, tone, seed):
     return IRS[key]
 
 
-# ============================================================================ I. The phone
+# ============================================================================ sounds of things
+
+def key_click(soft=False):
+    """A typewriter key: the strike, the type bar's thock, a little ring."""
+    t = T(.12)
+    x = band(noise(.12), 1800, 8000) * np.exp(-t * 300) * .8
+    x += np.sin(2 * np.pi * rng.uniform(170, 210) * t) * np.exp(-t * 60) * .6
+    x += np.sin(2 * np.pi * rng.uniform(2400, 2900) * t) * np.exp(-t * 90) * .15
+    return x * (.5 if soft else 1.0) * rng.uniform(.8, 1.1)
+
+
+def switch_click():
+    t = T(.2)
+    return band(noise(.2), 900, 9000) * np.exp(-t * 400) * 1.2 + np.sin(2 * np.pi * 140 * t) * np.exp(-t * 50) * .5
+
+
+def match_strike():
+    """The head dragged across the strip, then the flare catching."""
+    a = band(noise(.22), 1500, 9000) * np.interp(T(.22), [0, .05, .18, .22], [0, 1, .8, 0])
+    t = T(1.2)
+    flare = band(noise(1.2), 300, 5000) * np.exp(-t * 4) * (1 - np.exp(-t * 60)) * .9
+    flare += band(noise(1.2), 80, 400) * np.exp(-t * 3) * .5
+    x = np.zeros(int(1.45 * SR))
+    mixin(x, a, 0, .7)
+    mixin(x, flare, .2, 1.0)
+    return x
+
+
+def footsteps_gravel():
+    x = np.zeros(int(.3 * SR))
+    for _ in range(45):
+        g = band(noise(rng.uniform(.002, .006)), 1200, 7000)
+        mixin(x, g * np.hanning(len(g)), rng.uniform(0, .17), rng.uniform(.2, 1))
+    mixin(x, band(noise(.1), 80, 400) * np.exp(-T(.1) * 40), 0, .6)
+    return x
+
+
+def heartbeat():
+    tb = T(.3)
+    hb = np.sin(2 * np.pi * 50 * tb) * np.exp(-tb * 14) * .7 + band(noise(.3), 300, 1100) * np.exp(-tb * 28) * 1.4
+    return np.tanh(hb * 2)
+
+
+MOTIF = [69, 74, 77, 76]  # A, D, F, E
 buzz = band(sample("buzz"), 70, 5000)
 buzz /= max(1e-6, np.abs(buzz).max())
+for c in cues("keys"):
+    for k in c["times"]:
+        put(key_click(c.get("soft", False)), k, .32, pan=rng.uniform(-.15, .15), bus="room", wet=.25)
+
+# ============================================================================ I. Lights out
+c = cue("room")
+secs = c["until"] - c["t"]
+air = band(noise(secs), 40, 1600) * .05 + band(noise(secs), 2000, 9000) * .006
+put(air * fade(len(air), .2, .6), c["t"], 1.0)
+c = cue("hum")
+secs = c["until"] - c["t"]
+tt = T(secs)
+hum = (np.sin(2 * np.pi * 100 * tt) * .5 + np.sin(2 * np.pi * 200 * tt) * .25 + np.sin(2 * np.pi * 300 * tt) * .12) * (1 + .1 * np.sin(2 * np.pi * 3 * tt))
+hum += band(noise(secs), 2000, 7000) * .03 * (band(noise(secs), 0, 8) * 6 > .5)
+put(hum * fade(len(hum), .3, .01), c["t"], .4, bus="room", wet=.2)
+put(switch_click(), cue("click")["t"], .7, bus="room", wet=.3)
+# The drone under it all, swelling from the click to the parcel.
+dr = strings([midi(38), midi(45), midi(50)], 6.6, att=3.0, rel=.4, bright=1100, vib=.4, voices=4)
+put(dr, 2.3, .7, bus="hall", wet=.5)
+put(strings([midi(62), midi(69)], 6.6, att=4.0, rel=.4, bright=3500, vib=.5, voices=5), 2.3, .35, pan=.2, bus="cathedral", wet=.5)
 for c in cues("buzz"):
     put(buzz, c["t"], 1.5, bus="room", wet=.25)
     put(band(buzz, 60, 400), c["t"] + .01, .6)  # the table, carrying it
-
-c = cue("room")
-secs = c["until"] - c["t"]
-air = band(noise(secs), 40, 1800) * .05 + band(noise(secs), 2000, 9000) * .008
-put(air * fade(len(air), .3, 1.0), c["t"], 1.0)
-# The drone: low strings, barely there, swelling towards the screen.
-dr = strings([midi(38), midi(45), midi(50)], 9.6, att=4.0, rel=.3, bright=900, vib=.4, voices=4)
-put(dr * np.linspace(.4, 1.0, len(dr)), .4, .9, bus="hall", wet=.5)
-put(np.sin(2 * np.pi * midi(26) * T(9.6)) * fade(int(9.6 * SR), 3, .3) * .12, .4)
-hi = strings([midi(62), midi(69)], 9.6, att=5.0, rel=.3, bright=3200, vib=.6, voices=5)
-put(hi * np.linspace(.2, 1.0, len(hi)), .4, .45, pan=.2, bus="cathedral", wet=.5)
-
-h = cue("hook")["t"]
-put(sub_drop(2.2, 60, 34), h, .35)
-put(piano(midi(38), 6, .75) + piano(midi(50), 6, .6) + piano(midi(62), 6, .55) + piano(midi(69), 6, .45), h, 1.4, bus="hall", wet=.55)
-
+g0 = cue("glow")["t"]
+for k, m in enumerate(MOTIF):
+    put(piano(midi(m), 5, .55 + .03 * k), g0 + .2 + k * .75, .85, pan=-.15, bus="hall", wet=.55)
+    put(piano(midi(m - 24), 5, .35, .9), g0 + .2 + k * .75, .35, pan=.1, bus="hall", wet=.5)
 for c in cues("paper"):
     x = np.zeros(int(1.0 * SR))
     for _ in range(12):
-        n_ = int(rng.uniform(.03, .1) * SR)
-        pp = band(noise(n_ / SR), 800, 7000)
+        pp = band(noise(rng.uniform(.03, .1)), 800, 7000)
         mixin(x, pp * np.hanning(len(pp)), rng.uniform(0, .8), rng.uniform(.3, 1))
     put(x, c["t"], .3, bus="room", wet=.3)
-
-# The motif, on the felt piano, as the hand turns the phone over.
-m0 = cue("motif")["t"]
-for dt, m, v in ((0, 69, .55), (.75, 74, .6), (1.5, 77, .65), (2.25, 76, .55)):
-    put(piano(midi(m), 5, v), m0 + dt, .85, pan=-.15, bus="hall", wet=.55)
-    put(piano(midi(m - 24), 5, v * .5, .9), m0 + dt, .35, pan=.1, bus="hall", wet=.5)
-c = cue("swipe")
-put(whoosh(.28, 1500, 9000), c["t"], .12, bus="room", wet=.3)
-# Into the screen: the reversed swell, a riser, then a breath of nothing on the downbeat.
-c = cue("push")
-pd = c["until"] - c["t"]
-put(reverse_swell([midi(50), midi(57), midi(62), midi(65), midi(69)], pd), c["t"], .7, bus="hall", wet=.25)
-put(riser(pd - .05), c["t"], .4)
-put(strings([midi(74), midi(75)], pd, att=pd * .9, rel=.05, bright=5000, vib=1.5, voices=6) * np.linspace(.2, 1, int(pd * SR)), c["t"], .5, bus="hall", wet=.3)
+put(whoosh(.6, 200, 7000)[::-1].copy(), cue("wedding")["t"] - .6, .3)
 
 # ============================================================================ II. The night
-enter = cue("entry")["t"]
 wed = cue("wedding")
-beat, gun = wed["beat"], wed["until"]
+w0, beat, dbl, stop = wed["t"], wed["beat"], wed["double"], wed["until"]
 bar = 4 * beat
-stop = cue("stop")["t"]
-
-# The way through: an impact, a sub, a shimmer, as the bars close in.
-put(taiko(1.2), enter, .9, bus="hall", wet=.35)
-put(sub_drop(2.5, 80, 30), enter, .7)
-put(strings([midi(86), midi(93)], 2.0, att=.02, rel=1.8, bright=9000, vib=2, voices=6), enter, .25, bus="cathedral", wet=.6)
-put(whoosh(.5, 300, 8000)[::-1].copy(), enter - .5, .25)
-
-# Drone and tanpura under all of it.
-nb = gun - enter
-put(strings([midi(38), midi(45)], stop - enter + .2, att=.6, rel=.1, bright=1200, vib=.5, voices=4), enter, .55, bus="hall", wet=.4)
-t, k = enter, 0
-cycle = [midi(45), midi(50), midi(50), midi(38)]
+gun = cue("gunshot")["t"]
+put(taiko(1.1), w0, .8, bus="hall", wet=.35)
+put(sub_drop(2.0, 80, 32), w0, .55)
+put(match_strike(), cue("strike")["t"], .6, bus="room", wet=.3)
+# Drone and tanpura.
+put(strings([midi(38), midi(45)], stop - w0 + .1, att=.3, rel=.05, bright=1200, vib=.5, voices=4), w0, .5, bus="hall", wet=.4)
+t, k = w0, 0
 while t < stop - .4:
-    put(tanpura(cycle[k % 4], 3.0), t, .55, pan=-.3, bus="hall", wet=.35)
+    put(tanpura([midi(45), midi(50), midi(50), midi(38)][k % 4], 3.0), t, .5, pan=-.3, bus="hall", wet=.35)
     t += beat * 1.5
     k += 1
-
-# The chords, a bar each: Dm, Bb, Gm, A (and Dm on the bar the reel starts).
-CH = [[50, 53, 57, 62], [46, 50, 53, 58], [43, 50, 55, 58], [45, 49, 52, 57], [50, 53, 57, 62]]
+# A bar each: Dm, Bb, Gm, A.
+CH = [[50, 53, 57, 62], [46, 50, 53, 58], [43, 50, 55, 58], [45, 49, 52, 57]]
 for b_, notes in enumerate(CH):
-    t0 = enter + (b_ + 1) * bar
-    d = bar + .3 if b_ < 4 else stop - t0
-    put(strings([midi(m) for m in notes], d, att=.25, rel=.35, bright=3200, vib=1.0, voices=4), t0, .7, pan=.15, bus="hall", wet=.4)
-    put(cello(midi(notes[0] - 12), beat * .9, 1.0, 900), t0, .9)
-    put(cello(midi(notes[0] - 12), beat * .45, .7, 900), t0 + beat * 1.5, .8)
-    put(cello(midi(notes[0] - 12), beat * .9, .85, 900), t0 + beat * 2, .85)
-# The groove, from bar 2 to the reel: dhol, claps on 2 and 4, jhanj on the eighths.
+    t0 = w0 + b_ * bar
+    d = min(bar + .3, stop - t0 + .02)
+    put(strings([midi(m) for m in notes], d, att=.2, rel=.05 if b_ == 3 else .3, bright=3400, vib=1.0, voices=4), t0, .65, pan=.15, bus="hall", wet=.4)
+    for dt, v in ((0, 1.0), (beat * 1.5, .7), (beat * 2, .85)):
+        put(cello(midi(notes[0] - 12), beat * .8, v, 900), t0 + dt, .85)
+# The groove: dhol, claps on 2 and 4, jhanj; doubling with the cuts.
 BASS = {0: 1.0, 3: .55, 4: .85, 7: .35}
 TREB = {1: .45, 2: .8, 3: .3, 5: .5, 6: .8, 7: .55}
-t = enter + bar
-k = 0
+t, k = w0 + beat * 2, 4
 while t < stop - .01:
-    e8 = k % 8
-    hum = rng.uniform(-.006, .006)
-    v = rng.uniform(.85, 1.1)
-    if e8 in BASS:
-        put(dhol_bass(BASS[e8] * v), t + hum, .75, bus="room", wet=.25)
-    if e8 in TREB:
-        put(dhol_treble(TREB[e8] * v), t + hum, .45, pan=.25, bus="room", wet=.25)
-    if e8 in (2, 6):
-        put(clap(v), t + rng.uniform(0, .01), .35, pan=-.2, bus="hall", wet=.35)
-    put(jhanj(.5 + .5 * (e8 % 2 == 0)), t, .26, pan=.4)
+    sub = 2 if t >= dbl else 1
+    for s_ in range(sub):
+        ts = t + s_ * beat / 2 / sub
+        e8 = (k * sub + s_) % 8
+        hum_ = rng.uniform(-.006, .006)
+        v = rng.uniform(.85, 1.1)
+        if e8 in BASS:
+            put(dhol_bass(BASS[e8] * v), ts + hum_, .75, bus="room", wet=.25)
+        if e8 in TREB or sub == 2:
+            put(dhol_treble(TREB.get(e8, .5) * v), ts + hum_, .45, pan=.25, bus="room", wet=.25)
+        if e8 in (2, 6):
+            put(clap(v), ts + rng.uniform(0, .01), .35, pan=-.2, bus="hall", wet=.35)
+        put(jhanj(.5 + .5 * (e8 % 2 == 0)), ts, .25, pan=.4)
     t += beat / 2
     k += 1
-put(dhol_bass(1.0), enter, .8, bus="room", wet=.3)
-# The shehnai: a pickup, then the motif turned into a wedding tune.
-mel = [(67, .5), (69, 1, "kan"), (70, .5), (69, 1),
-       (74, 2, "kan"), (72, .5), (70, .5), (69, 1),
-       (70, 1.5), (69, .5), (67, 1), (65, 1),
+put(riser(stop - dbl), dbl, .35)
+# The shehnai: the motif, as a wedding tune.
+mel = [(69, 1, "kan"), (74, 1), (77, 1), (76, 1),
+       (74, 1.5, "kan"), (72, .5), (70, 1), (69, 1),
        (67, 1), (69, .5), (70, .5), (72, 1), (74, 1),
-       (75, 1, "kan"), (74, .5), (73, .5), (74, 2),
-       (69, 1)]
+       (75, 1, "kan"), (74, .5), (73, .5), (74, 1), (69, 1),
+       (74, .5), (77, .5), (76, .5), (74, .5), (69, 2)]
 ph = shehnai(mel, beat)
-ph_start = enter + 1.5 * beat
-cut = int((stop - ph_start) * SR)
-ph[cut:] = 0
-ph[cut - 400:cut] *= np.linspace(1, 0, 400)
-put(ph, ph_start, .42, pan=-.1, bus="hall", wet=.4)
-# The reel: everything stops but one high held note and the pulse of it.
+ph0 = w0 + beat * 2
+cut_ = int((stop - ph0) * SR)
+ph[cut_:] = 0
+ph[cut_ - 400:cut_] *= np.linspace(1, 0, 400)
+put(ph, ph0, .42, pan=-.1, bus="hall", wet=.4)
+# The reel: one held note, a heartbeat, and a breath in before the shot.
 sd = gun - stop
 put(strings([midi(81)], sd, att=.05, rel=.02, bright=7000, vib=.3, voices=6) * np.linspace(.6, 1.3, int(sd * SR)), stop, .4, bus="hall", wet=.4)
-for k in range(int(sd / (60 / 70))):
-    tb = T(.3)
-    hb = np.sin(2 * np.pi * 50 * tb) * np.exp(-tb * 14) * .7 + band(noise(.3), 300, 1100) * np.exp(-tb * 28) * 1.4
-    put(np.tanh(hb * 2), stop + .2 + k * 60 / 70, .5)
-
-# One shot. The game's own, in the open air; its echo off the farmhouse; ringing.
+for k in range(2):
+    put(heartbeat(), stop + .15 + k * .55, .5)
+put(whoosh(.35, 300, 6000)[::-1].copy(), gun - .35, .2)
 shot_s = band(sample("shot"), 100, 9500)
 put(shot_s, gun, 1.15, bus="cathedral", wet=.5)
 tt = T(.8)
-crack = np.tanh((band(noise(.8), 600, 9000) * np.exp(-tt * 70) * 1.4 + np.sin(2 * np.pi * 70 * tt) * np.exp(-tt * 10)) * 2.2)
-put(crack, gun, .55)
+put(np.tanh((band(noise(.8), 600, 9000) * np.exp(-tt * 70) * 1.4 + np.sin(2 * np.pi * 70 * tt) * np.exp(-tt * 10)) * 2.2), gun, .55)
 put(sub_drop(1.5, 90, 35), gun, .6)
 put(band(shot_s, 200, 2500), gun + .45, .3, pan=.5, bus="cathedral", wet=.8, dry=.5)
 put(band(shot_s, 200, 1600), gun + .95, .14, pan=-.5, bus="cathedral", wet=.9, dry=.4)
 tt = T(3.0)
 put(np.sin(2 * np.pi * 3600 * tt) * np.interp(tt, [0, .05, 1.6, 3.0], [0, 1, .45, 0]), gun + .05, .06)
 
-# The lawn after: wind, a cold cluster, one note.
-c = cue("wind")
-secs = c["until"] - c["t"]
-put(band(noise(secs + 1), 150, 1100) * (1 + 4 * band(noise(secs + 1), 0, 1.5)) * fade(int((secs + 1) * SR), .5, .8), c["t"], .08)
-put(strings([midi(38), midi(39)], secs + .5, att=1.2, rel=.4, bright=700, vib=.2, voices=4), c["t"], .45, bus="hall", wet=.5)
-put(piano(midi(57), 6, .5, .9), c["t"] + .3, .6, bus="cathedral", wet=.6)
-
 # ============================================================================ III. After
-c = cue("ostinato")
-o0, o1, b3 = c["t"], c["until"], c["beat"]
-turn = cue("braam")["t"]
-mont = cue("rise")["t"]
-ROOTS = [38, 34, 31, 33]  # D, Bb, G, A
-PAT = [0, 12, 0, 12, 0, 12, 7, 12]
-t, k = o0, 0
-while t < o1 - .01:
-    bar_i = int((t - o0 + 1e-6) // (4 * b3))
-    rt = ROOTS[bar_i % 4]
-    if t < turn:
-        lvl = np.interp(t, [o0, turn], [.5, .9])
-    elif t < mont:
-        lvl = .45
-    else:
-        lvl = np.interp(t, [mont, o1], [.8, 1.05])
-    sub = 2 if t >= mont + 3 else 1  # double time in the second half of the montage
-    for s_ in range(sub):
-        ts = t + s_ * b3 / 2 / sub
-        note = rt + PAT[k % 8]
-        put(cello(midi(note), b3 / 2 / sub * 1.1, .8 + .2 * (k % 2 == 0), 1500 + 900 * lvl), ts, lvl * .55, pan=-.2, bus="room", wet=.2)
-        put(cello(midi(note + 12), b3 / 2 / sub * 1.1, .7, 2400), ts, lvl * .38, pan=.25, bus="room", wet=.2)
-    t += b3 / 2
-    k += 1
-# Long chords over it, a bar each, brightening.
-t, i = o0, 0
-CH3 = [[50, 53, 57], [46, 50, 53], [43, 50, 55], [45, 49, 52]]
-while t < o1 - .01:
-    d = min(4 * b3, o1 - t)
-    bright = np.interp(t, [o0, o1], [900, 4000])
-    lvl = .45 if t < turn else (.25 if t < mont else .55)
-    put(strings([midi(m) for m in CH3[i % 4]], d + .3, att=.3, rel=.3, bright=bright, vib=.8, voices=5), t, lvl, pan=.1, bus="hall", wet=.4)
-    t += 4 * b3
-    i += 1
-# Taikos: the bar's downbeat, then beat three too.
-t, k = o0 + 4 * b3, 0
-while t < turn - .01:
-    put(taiko(.8 if k % 2 == 0 else .55), t, .55, bus="hall", wet=.3)
-    t += 2 * b3 if t >= o0 + 8 * b3 else 4 * b3
-    k += 1
-# Tremolo violins, high and close together, from the fire on.
-fire_c = cue("fire")
-secs = turn - fire_c["t"]
-trem = strings([midi(81), midi(82)], secs, att=1.5, rel=.1, bright=7000, vib=.2, voices=6) * (1 + .6 * np.sin(2 * np.pi * 13 * T(secs)))
-put(trem, fire_c["t"], .18, bus="hall", wet=.5)
-
-# Footsteps on gravel, on the beat. A jerrycan. The game's fire.
+c = cue("after")
+a0, a1 = c["t"], c["until"]
+secs = a1 - a0
+put(strings([midi(38), midi(39), midi(45)], secs, att=2.0, rel=1.0, bright=800, vib=.2, voices=4), a0, .55, bus="hall", wet=.5)
+put(band(noise(secs), 150, 1100) * (1 + 4 * band(noise(secs), 0, 1.5)) * fade(int(secs * SR), 1.0, 1.0), a0, .07)
+for k, m in enumerate([69, 74, 77, 76, 74, 69]):
+    put(piano(midi(m), 6, .45, .9), a0 + .6 + k * 1.8, .7, pan=-.1, bus="cathedral", wet=.6)
+for k in range(int(secs / 2.4)):
+    put(taiko(.35), a0 + 1.2 + k * 2.4, .35, bus="hall", wet=.4)
+c = cue("sweep")
+put(switch_click(), c["t"] + .1, .4, bus="room", wet=.3)
+put(whoosh(1.2, 200, 4000), c["t"] + .2, .12, bus="hall", wet=.4)
 c = cue("steps")
 t = c["t"] + .05
 while t < c["until"]:
-    x = np.zeros(int(.25 * SR))
-    for _ in range(40):
-        g = int(rng.uniform(.002, .006) * SR)
-        gr = band(noise(g / SR), 1200, 7000)
-        mixin(x, gr * np.hanning(len(gr)), rng.uniform(0, .15), rng.uniform(.2, 1))
-    mixin(x, band(noise(.1), 80, 400) * np.exp(-T(.1) * 40), 0, .6)
-    put(x, t, .3, pan=rng.uniform(-.2, .2), bus="room", wet=.3)
-    t += b3
+    put(footsteps_gravel(), t, .32, pan=rng.uniform(-.2, .2), bus="room", wet=.3)
+    t += .55
 c = cue("slosh")
 tt = T(1.2)
-slosh = band(noise(1.2), 200, 1400) * (np.sin(2 * np.pi * 2.2 * tt) ** 8) * np.exp(-tt * 1.5)
-put(slosh, c["t"], .25, bus="room", wet=.4)
+put(band(noise(1.2), 200, 1400) * (np.sin(2 * np.pi * 2.2 * tt) ** 8) * np.exp(-tt * 1.5), c["t"], .28, bus="room", wet=.4)
+fire_c = cue("fire")
 fire = sample("fire")
-secs = fire_c["until"] - fire_c["t"]
+secs = fire_c["until"] - fire_c["t"] + .6
 x = np.zeros(int(secs * SR))
 for at in np.arange(0, secs, len(fire) / SR - .1):
     mixin(x, fire, at)
-put(x * fade(len(x), .3, .4), fire_c["t"], .55, bus="room", wet=.2)
+put(x * fade(len(x), .2, .6), fire_c["t"], .6, bus="room", wet=.2)
+c = cue("puff")
+put(band(noise(.45), 300, 3000) * np.interp(T(.45), [0, .05, .3, .45], [0, 1, .5, 0]), c["t"] - .1, .35, bus="room", wet=.3)
+put(band(noise(1.6), 3000, 9000) * fade(int(1.6 * SR), .3, 1.0) * .3, c["t"] + .2, .2)
+tn = cue("turn")["t"]
+put(braam(4.0), tn, .6, bus="hall", wet=.45)
+put(taiko(.9), tn, .6, bus="hall", wet=.4)
 
-# The turn: a breath in, and the braam.
-put(whoosh(.4, 300, 8000)[::-1].copy(), turn - .4, .3)
-put(braam(4.5), turn, .9, bus="hall", wet=.4)
-put(taiko(1.2), turn, .8, bus="hall", wet=.35)
-
-# The montage: a Shepard tone climbing forever, drums speeding up, a hit on every cut.
-c = cue("rise")
-a, b = c["t"], c["until"]
-tt = T(b - a)
+# ============================================================================ IV. Putting it together
+c = cue("clockwork")
+p0, b4, p1 = c["t"], c["beat"], c["until"]
+three = cue("three")
+ROOTS = [38, 34, 31, 33]
+PAT = [0, 12, 0, 12, 0, 12, 7, 12]
+t, k = p0, 0
+while t < p1 - .01:
+    lvl = np.interp(t, [p0, three["t"], p1], [.45, .75, 1.0])
+    rt = ROOTS[int((t - p0 + 1e-6) // (4 * b4)) % 4]
+    note = rt + PAT[k % 8]
+    put(cello(midi(note), b4 / 2 * 1.1, .8 + .2 * (k % 2 == 0), 1500 + 900 * lvl), t, lvl * .6, pan=-.2, bus="room", wet=.2)
+    put(cello(midi(note + 12), b4 / 2 * 1.1, .7, 2400), t, lvl * .38, pan=.25, bus="room", wet=.2)
+    if k % 2 == 0:
+        put(tick(k % 4 == 0), t, .5, pan=.15, bus="room", wet=.3)
+    if k % 8 == 0:
+        put(taiko(.8), t, .4, bus="hall", wet=.3)
+    t += b4 / 2
+    k += 1
+t, i = p0, 0
+CH3 = [[50, 53, 57], [46, 50, 53], [43, 50, 55], [45, 49, 52]]
+while t < p1 - .01:
+    d = min(4 * b4, p1 - t)
+    put(strings([midi(m) for m in CH3[i % 4]], d + .25, att=.25, rel=.2, bright=np.interp(t, [p0, p1], [1200, 4200]), vib=.8, voices=5), t, .5, pan=.1, bus="hall", wet=.4)
+    t += 4 * b4
+    i += 1
+for c in cues("cut"):
+    put(whoosh(.25, 300, 7000), c["t"] - .18, .16)
+    put(taiko(.45), c["t"], .35, bus="room", wet=.3)
+# The three frames: a heartbeat under it, violins climbing, a Shepard tone.
+t3, t4 = three["t"], three["until"]
+for k in range(int((t4 - t3) / .5)):
+    put(heartbeat(), t3 + k * .5, .4 + .3 * k / 8)
+put(strings([midi(81), midi(82)], t4 - t3, att=1.0, rel=.02, bright=7000, vib=.2, voices=6) * (1 + .6 * np.sin(2 * np.pi * 13 * T(t4 - t3))), t3, .2, bus="hall", wet=.5)
+tt = T(t4 - t3)
 sh = np.zeros(len(tt))
 for o in range(8):
-    pos = (o + tt / 3.5) % 8
+    pos = (o + tt / 3.0) % 8
     sh += np.exp(-((pos - 4) ** 2) / 3) * np.sin(2 * np.pi * np.cumsum(55 * 2 ** pos) / SR)
-sh *= np.interp(tt, [0, 1, tt[-1] - .02, tt[-1]], [0, 1, 1.6, 0])
-put(band(sh, 150, 6000), a, .13, bus="hall", wet=.3)
-t, k = a, 0
-while t < b:
-    p = (t - a) / (b - a)
-    if k % 4 == 0:
-        put(dhol_bass(1.0), t, .55)
-    put(dhol_treble(.5 + .5 * (k % 2 == 0)), t, .2 + .3 * p, pan=.3)
-    t += (60 / (120 + 70 * p)) / 4
-    k += 1
-for c in cues("cut"):
-    put(whoosh(.25, 300, 7000), c["t"] - .18, .18, pan=(-.4 if c["n"] % 2 else .4))
-    put(taiko(.6), c["t"], .4, bus="room", wet=.3)
-put(riser(1.2), b - 1.2, .4)
-
-# ============================================================================ IV. Seven
-tt = T(1.5)
-bell = (np.sin(2 * np.pi * 880 * tt) + .35 * np.sin(2 * np.pi * 2640 * tt) * np.exp(-tt * 4)) * np.exp(-tt * 3)
-put(bell, cue("ping")["t"], .3, bus="cathedral", wet=.5)
-put(piano(midi(62), 6, .45, .9), cue("ping")["t"] + .05, .5, bus="cathedral", wet=.6)
-
-c = cue("clock")
-t, k = c["t"], 0
-while t < c["until"] - .05:
-    put(tick(k % 2 == 0), t, .55, pan=.15, bus="room", wet=.3)
-    if k % 2 == 0:
-        tb = T(.4)
-        put(np.tanh(np.sin(2 * np.pi * 48 * tb) * np.exp(-tb * 9) * 2) + band(noise(.4), 200, 900) * np.exp(-tb * 25), t, .4)
-    t += .5
-    k += 1
-secs = c["until"] - c["t"]
-put(strings([midi(38), midi(50), midi(57), midi(62), midi(65)], secs, att=secs * .8, rel=.05, bright=2800, vib=1.0, voices=5) * np.linspace(.3, 1.2, int(secs * SR)),
-    c["t"], .55, bus="hall", wet=.4)
-put(choir([midi(62), midi(65), midi(69)], secs, att=secs * .8, rel=.05), c["t"], .7, bus="cathedral", wet=.5)
-for dt, m in ((0, 69), (1.0, 74), (2.0, 77), (3.0, 76)):
-    put(piano(midi(m), 4, .6), c["t"] + dt, .7, pan=-.15, bus="hall", wet=.5)
-put(riser(1.0), c["until"] - 1.05, .4)
-
-# The name: the biggest hit, and the motif comes home over the whole orchestra.
+put(band(sh * np.interp(tt, [0, .5, tt[-1] - .02, tt[-1]], [0, 1, 1.5, 0]), 150, 6000), t3, .13, bus="hall", wet=.3)
+put(riser(1.2), t4 - 1.2, .4)
+# The last words: everything gone but a clock, a low note, and a breath in before the name.
 th = cue("title")["t"]
+put(strings([midi(38)], th - t4, att=.1, rel=.2, bright=600, vib=.2, voices=4), t4, .5, bus="hall", wet=.5)
+t = t4 + .5
+while t < th - .3:
+    put(tick(True), t, .45, bus="room", wet=.4)
+    t += 1.0
+put(reverse_swell([midi(50), midi(57), midi(62), midi(65), midi(69)], 1.4), th - 1.4, .6, bus="hall", wet=.25)
+
+# ============================================================================ V. The name
 put(braam(6.0), th, .85, bus="hall", wet=.45)
 put(taiko(1.4), th, .9, bus="hall", wet=.4)
 put(sub_drop(3.0, 75, 30), th, .7)
