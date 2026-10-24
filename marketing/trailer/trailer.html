@@ -273,6 +273,7 @@ function drawCard(t) {
     return c;
   }
   el.className = "layer" + (c.over ? " over" : " black") + (c.pos === "mid" ? " mid" : "");
+  el.style.opacity = 1; el.style.filter = "";  // a typed card before this one faded the layer out
   if (c.style === "message") {
     // Typing… then the message, and what it means.
     const typing = t < c.t0 + .8;
