@@ -2,15 +2,18 @@
 
     python3 sound.py edit.json out.wav
 
-Everything is synthesised here with numpy except the buzz, which is the
-game's own (public/sfx/found-buzz-1.m4a).
+Raakh's voices are the game's own (public/voices/raakh), laid phrase by
+phrase where edit.json says, on their own bus, with everything else ducking
+under them. So are the dhol, the gunshot, the fire and the buzz
+(public/sfx). The rest is synthesised here with numpy.
 
 The spine is one tune. A baraat's band baaja plays it in Khamaj, bright and
-a little out of tune, over dhol and jhanj, until the shot cuts it dead. After,
-it comes back slow on a harmonium in Bhairavi (the same notes, flattened)
-over a tanpura, and its last phrase ends the trailer under the name. Between:
-a watch, a heartbeat, rain, a dhol-tasha that runs away with the montage,
-braams on the turns, silence before the message.
+a little out of tune, over the game's dhol, until the reel; then one shot.
+After, it comes back slow on a harmonium in Bhairavi (the same notes,
+flattened) over a tanpura, under Dilip's voice; and its last phrase ends the
+trailer under the name. Between: a watch, a heartbeat, rain and horns, a
+phone ringing, a dhol-tasha that runs away with the montage, braams on the
+turns, silence before the message, and a clock to seven.
 
 Phone speakers play almost nothing below 200 Hz, so every low thing here
 also has a voice in the midrange. render.mjs loudness-normalises the result.
@@ -79,6 +82,19 @@ def put(sig, at, gain=1.0, pan=0.0):
     s = sig[: j - i] * gain
     L[i:j] += s * np.sqrt((1 - pan) / 2) * 1.414
     R[i:j] += s * np.sqrt((1 + pan) / 2) * 1.414
+
+
+V = np.zeros(N)  # the voice bus: everything else ducks under it
+
+
+def load(path):
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(path), "-f", "s16le", "-ac", "1", "-ar", str(SR), "-"],
+                         capture_output=True, check=True).stdout
+    return np.frombuffer(raw, dtype=np.int16).astype(float) / 32768
+
+
+def sample(name):
+    return load(root / "public/sfx" / f"found-{name}-1.m4a")
 
 
 IRS = {}
@@ -293,22 +309,35 @@ D4 = 62
 
 # ============================================================================ the cut
 
-raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(root / "public/sfx/found-buzz-1.m4a"),
-                      "-f", "s16le", "-ac", "1", "-ar", str(SR), "-"], capture_output=True, check=True).stdout
-buzz = band(np.frombuffer(raw, dtype=np.int16).astype(float) / 32768, 80, 4000)
+buzz = band(sample("buzz"), 80, 4000)
 buzz /= max(1e-6, np.abs(buzz).max())
+
+# ---- the voices, phrase by phrase, on their own bus.
+VOICES = {}
+for c in cues("voice"):
+    if c["file"] not in VOICES:
+        VOICES[c["file"]] = load(root / "public/voices/raakh" / f"{c['file']}.m4a")
+    x = VOICES[c["file"]][int(c["start"] * SR):int(c["until"] * SR)].copy()
+    n = len(x)
+    f = min(int(.03 * SR), n // 4)
+    x[:f] *= np.linspace(0, 1, f)
+    x[-f:] *= np.linspace(1, 0, f)
+    x = peak(band(x, 90, 9000), 2500, 2, .35)  # presence, for a phone speaker
+    i = int(c["t"] * SR)
+    j = min(N, i + n)
+    V[i:j] += x[: j - i] * c.get("gain", 1.0) * 1.6
 
 # ---- the watch: steady through the quiet parts, running away with the montage.
 m0, m1 = cue("tick_fast")["t"], cue("tick_fast")["until"]
 band_cue = cue("band")
-after = cues("hit")[0]["t"]
+gun = cue("gunshot")["t"]
 times, t = [], 0.0
 while t < m1:
     times.append(t)
     t += .5 if t < m0 else .5 / (1 + 5 * (t - m0) / (m1 - m0))
 for k, t in enumerate(times):
-    if not silent_at(t) and not (band_cue["t"] <= t < after):
-        put(tick(k % 2 == 0), t, .5 if t < m0 else .4, pan=.2)
+    if not silent_at(t) and not (band_cue["t"] + 1.7 <= t < band_cue["until"]) and not (gun <= t < gun + 1.9):
+        put(tick(k % 2 == 0), t, .45 if t < m0 else .4, pan=.2)
 put(tick(True), cue("last_tick")["t"], .7)
 
 # ---- the buzz, and the hook landing.
@@ -319,24 +348,24 @@ put(riser(.4), h - .4, .35)
 put_wet(hit(.8), h, 1.3, wet=.35, secs=2.5, tone=3000, seed=3)
 put_wet(piano(midi(50), 4) + piano(midi(62), 4, .6), h, 1.4, wet=.45, secs=4.0, tone=6000, seed=1)
 
-# ---- Delhi, and the street: far traffic, horns; rain on the road.
+# ---- Delhi, and the street tonight: far traffic, horns; rain on the road.
 for c in cues("city") + cues("street"):
     secs = c["until"] - c["t"]
     rumble = band(noise(secs), 40, 300) * 1.5 + band(noise(secs), 300, 2500) * .3
     put(rumble * np.interp(T(secs), [0, .4, secs - .4, secs], [0, 1, 1, 0]), c["t"], .28)
-    ats = np.arange(.25, secs - .25, .5)
+    ats = np.arange(.25, secs - .25, .55)
     for at in ats + rng.uniform(-.15, .15, len(ats)):
         d = rng.uniform(.12, .45)
         f = rng.choice([392, 440, 466, 523, 587])
         hn = np.sign(np.sin(2 * np.pi * f * T(d))) * .5 + np.sign(np.sin(2 * np.pi * f * 1.26 * T(d))) * .5
-        put_wet(band(hn, 300, 2200) * env(len(hn), .01, 0, 1, .04), c["t"] + at, .09, wet=.6, secs=2.0, tone=2500, seed=4, pan=rng.uniform(-.7, .7))
+        put_wet(band(hn, 300, 2200) * env(len(hn), .01, 0, 1, .04), c["t"] + at, .08, wet=.6, secs=2.0, tone=2500, seed=4, pan=rng.uniform(-.7, .7))
     if c["sfx"] == "street":
-        put(band(noise(secs), 1500, 9000) * .35 * np.interp(T(secs), [0, .3, secs - .2, secs], [0, 1, 1, 0]), c["t"], .4)
+        put(band(noise(secs), 1500, 9000) * .35 * np.interp(T(secs), [0, .3, secs - .2, secs], [0, 1, 1, 0]), c["t"], .45)
 
-# ---- the baraat: band baaja, through a wall under Delhi, then in the street. The shot ends it.
-a, opened, gun = band_cue["t"], band_cue["open"], band_cue["until"]
+# ---- the baraat: band baaja over the game's dhol, through a wall under Delhi, then in the street. It stops for the reel.
+a, opened, stop = band_cue["t"], band_cue["open"], band_cue["until"]
 beat = 60 / 132
-secs = gun - a
+secs = stop - a
 nb = int(secs * SR)
 lead = np.zeros(nb)
 t = 0.0
@@ -353,46 +382,54 @@ while t < secs:
 rhythm = np.zeros(nb)
 k, t = 0, 0.0
 while t < secs:
-    bass = midi(38) if (k // 2) % 2 == 0 else midi(33)
-    mixin(rhythm, tuba(bass, beat * .45), t, .9)
-    mixin(rhythm, dhol(True), t, 1.0)
-    mixin(rhythm, dhol(False), t + beat / 2, .7)
+    mixin(rhythm, tuba(midi(38) if (k // 2) % 2 == 0 else midi(33), beat * .45), t, .9)
     mixin(rhythm, jhanj(), t + beat / 2, .6)
-    if k % 4 == 3:
-        mixin(rhythm, dhol(False), t + beat * .75, .5)
     t += beat
     k += 1
+real_dhol = sample("dhol")
+dh = np.zeros(nb)
+for at in np.arange(0, secs, len(real_dhol) / SR - .05):
+    mixin(dh, real_dhol, at)
 crowd = band(noise(secs), 300, 3000) * (1 + .6 * band(noise(secs), 0, 3))
-bandmix = lead * .28 + rhythm * .55 + crowd * .06
+bandmix = lead * .26 + rhythm * .35 + dh * .9 + crowd * .06
 tt = a + np.arange(nb) / SR
 openness = np.clip((tt - opened + .15) / .25, 0, 1)
 bandmix = band(bandmix, 60, 500) * .65 * (1 - openness) + bandmix * openness
-put_wet(bandmix, a, 2.6, wet=.2, secs=1.5, tone=4000, seed=5)
-# Fireworks: a whump and crackle over the last of it.
-cr = cue("crackle")
-for _ in range(70):
-    put(band(noise(.03), 1500, 8000) * np.exp(-T(.03) * 150), rng.uniform(cr["t"], cr["until"] - .03), rng.uniform(.08, .3), pan=rng.uniform(-.8, .8))
-put_wet(band(noise(.6), 300, 2000) * np.exp(-T(.6) * 6) + np.sin(2 * np.pi * 70 * T(.6)) * np.exp(-T(.6) * 8), cr["t"] + .05, .5, wet=.5, secs=2.5, seed=6)
+bandmix[-int(.03 * SR):] *= np.linspace(1, 0, int(.03 * SR))
+put_wet(bandmix, a, 2.4, wet=.2, secs=1.5, tone=4000, seed=5)
 
-# ---- the shot: a crack, the echo off the buildings, then only ringing.
+# ---- the dance floor: Kunal firing into the air, the crowd cheering.
+shot_s = band(sample("shot"), 120, 9000)
+for c in cues("dance_shots"):
+    for dt in (.35, .62, 1.05):
+        put_wet(shot_s, c["t"] + dt, .45, wet=.5, secs=2.0, tone=3500, seed=6, pan=rng.uniform(-.4, .4))
+    put(band(noise(1.3), 400, 3500) * np.interp(T(1.3), [0, .3, 1.0, 1.3], [0, 1, .7, 0]), c["t"] + .4, .25)
+
+# ---- the reel: everything stops but a held note. Then the shot, its echo, and ringing.
+put(string_pad([midi(62), midi(63)], gun - stop) * np.interp(T(gun - stop), [0, .3, gun - stop], [0, 1, 1]), stop, .35)
+put_wet(shot_s, gun, 1.1, wet=.3, secs=3.0, tone=3000, seed=7)
 t = T(.8)
-crack = np.tanh((band(noise(.8), 600, 9000) * np.exp(-t * 70) * 1.4 + np.sin(2 * np.pi * 75 * t) * np.exp(-t * 10) + band(noise(.8), 150, 900) * np.exp(-t * 18)) * 2.2)
-put_wet(crack, gun, 1.0, wet=.35, secs=3.0, tone=3000, seed=7)
-put_wet(band(crack, 200, 2500), gun + .42, .35, wet=.8, secs=3.5, tone=2000, seed=8, pan=.5)
-put_wet(band(crack, 200, 1800), gun + .9, .15, wet=.9, secs=3.5, tone=1600, seed=9, pan=-.5)
-t = T(2.4)
-put(np.sin(2 * np.pi * 3300 * t) * np.interp(t, [0, .05, 1.5, 2.4], [0, 1, .5, 0]), gun + .05, .07)
+crack = np.tanh((band(noise(.8), 600, 9000) * np.exp(-t * 70) * 1.4 + np.sin(2 * np.pi * 75 * t) * np.exp(-t * 10)) * 2.2)
+put(crack, gun, .6)
+put_wet(band(shot_s, 200, 2500), gun + .42, .35, wet=.8, secs=3.5, tone=2000, seed=8, pan=.5)
+put_wet(band(shot_s, 200, 1800), gun + .9, .15, wet=.9, secs=3.5, tone=1600, seed=9, pan=-.5)
+t = T(2.2)
+put(np.sin(2 * np.pi * 3300 * t) * np.interp(t, [0, .05, 1.4, 2.2], [0, 1, .5, 0]), gun + .05, .07)
+
+# ---- the parcel: kraft paper, handled.
+for c in cues("paper"):
+    x = np.zeros(int(1.2 * SR))
+    for _ in range(14):
+        L_ = int(rng.uniform(.03, .12) * SR)
+        mixin(x, band(noise(L_ / SR), 800, 7000) * np.hanning(L_), rng.uniform(0, 1.0), rng.uniform(.3, 1))
+    put_wet(x, c["t"], .35, wet=.25, secs=.8, seed=26)
+    put_wet(hit(.35), c["t"], .5, wet=.4, secs=2.5, tone=1800, seed=27)
 
 # ---- hits.
-for c in cues("hit"):
-    put_wet(hit(), c["t"], .85, wet=.4, secs=3.0, tone=2500, seed=10)
 for c in cues("soft_hit"):
     put_wet(hit(.5), c["t"], .6, wet=.5, secs=3.0, tone=2000, seed=11)
 
-# ---- morning: wind, the tanpura, and the tune again on a harmonium, in Bhairavi.
-c = cue("wind")
-secs = c["until"] - c["t"]
-put(band(noise(secs), 150, 1200) * (1 + .7 * band(noise(secs), 0, 1.5) * 8) * np.interp(T(secs), [0, .6, secs - .4, secs], [0, 1, 1, 0]), c["t"], .07)
+# ---- after: the tune on a harmonium, in Bhairavi, under Dilip; the tanpura; wind on the lawn.
 c = cue("tanpura")
 t, k = c["t"], 0
 cycle = [(midi(45), .3), (midi(50), .25), (midi(50), .25), (midi(38), .35)]
@@ -402,46 +439,53 @@ while t < c["until"] - .5:
     t += 1.05
     k += 1
 c = cue("harmonium")
-beat = 60 / 66
+beat = 60 / 72
 t = c["t"] + .2
 for semi, b in TUNE:
     d = b * beat
     if t + d > c["until"]:
         break
-    put_wet(harmonium(midi(D4 + BHAIRAVI.get(semi, semi)), d * 1.02, .9), t, .2, wet=.45, secs=3.0, tone=6000, seed=13, pan=.15)
+    put_wet(harmonium(midi(D4 + BHAIRAVI.get(semi, semi)), d * 1.02, .9), t, .22, wet=.45, secs=3.0, tone=6000, seed=13, pan=.15)
     t += d
 dur = c["until"] - c["t"]
 put_wet(harmonium(midi(50), dur, .5) + harmonium(midi(57), dur, .4), c["t"], .08, wet=.4, secs=3.0, seed=14)
+c = cue("wind")
+secs = c["until"] - c["t"]
+put(band(noise(secs), 150, 1200) * (1 + .7 * band(noise(secs), 0, 1.5) * 8) * np.interp(T(secs), [0, .6, secs - .4, secs], [0, 1, 1, 0]), c["t"], .07)
 
-# ---- the door.
-t = T(.35)
-knock = np.tanh((np.sin(2 * np.pi * 140 * t) * np.exp(-t * 28) + band(noise(.35), 300, 2200) * np.exp(-t * 60) * .9) * 1.5)
-for dt in (0, .28, .54):
-    put_wet(knock, cue("knock")["t"] + dt, .9, wet=.3, secs=.9, tone=3000, seed=15)
+# ---- the fire: the game's own crackle.
+fire = sample("fire")
+for c in cues("fire"):
+    secs = c["until"] - c["t"]
+    x = np.zeros(int(secs * SR))
+    for at in np.arange(0, secs, len(fire) / SR - .1):
+        mixin(x, fire, at)
+    put(x * np.interp(T(secs), [0, .4, secs - .4, secs], [0, 1, 1, 0]), c["t"], .6)
+    put(string_pad([midi(38), midi(45), midi(51)], secs, 900) * np.interp(T(secs), [0, 1, secs - .5, secs], [0, 1, 1, 0]), c["t"], .4)
 
-# ---- the heartbeat.
+# ---- the heartbeat, under the guard and Bhasin.
 c = cue("heart")
 t = c["t"]
 while t < c["until"]:
     for dt, g in ((0, 1), (.28, .6)):
         tb = T(.3)
         hb = np.sin(2 * np.pi * 52 * tb) * np.exp(-tb * 16) * .6 + band(noise(.3), 350, 1300) * np.exp(-tb * 30) * 1.6
-        put(np.tanh(hb * 2), t + dt, 1.2 * g)
-    t += 60 / 70
+        put(np.tanh(hb * 2), t + dt, .8 * g)
+    t += 60 / 74
 
-# ---- rain on the glass, and the strings drawing breath under it.
-c = cue("rain")
-secs = c["until"] - c["t"]
-rain = band(noise(secs), 1200, 9000) * .3 + band(noise(secs), 200, 1200) * .2
-drops = np.zeros(len(rain))
-for _ in range(int(secs * 40)):
-    mixin(drops, band(noise(600 / SR), 2000, 8000) * np.exp(-np.arange(600) / 60), rng.uniform(0, secs - .02), rng.uniform(.2, 1))
-put((rain + drops * .6) * np.interp(T(secs), [0, .4, secs - .3, secs], [0, 1, 1, 0]), c["t"], .6)
-put(string_pad([midi(50), midi(51), midi(57)], secs + .3) * np.interp(T(secs + .3), [0, secs, secs + .3], [0, 1, 0]), c["t"], .5)
+# ---- the phone rings: Bhasin Uncle.
+for c in cues("ring"):
+    t = T(.62)
+    tone = (np.sin(2 * np.pi * 1046 * t) + np.sin(2 * np.pi * 1318 * t) * .6) * (np.sin(2 * np.pi * 16 * t) > 0) * env(len(t), .01, 0, 1, .05)
+    put_wet(tone * .5, c["t"], .35, wet=.3, secs=1.0, seed=15)
+    put(buzz, c["t"] + .05, .9)
+for c in cues("dread"):
+    secs = c["until"] - c["t"]
+    put(string_pad([midi(50), midi(51), midi(56)], secs, 1400) * np.interp(T(secs), [0, 1.2, secs - .3, secs], [0, 1, 1, 0]), c["t"], .4)
 
 # ---- the turn.
 b0 = cue("braam")["t"]
-put(riser(1.2), b0 - 1.2, .5)
+put(riser(.6), b0 - .6, .5)
 put_wet(braam(4.5), b0, .95, wet=.4, secs=4.0, tone=2500, seed=16)
 
 # ---- the montage: strings, a Shepard tone, and a dhol-tasha that keeps speeding up.
@@ -455,7 +499,7 @@ while t < s1 - step_ / 2:
     lvl = np.interp(t, [s0, s1], [.7, 1.2])
     note = D3 * 2 ** (pat[i % 16] / 12)
     put(string_note(note, step_ * 1.1, 2400 + 1800 * (t - s0) / (s1 - s0)), t, lvl * .5, pan=-.25)
-    if t > s0 + 3:
+    if t > s0 + 2:
         put(string_note(note * 2, step_ * 1.1, 4000), t, lvl * .25, pan=.3)
     if i % 4 == 0:
         put(string_note(D3 / 2, step_ * 3.5, 900), t, lvl * .4)
@@ -466,7 +510,7 @@ a, b = c["t"], c["until"]
 t = T(b - a)
 sh = np.zeros(len(t))
 for o in range(8):
-    pos = (o + t / 5.0) % 8
+    pos = (o + t / 4.0) % 8
     sh += np.exp(-((pos - 4) ** 2) / 3) * np.sin(2 * np.pi * np.cumsum(55 * 2 ** pos) / SR)
 sh *= np.interp(t, [0, 1, t[-1] - .02, t[-1]], [0, 1, 1.5, 0])
 put_wet(band(sh, 150, 6000), a, .18, wet=.3, secs=2.0, seed=17)
@@ -480,7 +524,7 @@ while t < b:
     elif k % 4 == 2:
         put(dhol(False), t, .5)
     put(tasha(), t, (.25 + .35 * p) * (1 if k % 2 == 0 else .6), pan=.3)
-    t += (60 / (110 + 110 * p)) / 4
+    t += (60 / (110 + 120 * p)) / 4
     k += 1
 for c in cues("cut"):
     put(whoosh(.3), c["t"] - .2, .25, pan=(-.4 if c["n"] % 2 else .4))
@@ -497,18 +541,31 @@ t = T(1.5)
 bell = (np.sin(2 * np.pi * 880 * t) + .35 * np.sin(2 * np.pi * 2640 * t) * np.exp(-t * 4)) * np.exp(-t * 3)
 put_wet(bell, cue("ping")["t"], .35, wet=.5, secs=3.0, seed=19)
 
+# ---- the clock to seven: a louder watch, and a pulse under it.
+c = cue("clock")
+t = c["t"]
+k = 0
+while t < c["until"]:
+    put_wet(tick(k % 2 == 0), t, .8, wet=.35, secs=1.5, seed=20, pan=.15)
+    if k % 2 == 0:
+        put(np.tanh(np.sin(2 * np.pi * 50 * T(.4)) * np.exp(-T(.4) * 9) * 2) + band(noise(.4), 200, 900) * np.exp(-T(.4) * 25), t, .45)
+    t += .5
+    k += 1
+secs = c["until"] - c["t"]
+put(string_pad([midi(50), midi(57), midi(63)], secs, 2000) * np.interp(T(secs), [0, secs], [.2, 1.2]), c["t"], .4)
+put(riser(1.4), c["until"] - 1.4, .45)
+
 # ---- the name: the biggest hit, a taiko, and the tune's last phrase on the harmonium.
 th = cue("title_hit")["t"]
-put(riser(1.0), th - 1.0, .45)
-put_wet(braam(6.0), th, 1.0, wet=.45, secs=5.0, tone=2500, seed=20)
-put_wet(tom(45, .5) * 1.2, th, .9, wet=.5, secs=4.0, tone=2000, seed=21)
+put_wet(braam(6.0), th, 1.0, wet=.45, secs=5.0, tone=2500, seed=21)
+put_wet(tom(45, .5) * 1.2, th, .9, wet=.5, secs=4.0, tone=2000, seed=22)
 put(dhol(True), th, .9)
 t0 = t = cue("harmonium_end")["t"]
 for semi, b in ((7, 1), (5, .5), (3, .5), (1, 1), (0, 2.6)):
-    put_wet(harmonium(midi(D4 + semi), b * .95 * 1.02, .9), t, .3, wet=.5, secs=3.5, tone=6000, seed=22)
+    put_wet(harmonium(midi(D4 + semi), b * .95 * 1.02, .9), t, .3, wet=.5, secs=3.5, tone=6000, seed=23)
     t += b * .95
-put_wet(harmonium(midi(50), 5.0, .5) + tanpura(midi(38), 5.0), t0, .12, wet=.5, secs=3.5, seed=23)
-put_wet(buzz, cue("end_buzz")["t"], 1.0, wet=.3, secs=1.2, seed=24)
+put_wet(harmonium(midi(50), 5.0, .5) + tanpura(midi(38), 5.0), t0, .12, wet=.5, secs=3.5, seed=24)
+put_wet(buzz, cue("end_buzz")["t"], 1.0, wet=.3, secs=1.2, seed=25)
 
 # ============================================================================ master
 for a, b in E["silence"]:
@@ -518,6 +575,18 @@ for a, b in E["silence"]:
 fade = np.interp(np.arange(N) / SR, [0, .03, E["duration"] - .3, E["duration"]], [0, 1, 1, 0])
 L *= fade
 R *= fade
+
+# Everything ducks under the voices, then the voices go on top.
+w = int(.12 * SR)
+venv = np.convolve(np.abs(V), np.ones(w) / w, mode="same")
+duck = 1 - .75 * np.clip(venv / .03, 0, 1)
+duck = np.convolve(duck, np.ones(w) / w, mode="same")
+L = L * duck + V
+R = R * duck + V
+for a, b in E["silence"]:
+    i, j = int(a * SR), int(b * SR)
+    L[i:j] = 0
+    R[i:j] = 0
 
 # A slow compressor so the quiet half survives a phone speaker; a soft limit.
 pk = max(np.abs(L).max(), np.abs(R).max())

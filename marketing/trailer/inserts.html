@@ -1,61 +1,99 @@
 <!doctype html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Shagun inserts</title>
+<title>Raakh inserts</title>
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
-  /* Props shot as stills: the LAPATA poster on a wall at night, and the
-     back of the shagun envelope. inserts.mjs screenshots each #id at
-     1220×2060 (a footage frame); footage.py turns them into moving shots,
-     and the trailer grades them like everything else. No face anywhere:
-     the poster's photo is a silhouette. */
+  /* Props shot as stills, from the game as it plays (CHAPTER1.md, "Seven
+     o'clock" and "The final cut"): the parcel that came back, the MISSING
+     poster with the game's own photograph of Dilip, the note on the
+     envelope's back with its English, and Bhasin Uncle ringing. inserts.mjs
+     screenshots each #id at 1220×2060 (a footage frame); footage.py makes
+     them moving shots, and the trailer grades them with everything else. */
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #000; }
   .still { position: relative; width: 1220px; height: 2060px; overflow: hidden; }
+  .grain::after { content: ""; position: absolute; inset: 0; opacity: .5; mix-blend-mode: multiply; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .lamp { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 70% 52% at 45% 44%, rgba(255,190,110,.12), rgba(0,0,0,.25) 50%, rgba(0,0,0,.92) 100%); }
 
-  /* ---- the poster ---- */
+  /* ---- the parcel: a kraft mailer on your table, under a lamp ---- */
+  #parcel { background: linear-gradient(#2a1d14, #120c08); }
+  #parcel .table { position: absolute; inset: 0; background: repeating-linear-gradient(94deg, rgba(255,210,160,.04) 0 3px, transparent 3px 14px, rgba(0,0,0,.25) 14px 16px, transparent 16px 36px), linear-gradient(#3a2818, #1a110a); }
+  #parcel .mailer { position: absolute; left: 90px; top: 430px; width: 1040px; height: 1180px; transform: rotate(-4deg);
+    background: linear-gradient(160deg, #b98a57, #9c7244 60%, #8a6239); border-radius: 10px; box-shadow: 0 50px 100px rgba(0,0,0,.6), inset 0 0 120px rgba(60,35,10,.35); }
+  #parcel .strip { position: absolute; left: 0; right: 0; top: 120px; height: 46px; background: repeating-linear-gradient(90deg, #d9b98a 0 26px, #cfae7e 26px 52px); opacity: .7; }
+  #parcel .bill { position: absolute; left: 120px; top: 260px; width: 800px; padding: 44px 50px; background: #f6f3ec; color: #16130f; font-family: "IBM Plex Mono", monospace;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+  #parcel .bill small { display: block; font-size: 24px; letter-spacing: .2em; color: #6b645b; }
+  #parcel .bill b { display: block; margin-top: 6px; font-family: "Inter Tight", sans-serif; font-weight: 700; font-size: 68px; letter-spacing: -.01em; }
+  #parcel .bill p { font-size: 34px; line-height: 1.4; margin-top: 4px; }
+  #parcel .bill .from { margin-top: 30px; padding-top: 22px; border-top: 3px dashed #b9b1a3; }
+  #parcel .bill .bars { margin-top: 30px; height: 96px; background: repeating-linear-gradient(90deg, #16130f 0 4px, transparent 4px 7px, #16130f 7px 9px, transparent 9px 15px, #16130f 15px 21px, transparent 21px 24px); }
+  #parcel .stamp { position: absolute; left: 150px; top: 940px; padding: 22px 46px; border: 10px solid #c0281f; border-radius: 14px; color: #c0281f; text-align: center;
+    font-family: "Inter Tight", sans-serif; transform: rotate(-11deg); opacity: .88; mix-blend-mode: multiply; }
+  #parcel .stamp b { display: block; font-weight: 700; font-size: 84px; letter-spacing: .06em; white-space: nowrap; }
+  #parcel .stamp span { display: block; font-weight: 600; font-size: 34px; letter-spacing: .14em; text-transform: uppercase; }
+
+  /* ---- the poster: on a wall at night, torchlit ---- */
   #poster { background: #2a2622; }
   #poster .wall { position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.05), transparent 40%),
-      repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 120px),
-      repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 3px, transparent 3px 260px),
-      linear-gradient(#4a423a, #2c2621); }
-  #poster .wall::after { content: ""; position: absolute; inset: 0; opacity: .5; mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035' numOctaves='5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 120px), repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 3px, transparent 3px 260px), linear-gradient(#4a423a, #2c2621); }
   .old { position: absolute; background: #cbbf9f; opacity: .35; filter: blur(1px); }
-  .paper { position: absolute; left: 150px; top: 330px; width: 920px; height: 1440px; transform: rotate(-2.2deg);
+  .paper { position: absolute; left: 190px; top: 210px; width: 840px; height: 1320px; transform: rotate(-2.2deg);
     background: linear-gradient(170deg, #f3efe4, #e6dfcd 60%, #d9d0ba); box-shadow: 0 30px 60px rgba(0,0,0,.55), inset 0 0 80px rgba(120,100,60,.25);
-    text-align: center; color: #141210; font-family: Hind, sans-serif; padding: 60px 70px; }
+    text-align: center; color: #141210; padding: 56px 60px; font-family: "Inter Tight", sans-serif; }
   .paper::before { content: ""; position: absolute; inset: 0; opacity: .35; mix-blend-mode: multiply;
     background: linear-gradient(95deg, transparent 48%, rgba(0,0,0,.25) 50%, transparent 52%), linear-gradient(5deg, transparent 58%, rgba(0,0,0,.18) 60%, transparent 62%); }
   .tape { position: absolute; width: 190px; height: 64px; background: rgba(230,220,190,.55); box-shadow: 0 2px 6px rgba(0,0,0,.2); }
-  .paper .hi { font-weight: 700; font-size: 230px; line-height: 1; color: #b5151b; margin-top: 10px; }
-  .paper .en { font-family: Archivo, sans-serif; font-stretch: 125%; font-weight: 700; font-size: 66px; letter-spacing: .3em; margin: 4px -0.3em 0 0; }
-  .paper .photo { width: 420px; height: 500px; margin: 46px auto 0; position: relative; overflow: hidden;
-    background: linear-gradient(#a59d8f, #6f675b); filter: grayscale(1) contrast(1.35) blur(2.5px); }
-  .paper .photo i { position: absolute; inset: 0; z-index: 2; opacity: .55; mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  .paper .photo::before { content: ""; position: absolute; left: 50%; top: 92px; width: 170px; height: 200px; margin-left: -85px; border-radius: 50%; background: #5e574e; }
-  .paper .photo::after { content: ""; position: absolute; left: 50%; bottom: -70px; width: 340px; height: 260px; margin-left: -170px; border-radius: 50% 50% 0 0; background: #5e574e; }
-  .paper .name { margin-top: 44px; font-weight: 700; font-size: 70px; line-height: 1.15; }
-  .paper .age { font-weight: 600; font-size: 50px; color: #3a352f; }
-  .paper .seen { margin-top: 26px; font-weight: 500; font-size: 44px; line-height: 1.35; color: #2a2621; }
-  .paper .call { margin-top: 30px; padding-top: 22px; border-top: 4px solid #141210; font-weight: 700; font-size: 52px; }
-  #poster .torch { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 45% at 52% 42%, transparent 0%, rgba(0,0,0,.45) 55%, rgba(0,0,0,.92) 100%); }
+  .paper .hd { font-weight: 700; font-size: 172px; line-height: .95; letter-spacing: -.02em; color: #b5151b; }
+  .paper .photo { width: 470px; height: 566px; margin: 36px auto 0; background: url(../../public/found/raakh/poster-dilip.jpg) center/cover; filter: grayscale(1) contrast(1.25) brightness(1.05); position: relative; }
+  .paper .photo::after { content: ""; position: absolute; inset: 0; opacity: .45; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .paper .name { margin-top: 36px; font-weight: 700; font-size: 68px; line-height: 1.05; letter-spacing: -.01em; }
+  .paper .age { margin-top: 8px; font-weight: 600; font-size: 44px; color: #3a352f; }
+  .paper .seen { margin-top: 26px; font-family: "IBM Plex Mono", monospace; font-size: 34px; line-height: 1.45; color: #2a2621; }
+  .paper .call { margin-top: 30px; padding-top: 24px; border-top: 5px solid #141210; font-weight: 700; font-size: 50px; }
+  #poster .torch { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 45% at 52% 40%, transparent 0%, rgba(0,0,0,.42) 55%, rgba(0,0,0,.92) 100%); }
 
-  /* ---- the envelope's back ---- */
+  /* ---- the envelope's back: his handwriting, English beneath, as the game shows it ---- */
   #note { background: #120b07; }
-  #note .env { position: absolute; left: -60px; top: 380px; width: 1340px; height: 1260px; transform: rotate(4deg);
+  #note .env { position: absolute; left: -60px; top: 330px; width: 1340px; height: 1340px; transform: rotate(4deg);
     background: linear-gradient(160deg, #7a1b2a, #4d0f19); border: 10px solid #c9a25a; box-shadow: 0 40px 90px rgba(0,0,0,.7); }
-  #note .panel { position: absolute; inset: 90px; background: linear-gradient(175deg, #f4ead3, #e7d8b6);
-    font-family: Kalam, cursive; color: #1d2a5c; font-size: 112px; line-height: 1.32; padding: 90px 110px; }
-  #note .panel div { white-space: nowrap; }
-  #note .lamp { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 40% 45%, rgba(255,190,110,.12), rgba(0,0,0,.25) 50%, rgba(0,0,0,.9) 100%); }
+  #note .panel { position: absolute; inset: 90px; background: linear-gradient(175deg, #f4ead3, #e7d8b6); padding: 80px 110px; color: #1d2a5c; }
+  #note .hand { font-family: Kalam, cursive; font-size: 94px; line-height: 1.3; }
+  #note .hand div { white-space: nowrap; }
+  #note .en { margin-top: 40px; padding-top: 30px; border-top: 3px solid rgba(29,42,92,.25); font-family: Newsreader, serif; font-style: italic; font-size: 50px; line-height: 1.3; color: #3a3530; }
+
+  /* ---- Bhasin Uncle ringing ---- */
+  #call { background: #000; }
+  #call .bg { position: absolute; inset: -60px; background: url(../../public/found/raakh-wallpaper.jpg) center/cover; filter: blur(40px) brightness(.45) saturate(.8); }
+  #call .who { position: absolute; top: 470px; left: 0; right: 0; text-align: center; font-family: Inter, sans-serif; color: #fff; }
+  #call .av { width: 300px; height: 300px; margin: 0 auto 50px; border-radius: 50%; background: url(../../public/found/raakh/dp-bhasin.jpg) center/cover; box-shadow: 0 0 0 6px rgba(255,255,255,.08); }
+  #call .who small { display: block; font-size: 46px; color: rgba(255,255,255,.65); }
+  #call .who b { display: block; margin-top: 12px; font-size: 120px; font-weight: 500; letter-spacing: -.02em; }
+  #call .btns { position: absolute; left: 150px; right: 150px; bottom: 360px; display: flex; justify-content: space-between; font-family: Inter, sans-serif; font-size: 38px; color: rgba(255,255,255,.85); text-align: center; }
+  #call .btn i { display: grid; place-items: center; width: 230px; height: 230px; margin-bottom: 24px; border-radius: 50%; font-style: normal; font-size: 96px; color: #fff; }
 </style>
 </head>
 <body>
+  <div class="still grain" id="parcel">
+    <div class="table"></div>
+    <div class="mailer">
+      <div class="strip"></div>
+      <div class="bill">
+        <small>DELIVER TO</small>
+        <b>Meera Arora</b>
+        <p>Kalkaji, New Delhi 110019<br>+91 98••• •1206</p>
+        <div class="from"><small>FROM</small><p>S. Khurrana</p></div>
+        <div class="bars"></div>
+      </div>
+      <div class="stamp"><b>RETURN TO ORIGIN</b><span>Addressee not available</span></div>
+    </div>
+    <div class="lamp"></div>
+  </div>
+
   <div class="still" id="poster">
     <div class="wall"></div>
     <div class="old" style="left:40px;top:120px;width:300px;height:420px;transform:rotate(5deg)"></div>
@@ -63,27 +101,37 @@
     <div class="paper">
       <div class="tape" style="left:-40px;top:-20px;transform:rotate(-30deg)"></div>
       <div class="tape" style="right:-40px;top:-14px;transform:rotate(28deg)"></div>
-      <div class="hi">लापता</div>
-      <div class="en">MISSING</div>
-      <div class="photo"><i></i></div>
-      <div class="name">दिलीप कुमार महतो (छोटू)</div>
-      <div class="age">उम्र 19 वर्ष</div>
-      <div class="seen">आख़िरी बार देखा गया: शनिवार, 22 नवंबर<br>छतरपुर, नई दिल्ली</div>
-      <div class="call">सूचना दें: +91 62••• •••••</div>
+      <div class="hd">MISSING</div>
+      <div class="photo"></div>
+      <div class="name">Dilip Kumar Mahto</div>
+      <div class="age">19 · catering staff</div>
+      <div class="seen">Last seen Saturday 22 November<br>Chhattarpur, New Delhi</div>
+      <div class="call">Call Raju · +91 62••• •••••</div>
     </div>
     <div class="torch"></div>
   </div>
 
   <div class="still" id="note">
     <div class="env"><div class="panel">
-      <div>M —</div>
-      <div>Sab isme hai.</div>
-      <div>Local thane mat</div>
-      <div>le jaana. Bhasin ke</div>
-      <div>log wahan baithe</div>
-      <div>hain. — S</div>
+      <div class="hand">
+        <div>M —</div>
+        <div>Sab isme hai.</div>
+        <div>Local thane mat</div>
+        <div>le jaana. Bhasin ke log</div>
+        <div>wahan baithe hain. — S</div>
+      </div>
+      <div class="en">M — It's all in here. Don't take it to the local police station. Bhasin's people sit there.</div>
     </div></div>
     <div class="lamp"></div>
+  </div>
+
+  <div class="still" id="call">
+    <div class="bg"></div>
+    <div class="who"><div class="av"></div><small>mobile</small><b>Bhasin Uncle</b></div>
+    <div class="btns">
+      <div class="btn"><i style="background:#ff3b30">✕</i>Decline</div>
+      <div class="btn"><i style="background:#34c759">✆</i>Accept</div>
+    </div>
   </div>
 </body>
 </html>

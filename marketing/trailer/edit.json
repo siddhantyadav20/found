@@ -1,6 +1,6 @@
 {
  "fps": 30,
- "duration": 47.0,
+ "duration": 70.2,
  "shots": [
   {
    "t0": 0.0,
@@ -16,7 +16,19 @@
   },
   {
    "t0": 2.4,
-   "t1": 4.6,
+   "t1": 4.7,
+   "slot": "parcel",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 1.0,
+   "warmth": 0.7,
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0
+  },
+  {
+   "t0": 4.7,
+   "t1": 6.4,
    "slot": "delhi_fog",
    "scene": "gate",
    "seed": 0.0,
@@ -27,44 +39,44 @@
    "streak": 0.1
   },
   {
-   "t0": 4.6,
-   "t1": 5.5,
-   "slot": "w_diyas",
+   "t0": 6.4,
+   "t1": 7.3,
+   "slot": "g_dhol",
    "scene": "bulbs",
    "seed": 0.0,
    "exposure": 0.95,
-   "warmth": 0.8,
-   "sat": 0.95,
-   "haze": 0,
-   "streak": 0.4
-  },
-  {
-   "t0": 5.5,
-   "t1": 6.5,
-   "slot": "w_mehndi",
-   "scene": "fire",
-   "seed": 0.0,
-   "exposure": 0.85,
-   "warmth": 0.7,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.1
-  },
-  {
-   "t0": 6.5,
-   "t1": 7.3,
-   "slot": "w_hands",
-   "scene": "fire",
-   "seed": 0.0,
-   "exposure": 0.9,
-   "warmth": 0.7,
+   "warmth": 0.75,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.1
+   "streak": 0.3
   },
   {
    "t0": 7.3,
-   "t1": 8.0,
+   "t1": 8.1,
+   "slot": "g_baraat",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.95,
+   "warmth": 0.75,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.3
+  },
+  {
+   "t0": 8.1,
+   "t1": 8.9,
+   "slot": "g_varmala",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.95,
+   "warmth": 0.75,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.3
+  },
+  {
+   "t0": 8.9,
+   "t1": 9.6,
    "slot": "w_sparkler",
    "scene": "embers",
    "seed": 0.0,
@@ -75,32 +87,44 @@
    "streak": 0.5
   },
   {
-   "t0": 8.0,
-   "t1": 9.2,
-   "slot": "w_fireworks",
+   "t0": 9.6,
+   "t1": 10.9,
+   "slot": "g_portrait",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.95,
+   "warmth": 0.6,
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.25
+  },
+  {
+   "t0": 10.9,
+   "t1": 12.3,
+   "slot": "k_dance",
    "scene": "fireworks",
    "seed": 0.0,
-   "exposure": 1.0,
-   "warmth": 0.7,
+   "exposure": 0.72,
+   "warmth": 0.6,
    "sat": 0.9,
    "haze": 0,
-   "streak": 0.45
+   "streak": 0.15
   },
   {
-   "t0": 11.4,
-   "t1": 14.2,
-   "slot": "fog_road",
-   "scene": "dawn",
+   "t0": 12.3,
+   "t1": 13.7,
+   "slot": "g_reel",
+   "scene": "fire",
    "seed": 0.0,
-   "exposure": 0.72,
-   "warmth": 0.0,
-   "sat": 0.28,
-   "haze": 0.3,
-   "streak": 0
+   "exposure": 0.95,
+   "warmth": 0.5,
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.3
   },
   {
-   "t0": 14.2,
-   "t1": 15.8,
+   "t0": 15.6,
+   "t1": 19.9,
    "slot": "poster",
    "scene": "fire",
    "seed": 0.0,
@@ -111,8 +135,44 @@
    "streak": 0
   },
   {
-   "t0": 15.8,
-   "t1": 18.6,
+   "t0": 19.9,
+   "t1": 23.9,
+   "slot": "g_chhath",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 0.9,
+   "warmth": 0.7,
+   "sat": 0.75,
+   "haze": 0,
+   "streak": 0
+  },
+  {
+   "t0": 23.9,
+   "t1": 27.9,
+   "slot": "g_lawn",
+   "scene": "dawn",
+   "seed": 0.0,
+   "exposure": 0.85,
+   "warmth": 0.4,
+   "sat": 0.7,
+   "haze": 0.1,
+   "streak": 0.2
+  },
+  {
+   "t0": 27.9,
+   "t1": 32.9,
+   "slot": "g_fire",
+   "scene": "fire",
+   "seed": 0.0,
+   "exposure": 1.0,
+   "warmth": 0.6,
+   "sat": 0.9,
+   "haze": 0,
+   "streak": 0.2
+  },
+  {
+   "t0": 32.9,
+   "t1": 38.2,
    "slot": "rain_street",
    "scene": "traffic",
    "seed": 0.0,
@@ -123,32 +183,32 @@
    "streak": 0.4
   },
   {
-   "t0": 20.6,
-   "t1": 23.2,
-   "slot": "phone_hand",
-   "scene": "screen",
+   "t0": 38.2,
+   "t1": 40.4,
+   "slot": "call",
+   "scene": "fire",
    "seed": 0.0,
-   "exposure": 1.1,
+   "exposure": 1.0,
    "warmth": 0.3,
-   "sat": 0.85,
+   "sat": 0.8,
    "haze": 0,
-   "streak": 0.2
+   "streak": 0
   },
   {
-   "t0": 23.2,
-   "t1": 25.8,
-   "slot": "rain_glass",
-   "scene": "rain",
+   "t0": 40.4,
+   "t1": 44.6,
+   "slot": "m_gate",
+   "scene": "gate",
    "seed": 0.0,
-   "exposure": 0.95,
-   "warmth": 0.3,
-   "sat": 0.9,
-   "haze": 0,
-   "streak": 0.3
+   "exposure": 0.6,
+   "warmth": 0.6,
+   "sat": 0.38,
+   "haze": 0.55,
+   "streak": 0.1
   },
   {
-   "t0": 28.2,
-   "t1": 29.5,
+   "t0": 47.4,
+   "t1": 48.55,
    "slot": "m_rain",
    "scene": "rain",
    "seed": 0.0,
@@ -159,9 +219,9 @@
    "streak": 0.35
   },
   {
-   "t0": 29.5,
-   "t1": 30.605,
-   "slot": "m_havan",
+   "t0": 48.55,
+   "t1": 49.516,
+   "slot": "m_gravel",
    "scene": "fire",
    "seed": 0.37,
    "exposure": 0.95,
@@ -171,8 +231,8 @@
    "streak": 0.35
   },
   {
-   "t0": 30.605,
-   "t1": 31.544,
+   "t0": 49.516,
+   "t1": 50.327,
    "slot": "m_note",
    "scene": "fire",
    "seed": 0.74,
@@ -183,10 +243,10 @@
    "streak": 0
   },
   {
-   "t0": 31.544,
-   "t1": 32.343,
-   "slot": "m_street",
-   "scene": "traffic",
+   "t0": 50.327,
+   "t1": 51.009,
+   "slot": "m_kfire",
+   "scene": "fire",
    "seed": 1.11,
    "exposure": 0.95,
    "warmth": 0.55,
@@ -195,8 +255,8 @@
    "streak": 0.35
   },
   {
-   "t0": 32.343,
-   "t1": 33.021,
+   "t0": 51.009,
+   "t1": 51.582,
    "slot": "m_poster",
    "scene": "fire",
    "seed": 1.48,
@@ -207,9 +267,9 @@
    "streak": 0
   },
   {
-   "t0": 33.021,
-   "t1": 33.598,
-   "slot": "m_fire",
+   "t0": 51.582,
+   "t1": 52.063,
+   "slot": "m_jerrycan",
    "scene": "fire",
    "seed": 1.85,
    "exposure": 0.95,
@@ -219,10 +279,10 @@
    "streak": 0.35
   },
   {
-   "t0": 33.598,
-   "t1": 34.088,
-   "slot": "m_bikes",
-   "scene": "traffic",
+   "t0": 52.063,
+   "t1": 52.467,
+   "slot": "m_fire",
+   "scene": "fire",
    "seed": 2.22,
    "exposure": 0.95,
    "warmth": 0.55,
@@ -231,10 +291,10 @@
    "streak": 0.35
   },
   {
-   "t0": 34.088,
-   "t1": 34.505,
-   "slot": "m_incense",
-   "scene": "embers",
+   "t0": 52.467,
+   "t1": 52.806,
+   "slot": "m_pheras",
+   "scene": "fire",
    "seed": 2.59,
    "exposure": 0.95,
    "warmth": 0.55,
@@ -243,11 +303,23 @@
    "streak": 0.35
   },
   {
-   "t0": 34.505,
-   "t1": 34.859,
+   "t0": 52.806,
+   "t1": 53.091,
+   "slot": "m_reel3",
+   "scene": "fire",
+   "seed": 2.96,
+   "exposure": 0.95,
+   "warmth": 0.55,
+   "sat": 0.85,
+   "haze": 0,
+   "streak": 0.35
+  },
+  {
+   "t0": 53.091,
+   "t1": 53.4,
    "slot": "m_gate",
    "scene": "gate",
-   "seed": 2.96,
+   "seed": 3.33,
    "exposure": 0.6,
    "warmth": 0.6,
    "sat": 0.38,
@@ -255,80 +327,8 @@
    "streak": 0.1
   },
   {
-   "t0": 34.859,
-   "t1": 35.16,
-   "slot": "m_embers",
-   "scene": "embers",
-   "seed": 3.33,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.35
-  },
-  {
-   "t0": 35.16,
-   "t1": 35.416,
-   "slot": "m_fireworks",
-   "scene": "fireworks",
-   "seed": 3.7,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.35
-  },
-  {
-   "t0": 35.416,
-   "t1": 35.634,
-   "slot": "m_traffic",
-   "scene": "traffic",
-   "seed": 4.07,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.35
-  },
-  {
-   "t0": 35.634,
-   "t1": 35.819,
-   "slot": "m_coals",
-   "scene": "fire",
-   "seed": 4.44,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.35
-  },
-  {
-   "t0": 35.819,
-   "t1": 35.979,
-   "slot": "m_fire3",
-   "scene": "fire",
-   "seed": 4.81,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.35
-  },
-  {
-   "t0": 35.979,
-   "t1": 36.2,
-   "slot": "m_rain",
-   "scene": "rain",
-   "seed": 5.18,
-   "exposure": 0.95,
-   "warmth": 0.55,
-   "sat": 0.85,
-   "haze": 0,
-   "streak": 0.35
-  },
-  {
-   "t0": 36.2,
-   "t1": 37.1,
+   "t0": 53.4,
+   "t1": 54.3,
    "slot": "phone_dark",
    "scene": "phone",
    "seed": 1.0,
@@ -339,8 +339,8 @@
    "streak": 0.25
   },
   {
-   "t0": 40.6,
-   "t1": 46.0,
+   "t0": 63.7,
+   "t1": 69.2,
    "slot": "title_embers",
    "scene": "embers",
    "seed": 3.0,
@@ -355,118 +355,278 @@
   {
    "t0": 0.45,
    "t1": 2.35,
-   "hi": "ये फ़ोन\nआपका नहीं है।",
-   "en": "THIS PHONE ISN'T YOURS.",
-   "style": "bi",
+   "lines": [
+    [
+     "This phone isn't yours.",
+     "main"
+    ]
+   ],
+   "style": "card",
    "over": true,
    "pos": "mid"
   },
   {
-   "t0": 2.6,
-   "t1": 4.5,
-   "hi": "22 नवंबर · नई दिल्ली",
-   "en": "22 NOVEMBER · NEW DELHI",
-   "style": "place",
+   "t0": 2.55,
+   "t1": 4.6,
+   "lines": [
+    [
+     "It was meant for someone else.",
+     "main"
+    ]
+   ],
+   "style": "card",
    "over": true,
    "pos": "low"
   },
   {
-   "t0": 9.35,
-   "t1": 11.4,
-   "hi": "एक गोली हवा में।",
-   "en": "ONE SHOT IN THE AIR.",
-   "style": "bi",
+   "t0": 13.799999999999999,
+   "t1": 15.6,
+   "lines": [
+    [
+     "One shot in the air.",
+     "main"
+    ]
+   ],
+   "style": "card",
    "over": false,
    "pos": "low"
   },
   {
-   "t0": 11.7,
-   "t1": 14.05,
-   "hi": "एक लड़का,\nजो कभी घर नहीं लौटा।",
-   "en": "ONE BOY NEVER WENT HOME.",
-   "style": "bi",
-   "over": true,
-   "pos": "low"
-  },
-  {
-   "t0": 16.0,
-   "t1": 18.3,
-   "hi": "पाँच दिन बाद",
-   "en": "FIVE DAYS LATER",
-   "style": "place",
-   "over": true,
-   "pos": "low"
-  },
-  {
-   "t0": 18.6,
-   "t1": 20.6,
-   "hi": "उसका फ़ोन\nआपके दरवाज़े तक पहुँचा।",
-   "en": "HIS PHONE ARRIVED AT YOUR DOOR.",
-   "style": "bi",
+   "t0": 44.7,
+   "t1": 47.4,
+   "lines": [
+    [
+     "Everything on it\nis true.",
+     "main"
+    ],
+    [
+     "Somebody edited\nthe night.",
+     "ember"
+    ]
+   ],
+   "style": "card",
    "over": false,
    "pos": "low"
   },
   {
-   "t0": 23.4,
-   "t1": 25.65,
-   "hi": "इसमें सब सच है।",
-   "en": "EVERYTHING ON IT IS TRUE.",
-   "style": "bi",
-   "over": true,
-   "pos": "low"
-  },
-  {
-   "t0": 25.9,
-   "t1": 28.2,
-   "hi": "पर सब कुछ\nसही क्रम में नहीं है।",
-   "en": "NOT EVERYTHING IS IN THE RIGHT ORDER.",
-   "style": "bi",
-   "over": false,
-   "pos": "low"
-  },
-  {
-   "t0": 38.2,
-   "t1": 40.6,
-   "hi": "M? Tu hai?",
-   "en": "",
+   "t0": 55.3,
+   "t1": 57.6,
+   "lines": [
+    [
+     "M? Tu hai?",
+     "main"
+    ],
+    [
+     "M? Is that you?",
+     "small"
+    ]
+   ],
    "style": "message",
    "over": false,
    "pos": "low"
   },
   {
-   "t0": 40.6,
-   "t1": 46.0,
-   "hi": "",
-   "en": "",
+   "t0": 61.5,
+   "t1": 63.6,
+   "lines": [
+    [
+     "Before seven,",
+     "main"
+    ],
+    [
+     "you'll have to choose.",
+     "ember"
+    ]
+   ],
+   "style": "card",
+   "over": false,
+   "pos": "low"
+  },
+  {
+   "t0": 63.7,
+   "t1": 69.2,
+   "lines": [],
    "style": "title",
    "over": false,
    "pos": "low"
   }
  ],
- "type": [
+ "labels": [
+  {
+   "t0": 4.8,
+   "t1": 6.35,
+   "text": "SATURDAY 22 NOVEMBER · DELHI"
+  },
+  {
+   "t0": 9.7,
+   "t1": 10.85,
+   "text": "9:48 PM"
+  },
+  {
+   "t0": 12.4,
+   "t1": 13.7,
+   "text": "THE BACK LAWN"
+  },
+  {
+   "t0": 28.0,
+   "t1": 32.85,
+   "text": "SUNDAY · 4:47 AM"
+  }
+ ],
+ "subs": [
+  {
+   "t0": 12.5,
+   "t1": 13.3,
+   "who": "",
+   "text": "Rolling, bro?",
+   "pos": "low"
+  },
+  {
+   "t0": 15.75,
+   "t1": 16.9,
+   "who": "DILIP · VOICE NOTE",
+   "text": "Bhaiya, listen…",
+   "pos": "foot"
+  },
+  {
+   "t0": 16.87,
+   "t1": 18.52,
+   "who": "DILIP · VOICE NOTE",
+   "text": "“Sir, light is ready.”",
+   "pos": "foot"
+  },
+  {
+   "t0": 18.49,
+   "t1": 19.94,
+   "who": "DILIP · VOICE NOTE",
+   "text": "“Sir, battery full.”",
+   "pos": "foot"
+  },
+  {
+   "t0": 20.1,
+   "t1": 21.35,
+   "who": "DILIP · VOICE NOTE",
+   "text": "Did I say it right?",
+   "pos": "low"
+  },
+  {
+   "t0": 21.32,
+   "t1": 23.87,
+   "who": "DILIP · VOICE NOTE",
+   "text": "In Mumbai, I'll have to speak English.",
+   "pos": "low"
+  },
+  {
+   "t0": 24.0,
+   "t1": 26.3,
+   "who": "SAMEER · VOICE NOTE TO M",
+   "text": "Kunal was firing.",
+   "pos": "low"
+  },
+  {
+   "t0": 26.27,
+   "t1": 28.02,
+   "who": "SAMEER · VOICE NOTE TO M",
+   "text": "A boy fell.",
+   "pos": "low"
+  },
   {
    "t0": 28.2,
-   "t1": 29.5,
+   "t1": 30.85,
+   "who": "SAMEER · VOICE NOTE TO M",
+   "text": "They burned him, M.",
+   "pos": "low"
+  },
+  {
+   "t0": 30.82,
+   "t1": 32.02,
+   "who": "SAMEER · VOICE NOTE TO M",
+   "text": "I was there.",
+   "pos": "low"
+  },
+  {
+   "t0": 31.99,
+   "t1": 33.24,
+   "who": "SAMEER · VOICE NOTE TO M",
+   "text": "I saw.",
+   "pos": "low"
+  },
+  {
+   "t0": 33.05,
+   "t1": 35.15,
+   "who": "THE GUARD · GATE 2",
+   "text": "There's a man at the gate.",
+   "pos": "low"
+  },
+  {
+   "t0": 35.12,
+   "t1": 36.37,
+   "who": "THE GUARD · GATE 2",
+   "text": "In a safari suit.",
+   "pos": "low"
+  },
+  {
+   "t0": 36.34,
+   "t1": 38.69,
+   "who": "THE GUARD · GATE 2",
+   "text": "He's asking for your flat number.",
+   "pos": "low"
+  },
+  {
+   "t0": 38.85,
+   "t1": 40.6,
+   "who": "BHASIN SEHGAL",
+   "text": "You're not Sameer.",
+   "pos": "mid"
+  },
+  {
+   "t0": 40.55,
+   "t1": 43.85,
+   "who": "BHASIN SEHGAL",
+   "text": "Give it back to the courier by morning.",
+   "pos": "low"
+  },
+  {
+   "t0": 43.82,
+   "t1": 45.82,
+   "who": "BHASIN SEHGAL",
+   "text": "We'll handle the rest.",
+   "pos": "low"
+  },
+  {
+   "t0": 57.8,
+   "t1": 58.65,
+   "who": "THE GUARD · GATE 2",
+   "text": "He's gone.",
+   "pos": "low"
+  },
+  {
+   "t0": 58.7,
+   "t1": 62.05,
+   "who": "THE GUARD · GATE 2",
+   "text": "Said he'll be back at seven.",
+   "pos": "low"
+  }
+ ],
+ "type": [
+  {
+   "t0": 47.4,
+   "t1": 48.55,
    "text": "11:52 PM"
   },
   {
-   "t0": 31.544,
-   "t1": 32.343,
-   "text": "1:53 AM"
+   "t0": 50.327,
+   "t1": 51.009,
+   "text": "12:32 AM"
   },
   {
-   "t0": 33.598,
-   "t1": 34.088,
-   "text": "4:47 AM"
+   "t0": 52.063,
+   "t1": 52.467,
+   "text": "1:52 AM"
   },
   {
-   "t0": 35.979,
-   "t1": 36.2,
-   "text": "11:52 PM"
-  },
-  {
-   "t0": 36.2,
-   "t1": 37.1,
+   "t0": 53.4,
+   "t1": 54.3,
    "text": "4. Nitin —",
    "kind": "typed"
   }
@@ -490,260 +650,377 @@
   },
   {
    "t": 2.4,
+   "sfx": "paper"
+  },
+  {
+   "t": 4.7,
    "sfx": "city",
-   "until": 4.6
+   "until": 6.4
   },
   {
-   "t": 2.4,
+   "t": 10.9,
+   "sfx": "dance_shots"
+  },
+  {
+   "t": 11.55,
+   "sfx": "voice",
+   "file": "clip-k-3",
+   "start": 10.05,
+   "until": 10.8,
+   "gain": 0.9
+  },
+  {
+   "t": 4.7,
    "sfx": "band",
-   "open": 4.6,
-   "until": 9.2
+   "open": 6.4,
+   "until": 12.3
   },
   {
-   "t": 8.0,
-   "sfx": "crackle",
-   "until": 9.2
+   "t": 12.5,
+   "sfx": "voice",
+   "file": "cold-3",
+   "start": 0.15,
+   "until": 0.7,
+   "gain": 1.0
   },
   {
-   "t": 9.2,
+   "t": 13.7,
    "sfx": "gunshot"
   },
   {
-   "t": 11.4,
-   "sfx": "hit"
+   "t": 15.75,
+   "sfx": "voice",
+   "file": "voice-d-2c",
+   "start": 0.5,
+   "until": 1.4,
+   "gain": 1.0
   },
   {
-   "t": 11.4,
-   "sfx": "wind",
-   "until": 14.2
+   "t": 16.87,
+   "sfx": "voice",
+   "file": "voice-d-2c",
+   "start": 2.3,
+   "until": 3.7,
+   "gain": 1.3
   },
   {
-   "t": 11.4,
+   "t": 18.49,
+   "sfx": "voice",
+   "file": "voice-d-2c",
+   "start": 4.7,
+   "until": 5.9,
+   "gain": 2.2
+  },
+  {
+   "t": 20.1,
+   "sfx": "voice",
+   "file": "voice-d-2c",
+   "start": 6.15,
+   "until": 7.15,
+   "gain": 1.6
+  },
+  {
+   "t": 21.32,
+   "sfx": "voice",
+   "file": "voice-d-2c",
+   "start": 7.95,
+   "until": 10.25,
+   "gain": 1.2
+  },
+  {
+   "t": 15.6,
    "sfx": "harmonium",
-   "until": 20.6
+   "until": 23.9
   },
   {
-   "t": 11.4,
+   "t": 15.6,
    "sfx": "tanpura",
-   "until": 25.9
+   "until": 33.0
   },
   {
-   "t": 14.2,
+   "t": 15.6,
    "sfx": "soft_hit"
   },
   {
-   "t": 15.8,
-   "sfx": "street",
-   "until": 18.6
+   "t": 24.0,
+   "sfx": "voice",
+   "file": "voice-m-1",
+   "start": 7.25,
+   "until": 9.3,
+   "gain": 1.0
   },
   {
-   "t": 18.0,
-   "sfx": "knock"
-  },
-  {
-   "t": 18.6,
-   "sfx": "hit"
-  },
-  {
-   "t": 20.75,
-   "sfx": "buzz"
-  },
-  {
-   "t": 21.75,
-   "sfx": "buzz"
-  },
-  {
-   "t": 20.6,
-   "sfx": "heart",
-   "until": 25.9
-  },
-  {
-   "t": 23.2,
-   "sfx": "rain",
-   "until": 25.8
-  },
-  {
-   "t": 25.9,
-   "sfx": "braam"
+   "t": 26.27,
+   "sfx": "voice",
+   "file": "voice-m-1",
+   "start": 11.1,
+   "until": 12.6,
+   "gain": 1.0
   },
   {
    "t": 28.2,
+   "sfx": "voice",
+   "file": "voice-m-3",
+   "start": 0.7,
+   "until": 3.1,
+   "gain": 1.0
+  },
+  {
+   "t": 30.82,
+   "sfx": "voice",
+   "file": "voice-m-3",
+   "start": 4.6,
+   "until": 5.55,
+   "gain": 1.8
+  },
+  {
+   "t": 31.99,
+   "sfx": "voice",
+   "file": "voice-m-3",
+   "start": 6.8,
+   "until": 7.8,
+   "gain": 1.9
+  },
+  {
+   "t": 27.9,
+   "sfx": "fire",
+   "until": 32.9
+  },
+  {
+   "t": 23.9,
+   "sfx": "wind",
+   "until": 27.9
+  },
+  {
+   "t": 33.05,
+   "sfx": "voice",
+   "file": "call-guard-calls-1",
+   "start": 0.25,
+   "until": 2.1,
+   "gain": 1.0
+  },
+  {
+   "t": 35.12,
+   "sfx": "voice",
+   "file": "call-guard-calls-1",
+   "start": 3.55,
+   "until": 4.55,
+   "gain": 1.0
+  },
+  {
+   "t": 36.34,
+   "sfx": "voice",
+   "file": "call-guard-calls-1",
+   "start": 5.55,
+   "until": 7.65,
+   "gain": 1.0
+  },
+  {
+   "t": 32.9,
+   "sfx": "street",
+   "until": 38.2
+  },
+  {
+   "t": 32.9,
+   "sfx": "heart",
+   "until": 44.6
+  },
+  {
+   "t": 38.2,
+   "sfx": "ring"
+  },
+  {
+   "t": 38.85,
+   "sfx": "voice",
+   "file": "call-bhasin-calls-1",
+   "start": 0.1,
+   "until": 1.6,
+   "gain": 1.0
+  },
+  {
+   "t": 40.55,
+   "sfx": "voice",
+   "file": "call-bhasin-calls-3",
+   "start": 0.2,
+   "until": 3.25,
+   "gain": 1.0
+  },
+  {
+   "t": 43.82,
+   "sfx": "voice",
+   "file": "call-bhasin-calls-3",
+   "start": 4.5,
+   "until": 6.25,
+   "gain": 1.0
+  },
+  {
+   "t": 38.2,
+   "sfx": "dread",
+   "until": 44.6
+  },
+  {
+   "t": 44.7,
+   "sfx": "braam"
+  },
+  {
+   "t": 47.4,
    "sfx": "cut",
    "n": 0
   },
   {
-   "t": 29.5,
+   "t": 48.55,
    "sfx": "cut",
    "n": 1
   },
   {
-   "t": 30.605,
+   "t": 49.516,
    "sfx": "cut",
    "n": 2
   },
   {
-   "t": 31.544,
+   "t": 50.327,
    "sfx": "cut",
    "n": 3
   },
   {
-   "t": 32.343,
+   "t": 51.009,
    "sfx": "cut",
    "n": 4
   },
   {
-   "t": 33.021,
+   "t": 51.582,
    "sfx": "cut",
    "n": 5
   },
   {
-   "t": 33.598,
+   "t": 52.063,
    "sfx": "cut",
    "n": 6
   },
   {
-   "t": 34.088,
+   "t": 52.467,
    "sfx": "cut",
    "n": 7
   },
   {
-   "t": 34.505,
+   "t": 52.806,
    "sfx": "cut",
    "n": 8
   },
   {
-   "t": 34.859,
+   "t": 53.091,
    "sfx": "cut",
    "n": 9
   },
   {
-   "t": 35.16,
-   "sfx": "cut",
-   "n": 10
-  },
-  {
-   "t": 35.416,
-   "sfx": "cut",
-   "n": 11
-  },
-  {
-   "t": 35.634,
-   "sfx": "cut",
-   "n": 12
-  },
-  {
-   "t": 35.819,
-   "sfx": "cut",
-   "n": 13
-  },
-  {
-   "t": 35.979,
-   "sfx": "cut",
-   "n": 14
-  },
-  {
-   "t": 28.2,
+   "t": 47.4,
    "sfx": "strings",
-   "until": 36.2
+   "until": 53.4
   },
   {
-   "t": 28.2,
+   "t": 47.4,
    "sfx": "drums",
-   "until": 36.2
+   "until": 53.4
   },
   {
-   "t": 28.2,
+   "t": 47.4,
    "sfx": "shepard",
-   "until": 36.2
+   "until": 53.4
   },
   {
-   "t": 28.2,
+   "t": 47.4,
    "sfx": "tick_fast",
-   "until": 36.2
+   "until": 53.4
   },
   {
-   "t": 36.2,
+   "t": 53.4,
    "sfx": "typing",
    "n": 10
   },
   {
-   "t": 38.3,
+   "t": 55.4,
    "sfx": "dots"
   },
   {
-   "t": 39.0,
+   "t": 56.1,
    "sfx": "ping"
   },
   {
-   "t": 40.6,
+   "t": 57.8,
+   "sfx": "voice",
+   "file": "msg-g-2",
+   "start": 0.15,
+   "until": 0.75,
+   "gain": 1.0
+  },
+  {
+   "t": 58.7,
+   "sfx": "voice",
+   "file": "msg-g-2",
+   "start": 1.75,
+   "until": 4.85,
+   "gain": 1.0
+  },
+  {
+   "t": 57.6,
+   "sfx": "clock",
+   "until": 63.6
+  },
+  {
+   "t": 63.7,
    "sfx": "title_hit"
   },
   {
-   "t": 41.2,
+   "t": 64.3,
    "sfx": "harmonium_end"
   },
   {
-   "t": 45.4,
+   "t": 68.6,
    "sfx": "last_tick"
   },
   {
-   "t": 46.1,
+   "t": 69.35,
    "sfx": "end_buzz"
   }
  ],
  "flashes": [
   {
-   "t": 9.2,
+   "t": 13.7,
    "d": 0.067,
    "k": 1.0
   },
   {
-   "t": 34.505,
+   "t": 51.582,
    "d": 0.034,
    "k": 0.8
   },
   {
-   "t": 35.416,
-   "d": 0.034,
-   "k": 0.8
-  },
-  {
-   "t": 35.979,
+   "t": 52.806,
    "d": 0.034,
    "k": 0.8
   }
  ],
  "shakes": [
   {
-   "t": 9.2,
+   "t": 13.7,
    "amp": 1.0,
    "decay": 5.0
   },
   {
-   "t": 11.4,
-   "amp": 0.25,
-   "decay": 6.0
-  },
-  {
-   "t": 18.6,
-   "amp": 0.25,
-   "decay": 6.0
-  },
-  {
-   "t": 25.9,
+   "t": 44.7,
    "amp": 0.55,
    "decay": 3.0
   },
   {
-   "t": 40.6,
+   "t": 63.7,
    "amp": 0.7,
    "decay": 2.5
   }
  ],
  "silence": [
   [
-   37.1,
-   38.2
+   54.3,
+   55.3
   ]
  ]
 }

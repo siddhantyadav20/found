@@ -33,37 +33,43 @@ SRC = FOOT / "src"
 OW, OH, FPS = 1220, 2060, 30
 V = "https://videos.pexels.com/video-files/{id}/{id}-{r}.mp4"
 
+G = "public/found/raakh/"
+GF = "scripts/frames/raakh/"
 CLIPS = {
-    # slot: pexels id, rendition, start, dur, crop centre, push-in, extras
+    # slot: source, start, dur, crop centre, push-in, extras. id = Pexels; file/image = the game's own; still = a prop.
     "phone_dark":   dict(id=4525346, r="uhd_3840_2160_25fps", start=1.0, dur=2.6, x=.5, zoom=(1.0, 1.2), key="screen", dark=.16, wake=.22, glow=.55),
-    "delhi_fog":    dict(id=6587044, r="uhd_3840_2160_30fps", start=.5, dur=2.4, x=.53, zoom=(1.0, 1.12)),
-    # The wedding: lamps, mehndi, hands, a sparkler, fireworks slowing down.
-    "w_diyas":      dict(id=14182074, r="hd_1080_1920_30fps", start=2.0, dur=1.1, x=.5, zoom=(1.1, 1.0)),
-    "w_mehndi":     dict(id=15455199, r="hd_1080_1920_30fps", start=3.0, dur=1.2, x=.5, zoom=(1.0, 1.1)),
-    "w_hands":      dict(id=2078587, r="hd_1920_1080_24fps", start=.2, dur=1.0, x=.5, zoom=(1.0, 1.12)),
-    "w_sparkler":   dict(id=6378175, r="hd_1080_1920_25fps", start=2.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "w_fireworks":  dict(id=14875803, r="hd_1080_1920_50fps", start=5.5, dur=1.4, x=.5, zoom=(1.0, 1.08), speed=.5),
+    "parcel":       dict(still="parcel.png", dur=2.8, zoom=(1.04, 1.16)),
+    "delhi_fog":    dict(id=6587044, r="uhd_3840_2160_30fps", start=.5, dur=2.2, x=.53, zoom=(1.0, 1.12)),
+    # The Sehgal wedding, from the game's album.
+    "g_dhol":       dict(image=G + "w-4.jpg", dur=1.0, zoom=(1.06, 1.18)),
+    "g_baraat":     dict(image=G + "w-3.jpg", dur=.9, zoom=(1.12, 1.04)),
+    "g_varmala":    dict(image=G + "w-5.jpg", dur=.9, zoom=(1.04, 1.14)),
+    "w_sparkler":   dict(id=6378175, r="hd_1080_1920_25fps", start=2.0, dur=.8, x=.5, zoom=(1.0, 1.1)),
+    "g_portrait":   dict(image=G + "w-portrait.jpg", dur=1.5, y=.42, zoom=(1.02, 1.16)),
+    "k_dance":      dict(file=G + "clip-k-3.mp4", start=4.6, dur=1.6, zoom=(1.0, 1.06)),
+    "g_reel":       dict(image=GF + "reel-1.jpg", dur=1.5, y=.55, zoom=(1.0, 1.1)),
     # After.
-    "fog_road":     dict(id=1405527, r="hd_1920_1080_30fps", start=3.0, dur=3.0, x=.5, zoom=(1.0, 1.08)),
-    "poster":       dict(still="poster.png", dur=1.6, zoom=(1.04, 1.14)),
-    "rain_street":  dict(id=9481662, r="hd_1920_1080_24fps", start=2.0, dur=3.0, x=.5, zoom=(1.0, 1.06)),
-    "phone_hand":   dict(id=8566854, r="uhd_3840_2160_30fps", start=1.0, dur=2.8, x=.52, y=.6, zoom=(1.05, 1.4), key="chroma", dark=.26),
-    "rain_glass":   dict(id=12680281, r="hd_1920_1080_30fps", start=3.0, dur=2.8, x=.32, zoom=(1.0, 1.06)),
+    "poster":       dict(still="poster.png", dur=4.3, zoom=(1.04, 1.16)),
+    "g_chhath":     dict(image=G + "dilip-chhath.jpg", dur=4.0, y=.4, zoom=(1.02, 1.14)),
+    "g_lawn":       dict(image=G + "key-lawn.jpg", dur=4.0, zoom=(1.0, 1.14)),
+    "g_fire":       dict(file=G + "clip-fire.mp4", start=.8, dur=5.0, zoom=(1.0, 1.1)),
+    "rain_street":  dict(id=9481662, r="hd_1920_1080_24fps", start=2.0, dur=5.3, x=.5, zoom=(1.0, 1.1)),
+    "call":         dict(still="call.png", dur=2.2, zoom=(1.0, 1.06)),
     # The montage: one slot per cut.
     "m_rain":       dict(id=11631455, r="hd_1920_1080_60fps", start=1.0, dur=1.4, x=.5, zoom=(1.0, 1.1)),
-    "m_havan":      dict(id=15157494, r="hd_1920_1080_25fps", start=.5, dur=1.3, x=.5, zoom=(1.0, 1.12)),
+    "m_gravel":     dict(file=G + "clip-fire-whole.mp4", start=1.0, dur=1.3, zoom=(1.0, 1.08)),
     "m_note":       dict(still="note.png", dur=1.2, zoom=(1.14, 1.02)),
-    "m_street":     dict(id=13687405, r="hd_1080_1920_30fps", start=4.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
+    "m_kfire":      dict(image=GF + "kunal-fire.jpg", dur=1.0, zoom=(1.0, 1.12)),
     "m_poster":     dict(still="poster.png", dur=.9, zoom=(1.3, 1.18)),
+    "m_jerrycan":   dict(image=GF + "jerrycan.jpg", dur=1.0, zoom=(1.0, 1.12)),
+    "m_pheras":     dict(image=G + "w-pheras.jpg", dur=1.0, zoom=(1.1, 1.0)),
     "m_fire":       dict(id=16753425, r="hd_1920_1080_60fps", start=10.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_bikes":      dict(id=10597765, r="hd_1920_1080_25fps", start=2.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_incense":    dict(id=1793318, r="hd_1920_1080_30fps", start=6.0, dur=1.0, x=.47, zoom=(1.0, 1.1)),
+    "m_reel3":      dict(image=GF + "reel-3.jpg", dur=1.0, zoom=(1.0, 1.12)),
     "m_gate":       dict(id=6583820, r="uhd_3840_2160_30fps", start=4.0, dur=1.0, x=.5, zoom=(1.1, 1.0)),
     "m_embers":     dict(id=4389495, r="hd_1366_720_60fps", start=3.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_fireworks":  dict(id=4832681, r="hd_1080_1920_30fps", start=.2, dur=1.0, x=.5, zoom=(1.0, 1.08)),
     "m_traffic":    dict(id=11437954, r="hd_1920_1080_25fps", start=2.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
+    "m_baraat":     dict(image=G + "w-baraat.jpg", dur=1.0, zoom=(1.0, 1.12)),
     "m_coals":      dict(id=7571829, r="hd_1920_1080_25fps", start=5.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_fire3":      dict(id=11203341, r="hd_1920_1080_30fps", start=5.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
     "title_embers": dict(id=12605103, r="uhd_3840_2160_25fps", start=2.0, dur=7.0, x=.5, zoom=(1.0, 1.06)),
 }
 
@@ -75,10 +81,10 @@ def font(weight, size):
 def lock_screen(w=1170, h=2532):
     """Sameer's lock screen, as the game draws it: his wedding-light wallpaper,
     11:40, and what keeps arriving."""
-    im = Image.open(ROOT / "public/found/shagun-wallpaper.jpg").convert("RGB").resize((w, h))
+    im = Image.open(ROOT / "public/found/raakh-wallpaper.jpg").convert("RGB").resize((w, h))
     im = Image.blend(im, Image.new("RGB", (w, h), (0, 0, 0)), .35)
     d = ImageDraw.Draw(im, "RGBA")
-    d.text((w / 2, 300), "Thursday 27 November", font=font("Medium", 54), fill=(255, 255, 255, 215), anchor="mm")
+    d.text((w / 2, 300), "Saturday 29 November", font=font("Medium", 54), fill=(255, 255, 255, 215), anchor="mm")
     d.text((w / 2, 520), "11:40", font=font("SemiBold", 300), fill=(255, 255, 255, 235), anchor="mm")
     notes = [("Missed Calls (47)", "+91 62••• •••••", "now"), ("Mummy (6)", "Beta, phone kyun nahi utha raha?", "2m"), ("Bhasin Uncle (2)", "Missed call", "9m")]
     y = h - 1060
@@ -155,11 +161,11 @@ def put_screen(frame, screen, mode, dark, on=1.0, glow=0.0):
 
 def frames_of(spec):
     """The slot's source frames, as (W, H, iterator of RGB arrays)."""
-    if "still" in spec:
-        im = Image.open(FOOT / "stills" / spec["still"]).convert("RGB")
+    if "still" in spec or "image" in spec:
+        im = Image.open(FOOT / "stills" / spec["still"] if "still" in spec else ROOT / spec["image"]).convert("RGB")
         a = np.asarray(im)
         return im.width, im.height, (a for _ in range(int(spec["dur"] * FPS)))
-    src = SRC / f"{spec['id']}-{spec['r']}.mp4"
+    src = ROOT / spec["file"] if "file" in spec else SRC / f"{spec['id']}-{spec['r']}.mp4"
     if not src.exists():
         SRC.mkdir(parents=True, exist_ok=True)
         subprocess.run(["curl", "-sS", "-f", "-o", str(src), V.format(id=spec["id"], r=spec["r"])], check=True)
@@ -207,7 +213,7 @@ def cut(slot, spec):
             cw, ch = W, W * OH / OW
         cx = min(max(spec.get("x", .5) * W, cw / 2), W - cw / 2)
         cy = min(max(spec.get("y", .5) * H, ch / 2), H - ch / 2)
-        if "still" in spec:
+        if "still" in spec or "image" in spec:
             cx += W * .006 * np.sin(t * 1.3) + W * .002 * np.sin(t * 3.7)
             cy += H * .005 * np.cos(t * 1.1)
             cx, cy = min(max(cx, cw / 2), W - cw / 2), min(max(cy, ch / 2), H - ch / 2)
@@ -215,7 +221,8 @@ def cut(slot, spec):
         enc.stdin.write(im.tobytes())
     enc.stdin.close()
     enc.wait()
-    src = f"pexels {spec['id']} ({spec['r']}) {spec['start']}s" if "id" in spec else f"still {spec['still']}"
+    src = (f"pexels {spec['id']} ({spec['r']}) {spec['start']}s" if "id" in spec else f"game clip {spec['file']} {spec['start']}s" if "file" in spec
+           else f"game image {spec['image']}" if "image" in spec else f"prop {spec['still']}")
     print(f"{slot:14s} ← {src} +{spec['dur']}s", flush=True)
 
 

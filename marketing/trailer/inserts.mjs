@@ -25,7 +25,7 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1220, height: 2060 } });
 await page.goto(pathToFileURL(path.join(here, "inserts.html")).href);
 await page.evaluate(() => document.fonts.ready);
-for (const id of ["poster", "note"]) {
+for (const id of ["parcel", "poster", "note", "call"]) {
   await page.locator(`#${id}`).screenshot({ path: path.join(out, `${id}.png`) });
   console.log(`${id} → ${path.join(out, `${id}.png`)}`);
 }
