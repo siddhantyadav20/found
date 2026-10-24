@@ -144,12 +144,8 @@ while t < m1 - .05:
     i += 1
 cues[[c["sfx"] for c in cues].index("ostinato")]["until"] = m1
 cues += [dict(t=m0, sfx="rise", until=m1)]
-# The list he left for M, stopping where he stopped. Then nothing.
-hold = .9
-shot(m1, m1 + hold, "phone_dark", seed=1.0)
-type_.append(dict(t0=m1, t1=m1 + hold, text="4. Nitin —", kind="typed"))
-cues += [dict(t=m1, sfx="typing", n=10)]
-silence = [[m1 + hold, 47.0]]
+# Then nothing.
+silence = [[m1, 47.0]]
 
 # ============================================================ IV. Seven
 card(47.0, 49.4, [("M? Tu hai?", "main"), ("M? Is that you?", "small")], "message")

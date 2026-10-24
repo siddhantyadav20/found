@@ -603,12 +603,6 @@ for c in cues("cut"):
     put(taiko(.6), c["t"], .4, bus="room", wet=.3)
 put(riser(1.2), b - 1.2, .4)
 
-# "4. Nitin —", typed; everything else has stopped but one high note.
-c = cue("typing")
-for k in range(c["n"]):
-    put(band(noise(.03), 1500, 6000) * np.exp(-T(.03) * 200), c["t"] + k * .045 + rng.uniform(0, .01), .3, bus="room", wet=.2)
-put(strings([midi(93)], 1.0, att=.02, rel=.8, bright=8000, vib=.2, voices=4), c["t"], .25, bus="cathedral", wet=.5)
-
 # ============================================================================ IV. Seven
 tt = T(1.5)
 bell = (np.sin(2 * np.pi * 880 * tt) + .35 * np.sin(2 * np.pi * 2640 * tt) * np.exp(-tt * 4)) * np.exp(-tt * 3)

@@ -44,8 +44,8 @@ Neither `out/` nor `footage/` is committed. `footage.py` cuts `bokeh` before
   here, 200 px inside.
 - **Words:** HTML over the picture (`trailer.html`) in the game's type:
   Newsreader for the cards, IBM Plex Mono for labels and times, Inter Tight
-  for the title. Four cards in a minute, a date, four times, one typed line,
-  one message.
+  for the title. Four cards in a minute, a date, four times, one
+  message.
 - **Sound:** `sound.py`. Four movements on one four-note motif (A, D, F, E).
   I: a felt piano alone over a low drone, the game's buzz, a reversed swell
   into the screen. II: 100 bpm from the moment we're through, with the
@@ -75,8 +75,7 @@ Neither `out/` nor `footage/` is committed. `footage.py` cuts `bokeh` before
 | 0:27 | A shoe on gravel in a torch's light; a jerrycan; a fire; ash falling | | Cello ostinato, taikos, footsteps, the game's fire |
 | 0:35 | Black | Somebody edited *the night.* | Braam |
 | 0:38 | Montage: rain on glass, a night drive, a city from above, his note, the fire, smoke, coals, incense, fog, traffic, embers, the parcel… | 11:52 PM · 12:32 AM · 1:52 AM · 4:47 AM | Drums speeding up, a Shepard tone, a hit on every cut |
-| 0:45 | His lock screen | *4. Nitin —* typed | One high note |
-| 0:46 | Black | | Silence |
+| 0:45 | Black | | Silence |
 | 0:47 | | UNKNOWN NUMBER · *M? Tu hai?* · M? Is that you? | A bell, one piano note |
 | 0:49 | A clock tower over a street at night | Before seven, *you'll have to choose.* | A clock, the motif on the piano, strings and choir rising |
 | 0:53 | Embers | Found · CHAPTER 01 · DELHI · **Raakh** · A thriller you play on someone else's phone. · PLAY FREE · FOUND-GAME.VERCEL.APP | Braam, taiko, the motif home over the orchestra |
