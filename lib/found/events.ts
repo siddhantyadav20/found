@@ -50,6 +50,7 @@ export const SHARING = [
   "share:whatsapp",
   "share:native",
   "share:copy",
+  "share:night",
   "drop:create",
   "drop:arrive",
   "drop:open",
@@ -106,6 +107,8 @@ export function eventsFor(ep: Story): readonly string[] {
       ...(ep.choices ?? []).map(choiceEvent),
       // Which ending: one counter per ending the chapter has.
       ...ep.endings.map((e) => `end:${e.id}`),
+      // What the night decided, where it decides something (Raakh: got there before seven, or not).
+      ...(ep.fate ? ["fate:yes", "fate:no"] : []),
       ...SHARING,
       ...POWER,
       ...KEEPING,
@@ -143,5 +146,7 @@ export function reportFlag(flag: Flag, story?: Story): string | null {
   if (flag.startsWith("hint:") || flag.startsWith("claim:") || flag.startsWith("link:")) return flag;
   if (flag.startsWith("did:end-")) return `end:${flag.slice(8)}`;
   if (story?.choices?.includes(flag)) return choiceEvent(flag);
+  if (story?.fate && flag === story.fate.yes) return "fate:yes";
+  if (story?.fate && flag === story.fate.no) return "fate:no";
   return MILESTONE_OF[flag] ?? null;
 }

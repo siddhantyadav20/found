@@ -256,10 +256,22 @@ button.row:active {
   text-overflow: ellipsis;
 }
 
+/* The value gives way before the label does, as iOS's own rows do:
+   "Apple Account" whole, the email cut (2026-10-24 QA). */
 .rowMeta {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
   font-size: 17px;
   color: var(--ios-grey);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rowTitle:has(+ .rowMeta),
+.rowMain:has(+ .rowMeta) {
+  flex: 1 0 auto;
+  max-width: 65%;
 }
 
 .note {

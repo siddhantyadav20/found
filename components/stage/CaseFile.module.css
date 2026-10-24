@@ -542,6 +542,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  /* A grid item that would otherwise grow to its content: the episode's name gives way instead. */
+  min-width: 0;
   margin: -2px 0 10px;
   padding-bottom: 10px;
   border-bottom: 1px dashed var(--cf-rule-strong);
@@ -553,12 +555,15 @@
 }
 
 .progressEp {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .progressDots {
+  flex: none;
   display: inline-flex;
   gap: 4px;
   margin-left: auto;

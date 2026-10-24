@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+
+import Notify from "./ending/Notify";
+import { useCase } from "@/components/found/StoryContext";
+import { releaseLeft, releaseOf, releaseWhen, waitsForRelease } from "@/lib/found/release";
 
 import type { Story } from "@/content/types";
 import { answered, caseFile, filedClaim, traced, type CaseState } from "@/lib/game/engine";
@@ -37,6 +41,25 @@ function Count({ to, of }: { to: number; of?: number }) {
   );
 }
 
+/** A second's tick, shared, only while something is counting down. */
+function subscribeTick(on: () => void): () => void {
+  const t = window.setInterval(on, 1000);
+  return () => window.clearInterval(t);
+}
+
+/** The next episode, if it's held back: when it arrives, and how long is left. Re-read every second. */
+function useHeld(caseId: string, episode: number): { at: number; left: number } | null {
+  const at = releaseOf(caseId, episode);
+  const now = useSyncExternalStore(
+    at ? subscribeTick : () => () => {},
+    () => Math.floor(Date.now() / 1000),
+    () => 0,
+  );
+  if (!at || !now || !waitsForRelease()) return null;
+  const left = at - now * 1000;
+  return left > 0 ? { at, left } : null;
+}
+
 export default function Recap({ story, state, episode, onDone }: { story: Story; state: CaseState; episode: 1 | 2; onDone: () => void }) {
   const recap = story.recaps?.[episode];
   const qs = story.questions.filter((q) => q.episode === episode && !q.optional);
@@ -48,6 +71,8 @@ export default function Recap({ story, state, episode, onDone }: { story: Story;
     .map((q) => filedClaim(q, state))
     .filter((c) => c?.hunch && story.chain.some((l) => l.id === c.hunch && traced(story, state).includes(l))).length;
   const next = story.episodes[episode];
+  const { id } = useCase();
+  const held = useHeld(id, episode + 1);
   if (!recap) return null;
 
   return (
@@ -99,10 +124,28 @@ export default function Recap({ story, state, episode, onDone }: { story: Story;
           </ol>
         </div>
 
-        <button type="button" className={styles.go} onClick={onDone}>
-          {episode === 1 ? "His phone is dying. Keep it alive" : `Episode ${episode + 1}: ${next}`}
-          <span aria-hidden="true">→</span>
-        </button>
+        {held ? (
+          /* Held back for a launch: when it arrives, a countdown, and a way to hear (lib/found/release.ts). */
+          <div className={styles.held}>
+            <p className={styles.heldHead}>
+              Episode {episode + 1} · {next}
+            </p>
+            <p className={styles.heldWhen}>
+              Arrives {releaseWhen(held.at)} · <b>{releaseLeft(held.left)}</b>
+            </p>
+            <Notify
+              caseId={id}
+              what="ep3"
+              label="Tell me the moment it's out"
+              small="One message, when Episode 3 drops. Your phone stays where you left it."
+            />
+          </div>
+        ) : (
+          <button type="button" className={styles.go} onClick={onDone}>
+            {episode === 1 ? "His phone is dying. Keep it alive" : `Episode ${episode + 1}: ${next}`}
+            <span aria-hidden="true">→</span>
+          </button>
+        )}
       </div>
     </div>
   );

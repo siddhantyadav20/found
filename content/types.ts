@@ -337,10 +337,30 @@ export type EndingLine = {
   readonly at?: string;
   /** Where the lock screen's clock stands for it, as "06:40", when `at` isn't itself a time (T21). */
   readonly clock?: string;
+  /** The lock screen's day and date from this line on, when the ending moves past the night's own ("29/12", "Monday"). */
+  readonly day?: { readonly day: string; readonly date: string };
   /** Somebody saying it, as a message. Without one, it is narration. */
   readonly who?: string;
   /** A photograph they send with it: the ending's last image, once it exists. */
   readonly src?: string;
+  /** A voice note they send: its recording ("ending:<id>" in `Story.voices`), played as it lands; the text is what it says. */
+  readonly voice?: string;
+  /** A printed notice they send, drawn as the notice (the reprinted LAPATA poster). */
+  readonly poster?: Extract<NonNullable<Message["attachment"]>, { kind: "poster" }>;
+  readonly needs?: readonly Flag[];
+  readonly any?: readonly Flag[];
+  readonly unless?: readonly Flag[];
+};
+
+/**
+ * One beat of the player's night, on the end card's timeline: when, what they
+ * did, and the same without spoilers for the share (`share`; left out of the
+ * share when there's none). Read off the save like an ending line.
+ */
+export type NightBeat = {
+  readonly at: string;
+  readonly text: string;
+  readonly share?: string;
   readonly needs?: readonly Flag[];
   readonly any?: readonly Flag[];
   readonly unless?: readonly Flag[];
@@ -514,6 +534,8 @@ export type Attachment =
       readonly contact?: string;
       /** His photograph, printed: a silhouette until there is one. */
       readonly src?: string;
+      /** Lines that are new since the last printing, marked by hand (indexes into `lines`). */
+      readonly marked?: readonly number[];
     }
   /** A page in someone's own hand, photographed: drawn as paper, in cursive. */
   | {
@@ -624,6 +646,8 @@ export type Thread = {
   readonly name: string;
   /** What the list shows under the name when it isn't the last message. */
   readonly sub?: string;
+  /** The header's line once the story says otherwise: the number that was "last seen Tuesday" is online tonight. */
+  readonly subLater?: { readonly after: readonly Flag[]; readonly sub: string };
   readonly group?: boolean;
   readonly pinned?: boolean;
   /** Unsaved numbers show as numbers, which is how two of them get confused. */
@@ -1092,6 +1116,8 @@ export type Story = {
     /** The next case already exists: where to play it. */
     readonly href?: string;
     readonly cta?: string;
+    /** Its teaser, ten seconds, vertical (scripts/trailers.py). */
+    readonly trailer?: string;
   };
   /**
    * Outside the fiction: the end card's last, quiet screen. Every line
@@ -1124,9 +1150,38 @@ export type Story = {
     readonly no: Flag;
     readonly headline: { readonly yes: string; readonly no: string };
     readonly share: { readonly yes: string; readonly no: string };
+    /** How everyone else's night went, once enough have played: "{yes}" is the percentage who got there. */
+    readonly others?: string;
   };
   /** What's said aloud on the phone, recorded: see `Voices`. Without it, the captions are the sound. */
   readonly voices?: Voices;
+  /**
+   * Real-time mode (2026-10-24), offered at the parcel: from `after`, the
+   * story's deadline runs on a real clock of `seconds`, shown over the phone
+   * with what it's counting to. Tapping it sets `go`; running out sets `out`.
+   */
+  readonly realtime?: {
+    readonly offer: string;
+    readonly after: readonly Flag[];
+    readonly seconds: number;
+    /** The story's own clock at the start and at the deadline, as "02:58" and "07:00". */
+    readonly from: string;
+    readonly to: string;
+    readonly label: string;
+    readonly hint: string;
+    readonly act: string;
+    readonly go: readonly Flag[];
+    readonly out: readonly Flag[];
+  };
+  /**
+   * While the night's decider is coming (2026-10-24 QA): from `after` until
+   * `until`, the record can't be sent or posted, and the case file and the
+   * home screen say why. Without it, a player could file the record in the
+   * minute between the twist and the calls, and skip the climax.
+   */
+  readonly hold?: { readonly after: readonly Flag[]; readonly until: readonly Flag[]; readonly note: string; readonly widget: string };
+  /** The player's own night, as a timeline for the end card (2026-10-24): see `NightBeat`. */
+  readonly night?: readonly NightBeat[];
   /**
    * The end of an episode, said as one (2026-10-23: "episode 1 seems to end
    * abruptly"): the line it ends on, and the questions the next one opens.

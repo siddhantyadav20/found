@@ -88,7 +88,7 @@ describe("Raakh's endings keep time", () => {
         const s = add(newCase("t", 0), ...night, ...record);
         let last = -1;
         for (const l of linesFor(s, e.lines)) {
-          if (l.at?.startsWith("The next")) last = 24 * 60;
+          if (l.at?.startsWith("The next") || l.at?.endsWith("later")) last = Math.max(last, 24 * 60);
           const t = minutes(l.at, l.clock);
           if (t === undefined) continue;
           expect(t + (last >= 24 * 60 ? 24 * 60 : 0), `${l.at}: ${l.text}`).toBeGreaterThanOrEqual(last);

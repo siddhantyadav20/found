@@ -303,16 +303,16 @@
 
 .crack {
   position: absolute;
+  top: 0;
   right: 0;
-  bottom: 0;
-  width: 55%;
-  height: 30%;
+  width: 46%;
+  height: 26%;
+  border-radius: 0 22px 0 0;
   background:
-    linear-gradient(142deg, transparent 48.6%, rgb(255 255 255 / 70%) 50%, transparent 51.4%) 0 0 / 100% 100% no-repeat,
-    linear-gradient(118deg, transparent 48.8%, rgb(255 255 255 / 55%) 50%, transparent 51.2%) 100% 100% / 70% 70% no-repeat,
-    linear-gradient(165deg, transparent 48.8%, rgb(255 255 255 / 50%) 50%, transparent 51.2%) 100% 100% / 60% 80% no-repeat,
-    radial-gradient(circle at 100% 100%, rgb(255 255 255 / 25%), transparent 18%);
-  border-radius: 0 0 22px 0;
+    linear-gradient(38deg, transparent 48.6%, rgb(255 255 255 / 70%) 50%, transparent 51.4%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(62deg, transparent 48.8%, rgb(255 255 255 / 55%) 50%, transparent 51.2%) 100% 0 / 70% 70% no-repeat,
+    linear-gradient(15deg, transparent 48.8%, rgb(255 255 255 / 50%) 50%, transparent 51.2%) 100% 0 / 60% 80% no-repeat,
+    radial-gradient(circle at 100% 0, rgb(255 255 255 / 25%), transparent 18%);
 }
 
 @keyframes settle {

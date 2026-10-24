@@ -40,6 +40,9 @@ export const NEEDS_CHARGE: Flag = "did:needs-charge";
  */
 export const DETECTIVE: Flag = "did:detective";
 
+/** Chosen at the parcel too (2026-10-24): the night's last hours run on a real clock (`Story.realtime`). */
+export const REALTIME: Flag = "did:realtime";
+
 /** Set when an episode's title card has been shown, so it shows once. */
 export const titleShown = (episode: 2 | 3): Flag => `fired:title-${episode}`;
 

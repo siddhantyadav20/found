@@ -290,6 +290,8 @@ export const threads: readonly Thread[] = [
     /* (game) 2026-10-24, the living witness, planted: a phone that should
        have burned on Sunday was online on Tuesday. */
     sub: "last seen Tuesday at 3:12 AM",
+    // Tonight his number is back on, in somebody else's hands (the living witness).
+    subLater: { after: ["fired:the-witness"], sub: "online" },
     locked: true,
     messages: [
       {
@@ -819,7 +821,7 @@ export const mail: readonly Mail[] = [
 ];
 
 export const payments: readonly Payment[] = [
-  { id: "p-balance", who: "SEHGAL ENTERPRISES", handle: "sehgalent@paytap", amount: 180000, note: "Final balance – wedding coverage", at: "11:04", day: "Sunday", evidence: "balance" },
+  { id: "p-balance", who: "SEHGAL ENTERPRISES", handle: "sehgalent@paytap", amount: 180000, note: "Final balance – Sehgal wedding", at: "11:04", day: "Sunday", evidence: "balance" },
   { id: "p-deposit", who: "Anjali Mehra", handle: "anjali.m@paytap", amount: -35000, note: "Deposit, Andheri 1RK", at: "14:22", day: "Tuesday", evidence: "deposit" },
   { id: "p-emi", who: "ZipEMI", amount: -14200, note: "EMI · Sony A7 IV", at: "09:00", day: "Friday", failed: true },
   { id: "p-nitin", who: "Nitin Kumar", handle: "nitin.edits@paytap", amount: -5000, note: "Edit advance · Sehgal film", at: "12:30", day: "Sunday" },
@@ -1011,7 +1013,7 @@ export const settings: readonly SettingsGroup[] = [
          and how to get it back. */
       {
         title: "iPhone Storage",
-        value: "121 GB of 128 GB",
+        value: "121 of 128 GB",
         detail: {
           heading: "iPhone Storage",
           rows: [

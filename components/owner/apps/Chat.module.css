@@ -380,6 +380,14 @@ button.setRow {
   color: #333;
 }
 
+/* A line that's new since the last printing: underlined by hand in red. */
+.posterLine[data-marked] {
+  font-weight: 700;
+  color: #1b1b1b;
+  text-decoration: underline wavy #c4161c 1.5px;
+  text-underline-offset: 3px;
+}
+
 .posterContact {
   width: 100%;
   margin-top: 6px;

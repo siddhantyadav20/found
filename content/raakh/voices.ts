@@ -86,4 +86,5 @@ export const voices: Voices = {
   "moment:late-police:1": { src: "/voices/raakh/moment-late-police-1.m4a", seconds: 4.0 },
   "moment:late-meera:1": { src: "/voices/raakh/moment-late-meera-1.m4a", seconds: 5.3 },
   "moment:late-raju:2": { src: "/voices/raakh/moment-late-raju-2.m4a", seconds: 4.7 },
+  "ending:dilip-thanks": { src: "/voices/raakh/ending-dilip-thanks.m4a", seconds: 8.5 },
 };

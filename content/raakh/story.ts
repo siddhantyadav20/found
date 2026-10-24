@@ -6,6 +6,7 @@ import { episode1 } from "./episode1";
 import { episode2 } from "./episode2";
 import { episode3 } from "./episode3";
 import * as instagram from "./instagram";
+import { night } from "./night";
 import { voices } from "./voices";
 import { calls, mail, memos, notes, payments, photos, searches, settings, threads } from "./phone";
 
@@ -152,7 +153,7 @@ export const story: Story = {
     lines: [
       "This phone was posted to a lawyer, Meera Arora. It came back to your door instead. She's at a wedding in Jaipur, her phone off till morning.",
       "A boy called Dilip went missing at a Delhi wedding a week ago. His brother keeps ringing this number.",
-      "Find out what happened to Dilip. Every answer you file here traces one link of that night. There are eleven.",
+      "Find out what happened to Dilip. What you file here traces that night, link by link. There are twelve.",
       "Somebody else wants this phone back before morning.",
     ],
   },
@@ -170,6 +171,26 @@ export const story: Story = {
     no: "did:lost",
     headline: { yes: "Dilip Kumar Mahto is alive.", no: "Dilip Kumar Mahto is still missing." },
     share: { yes: "I got there before seven.", no: "I didn't get there before seven." },
+    others: "{yes}% of everyone who's played got there before seven.",
+  },
+  night,
+  hold: {
+    after: ["did:knows-alive"],
+    until: ["did:rescue-told"],
+    note: "Every question is filed. The record can wait. Dilip can't: they move him at seven.",
+    widget: "They move him at seven. Two calls, before anyone notices.",
+  },
+  realtime: {
+    offer: "Real time: the night's last decision runs on a real clock. Four minutes, no pause",
+    after: ["did:knows-alive", "did:realtime"],
+    seconds: 240,
+    from: "02:58",
+    to: "03:30",
+    label: "Sister Anita's shift ends at 3:30. After that, the side door stays shut.",
+    hint: "Two calls: one who can identify him, one Bhasin is afraid of.",
+    act: "Make the calls",
+    go: ["fired:seven-clock"],
+    out: ["did:froze", "did:lost", "did:moment-first-call"],
   },
   /* Each episode ends on what it's left open (2026-10-23). */
   voices,
@@ -204,7 +225,7 @@ export const story: Story = {
     sendTo: "Meera Arora",
     sendNote: "The lawyer it was meant for. Her number is on the parcel's label.",
     postTo: "his Instagram",
-    postNote: "From @sk.weddings, to the 12.4k people who follow it. Anyone can share it.",
+    postNote: "From @sk.weddings, to the 12,400 people who follow it. Anyone can share it.",
     /* Return to Sender, where the sender on paper is you (O1): the
        legitimate channel for a parcel that isn't yours is the courier. */
     parcel: {

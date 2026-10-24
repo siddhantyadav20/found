@@ -107,7 +107,7 @@ export const chain: readonly Link[] = [
   {
     id: "edit",
     label: "The edit",
-    truth: "Sameer arranged this phone so that his part ends before the death.",
+    truth: "Sameer arranged this phone so that his part ends before what he believed was a death.",
     owner: "Sameer",
     kind: "deep",
     version: "Sab phone mein hai.",

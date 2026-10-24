@@ -15,11 +15,11 @@ import CoreGraphics
 import Foundation
 import ImageIO
 
-struct Shot: Decodable { let image: String; let start: Double; let end: Double; let z0: Double; let z1: Double; let x0: Double; let y0: Double; let x1: Double; let y1: Double }
+struct Shot: Decodable { let image: String; let start: Double; let end: Double; let z0: Double; let z1: Double; let x0: Double; let y0: Double; let x1: Double; let y1: Double; let still: Bool? }
 struct Flash: Decodable { let at: Double; let dur: Double }
 struct Spec: Decodable {
     let out: String; let width: Int; let height: Int; let fps: Int; let seconds: Double
-    let audio: String?; let shake: Double?; let blackFrom: Double?
+    let audio: String?; let shake: Double?; let blackFrom: Double?; let bitrate: Int?
     let shots: [Shot]; let flashes: [Flash]
 }
 
@@ -43,7 +43,7 @@ let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
     AVVideoWidthKey: W,
     AVVideoHeightKey: H,
     AVVideoCompressionPropertiesKey: [
-        AVVideoAverageBitRateKey: 420_000,
+        AVVideoAverageBitRateKey: spec.bitrate ?? 420_000,
         AVVideoProfileLevelKey: AVVideoProfileLevelH264MainAutoLevel,
         AVVideoMaxKeyFrameIntervalKey: spec.fps * 2,
     ],
@@ -108,7 +108,8 @@ for i in 0..<frames {
             var alpha: CGFloat = 1
             // Cross-dissolve into a shot from the one before it.
             if k > 0 && t < s.start { alpha = CGFloat((t - (s.start - fade)) / fade) }
-            draw(ctx, s, p, alpha: alpha, dx: dx, dy: dy)
+            // A title card holds still: no hand on the camera.
+            draw(ctx, s, p, alpha: alpha, dx: s.still == true ? 0 : dx, dy: s.still == true ? 0 : dy)
         }
         ctx.drawRadialGradient(vignette, startCenter: CGPoint(x: W / 2, y: H / 2), startRadius: 0, endCenter: CGPoint(x: W / 2, y: H / 2), endRadius: CGFloat(max(W, H)) * 0.72, options: [.drawsAfterEndLocation])
         for f in spec.flashes where t >= f.at && t < f.at + f.dur {

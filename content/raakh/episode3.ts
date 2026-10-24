@@ -62,7 +62,7 @@ const evidence: readonly Evidence[] = [
      2:55, the ticks, the last seen), counted here. */
   { id: "car-255", device: "owner", app: "photos", label: "Screenshot: Pappu, 2:55 AM, “Sir gaadi nikal gayi.” Bhasin: “Baaki back plot pe.”", within: true, requires: now },
   { id: "belongings", device: "owner", app: "whatsapp", label: "From Dilip's number: a patient's things in a bag, a maroon waistcoat, a badge: DILIP", within: true, requires: ["ep:3", "fired:the-witness"] },
-  { id: "patient-voice", device: "owner", app: "whatsapp", label: "From Dilip's number: five seconds of a patient whispering, “…bhaiya… light… ready…”", within: true, requires: ["ep:3", "fired:the-witness"] },
+  { id: "patient-voice", device: "owner", app: "whatsapp", label: "From Dilip's number: six seconds of a patient whispering, “…bhaiya… light… ready… hai…”", within: true, requires: ["ep:3", "fired:the-witness"] },
   // His phone in airplane mode: the nurse found Raju through the poster instead, and Raju rang you.
   { id: "raju-relay", device: "owner", app: "phone", label: "Raju: a nurse in Fatehpur Beri has a boy with Dilip's waistcoat and Dilip's voice", within: true, foundBy: ["did:answered-raju-relays"], requires: ["ep:3", "did:answered-raju-relays"] },
 
@@ -319,7 +319,7 @@ const questions: readonly Question[] = [
         also: ["patient-voice", "portrait", "car-255", "fire-original", "raju-relay", "not-speaking"],
         orProof: [["patient-voice", "portrait"], ["belongings", "car-255"], ["raju-relay", "car-255"], ["raju-relay", "badge"]],
         moment: "Alive.",
-        reply: "Dilip Kumar Mahto is alive, in a room in Fatehpur Beri, under somebody else's name. He has been for eight days. Bhasin didn't kill him; he hid him, and let Sameer believe the rest. They're moving him at seven.",
+        reply: "Dilip Kumar Mahto is alive, in a room in Fatehpur Beri, under somebody else's name. He has been there for a week. Bhasin didn't kill him; he hid him, and let Sameer believe the rest. They're moving him at seven.",
         sets: ["link:alive-now", "did:knows-alive"],
       },
       {
@@ -764,8 +764,8 @@ const witness: readonly Message[] = [
     with: "the-witness",
     requires: ["fired:the-witness"],
     typing: 8,
-    text: "8 din pehle raat ko ek ladka laaye the. File mein naam Deepak, 19, road accident. Par zakhm goli ka hai.",
-    english: "Eight days ago, at night, they brought in a boy. The file says Deepak, 19, road accident. But the wound is a bullet's.",
+    text: "Ek hafta pehle raat ko ek ladka laaye the. File mein naam Deepak, 19, road accident. Par zakhm goli ka hai.",
+    english: "A week ago, at night, they brought in a boy. The file says Deepak, 19, road accident. But the wound is a bullet's.",
   },
   { id: "nu-4", from: "them", day: "30/11", at: "02:11", with: "the-witness", requires: ["fired:the-witness"], typing: 6, text: "Kal raat thoda hosh aaya. Bas ek naam liya. Sameer bhaiya. Is phone mein aap hi ho.", english: "Last night he came round a little. He said one name. Sameer bhaiya. You're the one in this phone." },
   {
@@ -785,7 +785,7 @@ const witness: readonly Message[] = [
     at: "02:12",
     with: "the-witness",
     requires: ["fired:the-witness"],
-    attachment: { kind: "voice", seconds: 6, transcript: "…bhaiya… light… ready…", english: "…bhaiya… light… ready…" },
+    attachment: { kind: "voice", seconds: 6, transcript: "…bhaiya… light… ready… hai…", english: "…brother… the light's… ready…" },
     evidence: "patient-voice",
   },
   {
@@ -811,6 +811,7 @@ const witness: readonly Message[] = [
     text: "Main akeli kuch nahi kar sakti. Do log chahiye. Ek jo inhe pehchaane. Aur ek jisse Bhasin sahab darte hon.",
     english: "I can't do anything alone. I need two people. One who can identify him. And one Bhasin sahab is afraid of.",
   },
+  { id: "nu-10", from: "them", day: "30/11", at: "02:15", with: "the-witness", requires: ["fired:the-witness"], text: "Meri duty 3:30 tak hai. Side wala darwaza sirf main khol sakti hoon.", english: "My shift's until 3:30. Only I can open the side door." },
 ];
 
 const dilipNumber: Thread = { id: "dilip", app: "whatsapp", name: "Dilip", locked: true, messages: witness };
@@ -842,7 +843,9 @@ const events: readonly LiveEvent[] = [
      yours instead. Then, once the player knows who it is, the clock. */
   { id: "the-witness", device: "owner", after: ["ask:q13"], unless: [OFFLINE], delay: 20, app: "whatsapp", banner: "Dilip · Hello? Ye phone ek patient ka hai. Aap Sameer bhaiya ho?", sets: ["did:witness"] },
   { id: "witness-relay", device: "yours", after: ["ask:q13", OFFLINE], unless: ["fired:the-witness"], delay: 20, app: "yours:phone", sets: ["did:witness"] },
-  { id: "seven-clock", device: "owner", after: ["did:knows-alive"], delay: 6, app: "casefile" },
+  { id: "seven-clock", device: "owner", after: ["did:knows-alive"], unless: ["did:realtime"], delay: 6, app: "casefile" },
+  // Real time (story.realtime): the clock starts here, and the calls wait for the player, or for seven.
+  { id: "seven-clock-real", device: "owner", after: ["did:knows-alive", "did:realtime"], delay: 3, app: "casefile" },
   /* (game) 2026-10-24: the last hour. Once Raju has had his chance to ask
      (or couldn't), the night stops for the player's decision. Quiet: it
      waits for whatever they're reading. */
@@ -882,6 +885,7 @@ export const moments: readonly Moment[] = withFaces([
   {
     id: "first-call",
     after: ["did:knows-alive", "fired:seven-clock"],
+    unless: ["did:lost"],
     where: "2:58 AM · Four hours to seven",
     lines: [
       { text: "Fatehpur Beri is twenty minutes from Chhattarpur. They move him at seven." },
@@ -980,7 +984,7 @@ export const moments: readonly Moment[] = withFaces([
   {
     id: "found",
     after: ["did:saved"],
-    where: "4:12 AM · Bedi Nursing Home, Fatehpur Beri",
+    where: "3:24 AM · Bedi Nursing Home, Fatehpur Beri",
     lines: [
       { text: "A white Gypsy with a blue light turns in at the front gate. The man in the safari suit, smoking by the back gate, drops his cigarette and walks away fast." },
       { text: "Sister Anita opens the side door. Room 6. A boy, thinner than in any photograph, a drip in his arm." },
@@ -1017,6 +1021,18 @@ export const moments: readonly Moment[] = withFaces([
     ],
     options: [{ id: "on", text: "Go on", sets: [TOLD] }],
   },
+  /* Real time (story.realtime), run out: her shift ended with nobody on the way. */
+  {
+    id: "late-clock",
+    after: ["did:lost", "did:froze", "did:realtime"],
+    unless: [TOLD],
+    where: "3:30 AM · Bedi Nursing Home, Fatehpur Beri",
+    lines: [
+      { text: "Sister Anita's shift ends. The side door is locked behind her." },
+      { text: "Nobody you could have called is on their way." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
   {
     id: "late-froze",
     after: ["did:lost", "did:froze"],
@@ -1032,7 +1048,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-meera",
     after: ["did:lost", "did:call-meera"],
     unless: [TOLD, "did:call-raju"],
-    where: "3:40 AM · Bedi Nursing Home, Fatehpur Beri",
+    where: "3:24 AM · Bedi Nursing Home, Fatehpur Beri",
     lines: [
       { text: "A DCP's car at the front gate, and Meera beside it in yesterday's clothes." },
       { who: "Sister Anita", text: "Deepak naam ka patient hai. Koi inhe pehchaanne wala hai?", english: "The patient's name is Deepak. Is there anyone who can identify him?" },

@@ -128,7 +128,7 @@ function Product() {
             <span>1</span> Say what happened
           </p>
           <p className={styles.fileSentence}>
-            Dilip was shot by <u>someone at the wedding</u>. Nobody took him to a hospital, and his body was <u>burned</u>.
+            Dilip was shot by <u>someone at the wedding</u>, and <u>nobody</u> took him to a hospital.
           </p>
           <p className={styles.fileOk}>That&apos;s what the phone shows. Now show it.</p>
           <p className={styles.fileStep}>
@@ -137,11 +137,11 @@ function Product() {
           <ul className={styles.proof}>
             <li data-on>
               <i />
-              Voice note: “Usko hospital nahi le gaye.”
+              Voice note: “Kunal firing kar raha tha. Ek ladka gir gaya.”
             </li>
             <li data-on>
               <i />
-              Voice note: “Unhone usko jala diya… Maine dekha.”
+              Voice note: “Usko hospital nahi le gaye.”
             </li>
             <li>
               <i />

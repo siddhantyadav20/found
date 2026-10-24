@@ -24,7 +24,7 @@ export const profiles: readonly Profile[] = [
     own: true,
     avatar: `${R}/dp-sameer.jpg`,
     bio: "SK Weddings · Delhi weddings, planned like films ✨\nPlanner & producer · Chhattarpur to Udaipur\nDelhi → Mumbai, soon 🌊",
-    followers: "12.4k",
+    followers: "12.4K",
     following: "611",
     posts: [
       // Sunday afternoon, the day after: he posted the wedding as if it had been one.

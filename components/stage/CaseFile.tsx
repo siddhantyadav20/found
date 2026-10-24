@@ -44,6 +44,7 @@ import { wrong } from "./playthrough";
 import { nightly, stamp } from "@/lib/found/time";
 import { moment as momentTone } from "@/lib/found/tones";
 import CloseCase from "./CloseCase";
+import { holding } from "@/lib/game/hold";
 
 /** When something was filed: read in the click that files it, never in a render. */
 const filedNow = () => Date.now();
@@ -219,11 +220,15 @@ export default function CaseFile({
         <div className={note.card}>
           <Progress story={story} state={state} />
           <p className={styles.done}>
-            {story.close && episodeOf(state) === 3 ? "Every question is filed. What happens to the record is up to you." : "Nothing else to answer yet. Keep looking through his phone: the night isn't over."}
+            {holding(story, state)
+              ? story.hold?.note
+              : story.close && episodeOf(state) === 3
+                ? "Every question is filed. What happens to the record is up to you."
+                : "Nothing else to answer yet. Keep looking through his phone: the night isn't over."}
           </p>
         </div>
         {others}
-        {story.close && <CloseCase story={story} state={state} open={episodeOf(state) === 3} />}
+        {story.close && !holding(story, state) && <CloseCase story={story} state={state} open={episodeOf(state) === 3} />}
         {record}
         <Found found={found} story={story} />
       </div>
@@ -447,7 +452,7 @@ export default function CaseFile({
       </div>
 
       {others}
-      {story.close && <CloseCase story={story} state={state} />}
+      {story.close && !holding(story, state) && <CloseCase story={story} state={state} />}
       {record}
     </div>
   );

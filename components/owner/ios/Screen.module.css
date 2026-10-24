@@ -682,6 +682,16 @@
   animation: drop 0.5s cubic-bezier(0.2, 1.1, 0.3, 1) both;
 }
 
+/* Thicker than the widgets' glass: a banner lands over anything, a title
+   included, and its words have to win (2026-10-24 QA). */
+.banner:global(.lg-thick) {
+  background:
+    var(--lg-fill),
+    rgb(30 30 34 / 78%);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  backdrop-filter: blur(24px) saturate(1.8);
+}
+
 /* A short drop, faded in: from far above, it slid under the status bar and
    its text ran through the clock on the way down (2026-10-02 stress test). */
 @keyframes drop {

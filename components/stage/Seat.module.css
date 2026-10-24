@@ -1,12 +1,14 @@
 /* A local's steel bench at night, under a tube light, and a phone on it. */
 
 .wrap {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
   min-height: 100dvh;
-  padding: calc(18px + env(safe-area-inset-top)) var(--gutter) calc(32px + env(safe-area-inset-bottom));
+  /* The bench runs to the top edge; the bar sits over it. */
+  padding: 0 var(--gutter) calc(32px + env(safe-area-inset-bottom));
   background: var(--ink);
   color: var(--text);
 }
@@ -22,6 +24,7 @@
   display: grid;
   place-items: center;
   height: min(58vh, 460px);
+  padding-top: env(safe-area-inset-top);
   max-width: none;
   margin-inline: calc(var(--gutter) * -1);
   width: calc(100% + var(--gutter) * 2);
@@ -70,4 +73,44 @@
 
 @media (prefers-reduced-motion: reduce) {
   .phone { animation: none; }
+}
+
+/* --- the way home and the chapter's name (2026-10-24 QA) --------------------- */
+
+.bar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 34rem;
+  padding: calc(16px + env(safe-area-inset-top)) var(--gutter) 0;
+  translate: -50% 0;
+}
+
+.home {
+  display: inline-flex;
+  color: #f4f1ea;
+  text-decoration: none;
+}
+
+.crumb {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(244 241 234 / 60%);
+}
+
+.title {
+  margin-top: 4px;
+  font-family: var(--font-sans), var(--font-ui), sans-serif;
+  font-size: clamp(38px, 11vw, 56px);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }

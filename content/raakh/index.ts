@@ -17,7 +17,7 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   time: "11:40",
   episodes: 3,
   tone: "Mystery · Delhi · 45–60 min",
-  note: "16+ · death, gun violence, a body burned (not shown) · this game never asks for anything real",
+  note: "16+ · gun violence, a missing person, a fire · this game never asks for anything real",
   ask: "Did you get there before seven?",
   // CHAPTER1.md J's preset message, less its question.
   hook: "A wedding planner's phone. A missing waiter.",

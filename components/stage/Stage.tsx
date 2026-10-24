@@ -6,7 +6,7 @@ import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
 import { add, has, newCase } from "@/lib/game/engine";
 import { stamp } from "@/lib/found/time";
-import { DETECTIVE, momentDone, PLUGGED_IN, recapShown, sceneOf, titleShown } from "@/lib/game/scene";
+import { DETECTIVE, REALTIME, momentDone, PLUGGED_IN, recapShown, sceneOf, titleShown } from "@/lib/game/scene";
 import { AWAY_MS } from "@/lib/found/keeping";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { useReplay } from "@/lib/found/shelf";
@@ -111,6 +111,7 @@ export default function Stage() {
     return (
       <Seat
         seat={story.seat}
+        meta={meta}
         onOpen={() => save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened", "did:unlock", "saw:note"))}
       />
     );
@@ -125,8 +126,16 @@ export default function Stage() {
           to={to}
           minutes={minutes}
           replay={replay}
-          onOpen={(detective) =>
-            save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened", ...(detective ? [DETECTIVE] : [])))
+          realtime={story.realtime?.offer}
+          onOpen={(detective, real) =>
+            save(
+              add(
+                newCase(Math.random().toString(36).slice(2, 10), Date.now(), via),
+                "did:opened",
+                ...(detective ? [DETECTIVE] : []),
+                ...(real && story.realtime ? [REALTIME] : []),
+              ),
+            )
           }
         />
         <InAppGuard />

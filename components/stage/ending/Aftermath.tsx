@@ -3,10 +3,12 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { Poster } from "@/components/owner/apps/Chat";
 import type { EndingLine, Story } from "@/content/types";
 import { clockNow, type CaseState } from "@/lib/game/engine";
 import { chosen, ENDING_SEEN, linesFor } from "@/lib/game/endings";
 import { buzz } from "@/lib/found/buzz";
+import { say } from "@/lib/found/voice";
 import { longDay, phoneClock } from "@/lib/found/time";
 import { flag } from "../playthrough";
 import styles from "./Ending.module.css";
@@ -36,8 +38,21 @@ function clockOf(l: EndingLine): string | undefined {
   return l.clock;
 }
 
+/** A voice note, as it lands: a play mark, its length, and what it says under it. */
+function VoiceNote({ seconds }: { seconds?: number }) {
+  return (
+    <span className={styles.voiceNote}>
+      <span className={styles.voicePlay} aria-hidden="true">
+        ▶
+      </span>
+      <span className={styles.voiceWave} aria-hidden="true" />
+      <span className={styles.voiceLength}>0:{String(Math.max(1, Math.round(seconds ?? 4))).padStart(2, "0")}</span>
+    </span>
+  );
+}
+
 /** A notification: who, what, and the English under it. */
-function Notice({ line }: { line: EndingLine }) {
+function Notice({ line, seconds }: { line: EndingLine; seconds?: number }) {
   const who = line.who ?? "";
   const [app, name] = who.includes(" · ") ? who.split(" · ") : ["", who];
   return (
@@ -50,8 +65,14 @@ function Notice({ line }: { line: EndingLine }) {
           <b>{name || app}</b>
           {app && <span className={styles.noticeApp}>{app}</span>}
         </span>
+        {line.voice && <VoiceNote seconds={seconds} />}
         <span lang={line.english ? "hi-Latn" : undefined}>{line.text}</span>
         {line.english && <span className={styles.english}>{line.english}</span>}
+        {line.poster && (
+          <span className={styles.noticePoster}>
+            <Poster a={line.poster} />
+          </span>
+        )}
       </span>
     </div>
   );
@@ -82,11 +103,30 @@ export default function Aftermath({ story, state }: { story: Story; state: CaseS
 
   useEffect(() => {
     if (black) return undefined;
-    const t = window.setTimeout(more, atLast ? LAST_MS : LINE_MS);
+    // A line with a voice, a poster or a photo is given the time it takes to take in.
+    const heavy = (atLast ? last : [lines[shown - 1]]).some((l) => l?.voice || l?.poster);
+    const t = window.setTimeout(more, (atLast ? LAST_MS : LINE_MS) + (heavy ? 3200 : 0));
     return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [black, atLast, shown]);
 
-  // Someone writing to you lands as it would: with the buzz.
+  // Someone writing to you lands as it would: with the buzz, and a voice note is heard.
+  const voiceOf = (l?: EndingLine) => (l?.voice ? story.voices?.[l.voice] : undefined);
+  useEffect(() => {
+    if (atLast) {
+      const v = last.map(voiceOf).find(Boolean);
+      if (!v) return undefined;
+      let stop = () => {};
+      const t = window.setTimeout(() => (stop = say(v.src)), 1600);
+      return () => {
+        window.clearTimeout(t);
+        stop();
+      };
+    }
+    return say(voiceOf(lines[shown - 1])?.src);
+    // Only when a new line arrives.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown, atLast]);
   useEffect(() => {
     if (!atLast && lines[shown - 1]?.who) buzz();
     // Only when a new line arrives.
@@ -122,7 +162,13 @@ export default function Aftermath({ story, state }: { story: Story; state: CaseS
                 </figcaption>
               </figure>
             ) : l.who ? (
-              <p key={i} className={styles.lastSaid}>
+              <p key={i} className={styles.lastSaid} data-voice={l.voice ? "" : undefined}>
+                {l.voice && (
+                  <>
+                    <span className={styles.from}>{l.who}</span>
+                    <VoiceNote seconds={voiceOf(l)?.seconds} />
+                  </>
+                )}
                 <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
                 {l.english && <span className={styles.english}>{l.english}</span>}
               </p>
@@ -136,15 +182,24 @@ export default function Aftermath({ story, state }: { story: Story; state: CaseS
       </div>
     );
 
-  const seen = lines.slice(0, shown);
-  const clock = seen.map(clockOf).filter(Boolean).at(-1) ?? start;
+  const all = lines.slice(0, shown);
+  const clock = all.map(clockOf).filter(Boolean).at(-1) ?? start;
+  // A new day is a new lock screen: what came before it has been read and cleared.
+  const since = Math.max(0, all.map((l) => Boolean(l.day)).lastIndexOf(true));
+  const seen = all.slice(since);
   const told = [...seen].reverse().find((l) => !l.who);
+  // The day on the lock screen, and a cut ("Three weeks later") when the ending moves on.
+  const day = [...all].reverse().find((l) => l.day)?.day ?? story.clocks[2];
+  const now = lines[shown - 1];
+  const cut = now?.at && !TIME.test(now.at.trim()) ? now.at : undefined;
   const notices = seen.filter((l) => l.who).reverse();
 
   return (
     <div className={`${styles.screen} ${styles.morning}`} onClick={more}>
-      <p className={styles.eyebrow}>Your phone</p>
-      <p className={styles.lockDay}>{longDay(story.clocks[2].day, story.clocks[2].date)}</p>
+      <p className={styles.eyebrow} key={cut ?? "phone"} data-cut={cut ? "" : undefined}>
+        {cut ?? "Your phone"}
+      </p>
+      <p className={styles.lockDay}>{longDay(day.day, day.date)}</p>
       <p className={styles.lockClock}>
         {phoneClock(clock)}
         {/* The morning runs on into the evening: say which half of the day it is. */}
@@ -155,7 +210,7 @@ export default function Aftermath({ story, state }: { story: Story; state: CaseS
       </div>
       <div className={styles.notices} aria-live="polite">
         {notices.map((l) => (
-          <Notice key={lines.indexOf(l)} line={l} />
+          <Notice key={lines.indexOf(l)} line={l} seconds={voiceOf(l)?.seconds} />
         ))}
       </div>
       <button

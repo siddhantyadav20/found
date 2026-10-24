@@ -63,9 +63,8 @@
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--line);
-  background: rgb(8 9 10 / 80%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* Solid: nothing scrolling under it shows through, on any browser. */
+  background: #08090a;
 }
 
 .navInner {
@@ -758,6 +757,9 @@
 
 .fig {
   display: grid;
+  /* The art in a row of its own height, so every caption starts on the same line. */
+  grid-template-rows: auto 260px auto;
+  align-content: start;
   gap: 18px;
   padding: 26px 28px 40px;
   border-left: 1px solid var(--line);
@@ -778,6 +780,8 @@
   width: 100%;
   max-width: 300px;
   height: auto;
+  max-height: 260px;
+  align-self: center;
   justify-self: center;
 }
 
@@ -1240,6 +1244,11 @@
 
 .chapterBody .status {
   margin-top: 10px;
+}
+
+.next .mono {
+  flex: none;
+  white-space: nowrap;
 }
 
 .next {

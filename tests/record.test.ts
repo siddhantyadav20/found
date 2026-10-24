@@ -99,8 +99,10 @@ describe("what the ending reads back", () => {
     expect(text).toContain("Ye complete hai. Isliye kisi ko pasand nahi aayega.");
     expect(text).toContain("Mera naam nahi hai. …Par sach hai. Shukriya.");
     expect(text).not.toContain("Nitin's name is in it: the one person who tried.");
-    expect(text.at(-3)).toMatch(/awake/);
-    expect(text.at(-2)).toMatch(/^Isko rakhna/);
+    expect(text.at(-4)).toMatch(/awake/);
+    expect(text.at(-3)).toMatch(/^Isko rakhna/);
+    // The last voice is his, to whoever had the phone.
+    expect(text.at(-2)).toMatch(/shukriya/);
     expect(text.at(-1)).toMatch(/He held the light/);
   });
 

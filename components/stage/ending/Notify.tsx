@@ -12,7 +12,18 @@ import styles from "./Ending.module.css";
    promised Chapter 2 and gave nobody a way to hear about it.
    =========================================================================== */
 
-export default function Notify({ caseId }: { caseId: string }) {
+export default function Notify({
+  caseId,
+  what = "next",
+  label = "Tell me when it arrives",
+  small = "One message, when Chapter 2 is on the desk. Nothing else, ever.",
+}: {
+  caseId: string;
+  /** What they're waiting for: the next chapter, or an episode of this one ("ep3"). */
+  what?: "next" | "ep3";
+  label?: string;
+  small?: string;
+}) {
   const [value, setValue] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | { error: string }>("idle");
   const ok = Boolean(readContact(value));
@@ -30,7 +41,7 @@ export default function Notify({ caseId }: { caseId: string }) {
           const res = await fetch("/api/notify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contact: value, case: caseId }),
+            body: JSON.stringify({ contact: value, case: caseId, what }),
           });
           const body = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
           setState(res.ok && body?.ok ? "done" : { error: body?.error ?? "That didn't go through. Try again in a moment." });
@@ -40,7 +51,7 @@ export default function Notify({ caseId }: { caseId: string }) {
       }}
     >
       <label className={styles.notifyLabel} htmlFor="notify">
-        Tell me when it arrives
+        {label}
       </label>
       <span className={styles.notifyRow}>
         <input
@@ -57,7 +68,7 @@ export default function Notify({ caseId }: { caseId: string }) {
         </button>
       </span>
       {typeof state === "object" && <p className={styles.notifyError}>{state.error}</p>}
-      <p className={styles.notifySmall}>One message, when Case 2 is on the desk. Nothing else, ever.</p>
+      <p className={styles.notifySmall}>{small}</p>
     </form>
   );
 }

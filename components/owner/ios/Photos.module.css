@@ -29,10 +29,15 @@
 }
 
 /* Top corner: the bottom is where a placeholder's description sits. */
+/* Over a screenshot full of its own small type, the count needs a dark band under it. */
 .days {
   position: absolute;
-  left: 6px;
-  top: 5px;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 5px 6px 12px;
+  background: linear-gradient(180deg, rgb(0 0 0 / 70%), transparent);
   font-size: 11px;
   font-weight: 600;
   color: #fff;

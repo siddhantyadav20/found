@@ -154,7 +154,7 @@ export default function Figures() {
         </svg>
         <figcaption>
           <b>You decide</b>
-          <span>Send what you proved to the lawyer, post it for everyone, or give the parcel back. Each ending is the one you earned.</span>
+          <span>Two calls before seven, against a clock. Then what happens to everything you proved: the lawyer, the internet, or back in the parcel. Each ending is the one you earned.</span>
         </figcaption>
       </figure>
     </section>

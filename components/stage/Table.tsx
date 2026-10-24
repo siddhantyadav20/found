@@ -32,6 +32,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, installed } from "@/lib/game/phone";
+import RealClock from "./RealClock";
 import { DETECTIVE } from "@/lib/game/scene";
 import { newsOnYours, yourMessages, yourUnread } from "@/lib/game/yours";
 import { TRAIN_UNDER, useBed } from "@/lib/found/nightSound";
@@ -194,15 +195,17 @@ export default function Table({
   const nudgeDone = !q || detective || review || has(state, `fired:nudge-${q.id}`);
   const nudgeText = q ? `${q.ask} Look in ${whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}.` : "";
   const progress = state.flags.length;
+  // Never inside the case file itself: the question there already says where to look.
+  const inCaseFile = openApp === "casefile";
   useEffect(() => {
-    if (!qid || nudgeDone) return undefined;
+    if (!qid || nudgeDone || inCaseFile) return undefined;
     const t = window.setTimeout(() => {
       flag(`fired:nudge-${qid}`);
       nudged(qid);
       setBanner({ app: "casefile", from: "Case file", text: nudgeText });
     }, NUDGE_MS);
     return () => window.clearTimeout(t);
-  }, [qid, nudgeDone, nudgeText, progress]);
+  }, [qid, nudgeDone, nudgeText, progress, inCaseFile]);
 
   const dismissBanner = useCallback(() => setBanner(null), []);
 
@@ -290,6 +293,7 @@ export default function Table({
 
   return (
     <div className={phoneStyles.surface}>
+      {!review && <RealClock story={story} state={state} />}
       {replay && (
         <p className={phoneStyles.chainCount} aria-live="polite">
           {traced(story, state).length} of {story.chain.length} links

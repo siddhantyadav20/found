@@ -199,7 +199,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
               maxLength={NAME_MAX + 8}
               autoComplete="off"
               autoCapitalize="words"
-              placeholder="Their first name (optional)"
+              placeholder="First name, or leave it"
             />
             <button type="submit" className={styles.primary} disabled={phase === "sealing"}>
               {phase === "sealing" ? "Sealing…" : "Seal it"}

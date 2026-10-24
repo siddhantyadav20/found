@@ -349,13 +349,14 @@
    colours with it. */
 
 .notebook {
-  /* The same manila sheet as the case file app (CaseFile.module.css). */
-  --os-panel: #f7f2e7;
-  --os-panel-2: #e2d9c6;
-  --os-text: #1d1a16;
-  --os-accent: #b3382a;
-  --os-danger: #b3382a;
-  --ios-grey: rgb(29 26 22 / 58%);
+  /* The case file beside the phone on a wide screen: the same dark sheet as
+     the app (CaseFile.module.css), not the manila it used to be (2026-10-24 QA). */
+  --os-panel: #1c1c1e;
+  --os-panel-2: #2c2c2e;
+  --os-text: #f4f1ea;
+  --os-accent: #ff7a45;
+  --os-danger: #ff6b5b;
+  --ios-grey: rgb(244 241 234 / 55%);
 
   align-self: stretch;
   width: min(26rem, 32vw);
@@ -363,13 +364,12 @@
   margin: 1.5rem 0;
   padding: 0 1rem;
   overflow-y: auto;
-  border-radius: 2px;
-  color: #1d1a16;
-  background:
-    repeating-linear-gradient(180deg, transparent 0 27px, rgb(29 26 22 / 5%) 27px 28px),
-    #ebe3d2;
-  box-shadow: 0 24px 50px rgb(0 0 0 / 55%);
-  rotate: 0.6deg;
+  border-radius: 20px;
+  color: #f4f1ea;
+  background: #0b0a09;
+  box-shadow:
+    inset 0 0 0 0.5px rgb(255 255 255 / 12%),
+    0 24px 50px rgb(0 0 0 / 55%);
 }
 
 .notebookHead {
@@ -378,8 +378,8 @@
   z-index: 3;
   margin: 0 -1rem 0.6rem;
   padding: 1rem 1rem 0.7rem;
-  border-bottom: 1px solid rgb(29 26 22 / 18%);
-  background: #ebe3d2;
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+  background: rgb(11 10 9 / 96%);
   font-family: var(--font-display), Georgia, serif;
   font-size: 1.5rem;
   font-weight: 700;

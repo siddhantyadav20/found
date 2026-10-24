@@ -54,7 +54,7 @@ clock (40 s, then 30 s). Meera (the DCP at Saket isn't Bhasin's man), Raju
 112 (the local SHO rings Bhasin), or a post from his Instagram (900 shares, and
 the back gate opens once). Saved with **Meera + Raju**, **Meera + a confronted
 Sameer** or **Raju + a confronted Sameer**; anything else, or the clock
-running out, and he's gone at 6:58. Played live: 4:12 AM, a white Gypsy at the
+running out, and he's gone at 6:58. Played live: 3:24 AM (inside Sister Anita's shift, which ends at 3:30), a white Gypsy at the
 front gate, Room 6, "…Bhaiya. Light ready hai."
 
 **The record, after.** The finale is **4:40 AM, Sunday**, its line told from
@@ -65,6 +65,21 @@ Raju's: Dilip awake ("Ab achhi photo hai"), or Dilip at Chhath ("Jab tak woh
 mil nahi jaata"). The end card leads with the fate ("Dilip Kumar Mahto is
 alive." / "…is still missing."), and so does the share line ("I got there
 before seven.").
+
+**The ending, as the review set it out** (2026-10-24, second pass):
+- Saved: Raju's photo of Dilip awake, then **Dilip's own voice note** to whoever has the phone ("Jo bhi ye phone rakhta hai… shukriya"), heard as it lands.
+- Lost: at 6:58 the Innova leaves with its lights off ("Le gaye", "Unka phone bhi le gaye"); **three weeks later** (the lock screen moves to Sunday 21 December) Raju sends the reprinted LAPATA poster, its new line ("last seen alive: Fatehpur Beri") underlined by hand.
+- Losing him is told at the hour it happened (late-police 3:09, late-post 3:12, late-meera 3:24, late-raju 3:50, late-froze 3:00, late-clock 3:30), never at 6:58 before the 4:40 finale.
+- The recognition, said once in the Complete Record: "Sameer arranged this phone so his part would end before a death. Bhasin arranged the night so there would be a death for it to end before."
+- **The record waits** (`Story.hold`): from the twist until the night's last moment has played, the case file and the home screen say "they move him at seven", and Send/Post aren't offered.
+
+**Around it** (the review's enhancement list):
+- **Real time** (`Story.realtime`, chosen at the parcel): once Q14 is filed, a four-minute countdown sits over the phone ("Sister Anita's shift ends at 3:30") with *Make the calls*; the player can still go back into the phone (to confront Sameer) while it runs; at zero, he's lost (late-clock). The nurse says when her shift ends in every mode (nu-10).
+- **Everyone's outcome**: `fate:yes|no` are counted; once 50 have played, the end card says "{n}% of everyone who's played got there before seven."
+- **Your night** (`content/raakh/night.ts`): the player's choices as a timeline on the end card, shared as a version with no names or spoilers.
+- **Episode drops** (`lib/found/release.ts`): `NEXT_PUBLIC_RELEASE_RAAKH_3=<ISO time>` holds Episode 3 behind the Episode 2 recap with a countdown and "tell me the moment it's out". Unset, nothing is held.
+- **Trailers** (`scripts/trailers.py`): built, but held back from the site on 2026-10-24; neither the Chapter 2 teaser nor the Raakh trailer ships.
+- **Voice actors**: VOICE-SCRIPTS.md is generated from the voice spec, per actor, file by file, so a real recording drops in with no code change.
 
 **The first minute** (rebuilt): your table under a lamp, drawn rather than
 photographed; a kraft mailer with its waybill to Meera Arora, Kalkaji, and

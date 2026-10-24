@@ -259,7 +259,8 @@ function Voice({
         </span>
       </span>
       <span className={styles.voiceWords}>{transcript}</span>
-      {english && <span className={styles.docMeta}>{english}</span>}
+      {/* No translation under words that are already English. */}
+      {english && english !== transcript && <span className={styles.docMeta}>{english}</span>}
     </span>
   );
 }
@@ -379,7 +380,7 @@ function MapShot({
 }
 
 /** A missing-person notice, as a family prints one: the word across the top, a face, a name, a number. */
-function Poster({
+export function Poster({
   a,
 }: {
   a: Extract<NonNullable<Message["attachment"]>, { kind: "poster" }>;
@@ -408,8 +409,8 @@ function Poster({
         )}
       </span>
       <span className={local.posterName}>{a.name}</span>
-      {a.lines.map((l) => (
-        <span key={l} className={local.posterLine}>
+      {a.lines.map((l, i) => (
+        <span key={l} className={local.posterLine} data-marked={a.marked?.includes(i) || undefined}>
           {l}
         </span>
       ))}
@@ -756,7 +757,9 @@ function Conversation({
             <span className={styles.whoSub} aria-live="polite">
               {(pending && nextFromThem) || (coming && !pending)
                 ? "typing…"
-                : (thread.sub ?? thread.number ?? "")}
+                : thread.subLater && thread.subLater.after.every((f) => state.flags.includes(f))
+                  ? thread.subLater.sub
+                  : (thread.sub ?? thread.number ?? "")}
             </span>
           </span>
         </button>

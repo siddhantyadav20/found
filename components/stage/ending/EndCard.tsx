@@ -16,6 +16,7 @@ import { markSolved } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
 import { DETECTIVE } from "@/lib/game/scene";
 import PassItOn from "../PassItOn";
+import Night from "./Night";
 import Notify from "./Notify";
 import styles from "./Ending.module.css";
 
@@ -42,6 +43,7 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
   // Minutes are measured to the moment the card first appears.
   const [result] = useState(() => resultOf(story, state, Date.now()));
   const [others, setOthers] = useState<Others>(null);
+  const [fated, setFated] = useState<{ yes: number; no: number } | null>(null);
   const done = result.traced;
   const episodes = story.episodes.length as EpisodeNo;
   const replay = story.notes.find((n) => n.id === story.replay?.note);
@@ -58,7 +60,11 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
     let live = true;
     fetch(`/api/found/choices?case=${id}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d: { end?: Others } | null) => live && setOthers(d?.end ?? null))
+      .then((d: { end?: Others; fate?: { yes: number; no: number } | null } | null) => {
+        if (!live) return;
+        setOthers(d?.end ?? null);
+        setFated(d?.fate ?? null);
+      })
       .catch(() => {});
     return () => {
       live = false;
@@ -84,6 +90,8 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
             {state.flags.includes(story.fate.yes) ? story.fate.headline.yes : story.fate.headline.no}
           </p>
         )}
+        {/* Everyone else's night, as a share, once enough people have played it. */}
+        {story.fate?.others && fated && <p className={styles.fateOthers}>{story.fate.others.replace("{yes}", String(fated.yes))}</p>}
         {detective && <p className={styles.scoreMode}>Played as a detective</p>}
         <p className={styles.scoreLine}>
           You traced {done.length} of {result.links} links.
@@ -94,6 +102,8 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
           ))}
         </p>
       </section>
+
+      <Night story={story} state={state} />
 
       <section className={styles.section} aria-labelledby="chain">
         <p className={styles.eyebrow} id="chain">
@@ -161,6 +171,10 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
               {l.english && <span className={styles.english}>{l.english}</span>}
             </p>
           ))}
+          {story.next.trailer && (
+            /* Its teaser: silent until tapped, the way a feed plays one. */
+            <video className={styles.teaser} src={story.next.trailer} playsInline muted autoPlay loop controls preload="metadata" aria-label={`${story.next.title}: teaser`} />
+          )}
           <p className={styles.only}>{story.next.note}</p>
           {story.next.href ? (
             <Link href={story.next.href} className={`act ${styles.nextAct}`}>

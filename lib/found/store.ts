@@ -112,6 +112,8 @@ export type Choices = {
   end: Record<string, number> | null;
   /** The share of recent finishes slower than `seconds`. */
   fasterThan: number | null;
+  /** How the night went for everyone it was decided for, in percent (`Story.fate`). */
+  fate?: { yes: number; no: number } | null;
 };
 
 /** Whole percentages of `counts`, or null under `MIN_ANSWERS`. */
@@ -131,7 +133,9 @@ export async function readChoices(caseId: CaseId, seconds: unknown): Promise<Cho
   if (!redisReady()) return { end: null, fasterThan: null };
   const ends = STORIES[caseId].endings.map((e) => e.id);
   if (!ends.length) return { end: null, fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)) };
-  const results = await redis(...ends.map((e) => ["GET", `${prefix(caseId)}:end:${e}`]));
+  const fated = STORIES[caseId].fate ? ["fate:yes", "fate:no"] : [];
+  const results = await redis(...[...ends.map((e) => `end:${e}`), ...fated].map((k) => ["GET", `${prefix(caseId)}:${k}`]));
   const end = Object.fromEntries(ends.map((e, i) => [e, asCount(results[i])]));
-  return { end: percentages(end), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)) };
+  const fate = fated.length ? percentages({ yes: asCount(results[ends.length]), no: asCount(results[ends.length + 1]) }) : null;
+  return { end: percentages(end), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)), fate };
 }

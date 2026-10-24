@@ -1,5 +1,6 @@
 "use client";
 
+import { holding } from "@/lib/game/hold";
 import { useEffect, useState } from "react";
 
 import type { AppId, HomeIcon, Story } from "@/content/types";
@@ -169,7 +170,15 @@ export default function Home({
         <button type="button" className={`${styles.widget} lg-thick`} onClick={(e) => onOpen("casefile", e.currentTarget.getBoundingClientRect())}>
           <span className={styles.widgetLabel}>{open ? (needsRevisit(open, state) ? "Revisit" : "Open question") : "Case file"}</span>
           <span className={styles.widgetText}>
-            {open ? open.ask : allAsked ? (story.close ? "Everything's asked. Close the case in the case file." : "Everything's asked. What you do with it is on your phone.") : "Look around. What you open, you keep."}
+            {open
+              ? open.ask
+              : holding(story, state)
+                ? story.hold?.widget
+                : allAsked
+                  ? story.close
+                    ? "Everything's asked. Close the case in the case file."
+                    : "Everything's asked. What you do with it is on your phone."
+                  : "Look around. What you open, you keep."}
           </span>
           {open && <span className={styles.widgetGo}>Answer it in the case file ›</span>}
         </button>

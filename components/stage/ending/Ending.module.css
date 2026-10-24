@@ -404,3 +404,162 @@
 .fate[data-yes] {
   color: #f5f5f7;
 }
+
+/* --- the ending's voices and paper (2026-10-24) ------------------------------ */
+
+.voiceNote {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.25rem 0 0.3rem;
+}
+
+.voicePlay {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: #34c759;
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.voiceWave {
+  flex: 1;
+  height: 1.1rem;
+  min-width: 6rem;
+  background: repeating-linear-gradient(90deg, rgb(255 255 255 / 55%) 0 2px, transparent 2px 5px);
+  clip-path: polygon(0 40%, 8% 20%, 15% 55%, 22% 10%, 30% 45%, 38% 0, 46% 60%, 54% 25%, 62% 50%, 70% 30%, 78% 55%, 86% 35%, 94% 50%, 100% 45%, 100% 60%, 94% 55%, 86% 70%, 78% 50%, 70% 75%, 62% 55%, 54% 80%, 46% 45%, 38% 100%, 30% 60%, 22% 90%, 15% 50%, 8% 80%, 0 60%);
+}
+
+.voiceLength {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: #9a948c;
+}
+
+.lastSaid[data-voice] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 15rem;
+}
+
+.noticePoster {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.55rem;
+}
+
+/* Small enough that the morning's "Go on" stays on a phone's screen under it. */
+.noticePoster > * {
+  width: 190px;
+  zoom: 0.86;
+}
+
+.eyebrow[data-cut] {
+  color: #ff9b72;
+  animation: rise 0.8s ease-out both;
+}
+
+.fateOthers {
+  margin: -4px 0 12px;
+  font-size: 14px;
+  color: #a8a29a;
+}
+
+/* --- your night (2026-10-24) ------------------------------------------------- */
+
+.night {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.night li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  gap: 0.9rem;
+  padding: 0.55rem 0 0.55rem;
+  animation: rise 0.6s ease-out both;
+}
+
+/* The line through the night, and a dot on it at every beat. */
+.night li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5.05rem;
+  width: 1px;
+  background: rgb(255 255 255 / 12%);
+}
+
+.night li::after {
+  content: "";
+  position: absolute;
+  top: 1.05rem;
+  left: calc(5.05rem - 3px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff7a45;
+}
+
+.nightAt {
+  padding-top: 0.15rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: #9a948c;
+  text-align: right;
+}
+
+.nightText {
+  padding-left: 0.9rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  color: #ece6dd;
+}
+
+.nightNote {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  color: #8a847c;
+}
+
+.nightActs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+.nightActs > * {
+  flex: 1 1 10rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .night li { animation: none; }
+}
+
+/* Chapter 2's teaser, on the end card (2026-10-24). */
+.teaser {
+  display: block;
+  width: min(100%, 300px);
+  aspect-ratio: 9 / 16;
+  margin: 4px auto;
+  border-radius: 16px;
+  background: #000;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 50%);
+  object-fit: cover;
+}

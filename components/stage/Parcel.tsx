@@ -37,6 +37,7 @@ export default function Parcel({
   to,
   minutes,
   replay,
+  realtime,
   onOpen,
 }: {
   meta: CaseMeta;
@@ -46,11 +47,14 @@ export default function Parcel({
   minutes?: number;
   /** They have finished it before: the parcel is already open. */
   replay?: boolean;
-  /** Opened, and how they chose to play: with the case file's help, or as a detective. */
-  onOpen: (detective: boolean) => void;
+  /** Real-time mode, where the story offers one: what it says (`Story.realtime.offer`). */
+  realtime?: string;
+  /** Opened, and how they chose to play: with the case file's help, or as a detective; on a real clock, or not. */
+  onOpen: (detective: boolean, realtime: boolean) => void;
 }) {
   const [pull, setPull] = useState(0);
   const [detective, setDetective] = useState(false);
+  const [real, setReal] = useState(false);
   const [tearing, setTorn] = useState(false);
   const torn = tearing || Boolean(replay);
   const from = useRef<number | null>(null);
@@ -74,7 +78,7 @@ export default function Parcel({
   }, [torn]);
 
   const finish = () => {
-    if (replay) return onOpen(detective);
+    if (replay) return onOpen(detective, real);
     if (done.current) return;
     done.current = true;
     try {
@@ -83,7 +87,7 @@ export default function Parcel({
       // A phone that won't buzz still opens.
     }
     setTorn(true);
-    window.setTimeout(() => onOpen(detective), TEAR_MS);
+    window.setTimeout(() => onOpen(detective, real), TEAR_MS);
   };
 
   const move = (x: number, width: number) => {
@@ -171,6 +175,13 @@ export default function Parcel({
             <span>No pointers. Hints only if you ask</span>
           </button>
         </div>
+
+        {realtime && (
+          <label className={styles.real}>
+            <span>{realtime}</span>
+            <input type="checkbox" role="switch" aria-label={realtime} checked={real} onChange={(e) => setReal(e.target.checked)} />
+          </label>
+        )}
 
         <button type="button" className={styles.open} onClick={finish}>
           {replay ? "Take it out again" : "Open the parcel"}

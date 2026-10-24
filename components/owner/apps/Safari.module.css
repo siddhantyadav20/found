@@ -214,3 +214,8 @@
   font-size: 13px;
   color: #667781;
 }
+
+.favicon svg {
+  width: 20px;
+  height: 20px;
+}

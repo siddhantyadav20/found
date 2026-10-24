@@ -37,7 +37,8 @@ const initials = (name: string) =>
 const hue = (s: string) => [...s].reduce((n, c) => (n * 31 + c.charCodeAt(0)) % 360, 7);
 
 /** 18400 → "18.4K", as Instagram counts. */
-const count = (n: number) => (n >= 10_000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K` : n.toLocaleString("en-IN"));
+// Likes as Instagram writes them under a post: the whole number, grouped, until it's in the millions.
+const count = (n: number) => (n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M` : n.toLocaleString("en-IN"));
 
 /** Instagram's own glyphs, drawn at 24 units, outlined as the app draws them. */
 const G = {
@@ -265,6 +266,21 @@ function ProfileView({
       <div className={styles.body} ref={body}>
         {open ? (
           <Post post={fromProfile(profile, open)} onSeen={(id) => onRead([id])} />
+        ) : archive ? (
+          /* The Archive, as Instagram keeps it: its own page, just the grid, and who can see it. */
+          <>
+            <p className={styles.archiveNote}>
+              <Glyph d={G.archive} />
+              Only you can see what you&apos;ve archived.
+            </p>
+            <div className={styles.grid}>
+              {shown.map((p) => (
+                <button key={p.id} type="button" className={styles.gridCell} onClick={() => setPost(p.id)} aria-label={p.title}>
+                  <Media post={{ title: p.title, src: p.src, card: p.card, text: p.caption }} />
+                </button>
+              ))}
+            </div>
+          </>
         ) : (
           <>
             <div className={styles.profileHead}>

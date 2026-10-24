@@ -121,7 +121,15 @@ export default function Safari({
                   }}
                 >
                   <span className={styles.favicon} data-wa={s.page ? "" : undefined} aria-hidden="true">
-                    {s.page ? "" : "G"}
+                    {s.page ? (
+                      /* WhatsApp's mark: a speech bubble with a handset, white on green. */
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 3.2a8.8 8.8 0 0 0-7.6 13.2L3.2 20.8l4.5-1.2A8.8 8.8 0 1 0 12 3.2Z" fill="none" stroke="#fff" strokeWidth="1.6" />
+                        <path d="M9.2 7.9c.2 0 .4 0 .6.4l.8 1.8c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.6 1 1.4 1.8 2.5 2.4.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.3.6-.1.8-.9 1.6-1.8 1.6-2.9-.2-6.3-3.4-6.5-6.4 0-.9.6-1.7 1.3-1.8Z" fill="#fff" />
+                      </svg>
+                    ) : (
+                      "G"
+                    )}
                   </span>
                   <span className={styles.main}>
                     <span className={styles.title}>{s.page ? `${s.page.title} - WhatsApp Help Center` : `${s.text} - Google Search`}</span>
