@@ -184,11 +184,11 @@ describe("the chain", () => {
     ...(q.kind === "file" ? q.claims.flatMap((c) => (c.sets ?? []).map((f) => ({ f, q, version: Boolean(c.version) }))) : []),
   ]);
 
-  it("is the eleven links of CHAPTER1.md D, seven spine and four deep", () => {
+  it("is the twelve links of CHAPTER1.md D and the living witness, eight spine and four deep", () => {
     expect(ep.chain.map((l) => l.id)).toEqual([
-      "reel", "kunals-gun", "two-firings", "shot", "alive", "kept", "car", "lie", "fire", "price", "edit",
+      "reel", "kunals-gun", "two-firings", "shot", "alive", "kept", "car", "lie", "fire", "alive-now", "price", "edit",
     ]);
-    expect(ep.chain.filter((l) => l.kind === "spine")).toHaveLength(7);
+    expect(ep.chain.filter((l) => l.kind === "spine")).toHaveLength(8);
   });
 
   it("gives every deep link the owner's own version, with English under it", () => {

@@ -1,26 +1,29 @@
-/* The case file (rebuilt 2026-10-17): a manila sheet inside his black
-   phone. The app's own chrome takes the paper too, and the phone's status
-   bar turns dark over it (data-light-app), as iOS does for a light app. */
+/* The case file (dark since 2026-10-24): the one app on his phone that's
+   the player's, drawn as a native dark app, the night's own black, with the
+   game's ember for everything that's the game speaking. It was a manila
+   sheet until then, and read as a different game inside this one. */
 
 :global(section[aria-label="Case file"]):has(.file),
 .file {
-  --cf-paper: #ebe3d2;
-  --cf-sheet: #f7f2e7;
-  --cf-wash: rgb(29 26 22 / 6%);
-  --cf-ink: #1d1a16;
-  --cf-dim: rgb(29 26 22 / 64%);
-  --cf-faint: rgb(29 26 22 / 38%);
-  --cf-rule: rgb(29 26 22 / 12%);
-  --cf-rule-strong: rgb(29 26 22 / 28%);
-  --cf-red: #b3382a;
-  --cf-mark: rgb(242 210 75 / 55%);
+  --cf-paper: #000;
+  --cf-sheet: #1c1c1e;
+  --cf-sheet-2: #2c2c2e;
+  --cf-wash: rgb(255 255 255 / 6%);
+  --cf-ink: #f5f5f7;
+  --cf-dim: rgb(235 235 245 / 62%);
+  --cf-faint: rgb(235 235 245 / 34%);
+  --cf-rule: rgb(84 84 88 / 46%);
+  --cf-rule-strong: rgb(120 120 128 / 50%);
+  --cf-red: #ff7a45;
+  --cf-mark: rgb(255 122 69 / 24%);
+  --cf-ok: #30d158;
 }
 
 /* The chrome, in the case file's colours: the phone's variables, re-set. */
 :global(section[aria-label="Case file"]):has(.file) {
   --os-bg: var(--cf-paper);
   --os-panel: var(--cf-sheet);
-  --os-panel-2: #e2d9c6;
+  --os-panel-2: #2c2c2e;
   --os-line: var(--cf-rule);
   --os-text: var(--cf-ink);
   --os-dim: var(--cf-dim);
@@ -28,14 +31,14 @@
   --os-accent: var(--cf-red);
   --os-danger: var(--cf-red);
   --ios-blue: var(--cf-ink);
-  --ios-grey: rgb(29 26 22 / 58%);
+  --ios-grey: rgb(235 235 245 / 60%);
   --ios-separator: var(--cf-rule);
-  --glass-fill: rgb(29 26 22 / 7%);
-  --glass-fill-dark: rgb(29 26 22 / 8%);
-  --glass-edge: inset 0 0 0 0.5px rgb(29 26 22 / 18%);
+  --glass-fill: rgb(255 255 255 / 8%);
+  --glass-fill-dark: rgb(255 255 255 / 8%);
+  --glass-edge: inset 0 0 0 0.5px rgb(255 255 255 / 16%);
   color: var(--cf-ink);
   background:
-    repeating-linear-gradient(180deg, transparent 0 27px, rgb(29 26 22 / 5%) 27px 28px),
+    radial-gradient(90% 40% at 50% 0%, rgb(255 122 69 / 7%), transparent 70%),
     var(--cf-paper);
 }
 
@@ -63,7 +66,7 @@
   gap: 0.5rem;
   padding: 0.5rem 0.6rem;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   font-size: 14px;
   cursor: pointer;
 }
@@ -75,7 +78,7 @@
   font-size: 15px;
   font-weight: 600;
   padding: 0 16px;
-  border-radius: 2px;
+  border-radius: 10px;
   border: 1px solid var(--cf-rule-strong);
   background: transparent;
   color: var(--cf-ink);
@@ -94,7 +97,7 @@
   width: 100%;
   padding: 11px 12px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -121,7 +124,7 @@
   width: 100%;
   padding: 10px 11px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -159,7 +162,7 @@
   min-height: 36px;
   padding: 6px 12px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -211,7 +214,7 @@
   gap: 0.4rem;
   padding: 0.6rem 0.7rem;
   border: 1px dashed var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
 }
 
 /* --- saying it ----------------------------------------------------------------
@@ -251,7 +254,8 @@
 /* The one being chosen: under the highlighter. */
 .blank[data-open] {
   border-bottom-color: var(--cf-ink);
-  background: linear-gradient(transparent 14%, rgb(242 210 75 / 75%) 14%, rgb(242 210 75 / 75%) 90%, transparent 90%);
+  background: rgb(255 122 69 / 18%);
+  border-radius: 4px;
 }
 
 /* --- the moment ---------------------------------------------------------------
@@ -330,7 +334,7 @@
   padding: 12px 16px 30px;
   border-radius: 0 0 22px 22px;
   background: var(--cf-sheet);
-  box-shadow: 0 -1px 0 var(--cf-rule-strong), 0 -8px 16px rgb(60 44 20 / 8%);
+  box-shadow: 0 -0.5px 0 var(--cf-rule-strong), 0 -14px 24px rgb(0 0 0 / 55%);
 }
 
 /* What the case file says back: the red pen. */
@@ -359,7 +363,7 @@
   margin: 10px 0 2px;
   padding: 10px 12px;
   border: 1px dashed var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: none;
   color: var(--cf-dim);
   font: inherit;
@@ -420,7 +424,7 @@
   gap: 8px;
   padding: 2px 4px;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 10px;
   background: none;
   color: var(--cf-ink);
   font: inherit;
@@ -437,7 +441,7 @@
 .swimRow[data-odd] .swimText {
   border-color: var(--cf-red);
   box-shadow: 0 0 0 1px var(--cf-red);
-  background: rgb(179 56 42 / 6%);
+  background: rgb(255 122 69 / 8%);
 }
 
 .cell {
@@ -491,7 +495,7 @@
   vertical-align: -1px;
   border: 1.5px solid currentColor;
   border-top-width: 4px;
-  border-radius: 2px;
+  border-radius: 10px;
 }
 
 /* Why File it is grey. */
@@ -508,7 +512,7 @@
   margin: 4px 0 6px;
   padding: 9px 12px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -518,7 +522,7 @@
 /* A row a check found in the wrong lane, until it's moved. */
 .swimRow[data-off] .cell[aria-pressed="true"] {
   border-color: var(--cf-red);
-  background: radial-gradient(circle, var(--cf-red) 0 5px, rgb(179 56 42 / 12%) 6px);
+  background: radial-gradient(circle, var(--cf-red) 0 5px, rgb(255 122 69 / 14%) 6px);
 }
 
 .offNote {
@@ -563,7 +567,7 @@
 .progressDots i {
   width: 14px;
   height: 4px;
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-rule-strong);
 }
 
@@ -579,7 +583,7 @@
   flex: none;
   padding: 2px 6px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   color: var(--cf-ink);
 }
 
@@ -618,16 +622,16 @@
   margin: 4px 0 0;
   padding: 9px 11px;
   border-left: 3px solid var(--cf-red);
-  background: rgb(179 56 42 / 7%);
+  background: rgb(255 122 69 / 10%);
   font-size: 14px;
   line-height: 1.45;
   color: var(--cf-red);
 }
 
 .verdict[data-ok] {
-  border-left-color: #2f6b3f;
-  background: rgb(47 107 63 / 8%);
-  color: #23512f;
+  border-left-color: var(--cf-ok);
+  background: rgb(48 209 88 / 10%);
+  color: #7ee29a;
 }
 
 .step {
@@ -670,7 +674,7 @@
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -766,7 +770,7 @@
   gap: 3px;
   padding: 12px 14px;
   border: 1px solid var(--cf-ink);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -785,7 +789,7 @@
 }
 
 .closeAct:hover {
-  background: #fffaf0;
+  background: var(--cf-sheet-2);
 }
 
 .closeConfirm {
@@ -801,4 +805,41 @@
   margin: 0;
   font-size: 15px;
   line-height: 1.45;
+}
+
+/* --- the brief (2026-10-24): what a newcomer is doing here --------------- */
+
+.brief {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, rgb(255 122 69 / 14%), transparent 60%),
+    var(--cf-sheet);
+  box-shadow: inset 0 0 0 0.5px rgb(255 122 69 / 35%);
+}
+
+.briefHead {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cf-red);
+}
+
+.briefLine {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cf-ink);
+}
+
+.briefLine:nth-child(4) {
+  font-weight: 600;
+}
+
+.briefLine:last-child {
+  color: var(--cf-dim);
+  font-style: italic;
 }

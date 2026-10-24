@@ -78,6 +78,12 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
       {/* The score first: what people screenshot, and what they argue about. */}
       <section className={`${styles.section} ${styles.score}`} aria-label="Your score">
         {ending && <p className={styles.eyebrow}>Ending · {ending.row}</p>}
+        {/* What the night decided, before the score: the line anyone asks about first. */}
+        {story.fate && (state.flags.includes(story.fate.yes) || state.flags.includes(story.fate.no)) && (
+          <p className={styles.fate} data-yes={state.flags.includes(story.fate.yes) || undefined}>
+            {state.flags.includes(story.fate.yes) ? story.fate.headline.yes : story.fate.headline.no}
+          </p>
+        )}
         {detective && <p className={styles.scoreMode}>Played as a detective</p>}
         <p className={styles.scoreLine}>
           You traced {done.length} of {result.links} links.

@@ -22,13 +22,12 @@ import InAppGuard from "./InAppGuard";
 import Note from "./Note";
 import Parcel from "./Parcel";
 import Recap from "./Recap";
+import Finale from "./Finale";
 import Loader from "@/components/site/Loader";
-import CaseHeader from "@/components/site/CaseHeader";
 import Ringing from "./Ringing";
 import TitleCard from "./TitleCard";
 import Table from "./Table";
 import { flag, save, say } from "./playthrough";
-import styles from "./Stage.module.css";
 
 /* ===========================================================================
    The stage: the parcel, then two phones on a table.
@@ -119,10 +118,10 @@ export default function Stage() {
 
   if (!state || scene.kind === "parcel") {
     return (
-      <div className={styles.stage}>
-        <CaseHeader meta={meta} episode={story.episodes[0]} />
+      <>
         <Parcel
           meta={meta}
+          episode={story.episodes[0]}
           to={to}
           minutes={minutes}
           replay={replay}
@@ -133,19 +132,23 @@ export default function Stage() {
         <InAppGuard />
         {/* Private browsing: say so before the night starts, and offer a case number. */}
         <StorageWarning caseId={id as CaseId} />
-      </div>
+      </>
     );
   }
 
   switch (scene.kind) {
     /* The phone has no passcode. Somebody turned it off before it was sent. */
     case "note":
-      return <Note arrival={story.arrival} onTurn={() => flag("did:unlock", "saw:note")} />;
+      return <Note arrival={story.arrival} scene={meta.scene?.open} onTurn={() => flag("did:unlock", "saw:note")} />;
 
     /* The only thing the player is given to do with their hands between
        episodes, and the reason anybody goes looking for a cable. */
     case "charge":
       return <Charge gate={story.gate} onPlugged={() => flag(...PLUGGED_IN)} />;
+
+    /* The last hour: the record, and what the player does with it. */
+    case "finale":
+      return <Finale story={story} state={state} onLater={() => flag("did:decide-later")} />;
 
     /* An episode, closed: what the player has to show for it, and what's still open. */
     case "recap":
@@ -181,7 +184,7 @@ export default function Stage() {
     /* The story stops: the doors open, and the player chooses. */
     case "moment": {
       const { moment } = scene;
-      return <Moment key={moment.id} moment={moment} state={state} onChoose={(sets) => flag(momentDone(moment.id), ...sets)} />;
+      return <Moment key={moment.id} moment={moment} state={state} voices={story.voices} onChoose={(sets) => flag(momentDone(moment.id), ...sets)} />;
     }
 
     /* A call arriving on its own, on either phone. */

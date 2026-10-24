@@ -473,7 +473,19 @@ export type Caption = {
 
 export type Attachment =
   | { readonly kind: "document"; readonly label: string; readonly meta?: string }
-  | { readonly kind: "photo"; readonly label: string; readonly src?: string }
+  | {
+      readonly kind: "photo";
+      readonly label: string;
+      readonly src?: string;
+      /** A screenshot of a chat, drawn as the chat itself (2026-10-24). */
+      readonly shot?: {
+        readonly name: string;
+        readonly sub?: string;
+        readonly lines: readonly { readonly who?: string; readonly text: string; readonly english?: string; readonly at: string; readonly out?: boolean }[];
+      };
+      /** A screenshot of a live location on a map: who, when, where it stopped (2026-10-24). */
+      readonly map?: { readonly title: string; readonly sub: string; readonly stop: string; readonly ended: string };
+    }
   | { readonly kind: "voice"; readonly seconds: number; readonly transcript: string; readonly english?: string }
   | {
       readonly kind: "video";
@@ -481,6 +493,8 @@ export type Attachment =
       readonly seconds: number;
       /** The poster frame, once the footage exists. */
       readonly src?: string;
+      /** The footage, picture and sound (an mp4 under public/), once it exists. */
+      readonly film?: string;
       readonly captions?: readonly Caption[];
     }
   /**
@@ -681,7 +695,12 @@ export type Photo = {
   /** What Info says took it: "iPhone 14 Pro — Back Camera". */
   readonly camera?: string;
   /** A video: its length and its words. */
-  readonly video?: { readonly seconds: number; readonly captions: readonly Caption[] };
+  readonly video?: {
+    readonly seconds: number;
+    readonly captions: readonly Caption[];
+    /** The footage, picture and sound (an mp4 under public/), once it exists. */
+    readonly film?: string;
+  };
   /**
    * A clip cut down from something longer, and saying so as Photos does
    * ("Trimmed"): the door, never what's behind it (ROADMAP T8).
@@ -693,7 +712,7 @@ export type Photo = {
    * Edited on the phone, and iOS kept the original: Edit › Revert brings it
    * back, and with it whatever the edit cut (`evidence`).
    */
-  readonly original?: { readonly seconds: number; readonly captions: readonly Caption[]; readonly evidence?: string };
+  readonly original?: { readonly seconds: number; readonly captions: readonly Caption[]; readonly evidence?: string; readonly film?: string };
   readonly favorite?: boolean;
   /** In the Hidden album, which Photos shows only once Settings says to (`SHOW_HIDDEN`). */
   readonly hidden?: boolean;
@@ -771,6 +790,8 @@ export type ProfilePost = {
   readonly english?: string;
   /** When it went up, as Instagram says it: "6 days ago". */
   readonly when?: string;
+  /** Taken off the grid by its owner and kept in their Archive, which only they can see: when, as Instagram says it. */
+  readonly archived?: string;
   /** Where, as the post's header says it: "Banyan Farms · 12:24 AM". */
   readonly place?: string;
   readonly likes?: number;
@@ -919,6 +940,8 @@ export type FeedPost = {
   readonly card?: string;
   /** Shares, as the night goes on: in Episode 1, 2 and 3. */
   readonly shares: readonly [number, number, number];
+  /** A comment or two under it, the way a feed shows the top ones. */
+  readonly comments?: readonly { readonly who: string; readonly text: string; readonly english?: string }[];
   readonly requires?: readonly Flag[];
 };
 
@@ -944,7 +967,17 @@ export type Moment = {
   /** The place and time, as a caption: "Vasai Road · 2:03 AM". */
   readonly where: string;
   readonly lines: readonly { readonly who?: string; readonly text: string; readonly english?: string }[];
-  readonly options: readonly { readonly id: string; readonly text: string; readonly sets: readonly Flag[]; readonly requires?: readonly Flag[] }[];
+  readonly options: readonly {
+    readonly id: string;
+    readonly text: string;
+    readonly sets: readonly Flag[];
+    readonly requires?: readonly Flag[];
+    /** Not on offer once any of these holds. */
+    readonly unless?: readonly Flag[];
+    /** Whose face it is, when the choice is a person (a profile photo), or a mark when it isn't ("112"). */
+    readonly face?: string;
+    readonly glyph?: string;
+  }[];
   readonly seconds?: number;
   readonly timeout?: string;
 };
@@ -1065,6 +1098,33 @@ export type Story = {
    * checked at its source before it's written here (CHAPTER1.md L).
    */
   readonly outside: readonly { readonly text: string; readonly tel?: string; readonly source?: string }[];
+  /**
+   * What the player is doing tonight, said once at the top of the case file
+   * until the first answer is filed (2026-10-24: a newcomer was never told).
+   */
+  readonly brief?: { readonly title: string; readonly lines: readonly string[] };
+  /**
+   * The last hour: once everything's asked, the night stops for the player
+   * to decide what happens to the record (`did:last-hour`), full screen.
+   */
+  readonly finale?: {
+    readonly when: string;
+    readonly line: string;
+    readonly sub: string;
+    /** The same, once the night's decider has gone one way or the other (`fate`). */
+    readonly after?: { readonly yes: string; readonly no: string };
+  };
+  /**
+   * What the night's last hours decided, said first on the end card and in
+   * the share (2026-10-24): set by `yes` or `no`, in the chapter's words. The
+   * share line names nothing ("I got there before seven").
+   */
+  readonly fate?: {
+    readonly yes: Flag;
+    readonly no: Flag;
+    readonly headline: { readonly yes: string; readonly no: string };
+    readonly share: { readonly yes: string; readonly no: string };
+  };
   /** What's said aloud on the phone, recorded: see `Voices`. Without it, the captions are the sound. */
   readonly voices?: Voices;
   /**

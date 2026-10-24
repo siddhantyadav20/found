@@ -80,11 +80,20 @@ export const chain: readonly Link[] = [
   {
     id: "fire",
     label: "The fire",
-    truth: "The body was burned before dawn on Bhasin's orders, and Sameer took part and filmed it.",
+    truth: "Before dawn, on Bhasin's orders, Sameer carried the jerrycan and filmed the fire. It burned a mattress, sheets and clothes. There was no body.",
     owner: "Bhasin, Sameer",
     kind: "deep",
     version: "Maine dekha. Main wahan tha.",
     english: "I saw it. I was there.",
+  },
+  /* (game) 2026-10-24, the living witness: the night's last link, and the
+     one nobody on this phone knew, Sameer included. */
+  {
+    id: "alive-now",
+    label: "Still alive",
+    truth: "Dilip didn't die on the property. Bhasin's car took him out at 2:55 to a nursing home in Fatehpur Beri, under another name, and Bhasin told Sameer he was dead.",
+    owner: "Bhasin",
+    kind: "spine",
   },
   {
     id: "price",

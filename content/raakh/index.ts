@@ -18,7 +18,7 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   episodes: 3,
   tone: "Mystery · Delhi · 45–60 min",
   note: "16+ · death, gun violence, a body burned (not shown) · this game never asks for anything real",
-  ask: "Where does it end?",
+  ask: "Did you get there before seven?",
   // CHAPTER1.md J's preset message, less its question.
   hook: "A wedding planner's phone. A missing waiter.",
   envelope: { front: "Ishita weds Rohan", small: "Sehgal Parivar · 22.11" },
@@ -35,7 +35,7 @@ export const meta: Omit<CaseMeta, "teaser"> = {
     from: "S. Khurrana · your address",
     stamp: ["RETURN TO ORIGIN", "Addressee not available"],
   },
-  links: 11,
+  links: 12,
 };
 
 /** What keeps landing on his lock screen while the desk waits. */

@@ -40,7 +40,10 @@ function Attachment({ photo, voice }: { photo: Photo; voice?: string }) {
                 {l}
               </p>
             ) : (
-              <p key={l} className={l.startsWith("(") ? styles.docAside : styles.docLine}>
+              <p
+                key={l}
+                className={l.startsWith("(") ? styles.docAside : styles.docLine}
+              >
                 {l}
               </p>
             ),
@@ -50,15 +53,39 @@ function Attachment({ photo, voice }: { photo: Photo; voice?: string }) {
     );
   return (
     <figure className={styles.attachment}>
-      <div className={frame.frame} data-size={photo.video ? undefined : "full"} data-wide={photo.video ? "" : undefined} style={{ "--hue": photo.video ? 24 : 205 } as CSSProperties}>
-        {photo.src ? (
-          <Image src={photo.src} alt={photo.title} fill sizes="400px" className={frame.image} />
-        ) : (
-          <span className={frame.pending}>{photo.title}</span>
-        )}
-      </div>
-      {photo.video && <Clip seconds={photo.video.seconds} captions={photo.video.captions} voice={voice} />}
-      {photo.src && photo.caption && <figcaption className={styles.attachmentCaption}>{photo.caption}</figcaption>}
+      {!photo.video?.film && (
+        <div
+          className={frame.frame}
+          data-size={photo.video ? undefined : "full"}
+          data-wide={photo.video ? "" : undefined}
+          style={{ "--hue": photo.video ? 24 : 205 } as CSSProperties}
+        >
+          {photo.src ? (
+            <Image
+              src={photo.src}
+              alt={photo.title}
+              fill
+              sizes="400px"
+              className={frame.image}
+            />
+          ) : (
+            <span className={frame.pending}>{photo.title}</span>
+          )}
+        </div>
+      )}
+      {photo.video && (
+        <Clip
+          seconds={photo.video.seconds}
+          captions={photo.video.captions}
+          voice={voice}
+          film={photo.video.film}
+        />
+      )}
+      {photo.src && photo.caption && (
+        <figcaption className={styles.attachmentCaption}>
+          {photo.caption}
+        </figcaption>
+      )}
     </figure>
   );
 }
@@ -105,7 +132,12 @@ function Open({
   }, [shaking]);
 
   // What's in it is seen the moment it opens.
-  const inside = open ? (note.attachments ?? []).map((a) => a.evidence).filter((id): id is string => Boolean(id)).join(",") : "";
+  const inside = open
+    ? (note.attachments ?? [])
+        .map((a) => a.evidence)
+        .filter((id): id is string => Boolean(id))
+        .join(",")
+    : "";
   useEffect(() => {
     if (inside) onSeen(inside.split(","));
   }, [inside, onSeen]);
@@ -122,9 +154,18 @@ function Open({
         <span className={numeric ? styles.otpWrap : undefined}>
           {/* A numeric password is entered as an OTP is, a box a digit, so it's plain it wants numbers (2026-10-23). */}
           {numeric && (
-            <span className={styles.otp} data-shake={shaking || undefined} aria-hidden="true">
+            <span
+              className={styles.otp}
+              data-shake={shaking || undefined}
+              aria-hidden="true"
+            >
               {Array.from({ length: note.password!.length }, (_, i) => (
-                <span key={i} className={styles.otpBox} data-on={i === typed.length || undefined} data-full={i < typed.length || undefined}>
+                <span
+                  key={i}
+                  className={styles.otpBox}
+                  data-on={i === typed.length || undefined}
+                  data-full={i < typed.length || undefined}
+                >
                   {typed[i] ? "•" : ""}
                 </span>
               ))}
@@ -145,7 +186,9 @@ function Open({
             data-shake={shaking || undefined}
             readOnly={shaking}
             onChange={(e) => {
-              const v = numeric ? e.target.value.replace(/\D/g, "") : e.target.value.trim().toLowerCase();
+              const v = numeric
+                ? e.target.value.replace(/\D/g, "")
+                : e.target.value.trim().toLowerCase();
               setTyped(v);
               if (v === note.password?.toLowerCase()) {
                 setOpen(true);
@@ -160,7 +203,9 @@ function Open({
           />
         </span>
         <p className={styles.lockHint}>
-          {numeric ? `Enter the ${note.password!.length}-digit password for “${note.title}”.` : `Enter the password for “${note.title}”.`}
+          {numeric
+            ? `Enter the ${note.password!.length}-digit password for “${note.title}”.`
+            : `Enter the password for “${note.title}”.`}
         </p>
         {/* A number's hint is there from the start: a four-digit guess isn't a puzzle, it's a wall. */}
         {(missed || numeric) && note.hint && (
@@ -184,7 +229,13 @@ function Open({
           {line}
         </p>
       ))}
-      {note.attachments?.map((a) => <Attachment key={a.id} photo={a} voice={voices?.[`clip:${a.id}`]?.src} />)}
+      {note.attachments?.map((a) => (
+        <Attachment
+          key={a.id}
+          photo={a}
+          voice={voices?.[`clip:${a.id}`]?.src}
+        />
+      ))}
     </article>
   );
 }
@@ -220,7 +271,13 @@ export default function Notes({
 
   if (here)
     return (
-      <Page title="" onBack={() => setOpen(null)} backLabel="Notes" tint={YELLOW} end={more}>
+      <Page
+        title=""
+        onBack={() => setOpen(null)}
+        backLabel="Notes"
+        tint={YELLOW}
+        end={more}
+      >
         <Open
           voices={story.voices}
           key={here.id}
@@ -238,7 +295,9 @@ export default function Notes({
 
   // Newest first, under the heading Notes gives how long ago they were touched.
   const today = cal.dayOf(undefined);
-  const sorted = [...notes].sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
+  const sorted = [...notes].sort(
+    (a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at),
+  );
   const sections: { title: string; notes: Note[] }[] = [];
   for (const n of sorted) {
     const title = section(today - cal.dayOf(n.day));
@@ -248,7 +307,16 @@ export default function Notes({
   }
 
   return (
-    <Page title="Notes" large root onBack={onHome} backLabel="Folders" tint={YELLOW} end={more} tabbed>
+    <Page
+      title="Notes"
+      large
+      root
+      onBack={onHome}
+      backLabel="Folders"
+      tint={YELLOW}
+      end={more}
+      tabbed
+    >
       <SearchField />
       {sections.map((s) => (
         <div key={s.title}>
@@ -266,7 +334,11 @@ export default function Notes({
                 >
                   <span className={styles.rowTitle}>
                     {n.locked && (
-                      <svg viewBox="0 0 24 24" className={styles.rowLock} aria-label="Locked">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className={styles.rowLock}
+                        aria-label="Locked"
+                      >
                         <rect x="5" y="10.5" width="14" height="10" rx="2.5" />
                         <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
                       </svg>
@@ -274,8 +346,12 @@ export default function Notes({
                     {n.title}
                   </span>
                   <span className={styles.rowSub}>
-                    <span className={styles.rowWhen}>{n.edited ? stamp(n.edited) : cal.label(n.day)}</span>
-                    <span className={styles.rowPreview}>{n.locked ? "Locked" : n.body[0]}</span>
+                    <span className={styles.rowWhen}>
+                      {n.edited ? stamp(n.edited) : cal.label(n.day)}
+                    </span>
+                    <span className={styles.rowPreview}>
+                      {n.locked ? "Locked" : n.body[0]}
+                    </span>
                   </span>
                 </button>
               </li>

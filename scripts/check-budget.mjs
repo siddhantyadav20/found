@@ -80,13 +80,19 @@ const BUDGET = {
    * for Raakh's final cut: 59 voiced lines (1.5MB, AAC at 24kbps), the cast's
    * faces and the wedding album (5.4MB in all that day). Photos go through
    * next/image, so a player downloads a fraction of the source.
+   * Raised from 6 to 11 on 2026-10-24 for the footage: four clips as real
+   * video (4MB of H.264 at 420kbps, loaded only when a clip is played) and
+   * the Episode 3 frames for the living witness (about 1MB).
    */
-  publicTotal: 6,
+  publicTotal: 11,
 };
 
 /** Files that are allowed to be over `asset`, and why. Anything not on this
  *  list has to fit the budget or earn a line here. */
-const ALLOWED_LARGE = {};
+const ALLOWED_LARGE = {
+  "found/raakh/clip-fire-whole.mp4":
+    "31 seconds of video, the longest clip in the chapter; it loads only when the locked note's clip is played (preload=metadata).",
+};
 
 const KB = 1024;
 const MB = 1024 * 1024;

@@ -135,6 +135,7 @@ export const threads: readonly Thread[] = [
     name: RAJU,
     number: RAJU,
     sub: "~Raju Mahto",
+    avatar: "/found/raakh/dp-raju.jpg",
     unread: 1,
     messages: [
       {
@@ -203,6 +204,7 @@ export const threads: readonly Thread[] = [
           kind: "video",
           label: "Dance floor, 11:52 PM",
           seconds: 14,
+          film: "/found/raakh/clip-k-3.mp4",
           captions: [
             { at: 1, line: "[dhol]" },
             { at: 5, line: "[two shots, close]" },
@@ -285,6 +287,9 @@ export const threads: readonly Thread[] = [
     app: "whatsapp",
     avatar: "/found/raakh/dp-dilip.jpg",
     name: "Dilip",
+    /* (game) 2026-10-24, the living witness, planted: a phone that should
+       have burned on Sunday was online on Tuesday. */
+    sub: "last seen Tuesday at 3:12 AM",
     locked: true,
     messages: [
       {
@@ -298,10 +303,27 @@ export const threads: readonly Thread[] = [
       { id: "d-2", from: "owner", at: "17:31", day: "18/11", text: "haan. waistcoat mein hi aa jaana, tere candid bhi lenge 😄", english: "Yes. Come in the waistcoat, I'll take some candids of you too." },
       { id: "d-2a", from: "them", at: "17:33", day: "18/11", text: "Mumbai mein samundar roz dikhega? 😄", english: "Will I see the sea every day in Mumbai?" },
       { id: "d-2b", from: "owner", at: "17:34", day: "18/11", text: "roz. ab kaam kar 😄", english: "Every day. Now get to work." },
+      /* His own voice, once: practising for the job he'd been promised. */
+      {
+        id: "d-2c",
+        from: "them",
+        at: "21:02",
+        day: "19/11",
+        attachment: {
+          kind: "voice",
+          seconds: 11,
+          transcript: "Bhaiya suno… “Sir, light is ready. Sir, battery full.” Theek bola na? Mumbai mein angrezi bolni padegi 😄",
+          english: "Bhaiya, listen… “Sir, light is ready. Sir, battery full.” Did I say it right? I'll have to speak English in Mumbai.",
+        },
+      },
+      { id: "d-2d", from: "owner", at: "21:05", day: "19/11", text: "ekdum first class. assistant sahab 😄", english: "First class. Mr Assistant." },
       { id: "d-3", from: "them", at: "19:10", day: "22/11", text: "Bhaiya Mumbai wali baat pakki na? 🙏", english: "Bhaiya, the Mumbai thing is for sure, right?", evidence: "promise" },
       { id: "d-4", from: "owner", at: "19:12", day: "22/11", text: "pakki. shaadi ke baad baat karte hain. aaj light tu pakdega", english: "For sure. We'll talk after the wedding. Tonight you're holding the light." },
       { id: "d-5", from: "them", at: "01:07", day: "Sunday", text: "Bhaiya dard ho raha hai. Aap aa rahe ho na?", english: "Bhaiya, it hurts. You're coming, aren't you?", evidence: "dilip-107" },
       { id: "d-6", from: "owner", at: "01:08", day: "Sunday", text: "aa raha hoon. hospital le jayenge. bas thodi der", english: "I'm coming. We'll take you to hospital. Just a little longer." },
+      // Two grey ticks: delivered. To a phone he believed was ash.
+      { id: "d-7", from: "owner", at: "01:10", day: "Monday", ticks: "delivered", text: "Dilip?", english: "Dilip?" },
+      { id: "d-8", from: "owner", at: "01:11", day: "Monday", ticks: "delivered", text: "maaf kar de", english: "forgive me" },
     ],
   },
   /* Locked with Dilip's at 11:10 PM, after his 1:52 message was deleted "for
@@ -503,6 +525,7 @@ export const photos: readonly Photo[] = [
     inCloud: ["ep:2"],
     video: {
       seconds: 14,
+      film: "/found/raakh/clip-reel-take.mp4",
       captions: [
         { at: 1, who: "Kunal", line: "Rolling, bhai?" },
         { at: 2, who: "Sameer", line: "Haan. Light upar, Dilip.", english: "Yes. Light up, Dilip." },
@@ -526,9 +549,10 @@ export const photos: readonly Photo[] = [
     day: "Sunday",
     kind: "scene",
     title: "A fire before dawn, smoke across the fairy lights",
-    src: "/found/raakh/fire.jpg",
+    src: "/found/raakh/fire-mattress.jpg",
     video: {
       seconds: 9,
+      film: "/found/raakh/clip-fire.mp4",
       captions: [
         { at: 1, line: "[crackle]" },
         { at: 3, line: "[wind, smoke]" },
@@ -616,6 +640,9 @@ export const photos: readonly Photo[] = [
         { who: "Pappu", at: "02:04", text: "Chali gayi sir. Driver bol raha tha cancel ho gaya.", english: "It's gone, sir. The driver said it was cancelled.", evidence: "left-empty" },
         { who: "Pappu", at: "02:41", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking.", evidence: "not-speaking" },
         { who: "Bhasin", at: "02:42", text: "Call karo mujhe.", english: "Call me." },
+        // (game) 2026-10-24: the plant. Sameer read this as the car that came for him, and never asked.
+        { who: "Pappu", at: "02:55", text: "Sir gaadi nikal gayi.", english: "Sir, the car's gone.", evidence: "car-255" },
+        { who: "Bhasin", at: "02:56", text: "Theek hai. Baaki back plot pe.", english: "Good. The rest, on the back plot." },
       ],
     },
   },
@@ -678,14 +705,16 @@ export const notes: readonly Note[] = [
         day: "Sunday",
         kind: "scene",
         title: "A fire before dawn, smoke across the fairy lights",
-    src: "/found/raakh/fire.jpg",
+    src: "/found/raakh/fire-mattress.jpg",
         video: {
           seconds: 31,
+          film: "/found/raakh/clip-fire-whole.mp4",
           captions: [
             { at: 1, line: "[footsteps on gravel]" },
             { at: 4, who: "Sameer", line: "Bhasin sir, yahan?", english: "Bhasin sir, here?" },
-            { at: 9, line: "[a hand in frame, a silver kada on the wrist, sets down a jerrycan]" },
-            { at: 15, line: "[breathing, close to the phone]" },
+            { at: 6, who: "A man, off camera", line: "Haan. Sab kuch. Uske kapde bhi.", english: "Yes. All of it. His clothes too." },
+            { at: 10, line: "[a hand in frame, a silver kada on the wrist, sets down a jerrycan beside a rolled mattress and a bundle of sheets]" },
+            { at: 16, line: "[breathing, close to the phone]" },
             { at: 23, line: "[crackle]" },
             { at: 26, line: "[wind, smoke]" },
             { at: 29, who: "A man, off camera", line: "Jaldi karo.", english: "Hurry up." },
@@ -873,6 +902,8 @@ export const calls: readonly CallEntry[] = [
   { id: "c-mummy", name: "Mummy", kind: "missed", at: "22:50", day: "Saturday", count: 6 },
   { id: "c-bhasin-fri", name: "Bhasin Uncle", kind: "missed", at: "19:02", day: "Friday", count: 2 },
   { id: "c-bhasin-331", name: "Bhasin Uncle", kind: "in", at: "03:31", day: "Sunday", seconds: 252 },
+  // He did call for help: Nitin, at home with a fever, at 1:15, for two and a half minutes.
+  { id: "c-nitin-115", name: "Nitin", kind: "out", at: "01:15", day: "Sunday", seconds: 158 },
   { id: "c-nitin", name: "Nitin", kind: "missed", at: "02:06", day: "Sunday", count: 3 },
 ];
 

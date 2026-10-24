@@ -103,10 +103,13 @@ describe("Episode 1, no longer giving Episode 2 away", () => {
   });
 
   it("gives a careful reader Kunal, with his father's gun on the back lawn: the wrong story, for the right reasons", () => {
-    // On Kunal's Instagram since 2026-10-23: public, and in plain view.
-    const post = ep.profiles.flatMap((p) => p.posts).find((p) => p.evidence === "kunal-pose")!;
+    // His own post, archived on Sunday morning (2026-10-24): a cover-up would have had a public one deleted.
+    const owner = ep.profiles.find((p) => p.posts.some((x) => x.evidence === "kunal-pose"))!;
+    const post = owner.posts.find((p) => p.evidence === "kunal-pose")!;
+    expect(owner.own).toBe(true);
+    expect(post.archived).toBeTruthy();
     expect(post.title).toMatch(/Kunal/);
-    expect(post.caption).toMatch(/Papa/);
+    expect(post.comments?.map((c) => c.text).join(" ")).toMatch(/Papa/);
     expect(post.requires).toBeUndefined();
   });
 

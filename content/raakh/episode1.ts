@@ -37,7 +37,8 @@ const evidence: readonly Evidence[] = [
 
   // Q1: whose phone.
   { id: "apple-account", device: "owner", app: "settings", label: "The Apple Account: Sameer Khurrana, born 14 March 1998" },
-  { id: "sk-films", device: "owner", app: "instagram", label: "@sk.weddings: Delhi weddings, planned like films", within: true },
+  // His own account: opening Instagram is opening it.
+  { id: "sk-films", device: "owner", app: "instagram", label: "@sk.weddings: Delhi weddings, planned like films" },
   { id: "invoice", device: "owner", app: "mail", label: "Invoice SK-1127, to Sehgal Enterprises", within: true },
 
   // His life.
@@ -60,7 +61,7 @@ const evidence: readonly Evidence[] = [
   /* In plain view, and true: Kunal with his father's revolver on the back
      lawn, and the reel he wrote about. The wrong story, for the right
      reasons (script §23). Plain view, so they count from the first minute. */
-  { id: "kunal-pose", device: "owner", app: "instagram", label: "Kunal on Instagram, 12:24 AM: a revolver by his face, “Papa ki lekar aaya hoon”", within: true },
+  { id: "kunal-pose", device: "owner", app: "instagram", label: "His archived post, 12:22 AM: Kunal with a revolver by his face, “Papa ki hai, asli wali”", within: true },
   { id: "kunal-papa", device: "owner", app: "whatsapp", label: "Kunal, Thursday before: “reel mein Papa wali le aaunga”", within: true },
   { id: "shot-list", device: "owner", app: "notes", label: "His run sheet: “12:15 — SK reel w/ Kunal. back lawn… D — light (N sick)”", within: true },
   { id: "search-1244", device: "owner", app: "safari", label: "Safari, 12:44 AM: “goli lagne pe kya karein”", within: true },

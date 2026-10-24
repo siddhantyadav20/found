@@ -390,3 +390,17 @@
   letter-spacing: 0.04em;
   color: rgb(239 234 228 / 60%);
 }
+
+/* What the night decided (2026-10-24): above the score, in the story's own voice. */
+.fate {
+  margin: 6px 0 10px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(26px, 7vw, 38px);
+  font-weight: 500;
+  line-height: 1.1;
+  color: #ff9b72;
+}
+
+.fate[data-yes] {
+  color: #f5f5f7;
+}

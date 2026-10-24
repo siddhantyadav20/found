@@ -28,6 +28,26 @@ export const profiles: readonly Profile[] = [
     following: "611",
     posts: [
       // Sunday afternoon, the day after: he posted the wedding as if it had been one.
+      /* The reel's first frame, posted from the back lawn at 12:22 AM and
+         archived at 9:31 on Sunday morning: public for nine hours (Ritika
+         saw it), gone from his grid, still in his Archive, where only he can
+         see it. True, and it points away from him: the wrong story, for the
+         right reasons (script §23). */
+      {
+        id: "k-pose",
+        archived: "Archived Sunday 9:31 AM",
+        when: "Saturday 22 Nov, 12:22 AM",
+        src: `${R}/w-kunal.jpg`,
+        title: "Back lawn, fairy lights in the mango trees: Kunal holds a revolver up beside his face, grinning",
+        caption: "BTS for the Sehgal reel 🎬 @kunal.sehgal going full Animal 😂🔫",
+        place: "Banyan Farms · Chhattarpur",
+        likes: 388,
+        comments: [
+          { who: "kunal.sehgal", text: "Papa ki hai, asli wali 😎🔥", english: "It's Papa's, the real one." },
+          { who: "ishita.sehgal", text: "Kunal PLEASE papa ko pata chala na", english: "Kunal PLEASE, if Papa finds out…" },
+        ],
+        evidence: "kunal-pose",
+      },
       { id: "i-couple", when: "6 days ago", src: `${R}/w-couple.jpg`, title: "Ishita and Rohan under fairy lights", caption: "Ishita 🤍 Rohan. Banyan Farms, Chhattarpur. Planned by us, lit by the mango trees. #SKWeddings #SehgalShaadi", likes: 1840 },
       { id: "i-family", when: "6 days ago", src: `${R}/w-family.jpg`, title: "The Sehgals on the stage: Bhasin Sehgal on the left, the couple, Kunal at the end", caption: "Sehgal parivar 🙏 Thank you Bhasin uncle for trusting us with Ishita's big day. @kunal.sehgal bhai, you're next 😄", likes: 1213 },
       { id: "i-pheras", when: "6 days ago", src: `${R}/w-pheras.jpg`, title: "Pheras at night, the fire in the middle", caption: "Pheras at 1:20 AM. Worth every minute. 🔥", likes: 2106 },
@@ -49,24 +69,8 @@ export const profiles: readonly Profile[] = [
     followers: "3,902",
     following: "1,118",
     posts: [
-      /* The reel's first frame, posted by Kunal at 12:24 from the back lawn:
-         true, public, and what a careful reader of Episode 1 builds the
-         wrong story on (script §23). It moved here from Sameer's Photos. */
-      {
-        id: "k-pose",
-        when: "1 week ago",
-        src: `${R}/w-kunal.jpg`,
-        title: "Back lawn, fairy lights in the mango trees: Kunal holds a revolver up beside his face, grinning",
-        caption: "Reel ready 🔫🔥 Papa ki lekar aaya hoon, asli feel 😂 @sk.weddings shoot kar le bhai",
-        place: "Banyan Farms · 12:24 AM",
-        likes: 388,
-        comments: [
-          { who: "sk.weddings", text: "😂🔥 back lawn, 5 min" },
-          { who: "ishita.sehgal", text: "Kunal PLEASE papa ko pata chala na", english: "Kunal PLEASE, if Papa finds out…" },
-        ],
-        evidence: "kunal-pose",
-      },
       { id: "k-gang", when: "1 week ago", src: `${R}/w-12.jpg`, title: "Kunal and his friends on the dance floor, a bottle passed along", caption: "Didi ki shaadi, bhai log ready 🥂", likes: 512 },
+      { id: "k-varmala", when: "1 week ago", src: `${R}/w-5.jpg`, title: "The varmala: Ishita lifted by her brothers", caption: "Jeeju ko jeetne nahi diya 😂🏆", likes: 644 },
     ],
   },
   {
@@ -135,6 +139,7 @@ export const feed: readonly FeedPost[] = [
     who: "Ritika",
     handle: "ritika.kapoor_",
     when: "40m",
+    card: "#2d2340",
     text: "Ok so now they're blaming the wedding planner?? Someone who was actually there needs to say what happened.",
     shares: [0, 0, 1800],
     requires: ["ask:q11"],
@@ -182,6 +187,12 @@ export const feed: readonly FeedPost[] = [
     english: "MISSING: Dilip Kumar Mahto, 19, a Samastipur boy. Went to Delhi for work. Please share.",
     media: "The LAPATA poster",
     shares: [5100, 12600, 30400],
+    /* (game) 2026-10-24, planted where nobody looks: a nurse who thinks she's
+       seen him, and nobody answering her. */
+    comments: [
+      { who: "lissy.anita", text: "Isko kahin dekha hai shayad… 🙏", english: "I think I've seen him somewhere…" },
+      { who: "samastipur.samachar", text: "@lissy.anita kahan? DM karein", english: "@lissy.anita where? Please DM us" },
+    ],
     // Raju's poster, passed on: once the player has seen it in his chat.
     requires: ["saw:poster"],
   },
@@ -190,7 +201,8 @@ export const feed: readonly FeedPost[] = [
     who: "Ritika",
     handle: "ritika.kapoor_",
     when: "Wednesday",
-    text: "Was at this wedding. The bride's brother was literally firing in the air like it's a film. Then the waiters vanished from the back lawn and nobody would say why 😶",
+    card: "#1f2b3a",
+    text: "Was at this wedding. The bride's brother was literally firing in the air like it's a film, the planner even posted him with the gun. Then the waiters vanished from the back lawn and nobody would say why 😶",
     shares: [340, 1200, 2900],
     requires: ["did:heard-him"],
   },
@@ -211,7 +223,7 @@ export const feed: readonly FeedPost[] = [
   { id: "x-sea", who: "Mumbai Diaries", handle: "mumbai.diaries", when: "2h", src: "/found/lastlocal/wallpaper.jpg", text: "Sea Link at 1 AM hits different 🌉", shares: [8800, 8900, 9000] },
   { id: "x-aqi", who: "Delhi Weather Watch", handle: "delhi.weatherwatch", when: "5h", card: "#5b4a2f", text: "AQI 412 aaj raat. Khidkiyan band, bachche andar. 😷 #DelhiAQI", english: "AQI 412 tonight. Windows shut, kids inside.", shares: [860, 1100, 1300] },
   { id: "x-marine", who: "Bombay Bylanes", handle: "bombay.bylanes", when: "6h", src: "/found/lastlocal/sea.jpg", text: "Marine Drive, Friday night. Same sea, new problems.", shares: [4100, 4200, 4300] },
-  { id: "x-lehenga", who: "Priya", handle: "priya.in.delhi", when: "8h", text: "Third shaadi this month and I've repeated a lehenga twice. No regrets. #ShaadiSeason", shares: [45, 52, 60] },
+  { id: "x-lehenga", who: "Priya", handle: "priya.in.delhi", when: "8h", card: "#5a1f3d", text: "Third shaadi this month and I've repeated a lehenga twice. No regrets. #ShaadiSeason", shares: [45, 52, 60] },
   { id: "x-ladakh", who: "Wander India", handle: "wander.india", when: "9h", src: `${R}/x-ladakh.jpg`, text: "Pangong at noon. No filter, we promise. 🏔️", shares: [12900, 13000, 13100] },
   { id: "x-biryani", who: "Hyderabad Food Diaries", handle: "hyd.food.diaries", when: "11h", src: `${R}/x-biryani.jpg`, text: "Sunday ka plan: dum, raita, and a nap. 🍚", shares: [5300, 5400, 5600] },
   { id: "x-goa", who: "Goa Days", handle: "goa.days", when: "14h", src: `${R}/x-goa.jpg`, text: "Morjim, 6:12 PM. The dog had the right idea.", shares: [9100, 9200, 9300] },

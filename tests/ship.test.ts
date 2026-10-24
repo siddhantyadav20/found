@@ -25,9 +25,9 @@ const finished = (style: Style) => (s: CaseState) =>
 const run = (say: readonly Flag[] = [], style: Style = TRUTH, from?: CaseState) => play(finished(style), say, from, style);
 
 describe("every ending, reached by playing", () => {
-  it("the full chain, 11 of 11, sent: The Complete Record", () => {
+  it("the full chain, 12 of 12, sent: The Complete Record", () => {
     const s = run(["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:confronted-sameer"]);
-    expect(traced(ep, s)).toHaveLength(11);
+    expect(traced(ep, s)).toHaveLength(12);
     expect(endingFor(ep, s, "send")?.id).toBe("complete");
   });
 
@@ -35,7 +35,7 @@ describe("every ending, reached by playing", () => {
     const ahead: Style = { prefer: "truth", side: true, hunch: true };
     const s = run(["did:nitin-asked", "did:protect-nitin", "did:raju-trusts", "did:confronted-sameer"], ahead);
     expect(s.flags).toEqual(expect.arrayContaining(["claim:q3:sameer", "claim:q9:sameer"]));
-    expect(traced(ep, s)).toHaveLength(11);
+    expect(traced(ep, s)).toHaveLength(12);
     expect(endingFor(ep, s, "send")?.id).toBe("complete");
   });
 
@@ -83,7 +83,8 @@ describe("every piece of evidence", () => {
       ["did:exposed-nitin", "did:asked-sameer-after", "did:confronted-sameer"],
       ["did:confronted-kunal"],
     ];
-    const seen = new Set(ways.flatMap((say) => run(say).flags.filter((f) => f.startsWith("saw:")).map((f) => f.slice(4))));
+    const runs = [...ways.map((say) => run(say)), run([], TRUTH, add(play((x, scene) => episodeOf(x) === 3 && scene.kind === "table"), AIRPLANE))];
+    const seen = new Set(runs.flatMap((r) => r.flags.filter((f) => f.startsWith("saw:")).map((f) => f.slice(4))));
     const missing = ep.evidence.map((e) => e.id).filter((id) => !seen.has(id));
     expect(missing).toEqual([]);
   });

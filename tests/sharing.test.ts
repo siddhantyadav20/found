@@ -28,12 +28,14 @@ describe("the shared result", () => {
   it("counts the links traced, in the chain's own order", () => {
     expect(resultOf(ep, start()).traced).toEqual([]);
     expect(resultOf(ep, tracedTwo()).traced).toEqual(["reel", "shot"]);
-    expect(resultOf(ep, tracedTwo()).links).toBe(11);
+    expect(resultOf(ep, tracedTwo()).links).toBe(12);
   });
 
   it("says it in a line that gives nothing away", () => {
-    expect(resultLine(resultOf(ep, start()))).toBe("I traced 0 of 11 links.");
-    expect(resultLine(resultOf(ep, tracedTwo()))).toBe("I traced 2 of 11 links.");
+    expect(resultLine(resultOf(ep, start()))).toBe("I traced 0 of 12 links.");
+    expect(resultLine(resultOf(ep, tracedTwo()))).toBe("I traced 2 of 12 links.");
+    // What seven o'clock decided goes first, and names nothing.
+    expect(resultLine(resultOf(ep, add(tracedTwo(), "did:saved")))).toBe("I got there before seven. I traced 2 of 12 links.");
   });
 
   it("times the chapter, and only once it has ended", () => {
@@ -43,8 +45,8 @@ describe("the shared result", () => {
 
   it("carries the case's own question, and names no answer", () => {
     const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.raakh.ask, CASES.raakh.hook);
-    expect(text).toContain("I traced 2 of 11 links.");
-    expect(text).toContain("A wedding planner's phone. A missing waiter. Where does it end?");
+    expect(text).toContain("I traced 2 of 12 links.");
+    expect(text).toContain("A wedding planner's phone. A missing waiter. Did you get there before seven?");
     expect(text).toContain("https://found.test/d/Abcd2345");
     // Nothing from the chain itself: not a label, not a line, not his words.
     for (const l of ep.chain) {

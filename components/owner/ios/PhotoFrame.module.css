@@ -644,3 +644,22 @@
     display: none;
   }
 }
+
+/* --- footage (2026-10-24): the clip itself, above its transport ------------ */
+
+.film {
+  position: relative;
+  width: 100%;
+  max-height: 58vh;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+}
+
+.filmVideo {
+  display: block;
+  width: 100%;
+  max-height: 58vh;
+  object-fit: contain;
+  background: #000;
+}

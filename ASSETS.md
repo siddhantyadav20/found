@@ -235,3 +235,33 @@ hi-IN Swara for Meera), filtered per kind (call, voice note, memo, phone
 clip) and timed to the captions. `content/raakh/voices.ts` maps each to its
 key. Stand-ins until the cast is recorded: VOICE-SCRIPTS.md still has every
 line for actors. To rebuild: `python3 -I scripts/voices.py <edge-tts> <work dir>`.
+
+## Seven o'clock: footage and the living witness (2026-10-24)
+
+**Generated** in the same Figma file, fictional people only, nothing graphic:
+
+| File | Is |
+|---|---|
+| `public/found/raakh/fire-mattress.jpg` | The fire before dawn: a mattress, sheets and clothes burning on the back plot, no body. The poster for the fire clip and the whole fire (replaces `fire.jpg`, a bonfire of logs that contradicted the twist) |
+| `public/found/raakh/nurse-bag.jpg` | Sister Anita's photo from Dilip's number: his belongings bag, the maroon waistcoat with its badge, the cracked phone |
+| `public/found/raakh/dilip-awake.jpg` | Raju's last photo when Dilip is saved: awake, his hand in his brother's |
+| `public/found/raakh/dp-raju.jpg` | Raju's profile photo (his chat, the seven o'clock calls) |
+| `scripts/frames/raakh/*.jpg` | Clip frames, not deployed: `reel-1/2/3` (the tripod take: the light, the pose with the gun, the arm coming down), `kunal-fire` (the dance floor, a shot in the air), `gravel`, `jerrycan` (the hand with the silver kada), `fire-mattress` |
+
+**Video**: `public/found/raakh/clip-{reel-take,k-3,fire,fire-whole}.mp4`,
+540×960 H.264 at 420kbps with AAC, built by `scripts/clips.py` (mixes the
+wedding or the fire from `public/sfx`, the shots and the voices at the
+seconds the captions give) and `scripts/clip.swift` (slow moves over the
+frames per `scripts/clips.raakh.json`, a shake, muzzle flashes). Compile the
+Swift once (`swiftc -O scripts/clip.swift -o <clip tool>`), then
+`python3 -I scripts/clips.py <work dir> <clip tool>`. A frame that doesn't
+exist yet stands in with an older one (`STAND_IN`). In the phone, `film` on a
+video plays the mp4 and the captions follow it (`components/owner/ios/Clip.tsx`).
+
+**Drawn, not photographed**: the parcel on your table and what came out of
+it (the table, the kraft mailer, the waybill and stamp, the torn mailer, the
+phone face down) are CSS (`components/stage/Parcel`, `Note`), so they hold at
+any size without a photograph.
+
+**Voices** added for the too-late moments: the Chhattarpur SHO, Sister Anita
+and Raju (`moment:late-*` in `scripts/voices.raakh.json`).

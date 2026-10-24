@@ -91,8 +91,10 @@
 
 .left {
   font-family: var(--font-mono), monospace;
-  font-size: 12px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
   color: var(--stamp);
+  transition: font-size 0.2s;
 }
 
 .option {
@@ -105,6 +107,51 @@
   font-weight: 500;
   line-height: 1.35;
   text-align: left;
+}
+
+.option[data-faced] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 10px;
+}
+
+.face,
+.glyph {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.face {
+  object-fit: cover;
+}
+
+.glyph {
+  display: grid;
+  place-items: center;
+  background: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  color: var(--muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* The last ten seconds: the bar and the count go hot, and pulse. */
+.moment[data-urgent] .clock span {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.moment[data-urgent] .left {
+  font-size: 22px;
+  font-weight: 600;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.45; }
 }
 
 .option:hover { border-color: var(--paper-2); background: var(--ink-2); }
@@ -125,5 +172,5 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .told, .said, .options { animation: none; }
+  .told, .said, .options, .moment[data-urgent] .left, .moment[data-urgent] .clock span { animation: none; }
 }

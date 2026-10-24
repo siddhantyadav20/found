@@ -22,7 +22,8 @@ describe("no phone of yours", () => {
   it("has none, and nothing arrives on one but the knock at your gate", () => {
     expect(ep.yours).toBeUndefined();
     expect(ep.threads.filter((t) => t.app === "yours:chats")).toEqual([]);
-    expect(ep.events.filter((e) => e.device === "yours").map((e) => e.id)).toEqual(["guard-rings"]);
+    // Raju's call when his phone's in airplane mode, and the knock.
+    expect(ep.events.filter((e) => e.device === "yours").map((e) => e.id).sort()).toEqual(["guard-rings", "witness-relay"]);
   });
 
   it("closes the case from the case file: sent, posted, or given back from the first minute", () => {

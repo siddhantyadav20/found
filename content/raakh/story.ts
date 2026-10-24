@@ -143,8 +143,34 @@ export const story: Story = {
   evidence: [...episode1.evidence, ...episode2.evidence, ...episode3.evidence],
   questions: [...episode1.questions, ...episode2.questions, ...episode3.questions],
   events: [...episode1.events, ...episode2.events, ...episode3.events, ...instagram.events],
+  moments: episode3.moments,
   chain,
   endings,
+  /* What a newcomer is doing here, said plainly (2026-10-24). */
+  brief: {
+    title: "Tonight",
+    lines: [
+      "This phone was posted to a lawyer, Meera Arora. It came back to your door instead. She's at a wedding in Jaipur, her phone off till morning.",
+      "A boy called Dilip went missing at a Delhi wedding a week ago. His brother keeps ringing this number.",
+      "Find out what happened to Dilip. Every answer you file here traces one link of that night. There are eleven.",
+      "Somebody else wants this phone back before morning.",
+    ],
+  },
+  finale: {
+    when: "4:40 AM · Sunday",
+    line: "Everything is on the table now.",
+    sub: "The record is still yours to put your name to: who did what that night, and what you can prove. Sameer's train leaves at 4:55 this afternoon.",
+    after: {
+      yes: "Dilip is in an ambulance to Saket, a constable in the front seat. What's left is the record: who did what that night, and what you can prove, under your name. Sameer's train leaves at 4:55 this afternoon.",
+      no: "Nobody you called got to Room 6 before Bhasin heard, and at seven they move him. What's left is the record: who did what that night, and what you can prove, under your name. It's the only thing still pointing at him. Sameer's train leaves at 4:55 this afternoon.",
+    },
+  },
+  fate: {
+    yes: "did:saved",
+    no: "did:lost",
+    headline: { yes: "Dilip Kumar Mahto is alive.", no: "Dilip Kumar Mahto is still missing." },
+    share: { yes: "I got there before seven.", no: "I didn't get there before seven." },
+  },
   /* Each episode ends on what it's left open (2026-10-23). */
   voices,
   recaps: {
@@ -255,7 +281,7 @@ export const story: Story = {
     { what: "The phone opens with no passcode.", where: "settings", meant: "He turned it off on Thursday night, so M could read it in his order." },
     { what: "One grey tick under every voice note.", where: "whatsapp", meant: "M had blocked him. That's why he sent the phone, and didn't just talk." },
     { what: "“Kunal firing kar raha tha. Ek ladka gir gaya.”", where: "whatsapp", meant: "Two sentences, two moments, forty minutes and a lawn apart." },
-    { what: "Kunal on Instagram at 12:24, a revolver by his face.", where: "instagram", meant: "True, and public, and it points away from Sameer. The gun changed hands ten minutes later." },
+    { what: "His archived post: Kunal at 12:22, a revolver by his face.", where: "instagram", meant: "True, and it points away from Sameer, so he kept it where M could find it. The gun changed hands ten minutes later." },
     { what: "“12:15 — SK reel w/ Kunal… D — light (N sick)”.", where: "notes", meant: "His own reel, with Kunal in it, and Dilip on the light because Nitin had a fever." },
     { what: "The boy smiling over a tray, in Favorites.", where: "photos", meant: "A portrait he'd planned (“Dilip portrait!!”), of someone he'd promised Mumbai to." },
     { what: "The fire clip starts mid-movement.", where: "photos", meant: "He trimmed it to its last nine seconds. The rest, with his hands in it, he locked away." },

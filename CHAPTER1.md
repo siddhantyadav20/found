@@ -23,6 +23,62 @@ origin** (M).
 
 ---
 
+## Seven o'clock: the living witness (2026-10-24)
+
+**This section supersedes everything below wherever they disagree**, including
+the final cut beneath it. Why it exists is in [RAAKH-REVIEW.md](RAAKH-REVIEW.md):
+Episode 3 used to be a deduction exercise with nothing at stake, and the
+chapter ended on a form. Now it ends on a reversal, a deadline and a choice.
+
+**The reversal.** Nobody burned a body. At 2:55 AM Bhasin's car took Dilip
+out of the service room (Pappu in his group: "Sir gaadi nikal gayi"), and at
+4:47 Sameer burned a mattress, sheets and Dilip's clothes on the back plot,
+believing it was the boy. Every clue was already on the phone: the fire
+clip's "Uske kapde bhi", the jerrycan beside a rolled mattress, the 2:55 car.
+- **Q12** asks what Sameer did at the fire and what burned. "Dilip's body" is
+  his version; the truth is a mattress, sheets and clothes ("No body.").
+- **The witness**: after Q13, Dilip's own number writes in (a nurse at Bedi
+  Nursing Home, Fatehpur Beri, holding his phone and a bag with his maroon
+  waistcoat). In airplane mode Raju rings *your* phone and relays it instead.
+- **Q14**: "The patient is Dilip. Bhasin's car took him out at 2:55, and
+  nobody burned a body." Proved by the belongings and the badge, or the
+  nurse's voice note and his portrait, or the car and either. Link **Still
+  alive** (`alive-now`): the chain is **12 links**, 8 on the spine.
+
+**The deadline.** They move him at seven, under the name Deepak. Sister Anita
+needs two people: one who can identify him, one Bhasin is afraid of.
+
+**The decider** (`moments` in episode3.ts): two calls, full screen, against a
+clock (40 s, then 30 s). Meera (the DCP at Saket isn't Bhasin's man), Raju
+(he can identify him), Sameer (he goes only if you made him face 1:52 first),
+112 (the local SHO rings Bhasin), or a post from his Instagram (900 shares, and
+the back gate opens once). Saved with **Meera + Raju**, **Meera + a confronted
+Sameer** or **Raju + a confronted Sameer**; anything else, or the clock
+running out, and he's gone at 6:58. Played live: 4:12 AM, a white Gypsy at the
+front gate, Room 6, "…Bhaiya. Light ready hai."
+
+**The record, after.** The finale is **4:40 AM, Sunday**, its line told from
+the way seven went. Every ending opens with what had already happened, then
+the record's replies, then the morning (6:40 Raju, 6:58 / 7:00 the back
+gate), in clock order (tests/endings.test.ts holds it). The last image is
+Raju's: Dilip awake ("Ab achhi photo hai"), or Dilip at Chhath ("Jab tak woh
+mil nahi jaata"). The end card leads with the fate ("Dilip Kumar Mahto is
+alive." / "…is still missing."), and so does the share line ("I got there
+before seven.").
+
+**The first minute** (rebuilt): your table under a lamp, drawn rather than
+photographed; a kraft mailer with its waybill to Meera Arora, Kalkaji, and
+the courier's RETURN TO ORIGIN stamp; a strip to pull. Inside, the shagun
+envelope lifts and turns over in 3D, beside the torn mailer and his phone
+face down with a cracked corner, which buzzes on the wood.
+
+**Footage.** The reel take, Kunal's dance-floor clip, the fire and the whole
+fire play as real video (`public/found/raakh/clip-*.mp4`, `scripts/clips.py`):
+picture, the wedding or the fire under it, and the voices, with the captions
+following the footage.
+
+---
+
 ## The final cut: Raakh (2026-10-23)
 
 **This section supersedes everything below wherever they disagree.** Siddhant

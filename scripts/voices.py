@@ -28,9 +28,12 @@ CAST = {
     "Bhasin": ("hi-IN-MadhurNeural", "-16%", "-20Hz"),
     "Dilip": ("hi-IN-MadhurNeural", "+2%", "+24Hz"),
     "Guard": ("hi-IN-MadhurNeural", "+4%", "-10Hz"),
+    "SHO": ("hi-IN-MadhurNeural", "-10%", "-14Hz"),
     "Kunal": ("en-US-BrianMultilingualNeural", "+10%", "+0Hz"),
     "Raju": ("en-US-AndrewMultilingualNeural", "-6%", "-2Hz"),
     "Meera": ("hi-IN-SwaraNeural", "+0%", "+0Hz"),
+    "Anita": ("hi-IN-SwaraNeural", "-8%", "-10Hz"),
+    "Dilip-weak": ("hi-IN-MadhurNeural", "-32%", "+16Hz"),
 }
 
 
@@ -90,6 +93,9 @@ def treat(x, style):
         # A WhatsApp voice note: phone mic close up, a quiet room behind it.
         x = biquad(biquad(x, "hp", 110), "lp", 7000)
         x = [v * 0.95 + rnd.gauss(0, 0.0025) for v in x]
+    elif style == "whisper":
+        x = biquad(biquad(x, "hp", 200), "lp", 5000)
+        x = [v * 0.6 + rnd.gauss(0, 0.004) for v in x]
     elif style == "memo":
         x = biquad(biquad(x, "hp", 90), "lp", 8000)
         x = [v * 0.9 + rnd.gauss(0, 0.002) for v in x]
@@ -127,7 +133,7 @@ def build(entry):
         w.setframerate(RATE)
         w.writeframes(array.array("h", [max(-32767, min(32767, int(v * 32767))) for v in track]).tobytes())
     m4a = os.path.join(OUT, name + ".m4a")
-    subprocess.run(["afconvert", "-f", "m4af", "-d", "aac", "-b", "40000", wav_, m4a], check=True)
+    subprocess.run(["afconvert", "-f", "m4af", "-d", "aac", "-b", "24000", wav_, m4a], check=True)
     return key, f"/voices/raakh/{name}.m4a", round(len(track) / RATE, 1)
 
 
@@ -138,3 +144,13 @@ for e in entries:
     out[k] = path
     print(f"{k:28} {secs:5.1f}s  (planned {e.get('seconds', '-')})", flush=True)
 json.dump(out, open(os.path.join(WORK, "manifest.json"), "w"), indent=1)
+
+# content/raakh/voices.ts: each key, its file, and how long it runs.
+import re
+rows = []
+for k, path in out.items():
+    info = subprocess.run(["afinfo", os.path.join(ROOT, "public") + path], capture_output=True, text=True).stdout
+    secs = float(re.search(r"estimated duration: ([\d.]+)", info).group(1))
+    rows.append(f'  "{k}": {{ src: "{path}", seconds: {secs:.1f} }},')
+head = open(os.path.join(ROOT, "content", "raakh", "voices.ts")).read().split("export const voices: Voices = {")[0]
+open(os.path.join(ROOT, "content", "raakh", "voices.ts"), "w").write(head + "export const voices: Voices = {\n" + "\n".join(rows) + "\n};\n")

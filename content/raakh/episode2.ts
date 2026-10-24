@@ -620,6 +620,8 @@ const rajuAnswers: readonly ReplyOption[] = [
         english: "Sameer bhaiya was going to take him to Mumbai. He said he'd make him his assistant. He called him bhaiya.",
       },
       { id: "r-8", from: "them", at: "01:04", text: "Usko bharosa tha. Sameer bhaiya hain na, sab sambhaal lenge.", english: "He trusted him. Sameer bhaiya's there, he'll handle everything." },
+      // (game) 2026-10-24, planted.
+      { id: "r-8a", from: "them", at: "01:05", text: "Uska phone kabhi kabhi ring jaata hai. Koi uthata nahi.", english: "His phone rings sometimes. Nobody picks up." },
     ],
   },
   {

@@ -25,6 +25,7 @@ export type Scene =
   | { readonly kind: "end-card" }
   | { readonly kind: "ringing"; readonly call: IncomingCall }
   | { readonly kind: "moment"; readonly moment: Moment }
+  | { readonly kind: "finale" }
   | { readonly kind: "table" };
 
 /** What plugging in sets: the phone is charging, and Episode 2 has begun. */
@@ -91,5 +92,8 @@ export function sceneOf(story: Story, s: CaseState | null): Scene {
 
   const call = ringingNow(story, s);
   if (call) return { kind: "ringing", call };
+
+  /* The last hour: everything's asked, and the record is the player's to send, post or hand back. */
+  if (story.finale && has(s, "did:last-hour") && !has(s, "did:decide-later")) return { kind: "finale" };
   return { kind: "table" };
 }

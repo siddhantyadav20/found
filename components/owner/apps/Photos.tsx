@@ -5,7 +5,15 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import type { Photo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { calendarOf, clipOf, library, loaded, mmss, revertible, syncPaused } from "@/lib/game/phone";
+import {
+  calendarOf,
+  clipOf,
+  library,
+  loaded,
+  mmss,
+  revertible,
+  syncPaused,
+} from "@/lib/game/phone";
 import Alert from "../ios/Alert";
 import app from "../ios/App.module.css";
 import AppBar, { Chevron } from "../ios/AppBar";
@@ -39,7 +47,11 @@ import { stamp } from "@/lib/found/time";
    =========================================================================== */
 
 type Tab = "library" | "collections";
-type Album = { readonly name: string; readonly photos: readonly Photo[]; readonly bin?: boolean };
+type Album = {
+  readonly name: string;
+  readonly photos: readonly Photo[];
+  readonly bin?: boolean;
+};
 
 function LibraryGlyph() {
   return (
@@ -64,10 +76,14 @@ function CollectionsGlyph() {
 
 const TRASH =
   "M4.5 6.5h15M9.5 6.5V4.8c0-.7.6-1.3 1.3-1.3h2.4c.7 0 1.3.6 1.3 1.3v1.7M6.5 6.5l.9 12.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-12.2";
-const HIDDEN = "M3.5 12s3.2-5.5 8.5-5.5 8.5 5.5 8.5 5.5-3.2 5.5-8.5 5.5S3.5 12 3.5 12ZM4.5 4.5l15 15M12 9.5a2.5 2.5 0 0 1 2.5 2.5";
-const HEART = "M12 19.6s-7.2-4.3-7.2-9.5A4.1 4.1 0 0 1 12 7.7a4.1 4.1 0 0 1 7.2 2.4c0 5.2-7.2 9.5-7.2 9.5Z";
-const INFO = "M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM12 11v5.2M12 7.6v.2";
-const SHARE = "M12 14.5V3.5M12 3.5 8.5 7M12 3.5 15.5 7M7.5 10H6a1.5 1.5 0 0 0-1.5 1.5v8A1.5 1.5 0 0 0 6 21h12a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 18 10h-1.5";
+const HIDDEN =
+  "M3.5 12s3.2-5.5 8.5-5.5 8.5 5.5 8.5 5.5-3.2 5.5-8.5 5.5S3.5 12 3.5 12ZM4.5 4.5l15 15M12 9.5a2.5 2.5 0 0 1 2.5 2.5";
+const HEART =
+  "M12 19.6s-7.2-4.3-7.2-9.5A4.1 4.1 0 0 1 12 7.7a4.1 4.1 0 0 1 7.2 2.4c0 5.2-7.2 9.5-7.2 9.5Z";
+const INFO =
+  "M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17ZM12 11v5.2M12 7.6v.2";
+const SHARE =
+  "M12 14.5V3.5M12 3.5 8.5 7M12 3.5 15.5 7M7.5 10H6a1.5 1.5 0 0 0-1.5 1.5v8A1.5 1.5 0 0 0 6 21h12a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 18 10h-1.5";
 
 function RowGlyph({ d }: { d: string }) {
   return (
@@ -79,9 +95,25 @@ function RowGlyph({ d }: { d: string }) {
 
 /** Until the shoot, each photograph is a dark exposure in its own light: warm for most of a wedding night. */
 const HUES = [24, 34, 18, 42, 12, 205, 30, 300, 160, 38];
-const hueOf = (id: string) => HUES[[...id].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 7) % HUES.length];
+const hueOf = (id: string) =>
+  HUES[
+    [...id].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 7) % HUES.length
+  ];
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 /** A day number from the phone's calendar, as Photos heads the Library: "22 Nov". */
 const shortDay = (n: number) => {
   const d = new Date(n * 86_400_000);
@@ -92,31 +124,52 @@ const shortDay = (n: number) => {
  * A photograph, a video's poster, or a handwritten page as a phone camera sees
  * paper. `veiled`: only the thumbnail is on the phone, blurred past reading.
  */
-function Picture({ photo, big, seconds, veiled }: { photo: Photo; big?: boolean; seconds?: number; veiled?: boolean }) {
+function Picture({
+  photo,
+  big,
+  seconds,
+  veiled,
+}: {
+  photo: Photo;
+  big?: boolean;
+  seconds?: number;
+  veiled?: boolean;
+}) {
   // A screenshot of a chat: WhatsApp's own dark bubbles, with the group's name on top.
   if (photo.kind === "chat" && photo.chat)
     return (
-      <div className={paper.shot} data-big={big || undefined} data-veiled={veiled || undefined}>
+      <div
+        className={paper.shot}
+        data-big={big || undefined}
+        data-veiled={veiled || undefined}
+      >
         <p className={paper.shotHead}>
           <b>{photo.chat.name}</b>
           {photo.chat.sub && <span>{photo.chat.sub}</span>}
         </p>
         {/* Still in iCloud: the shapes of the messages, none of their words. */}
         {veiled
-          ? photo.chat.lines.map((l, i) => <span key={i} className={paper.shotBar} data-system={l.system || undefined} aria-hidden="true" />)
+          ? photo.chat.lines.map((l, i) => (
+              <span
+                key={i}
+                className={paper.shotBar}
+                data-system={l.system || undefined}
+                aria-hidden="true"
+              />
+            ))
           : photo.chat.lines.map((l, i) =>
-          l.system ? (
-            <p key={i} className={paper.shotSystem}>
-              {l.text}
-            </p>
-          ) : (
-            <p key={i} className={paper.shotLine}>
-              {l.who && <b>{l.who}</b>}
-              <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
-              {big && l.english && <small>{l.english}</small>}
-              <i>{stamp(l.at)}</i>
-            </p>
-          ),
+              l.system ? (
+                <p key={i} className={paper.shotSystem}>
+                  {l.text}
+                </p>
+              ) : (
+                <p key={i} className={paper.shotLine}>
+                  {l.who && <b>{l.who}</b>}
+                  <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
+                  {big && l.english && <small>{l.english}</small>}
+                  <i>{stamp(l.at)}</i>
+                </p>
+              ),
             )}
       </div>
     );
@@ -141,11 +194,26 @@ function Picture({ photo, big, seconds, veiled }: { photo: Photo; big?: boolean;
       style={{ "--hue": hueOf(photo.id) } as CSSProperties}
     >
       {photo.src ? (
-        <Image src={photo.src} alt={veiled ? "" : photo.title} fill sizes={big ? "400px" : "140px"} className={frame.image} />
+        <Image
+          src={photo.src}
+          alt={veiled ? "" : photo.title}
+          fill
+          sizes={big ? "400px" : "140px"}
+          className={frame.image}
+        />
       ) : (
-        !veiled && <Sketch id={photo.id} title={photo.title} hue={hueOf(photo.id)} big={big} />
+        !veiled && (
+          <Sketch
+            id={photo.id}
+            title={photo.title}
+            hue={hueOf(photo.id)}
+            big={big}
+          />
+        )
       )}
-      {seconds !== undefined && !big && <span className={paper.duration}>{mmss(seconds)}</span>}
+      {seconds !== undefined && !big && (
+        <span className={paper.duration}>{mmss(seconds)}</span>
+      )}
     </div>
   );
 }
@@ -158,7 +226,15 @@ const MAX_ZOOM = 4;
 const TAP_ZOOM = 3;
 
 /** The zoom, with the window it's seen through (`w`, `h`) and the photo's own size in it (`pw`, `ph`). */
-type Zoom = { scale: number; x: number; y: number; w: number; h: number; pw: number; ph: number };
+type Zoom = {
+  scale: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  pw: number;
+  ph: number;
+};
 
 /** Is a point of the photo (percent) near enough the middle of the window, at this zoom, to read? */
 function onScreen(spot: { x: number; y: number }, z: Zoom): boolean {
@@ -168,10 +244,24 @@ function onScreen(spot: { x: number; y: number }, z: Zoom): boolean {
   return Math.abs(px) <= z.w * 0.3 && Math.abs(py) <= z.h * 0.3;
 }
 
-function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo["zoom"]> }; onFound: () => void }) {
+function Zoomable({
+  photo,
+  onFound,
+}: {
+  photo: Photo & { zoom: NonNullable<Photo["zoom"]> };
+  onFound: () => void;
+}) {
   const box = useRef<HTMLDivElement>(null);
   const pic = useRef<HTMLDivElement>(null);
-  const [zoom, setZoom] = useState<Zoom>({ scale: 1, x: 0, y: 0, w: 0, h: 0, pw: 0, ph: 0 });
+  const [zoom, setZoom] = useState<Zoom>({
+    scale: 1,
+    x: 0,
+    y: 0,
+    w: 0,
+    h: 0,
+    pw: 0,
+    ph: 0,
+  });
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<{ dist: number; scale: number } | null>(null);
   const revealed = zoom.scale >= REVEAL_AT && onScreen(photo.zoom.at, zoom);
@@ -190,7 +280,15 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
     // As far as the photo reaches past the window, and no further into the black.
     const w = Math.max(0, (pw * s - fw) / 2);
     const h = Math.max(0, (ph * s - fh) / 2);
-    return { scale: s, x: Math.min(w, Math.max(-w, x)), y: Math.min(h, Math.max(-h, y)), w: fw, h: fh, pw, ph };
+    return {
+      scale: s,
+      x: Math.min(w, Math.max(-w, x)),
+      y: Math.min(h, Math.max(-h, y)),
+      w: fw,
+      h: fh,
+      pw,
+      ph,
+    };
   };
 
   return (
@@ -202,7 +300,10 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
         e.currentTarget.setPointerCapture?.(e.pointerId);
         if (pointers.current.size === 2) {
           const [a, b] = [...pointers.current.values()];
-          pinch.current = { dist: Math.hypot(a.x - b.x, a.y - b.y), scale: zoom.scale };
+          pinch.current = {
+            dist: Math.hypot(a.x - b.x, a.y - b.y),
+            scale: zoom.scale,
+          };
         }
       }}
       onPointerMove={(e) => {
@@ -211,10 +312,14 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
         pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (pointers.current.size === 2 && pinch.current) {
           const [a, b] = [...pointers.current.values()];
-          const scale = (pinch.current.scale * Math.hypot(a.x - b.x, a.y - b.y)) / Math.max(1, pinch.current.dist);
+          const scale =
+            (pinch.current.scale * Math.hypot(a.x - b.x, a.y - b.y)) /
+            Math.max(1, pinch.current.dist);
           setZoom((z) => clamp(scale, z.x, z.y));
         } else if (pointers.current.size === 1 && zoom.scale > 1) {
-          setZoom((z) => clamp(z.scale, z.x + e.clientX - prev.x, z.y + e.clientY - prev.y));
+          setZoom((z) =>
+            clamp(z.scale, z.x + e.clientX - prev.x, z.y + e.clientY - prev.y),
+          );
         }
       }}
       onPointerUp={(e) => {
@@ -225,15 +330,31 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
         if (zoom.scale > 1) return setZoom({ ...zoom, scale: 1, x: 0, y: 0 });
         // Bring what was tapped to the middle, as far as the photo's edges allow.
         const r = e.currentTarget.getBoundingClientRect();
-        setZoom(clamp(TAP_ZOOM, -(e.clientX - (r.left + r.width / 2)) * TAP_ZOOM, -(e.clientY - (r.top + r.height / 2)) * TAP_ZOOM));
+        setZoom(
+          clamp(
+            TAP_ZOOM,
+            -(e.clientX - (r.left + r.width / 2)) * TAP_ZOOM,
+            -(e.clientY - (r.top + r.height / 2)) * TAP_ZOOM,
+          ),
+        );
       }}
-      onWheel={(e) => setZoom((z) => clamp(z.scale * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)), z.x, z.y))}
+      onWheel={(e) =>
+        setZoom((z) =>
+          clamp(
+            z.scale * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002)),
+            z.x,
+            z.y,
+          ),
+        )
+      }
     >
       <div
         ref={pic}
         className={frame.zoomable}
         data-zoomed={zoom.scale > 1 || undefined}
-        style={{ transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})` }}
+        style={{
+          transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})`,
+        }}
       >
         <Picture photo={photo} big />
         {/* Small, at the edge of the frame: nothing anyone would see without leaning in.
@@ -249,14 +370,22 @@ function Zoomable({ photo, onFound }: { photo: Photo & { zoom: NonNullable<Photo
         </span>
       </div>
       {/* Said once, on the photo itself: leaning in is something this frame rewards. */}
-      {zoom.scale === 1 && !revealed && <span className={frame.zoomHint}>Double-tap or pinch to look closer</span>}
+      {zoom.scale === 1 && !revealed && (
+        <span className={frame.zoomHint}>
+          Double-tap or pinch to look closer
+        </span>
+      )}
     </div>
   );
 }
 
 function Glyph({ d, filled = false }: { d: string; filled?: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" data-filled={filled || undefined}>
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      data-filled={filled || undefined}
+    >
       <path d={d} />
     </svg>
   );
@@ -331,13 +460,26 @@ function Viewer({
     if (!from || (e.target as Element).closest("[data-zoomed]")) return;
     const dx = e.clientX - from.x;
     const dy = e.clientY - from.y;
-    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) onStep?.(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4)
+      onStep?.(dx < 0 ? 1 : -1);
   };
 
   return (
-    <div className={frame.viewer} data-no-swipe onPointerDown={onDown} onPointerUp={onUp} onPointerCancel={() => (swipe.current = null)}>
+    <div
+      className={frame.viewer}
+      data-no-swipe
+      onPointerDown={onDown}
+      onPointerUp={onUp}
+      onPointerCancel={() => (swipe.current = null)}
+    >
       <div className={frame.viewerBar}>
-        <button type="button" className={`${frame.round} lg`} onClick={onClose} aria-label="Back" data-back>
+        <button
+          type="button"
+          className={`${frame.round} lg`}
+          onClick={onClose}
+          aria-label="Back"
+          data-back
+        >
           <Chevron back />
         </button>
         <span className={frame.viewerWhen}>
@@ -358,26 +500,63 @@ function Viewer({
 
       {onStep && place && place.of > 1 && (
         <>
-          <button type="button" className={`${frame.step} lg`} data-side="prev" onClick={() => onStep(-1)} disabled={place.at <= 1} aria-label="Previous photo">
+          <button
+            type="button"
+            className={`${frame.step} lg`}
+            data-side="prev"
+            onClick={() => onStep(-1)}
+            disabled={place.at <= 1}
+            aria-label="Previous photo"
+          >
             <Chevron back />
           </button>
-          <button type="button" className={`${frame.step} lg`} data-side="next" onClick={() => onStep(1)} disabled={place.at >= place.of} aria-label="Next photo">
+          <button
+            type="button"
+            className={`${frame.step} lg`}
+            data-side="next"
+            onClick={() => onStep(1)}
+            disabled={place.at >= place.of}
+            aria-label="Next photo"
+          >
             <Chevron />
           </button>
         </>
       )}
 
       {zoomed ? (
-        <Zoomable photo={{ ...photo, zoom: zoomed }} onFound={() => onRead([zoomed.evidence])} />
-      ) : (
-        <div className={frame.viewerImage} data-video={photo.video ? "" : undefined}>
+        <Zoomable
+          photo={{ ...photo, zoom: zoomed }}
+          onFound={() => onRead([zoomed.evidence])}
+        />
+      ) : clip?.film ? null : (
+        <div
+          className={frame.viewerImage}
+          data-video={photo.video ? "" : undefined}
+        >
           <Picture photo={photo} big veiled={!here} />
-          {!here && (failed ? <span className={frame.failed} aria-label="Couldn't load" role="img" /> : <span className={frame.loading} aria-label="Loading" role="img" />)}
+          {!here &&
+            (failed ? (
+              <span
+                className={frame.failed}
+                aria-label="Couldn't load"
+                role="img"
+              />
+            ) : (
+              <span className={frame.loading} aria-label="Loading" role="img" />
+            ))}
         </div>
       )}
 
       {/* Keyed on the length, so a reverted clip starts again from the top. */}
-      {clip && <Clip key={clip.seconds} seconds={clip.seconds} captions={clip.captions} voice={voice} />}
+      {clip && (
+        <Clip
+          key={clip.seconds}
+          seconds={clip.seconds}
+          captions={clip.captions}
+          voice={voice}
+          film={clip.film}
+        />
+      )}
 
       {info && (
         <div className={frame.info}>
@@ -386,11 +565,17 @@ function Viewer({
           </p>
           {photo.camera && <p className={frame.infoCam}>{photo.camera}</p>}
           {revertible(state, photo) && <p className={frame.infoNote}>Edited</p>}
-          {photo.trimmed && <p className={frame.infoNote}>Trimmed from a longer video. The original isn&apos;t in this library.</p>}
+          {photo.trimmed && (
+            <p className={frame.infoNote}>
+              Trimmed from a longer video. The original isn&apos;t in this
+              library.
+            </p>
+          )}
           {photo.caption && <p className={frame.infoNote}>{photo.caption}</p>}
           {photo.deletedAt && (
             <p className={frame.infoNote}>
-              Deleted at {stamp(photo.deletedAt)}. {photo.daysLeft ?? 30} days left.
+              Deleted at {stamp(photo.deletedAt)}. {photo.daysLeft ?? 30} days
+              left.
             </p>
           )}
         </div>
@@ -399,7 +584,10 @@ function Viewer({
       {/* Edit, as iOS offers it on anything it changed: Revert, and it can't be undone. */}
       {editing && (
         <div className={frame.sheet} role="dialog" aria-label="Revert">
-          <p className={frame.sheetText}>Revert to original? This will remove all edits made to this {clip ? "video" : "photo"}.</p>
+          <p className={frame.sheetText}>
+            Revert to original? This will remove all edits made to this{" "}
+            {clip ? "video" : "photo"}.
+          </p>
           <button
             type="button"
             className={frame.sheetDanger}
@@ -411,7 +599,11 @@ function Viewer({
           >
             Revert to Original
           </button>
-          <button type="button" className={frame.sheetCancel} onClick={() => setEditing(false)}>
+          <button
+            type="button"
+            className={frame.sheetCancel}
+            onClick={() => setEditing(false)}
+          >
             Cancel
           </button>
         </div>
@@ -433,11 +625,21 @@ function Viewer({
         {onRecover ? (
           <span className={frame.toolText} />
         ) : (
-          <span className={frame.tool} data-on={photo.favorite || undefined} aria-label={photo.favorite ? "Favourite" : "Not a favourite"}>
+          <span
+            className={frame.tool}
+            data-on={photo.favorite || undefined}
+            aria-label={photo.favorite ? "Favourite" : "Not a favourite"}
+          >
             <Glyph d={HEART} filled={photo.favorite} />
           </span>
         )}
-        <button type="button" className={frame.tool} data-on={info || undefined} onClick={() => setInfo((v) => !v)} aria-label="Info">
+        <button
+          type="button"
+          className={frame.tool}
+          data-on={info || undefined}
+          onClick={() => setInfo((v) => !v)}
+          aria-label="Info"
+        >
           <Glyph d={INFO} />
         </button>
         {onRecover ? (
@@ -445,7 +647,11 @@ function Viewer({
             Recover
           </button>
         ) : revertible(state, photo) ? (
-          <button type="button" className={frame.toolText} onClick={() => setEditing(true)}>
+          <button
+            type="button"
+            className={frame.toolText}
+            onClick={() => setEditing(true)}
+          >
             Edit
           </button>
         ) : (
@@ -491,7 +697,9 @@ export default function Photos({
   const lib = library(story, state);
   const cal = calendarOf(story, state);
   const albums: Album[] = [
-    ...(lib.favorites.length ? [{ name: "Favorites", photos: lib.favorites }] : []),
+    ...(lib.favorites.length
+      ? [{ name: "Favorites", photos: lib.favorites }]
+      : []),
     ...lib.albums,
   ];
   const utilities: Album[] = [
@@ -508,7 +716,10 @@ export default function Photos({
     // Seen in the bin is seen: it counts from the moment it's opened (PLAYTEST.md #44).
     // What's still in iCloud hasn't been seen, whenever it was tapped.
     if (loaded(state, p)) {
-      const ids = [p.evidence, ...(p.chat?.lines.map((l) => l.evidence) ?? [])].filter((id): id is string => Boolean(id));
+      const ids = [
+        p.evidence,
+        ...(p.chat?.lines.map((l) => l.evidence) ?? []),
+      ].filter((id): id is string => Boolean(id));
       if (ids.length) onRead(ids);
     }
   };
@@ -516,33 +727,36 @@ export default function Photos({
   /* The viewer lies over the grid rather than replacing it, so putting a
      photo away lands exactly where it was opened (2026-10-23). */
   const viewer = photo && (
-      <Viewer
-        key={photo.id}
-        voice={story.voices?.[`clip:${photo.id}`]?.src}
-        place={{ at: at + 1, of: list.length }}
-        onStep={(by) => {
-          const next = list[at + by];
-          if (next) show(next);
-        }}
-        day={cal.label(photo.day)}
-        photo={photo}
-        state={state}
-        onClose={() => setViewing(null)}
-        onRead={onRead}
-        onRevert={() => onRevert(photo.id)}
-        onRecover={
-          open?.bin
-            ? () => {
-                onRestore(photo.id);
-                const ids = [photo.evidence, ...(photo.chat?.lines.map((l) => l.evidence) ?? [])].filter((id): id is string => Boolean(id));
-                if (ids.length && loaded(state, photo)) onRead(ids);
-                setViewing(null);
-                setAlbum(null);
-                setTab("library");
-              }
-            : undefined
-        }
-      />
+    <Viewer
+      key={photo.id}
+      voice={story.voices?.[`clip:${photo.id}`]?.src}
+      place={{ at: at + 1, of: list.length }}
+      onStep={(by) => {
+        const next = list[at + by];
+        if (next) show(next);
+      }}
+      day={cal.label(photo.day)}
+      photo={photo}
+      state={state}
+      onClose={() => setViewing(null)}
+      onRead={onRead}
+      onRevert={() => onRevert(photo.id)}
+      onRecover={
+        open?.bin
+          ? () => {
+              onRestore(photo.id);
+              const ids = [
+                photo.evidence,
+                ...(photo.chat?.lines.map((l) => l.evidence) ?? []),
+              ].filter((id): id is string => Boolean(id));
+              if (ids.length && loaded(state, photo)) onRead(ids);
+              setViewing(null);
+              setAlbum(null);
+              setTab("library");
+            }
+          : undefined
+      }
+    />
   );
 
   const grid = (
@@ -553,10 +767,20 @@ export default function Photos({
           key={p.id}
           className={styles.thumb}
           onClick={() => show(p)}
-          aria-label={loaded(state, p) ? `${p.title}, ${cal.label(p.day)} ${stamp(p.at)}` : `${p.video ? "Video" : "Photo"}, ${cal.label(p.day)} ${stamp(p.at)}`}
+          aria-label={
+            loaded(state, p)
+              ? `${p.title}, ${cal.label(p.day)} ${stamp(p.at)}`
+              : `${p.video ? "Video" : "Photo"}, ${cal.label(p.day)} ${stamp(p.at)}`
+          }
         >
-          <Picture photo={p} seconds={clipOf(state, p)?.seconds} veiled={!loaded(state, p)} />
-          {open?.bin && <span className={styles.days}>{p.daysLeft ?? 30} days</span>}
+          <Picture
+            photo={p}
+            seconds={clipOf(state, p)?.seconds}
+            veiled={!loaded(state, p)}
+          />
+          {open?.bin && (
+            <span className={styles.days}>{p.daysLeft ?? 30} days</span>
+          )}
         </button>
       ))}
     </div>
@@ -564,8 +788,24 @@ export default function Photos({
 
   const row = (a: Album, glyph?: string) => (
     <li key={a.name}>
-      <button type="button" className={app.row} onClick={() => setAlbum(a.name)} aria-label={`${a.name}, ${a.photos.length}`}>
-        {glyph ? <RowGlyph d={glyph} /> : <span className={styles.albumThumb} aria-hidden="true">{a.photos.at(-1) && <Picture photo={a.photos.at(-1)!} veiled={!loaded(state, a.photos.at(-1)!)} />}</span>}
+      <button
+        type="button"
+        className={app.row}
+        onClick={() => setAlbum(a.name)}
+        aria-label={`${a.name}, ${a.photos.length}`}
+      >
+        {glyph ? (
+          <RowGlyph d={glyph} />
+        ) : (
+          <span className={styles.albumThumb} aria-hidden="true">
+            {a.photos.at(-1) && (
+              <Picture
+                photo={a.photos.at(-1)!}
+                veiled={!loaded(state, a.photos.at(-1)!)}
+              />
+            )}
+          </span>
+        )}
         <span className={app.rowMain}>
           <span className={app.rowTitle}>{a.name}</span>
         </span>
@@ -578,8 +818,21 @@ export default function Photos({
   // An album on the Collections shelf: its newest picture, big, and its name and count under it.
   const card = (name: string, photos: readonly Photo[], onOpen: () => void) => (
     // Named by the album, not by whatever its cover picture's caption says.
-    <button key={name} type="button" className={styles.card} onClick={onOpen} aria-label={`${name}, ${photos.length}`}>
-      <span className={styles.cardThumb} aria-hidden="true">{photos.at(-1) && <Picture photo={photos.at(-1)!} veiled={!loaded(state, photos.at(-1)!)} />}</span>
+    <button
+      key={name}
+      type="button"
+      className={styles.card}
+      onClick={onOpen}
+      aria-label={`${name}, ${photos.length}`}
+    >
+      <span className={styles.cardThumb} aria-hidden="true">
+        {photos.at(-1) && (
+          <Picture
+            photo={photos.at(-1)!}
+            veiled={!loaded(state, photos.at(-1)!)}
+          />
+        )}
+      </span>
       <span className={styles.cardName}>{name}</span>
       <span className={styles.cardCount}>{photos.length}</span>
     </button>
@@ -587,14 +840,20 @@ export default function Photos({
 
   // The Library's heading: the days it covers, as Photos gives them.
   const days = lib.recents.map((p) => cal.dayOf(p.day));
-  const range = days.length ? `${shortDay(Math.min(...days))} – ${shortDay(Math.max(...days))}` : "";
+  const range = days.length
+    ? `${shortDay(Math.min(...days))} – ${shortDay(Math.max(...days))}`
+    : "";
   const videos = lib.recents.filter((p) => p.video).length;
   const stills = lib.recents.length - videos;
 
   return (
     <section className={app.view} aria-label="Photos">
       {open ? (
-        <AppBar title={open.name} onBack={() => setAlbum(null)} backLabel="Collections" />
+        <AppBar
+          title={open.name}
+          onBack={() => setAlbum(null)}
+          backLabel="Collections"
+        />
       ) : (
         <AppBar
           onBack={onBack}
@@ -621,9 +880,16 @@ export default function Photos({
       <div ref={body} className={app.body} data-tabbed={!open || undefined}>
         {open ? (
           <>
-            {open.bin && <p className={styles.kept}>Photos and videos show the days remaining before they&apos;re deleted.</p>}
+            {open.bin && (
+              <p className={styles.kept}>
+                Photos and videos show the days remaining before they&apos;re
+                deleted.
+              </p>
+            )}
             {grid}
-            {list.length === 0 && <p className={styles.sub}>No photos or videos.</p>}
+            {list.length === 0 && (
+              <p className={styles.sub}>No photos or videos.</p>
+            )}
           </>
         ) : tab === "library" ? (
           <>
@@ -635,7 +901,11 @@ export default function Photos({
               {videos > 0 && `, ${videos} ${videos === 1 ? "Video" : "Videos"}`}
             </p>
             {/* iCloud's word, under the count, as the Library gives it. */}
-            <p className={styles.synced}>{syncPaused(story, state) ? "Syncing Paused · Low Power Mode" : "Updated Just Now"}</p>
+            <p className={styles.synced}>
+              {syncPaused(story, state)
+                ? "Syncing Paused · Low Power Mode"
+                : "Updated Just Now"}
+            </p>
           </>
         ) : (
           <>
@@ -645,10 +915,14 @@ export default function Photos({
             </h3>
             <div className={styles.shelf}>
               {card("Recents", lib.recents, () => setTab("library"))}
-              {albums.map((a) => card(a.name, a.photos, () => setAlbum(a.name)))}
+              {albums.map((a) =>
+                card(a.name, a.photos, () => setAlbum(a.name)),
+              )}
             </div>
             <h3 className={styles.shelfTitle}>Utilities</h3>
-            <ul className={app.group}>{utilities.map((a) => row(a, a.bin ? TRASH : HIDDEN))}</ul>
+            <ul className={app.group}>
+              {utilities.map((a) => row(a, a.bin ? TRASH : HIDDEN))}
+            </ul>
           </>
         )}
       </div>
@@ -656,11 +930,21 @@ export default function Photos({
       {!open && (
         <nav className={styles.tabs} aria-label="Photos">
           <span className={`${styles.tabGroup} lg`}>
-            <button type="button" className={styles.tab} data-on={tab === "library" || undefined} onClick={() => setTab("library")}>
+            <button
+              type="button"
+              className={styles.tab}
+              data-on={tab === "library" || undefined}
+              onClick={() => setTab("library")}
+            >
               <LibraryGlyph />
               Library
             </button>
-            <button type="button" className={styles.tab} data-on={tab === "collections" || undefined} onClick={() => setTab("collections")}>
+            <button
+              type="button"
+              className={styles.tab}
+              data-on={tab === "collections" || undefined}
+              onClick={() => setTab("collections")}
+            >
               <CollectionsGlyph />
               Collections
             </button>

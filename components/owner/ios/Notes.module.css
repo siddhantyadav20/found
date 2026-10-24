@@ -1,8 +1,7 @@
-/* The case file (rebuilt 2026-10-17): the one app on his phone that isn't
-   his. A manila sheet, ink and a red pen, where every other app is black
-   glass: the player's own tool, never mistaken for his. Questions in a
-   serif, labels as a form prints them, proof as boxes to tick, the game's
-   voice in red. Theme variables are set on the app (CaseFile.module.css). */
+/* The case file's own sheet (dark since 2026-10-24): grouped cards on
+   black, as iOS draws its own dark apps, questions in a serif, labels as a
+   case register prints them, proof as boxes to tick, and the game's voice in
+   ember. Theme variables are set on the app (CaseFile.module.css). */
 
 .who {
   margin: -8px 2px 18px;
@@ -15,10 +14,10 @@
   display: grid;
   gap: 10px;
   margin: 0 0 14px;
-  padding: 16px 16px 16px 22px;
-  border-radius: 2px;
+  padding: 18px 16px 16px;
+  border-radius: 16px;
   background: var(--cf-sheet);
-  box-shadow: 0 1px 0 var(--cf-rule), 0 2px 8px rgb(60 44 20 / 10%);
+  box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 7%);
   animation: in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
 }
 
@@ -26,11 +25,11 @@
 .card::before {
   content: "";
   position: absolute;
-  left: 11px;
+  left: 16px;
+  right: 16px;
   top: 0;
-  bottom: 0;
-  width: 1px;
-  background: rgb(179 56 42 / 45%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 122 69 / 55%), transparent);
 }
 
 @keyframes in {
@@ -69,7 +68,7 @@
 .nudge {
   margin: 0;
   padding: 10px 12px;
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-wash);
   font-size: 15px;
 }
@@ -87,7 +86,7 @@
 .look b {
   padding: 1px 7px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   color: var(--cf-ink);
   font-weight: 500;
 }
@@ -116,7 +115,7 @@
   min-height: 44px;
   padding: 0 18px;
   border: 0;
-  border-radius: 2px;
+  border-radius: 10px;
   font: inherit;
   font-size: 15px;
   font-weight: 600;
@@ -130,8 +129,8 @@
 }
 
 .primary:disabled {
-  background: rgb(29 26 22 / 12%);
-  color: rgb(29 26 22 / 38%);
+  background: rgb(255 255 255 / 8%);
+  color: rgb(235 235 245 / 30%);
   cursor: default;
 }
 
@@ -161,9 +160,9 @@
   align-items: flex-start;
   gap: 12px;
   width: 100%;
-  padding: 10px 2px;
+  padding: 11px 10px;
   border: 0;
-  border-bottom: 1px solid var(--cf-rule);
+  border-bottom: 0.5px solid var(--cf-rule);
   background: none;
   color: var(--cf-ink);
   font: inherit;
@@ -178,18 +177,23 @@
   width: 18px;
   height: 18px;
   margin-top: 1px;
-  border: 1.5px solid rgb(29 26 22 / 55%);
+  border: 1.5px solid rgb(235 235 245 / 40%);
   border-radius: 1px;
   transition: background-color 0.15s, border-color 0.15s;
 }
 
 .pickRow[data-on] {
-  background: linear-gradient(transparent 8%, var(--cf-mark) 8%, var(--cf-mark) 92%, transparent 92%);
+  background: var(--cf-mark);
+  border-radius: 10px;
+}
+
+.check {
+  border-radius: 50%;
 }
 
 .pickRow[data-on] .check {
-  border-color: var(--cf-ink);
-  background: var(--cf-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m5 10.5 3.2 3.2L15 6.5' fill='none' stroke='%23f7f2e7' stroke-width='2.4'/%3E%3C/svg%3E") center / 100% no-repeat;
+  border-color: var(--cf-red);
+  background: var(--cf-red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m5.5 10.5 3 3L14.5 7' fill='none' stroke='%23000' stroke-width='2.6'/%3E%3C/svg%3E") center / 100% no-repeat;
 }
 
 .choose {
@@ -208,7 +212,7 @@
   gap: 8px;
   margin: 0 0 14px;
   padding: 16px;
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   box-shadow: inset 0 0 0 1px var(--cf-rule-strong);
   animation: in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
@@ -234,7 +238,7 @@
 .suggest {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-wash);
 }
 
@@ -262,7 +266,7 @@
   min-width: 0;
   padding: 10px 12px;
   border: 1px solid var(--cf-rule-strong);
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
   color: var(--cf-ink);
   font: inherit;
@@ -286,7 +290,7 @@
   gap: 4px 12px;
   margin: 0 0 10px;
   padding: 14px 16px;
-  border-radius: 2px;
+  border-radius: 10px;
   background: var(--cf-sheet);
 }
 

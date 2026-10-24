@@ -81,7 +81,7 @@ export function library(story: Story, s: CaseState): Library {
 }
 
 /** What a clip plays now: the edit, or, once reverted, the original. */
-export function clipOf(s: CaseState, p: Photo): { readonly seconds: number; readonly captions: readonly Caption[] } | undefined {
+export function clipOf(s: CaseState, p: Photo): { readonly seconds: number; readonly captions: readonly Caption[]; readonly film?: string } | undefined {
   if (p.original && has(s, reverted(p.id))) return p.original;
   return p.video;
 }

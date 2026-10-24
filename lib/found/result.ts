@@ -24,6 +24,8 @@ export type Result = {
   readonly title: string;
   /** Played without where-to-look or nudges (chosen at the parcel). */
   readonly detective?: boolean;
+  /** What the night's last hours decided, as the share says it ("I got there before seven."). */
+  readonly fate?: string;
 };
 
 export function resultOf(story: Story, s: CaseState, now?: number): Result {
@@ -36,13 +38,15 @@ export function resultOf(story: Story, s: CaseState, now?: number): Result {
     minutes: ended ? Math.max(1, Math.round((last - s.started) / 60_000)) : null,
     title: story.title,
     detective: s.flags.includes("did:detective"),
+    fate: story.fate ? (s.flags.includes(story.fate.yes) ? story.fate.share.yes : s.flags.includes(story.fate.no) ? story.fate.share.no : undefined) : undefined,
   };
 }
 
 /** "I traced 9 of 11 links." The brag is eleven. */
 export const tracedLine = (n: number, of: number): string => `I traced ${n} of ${of} link${of === 1 ? "" : "s"}.`;
 
-export const resultLine = (r: Result): string => tracedLine(r.traced.length, r.links) + (r.detective ? " As a detective." : "");
+export const resultLine = (r: Result): string =>
+  (r.fate ? `${r.fate} ` : "") + tracedLine(r.traced.length, r.links) + (r.detective ? " As a detective." : "");
 
 /**
  * What goes in the chat when someone passes the phone on: the title, the

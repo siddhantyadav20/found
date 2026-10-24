@@ -25,7 +25,7 @@ import styles from "./CaseFile.module.css";
    Handing the parcel back is there from the first minute: the early exit.
    =========================================================================== */
 
-const AS: Record<RecordChoice, string> = { in: "In", anon: "Without his name", out: "Leave out", says: "As he says it", fact: "As fact" };
+const AS: Record<RecordChoice, string> = { in: "Include", anon: "Include, without his name", out: "Leave out", says: "As Sameer tells it", fact: "State it as fact" };
 
 export default function CloseCase({ story, state, open: openAtFirst = false }: { story: Story; state: CaseState; open?: boolean }) {
   const close = story.close;
@@ -63,7 +63,10 @@ export default function CloseCase({ story, state, open: openAtFirst = false }: {
       <h3 className={note.question}>What happens to the record?</h3>
       {record && (
         <>
-          <p className={styles.where}>Each link of the night, as it would go out. Tap to change what goes in.</p>
+          <p className={styles.where}>
+            Each link of the night, as it would go out under your name. What you proved goes in as it is; what you didn&apos;t can only go in as
+            Sameer&apos;s word, or as fact on yours.
+          </p>
           <p className={styles.closeIntro}>{close.intro}</p>
           <ol className={styles.closeRows}>
             {rows.map((r) => (

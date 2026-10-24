@@ -215,7 +215,7 @@ export default function CaseFile({
 
   if (!q)
     return (
-      <div className={styles.file} data-light-app>
+      <div className={styles.file}>
         <div className={note.card}>
           <Progress story={story} state={state} />
           <p className={styles.done}>
@@ -337,8 +337,21 @@ export default function CaseFile({
                 : "Put the proof on the table to file it: tap what shows it, below."
               : "";
 
+  // Until the first answer is filed, what the player is doing here, said plainly.
+  const brief = story.brief && !story.questions.some((x) => answered(state, x.id)) ? story.brief : undefined;
+
   return (
-    <div className={styles.file} data-light-app>
+    <div className={styles.file}>
+      {brief && (
+        <section className={styles.brief} aria-label={brief.title}>
+          <p className={styles.briefHead}>{brief.title}</p>
+          {brief.lines.map((l) => (
+            <p key={l} className={styles.briefLine}>
+              {l}
+            </p>
+          ))}
+        </section>
+      )}
       <div className={note.card}>
         <Progress story={story} state={state} now={q.id} />
         <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : "Open question"}</p>

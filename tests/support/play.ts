@@ -17,7 +17,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, CHATS_UNLOCKED, installed, offload, unlocked } from "@/lib/game/phone";
-import { PLUGGED_IN, recapShown, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
+import { momentDone, PLUGGED_IN, recapShown, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
 
 /**
  * A player, played the way a person can: open every app, open what's inside
@@ -110,6 +110,17 @@ export function play(
     if (stop(s, scene)) return s;
     if (scene.kind === "charge") {
       s = add(s, ...PLUGGED_IN);
+      continue;
+    }
+    if (scene.kind === "moment") {
+      // A player who reads the clues: the first option on offer (Meera, then whoever's next on the list).
+      const { moment } = scene;
+      const o = moment.options.find((x) => (x.requires ?? []).every((f) => s.flags.includes(f)) && !(x.unless ?? []).some((f) => s.flags.includes(f)))!;
+      s = add(s, momentDone(moment.id), ...o.sets);
+      continue;
+    }
+    if (scene.kind === "finale") {
+      s = add(s, "did:decide-later");
       continue;
     }
     if (scene.kind === "recap") {

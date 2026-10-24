@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useSyncExternalStore } from "react";
 
 import type { Arrival } from "@/content/types";
@@ -8,47 +9,56 @@ import { setSoundOn, soundOn, soundOnServerSide, subscribeSound } from "@/lib/so
 import styles from "./Note.module.css";
 
 /* ===========================================================================
-   What was in the parcel: a phone lying face-down, cracked at one corner,
-   and, when the chapter has one, an envelope from somebody else's wedding.
+   What was in the parcel (rebuilt 2026-10-24): the same table, the parcel
+   torn open, a phone lying face down with a cracked corner, and a wedding
+   envelope from somebody else's shaadi.
 
-   The note is on the envelope's back. The player sees the front first (the
-   foil, the couple's names, the date) and turns it over by hand to read what
-   a stranger wrote to someone called M (PLAYER-JOURNEY Stage 2): a letter
-   addressed to somebody else, read anyway, is the first choice nobody notices
-   making. The English beneath is ours, never written on the note.
-
-   Then the phone. Sound is offered here, in the fiction, as the phone's own
-   ring/silent switch on its side: never a modal.
+   The envelope lifts off the photograph. Its front first (the foil, the
+   couple's names, the date); turned over by hand, the note a stranger wrote
+   to someone called M (PLAYER-JOURNEY Stage 2). The English beneath is
+   ours, never written on the note. Then the phone, and its ring/silent
+   switch: sound is offered in the fiction, never as a modal.
    =========================================================================== */
 
 function Handwriting({ arrival }: { arrival: Arrival }) {
   return (
     <>
       {arrival.note.map((line) => (
-        <p key={line} className={styles.hand}>
+        <span key={line} className={styles.hand}>
           {line}
-        </p>
+        </span>
       ))}
-      {arrival.sign && <p className={styles.sign}>{arrival.sign}</p>}
+      {arrival.sign && <span className={styles.sign}>{arrival.sign}</span>}
     </>
   );
 }
 
-export default function Note({ arrival, onTurn }: { arrival: Arrival; onTurn: () => void }) {
+export default function Note({ arrival, scene, onTurn }: { arrival: Arrival; scene?: string; onTurn: () => void }) {
   const ringing = useSyncExternalStore(subscribeSound, soundOn, soundOnServerSide);
   const envelope = arrival.envelope;
-  // With no envelope, the note is simply there to be read.
   const [flipped, setFlipped] = useState(!envelope);
   const flip = () => setFlipped(true);
 
   return (
-    <div className={styles.wrap}>
+    <div className={styles.scene} data-flipped={flipped || undefined}>
+      <div className={styles.photo} aria-hidden="true">
+        {scene && <Image src={scene} alt="" fill priority sizes="100vw" className={styles.image} />}
+      </div>
+
+      {/* What else came out of it, on the table: the torn mailer, and the phone face down with its cracked corner. */}
+      <div className={styles.table} aria-hidden="true">
+        <span className={styles.mailer} />
+        <span className={styles.phone}>
+          <span className={styles.camera} />
+          <span className={styles.crack} />
+        </span>
+      </div>
+
       {envelope ? (
         /* Turned over by hand: a tap, or a sideways drag. */
         <button
           type="button"
           className={styles.envelope}
-          data-flipped={flipped || undefined}
           onClick={flip}
           onPointerDown={(e) => {
             const x = e.clientX;
@@ -63,6 +73,9 @@ export default function Note({ arrival, onTurn }: { arrival: Arrival; onTurn: ()
         >
           <span className={styles.card}>
             <span className={styles.front} aria-hidden={flipped || undefined}>
+              <span className={styles.ganesh} aria-hidden="true">
+                ॐ
+              </span>
               <span className={styles.foil}>{envelope.front}</span>
               {envelope.small && <span className={styles.small}>{envelope.small}</span>}
             </span>
@@ -80,20 +93,23 @@ export default function Note({ arrival, onTurn }: { arrival: Arrival; onTurn: ()
         </div>
       )}
 
-      {flipped ? (
-        <p className={styles.english}>&ldquo;{arrival.english}&rdquo;</p>
-      ) : (
-        <p className={styles.caption}>{envelope?.caption}</p>
-      )}
-
-      {flipped && (
-        <>
-          <div className={styles.kit}>
-            <span className={styles.facedown}>
-              {/* The corner that hit something, once. */}
-              <svg className={styles.crack} viewBox="0 0 40 40" aria-hidden="true">
-                <path d="M40 0 26 9l-6 11M26 9l3 12M20 20l-9 4M29 21l8 7" />
-              </svg>
+      <section className={styles.panel}>
+        {flipped ? (
+          <>
+            <p className={styles.eyebrow}>On the back, in a man&apos;s quick hand</p>
+            <p className={styles.english}>&ldquo;{arrival.english}&rdquo;</p>
+            <p className={styles.notYou}>You aren&apos;t M.</p>
+            <div className={styles.phoneRow}>
+              <span className={styles.phoneIcon} aria-hidden="true">
+                <svg viewBox="0 0 24 36">
+                  <rect x="2" y="1.5" width="20" height="33" rx="5" />
+                  <path d="M22 1.5 15 7l-3 6M15 7l2 6" />
+                </svg>
+              </span>
+              <span className={styles.phoneText}>
+                <b>{arrival.caption}</b>
+                <span>{ringing ? "Its ringer is on." : "It's on silent. Flip the switch to hear it."}</span>
+              </span>
               <button
                 type="button"
                 role="switch"
@@ -103,27 +119,27 @@ export default function Note({ arrival, onTurn }: { arrival: Arrival; onTurn: ()
                 data-on={ringing || undefined}
                 onClick={() => setSoundOn(!ringing)}
               />
-            </span>
-          </div>
-          <p className={styles.caption}>{arrival.caption}</p>
-          <p className={styles.ringerNote}>
-            {ringing ? "Its ringer is on." : "It's on silent. Flip the switch on its side to hear it."}
-          </p>
-        </>
-      )}
-
-      <button
-        type="button"
-        className={styles.turn}
-        onClick={() => {
-          if (!flipped) return flip();
-          // It wakes in your hand: the buzz of everything that came while it was in the parcel.
-          buzz();
-          onTurn();
-        }}
-      >
-        {flipped ? "Turn the phone over" : "Turn the envelope over"}
-      </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className={styles.eyebrow}>Inside the parcel</p>
+            <p className={styles.caption}>{envelope?.caption}</p>
+          </>
+        )}
+        <button
+          type="button"
+          className={styles.turn}
+          onClick={() => {
+            if (!flipped) return flip();
+            // It wakes in your hand: the buzz of everything that came while it was in the parcel.
+            buzz();
+            onTurn();
+          }}
+        >
+          {flipped ? "Turn the phone over" : "Turn the envelope over"}
+        </button>
+      </section>
     </div>
   );
 }

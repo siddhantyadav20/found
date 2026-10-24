@@ -52,6 +52,7 @@ const G = {
   tag: "M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-6.5 8c.8-3.4 3.4-5.3 6.5-5.3s5.7 1.9 6.5 5.3M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z",
   dots: "M5 12h.01M12 12h.01M19 12h.01",
   lock: "M7 10.5V8a5 5 0 0 1 10 0v2.5M5.5 10.5h13v10h-13Z",
+  archive: "M12 7v5l3 2M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v3h3",
   plus: "M12 5v14M5 12h14",
 };
 
@@ -112,6 +113,8 @@ type Shown = {
   comments?: ProfilePost["comments"];
   evidence?: string;
   suggested?: boolean;
+  /** Archived: only its owner sees it, and the header says so. */
+  archived?: string;
 };
 
 function Post({ post, onProfile, onSeen }: { post: Shown; onProfile?: () => void; onSeen?: (evidence: string) => void }) {
@@ -140,6 +143,12 @@ function Post({ post, onProfile, onSeen }: { post: Shown; onProfile?: () => void
   return (
     <article className={styles.post} ref={ref}>
       {post.suggested && <p className={styles.suggested}>Suggested for you</p>}
+      {post.archived && (
+        <p className={styles.archivedNote}>
+          <Glyph d={G.archive} className={styles.archivedGlyph} />
+          {post.archived} · Only you can see this post
+        </p>
+      )}
       <header className={styles.postHead}>
         <button type="button" className={styles.postWho} onClick={onProfile} disabled={!onProfile}>
           <Avatar who={post.who} size="post" />
@@ -192,6 +201,7 @@ const fromProfile = (p: Profile, post: ProfilePost): Shown => ({
   likes: post.likes,
   comments: post.comments,
   evidence: post.evidence,
+  archived: post.archived,
 });
 
 const fromFeed = (f: FeedPost, episode: number, profiles: readonly Profile[]): Shown => {
@@ -206,6 +216,7 @@ const fromFeed = (f: FeedPost, episode: number, profiles: readonly Profile[]): S
     english: f.english,
     when: f.when,
     likes: f.shares[Math.min(2, Math.max(0, episode - 1))],
+    comments: f.comments,
     // The night's own posts come from accounts he doesn't follow.
     suggested: Boolean(f.requires?.length),
   };
@@ -223,6 +234,9 @@ function ProfileView({
   backLabel?: string;
 }) {
   const [post, setPost] = useState<string | null>(null);
+  const [archive, setArchive] = useState(false);
+  const shown = profile.posts.filter((p) => Boolean(p.archived) === archive);
+  const archivedCount = profile.own ? profile.posts.filter((p) => p.archived).length : 0;
   // Where the grid was when a post was opened, so closing it goes back there.
   const body = useRef<HTMLDivElement>(null);
   const scroll = useRef(0);
@@ -235,10 +249,16 @@ function ProfileView({
   return (
     <div className={styles.app} data-push>
       <header className={styles.bar}>
-        <button type="button" className={styles.back} onClick={open ? () => setPost(null) : onBack} data-back aria-label={open ? "Back to the grid" : backLabel}>
+        <button
+          type="button"
+          className={styles.back}
+          onClick={open ? () => setPost(null) : archive ? () => setArchive(false) : onBack}
+          data-back
+          aria-label={open ? "Back to the grid" : archive ? "Back to the profile" : backLabel}
+        >
           <Chevron back />
         </button>
-        <span className={styles.handleBar}>{open ? "Posts" : profile.handle}</span>
+        <span className={styles.handleBar}>{open ? "Posts" : archive ? "Archive" : profile.handle}</span>
         <Glyph d={G.dots} className={styles.dots} />
       </header>
 
@@ -251,7 +271,7 @@ function ProfileView({
               <Avatar who={who} size="profile" ring={!profile.private} />
               <span className={styles.stats}>
                 <span>
-                  <b>{profile.postCount ?? profile.posts.length}</b>posts
+                  <b>{profile.postCount ?? profile.posts.filter((p) => !p.archived).length}</b>posts
                 </span>
                 <span>
                   <b>{profile.followers ?? "391"}</b>followers
@@ -267,6 +287,19 @@ function ProfileView({
               <span data-blue={!profile.own && !profile.private ? "" : undefined}>{profile.own ? "Edit profile" : profile.private ? "Follow" : "Following"}</span>
               <span>{profile.own ? "Share profile" : "Message"}</span>
             </div>
+            {/* His own Archive, which only he can see: one tap from his profile, as Instagram keeps it. */}
+            {archivedCount > 0 && !archive && (
+              <button type="button" className={styles.archiveRow} onClick={() => setArchive(true)}>
+                <Glyph d={G.archive} />
+                <span>
+                  <b>Archive</b>
+                  <span>
+                    {archivedCount} {archivedCount === 1 ? "post" : "posts"} only you can see
+                  </span>
+                </span>
+                <Chevron />
+              </button>
+            )}
             {profile.private ? (
               <div className={styles.private}>
                 <span className={styles.privateLock}>
@@ -289,7 +322,7 @@ function ProfileView({
                   </span>
                 </div>
                 <div className={styles.grid}>
-                  {profile.posts.map((p) => (
+                  {shown.map((p) => (
                     <button
                       key={p.id}
                       type="button"
@@ -349,8 +382,9 @@ export default function Instagram({
   // The people he follows, a post of each in turn, then his own latest two.
   const friends = profiles.filter((p) => !p.private && !p.own);
   const followed: Shown[] = [];
-  for (let i = 0; i < 3; i++) for (const p of friends) if (p.posts[i]) followed.push(fromProfile(p, p.posts[i]));
-  if (own) followed.push(...own.posts.slice(0, 2).map((post) => fromProfile(own, post)));
+  const live = (p: Profile) => p.posts.filter((x) => !x.archived);
+  for (let i = 0; i < 3; i++) for (const p of friends) if (live(p)[i]) followed.push(fromProfile(p, live(p)[i]));
+  if (own) followed.push(...live(own).slice(0, 2).map((post) => fromProfile(own, post)));
   const mixed: Shown[] = [...night];
   for (let i = 0; i < Math.max(followed.length, world.length); i++) {
     if (followed[i]) mixed.push(followed[i]);
@@ -364,7 +398,7 @@ export default function Instagram({
   // Explore: search for anyone by name, and a grid of everything public.
   const wanted = query.trim().toLowerCase().replace(/^@/, "");
   const found = wanted ? profiles.filter((p) => p.handle.includes(wanted) || p.name.toLowerCase().includes(wanted)) : [];
-  const tiles: Shown[] = [...night, ...world, ...profiles.filter((p) => !p.private && !p.own).flatMap((p) => p.posts.map((post) => fromProfile(p, post)))];
+  const tiles: Shown[] = [...night, ...world, ...profiles.filter((p) => !p.private && !p.own).flatMap((p) => p.posts.filter((x) => !x.archived).map((post) => fromProfile(p, post)))];
   const exploredPost = tiles.find((t) => t.key === explored);
 
   const nav = (

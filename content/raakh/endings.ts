@@ -11,13 +11,37 @@ import type { Ending, EndingLine } from "../types";
    RAJU, MEERA, SAMEER, PUBLIC (posted, not sent), and what the record held.
    =========================================================================== */
 
+/** The last image, saved or lost: a photograph from his brother. */
+const LAST_IMAGE: readonly EndingLine[] = [
+  { who: "Raju", text: "📷 Dilip, awake, his hand in his brother's", src: "/found/raakh/dilip-awake.jpg", needs: ["did:saved"] },
+  { who: "Raju", text: "Isko rakhna. Ab achhi photo hai.", english: "Keep this one. Now it's a good photo.", needs: ["did:saved"] },
+  { who: "Raju", text: "📷 Dilip at Chhath, Samastipur: a yellow kurta, squinting into the sun, laughing", src: "/found/raakh/dilip-chhath.jpg", needs: ["did:lost"] },
+  { who: "Raju", text: "Isko rakhna. Jab tak woh mil nahi jaata.", english: "Keep this one. Until he's found.", needs: ["did:lost"] },
+];
+
 /** The last line of every ending that knew his name. */
 const HELD_THE_LIGHT: EndingLine = { text: "Dilip Kumar Mahto, 19. He held the light.", needs: ["did:named-dilip"] };
 
-/** What his brother was told, or wasn't, the morning after. */
-const RAJU_AFTER: readonly EndingLine[] = [
-  { at: "In the morning", clock: "06:40", who: "Raju", text: "Maa ko bata diya.", english: "I told Maa.", needs: ["did:told-raju"] },
-  { at: "In the morning", clock: "06:40", text: "Raju's last message is still “Main jaag raha hoon.”", english: "I'm awake.", needs: ["did:kept-raju-waiting"] },
+/*
+ * Seven o'clock (2026-10-24): what the two calls bought. The record is put
+ * to a name at 4:40 AM (story.finale), so the night splits around it: what
+ * had already happened opens every ending, and the morning comes after the
+ * record's own replies, in the order the clock gives it.
+ */
+const SEVEN_NIGHT: readonly EndingLine[] = [
+  { at: "3:15 AM", text: "Your post had 900 shares by half past three. By then the back gate of Bedi Nursing Home had already opened, once.", needs: ["did:call-post"] },
+  { at: "3:20 AM", text: "The SHO from the local station rang Bhasin before he rang anyone else.", needs: ["did:call-police"] },
+  { at: "4:12 AM", text: "Dilip Kumar Mahto is alive. A DCP from Saket takes his statement at the bedside, a word at a time.", needs: ["did:saved"] },
+  { at: "4:30 AM", who: "Sameer", text: "Main Sameer Khurrana hoon. Goli maine chalayi thi. 1:52 pe maine jhooth bola tha.", english: "I'm Sameer Khurrana. I fired the shot. At 1:52 I lied.", needs: ["did:saved", "did:sameer-went"] },
+];
+
+const SEVEN_MORNING: readonly EndingLine[] = [
+  { at: "6:40 AM", who: "Raju", text: "Maa ko bata diya. Woh ro rahi hai. Is baar achha wala.", english: "I told Maa. She's crying. The good kind, this time.", needs: ["did:saved"] },
+  { at: "6:58 AM", text: "A white Innova pulls out of the back gate of Bedi Nursing Home with its lights off. Room 6 has a new sheet on the bed, and a file with no name on it.", needs: ["did:lost"] },
+  { who: "Sister Anita", text: "Le gaye. Kahan, nahi pata.", english: "They took him. Where, I don't know.", needs: ["did:lost"] },
+  { who: "Sister Anita", text: "Unka phone bhi le gaye.", english: "They took his phone too.", needs: ["did:lost"] },
+  { at: "7:00 AM", text: "A white Innova waits at the back gate of Bedi Nursing Home for a patient called Deepak. Nobody comes out.", needs: ["did:saved"] },
+  { text: "Dilip Kumar Mahto is still missing. Raju prints the poster again, with one new line: last seen alive, Fatehpur Beri.", needs: ["did:lost"] },
 ];
 
 /** Bhasin, who had the phone on a map: whether the map still led anywhere. */
@@ -40,7 +64,10 @@ const BHASIN_AFTER: readonly EndingLine[] = [
 ];
 
 /** The train in his Mail, Sunday afternoon. Nobody on this phone says who's in it. */
-const THE_TRAIN: EndingLine = { at: "4:55 PM", text: "Train 12952 leaves New Delhi for Mumbai Central. In coach B3, seat 41 is taken." };
+const THE_TRAIN: readonly EndingLine[] = [
+  { at: "4:55 PM", text: "Train 12952 leaves New Delhi for Mumbai Central. In coach B3, seat 41 is taken.", unless: ["did:sameer-went", "did:sameer-stayed"] },
+  { at: "4:55 PM", text: "Sameer is on the 4:55, as he told you he would be.", needs: ["did:sameer-stayed"] },
+];
 
 /** (game) T18: who his leaving costs, on the phone still face-down on your table. */
 const MUMMY_AFTER: EndingLine = {
@@ -57,16 +84,19 @@ export const endings: readonly Ending[] = [
     // Posted before the two firings were told apart (canon).
     when: { acts: ["post"], untraced: ["two-firings"] },
     lines: [
+      ...SEVEN_NIGHT,
       { text: "The post climbs. Kunal Sehgal's name is in every share." },
-      { at: "The next morning", text: "The Sehgals release a frame from Kunal's video: Sameer with the gun, and Dilip behind the light." },
+      ...SEVEN_MORNING,
+      ...BHASIN_AFTER,
+      ...THE_TRAIN,
+      MUMMY_AFTER,
+      // Monday, last: the turn comes after the day it went out.
+      { at: "The next morning", clock: "09:10", text: "The Sehgals release a frame from Kunal's video: Sameer with the gun, and Dilip behind the light." },
       { who: "The Sehgal family", text: "The wedding planner fired. Our son was forty metres away." },
       { text: "The story turns around in an hour. Your correction is shared a tenth as often as your post was." },
       { who: "Raju", text: "Aapke post mein toh Kunal tha…", english: "Your post said it was Kunal…", any: ["did:raju-told-truth", "did:raju-trusts"] },
-      ...BHASIN_AFTER,
-      THE_TRAIN,
-      MUMMY_AFTER,
     ],
-    last: [HELD_THE_LIGHT],
+    last: [...LAST_IMAGE, HELD_THE_LIGHT],
     onlyHere: "The frame, released by the people you'd named.",
   },
   {
@@ -75,30 +105,27 @@ export const endings: readonly Ending[] = [
     // The lie and the edit traced and left in, and nothing untraced passed off as fact.
     when: { acts: ["send", "post"], in: ["lie", "edit"], noFacts: true },
     lines: [
+      ...SEVEN_NIGHT,
       { who: "Meera", text: "Ye complete hai. Isliye kisi ko pasand nahi aayega.", english: "It's complete. That's why nobody will like it.", needs: ["did:sent"] },
       // (game) T19: what it costs her to take it.
-      { at: "3:20 AM", who: "Meera", text: "Kal Saket mein file kar rahi hoon. Senior ne mana kiya hai. Phir bhi.", english: "I'm filing at Saket tomorrow. My senior told me not to. Even so.", needs: ["did:sent"] },
-      { at: "3:40 AM", who: "Instagram · Sehgal & Associates", text: "This post is false and defamatory. Remove it within 24 hours.", needs: ["did:posted"] },
+      { at: "4:52 AM", who: "Meera", text: "Aaj Saket mein file kar rahi hoon. Senior ne mana kiya hai. Phir bhi.", english: "I'm filing at Saket today. My senior told me not to. Even so.", needs: ["did:sent"] },
+      { at: "5:05 AM", who: "Instagram · Sehgal & Associates", text: "This post is false and defamatory. Remove it within 24 hours.", needs: ["did:posted"] },
       { text: "The record holds: every line has its source.", needs: ["did:posted"] },
       { who: "Meera", text: "Phone mein kuch nahi badla. Achha kiya.", english: "Nothing on the phone changed. You did well.", needs: ["did:meera-preserved"] },
-      { text: "Kunal handed over a loaded gun. Sameer fired it, and lied at 1:52. Bhasin kept Dilip in a room with no doctor, and gave the orders before dawn; Sameer carried the jerrycan. The one man who sent a car believed what he was told." },
+      { text: "Kunal handed over a loaded gun. Sameer fired it, and lied at 1:52. Bhasin kept Dilip in a room with no doctor, hid him under another name, and let Sameer burn a mattress believing it was a boy. The one man who sent a car believed what he was told." },
       { at: "Later", clock: "05:12", who: "Nitin", text: "Mera naam nahi hai. …Par sach hai. Shukriya.", english: "My name isn't in it. …But it's true. Thank you.", needs: ["did:protect-nitin", "did:kept-witness"] },
       { at: "Later", clock: "05:12", who: "Nitin", text: "Theek hai. Sach hai.", english: "All right. It's true.", needs: ["did:protect-nitin"], unless: ["did:named-witness", "did:kept-witness"] },
       { text: "Nitin reads his own name in it. You'd promised him it wouldn't be there.", needs: ["did:promised-nitin", "did:named-witness"] },
       { text: "Nitin's name is in it: the one person who tried.", needs: ["did:named-witness"], unless: ["did:promised-nitin"] },
       // (game) T22: what naming him costs, before anyone official has asked him anything.
       { at: "5:30 AM", who: "Nitin", text: "Bhasin ke log ghar aaye the. Maa ro rahi hai.", english: "Bhasin's people came to my house. Ma is crying.", needs: ["did:named-witness"] },
-      ...RAJU_AFTER,
+      ...SEVEN_MORNING,
       ...BHASIN_AFTER,
-      { text: "Sameer's number stops existing on WhatsApp." },
-      THE_TRAIN,
+      { text: "Sameer's number stops existing on WhatsApp.", unless: ["did:sameer-went"] },
+      ...THE_TRAIN,
       MUMMY_AFTER,
     ],
-    last: [
-      { who: "Raju", text: "📷 Dilip at Chhath, Samastipur: a yellow kurta, squinting into the sun, laughing", src: "/found/raakh/dilip-chhath.jpg", needs: ["did:told-raju"] },
-      { who: "Raju", text: "Isko rakhna. Uski yahi achhi photo hai.", english: "Keep this one. It's his only good photo.", needs: ["did:told-raju"] },
-      HELD_THE_LIGHT,
-    ],
+    last: [...LAST_IMAGE, HELD_THE_LIGHT],
     onlyHere: "1:52, in the record, under your name.",
   },
   {
@@ -106,18 +133,19 @@ export const endings: readonly Ending[] = [
     row: "Sameer's Version",
     when: { acts: ["send", "post"] },
     lines: [
+      ...SEVEN_NIGHT,
       { who: "Sameer", text: "Thank you. Tune wahi dekha jo hua tha.", english: "Thank you. You saw what happened.", unless: ["did:confronted-sameer"] },
       { who: "Meera", text: "Ye uska version hai. Par jo bhi likha hai, sach hai.", english: "This is his version. But everything in it is true.", needs: ["did:sent"] },
       { text: "It's shared widely, and it is almost all true.", needs: ["did:posted"] },
       { text: "The record names Bhasin for the car. Nobody asks the man who sent it why he turned it round." },
       { text: "You knew about 1:52. You left it out.", needs: ["did:left-out-lie"] },
-      ...RAJU_AFTER,
+      ...SEVEN_MORNING,
       ...BHASIN_AFTER,
       { text: "His boundary holds: “I caused the accident; they caused the death.”" },
-      THE_TRAIN,
+      ...THE_TRAIN,
       MUMMY_AFTER,
     ],
-    last: [HELD_THE_LIGHT],
+    last: [...LAST_IMAGE, HELD_THE_LIGHT],
     onlyHere: "What Sameer said when he said thank you.",
   },
   {
@@ -125,11 +153,12 @@ export const endings: readonly Ending[] = [
     row: "Return to Sender",
     when: { acts: ["return"] },
     lines: [
+      ...SEVEN_NIGHT,
+      ...SEVEN_MORNING,
       { text: "In the morning you tape the parcel shut, with the envelope inside, and write across the label: not the sender." },
       { text: "The courier takes it back. It goes to the hub, onto a shelf of parcels nobody will claim.", unless: ["did:bhasin-yes"] },
       { text: "The courier takes it back. By noon it's gone from the hub. Nobody signs for it.", needs: ["did:bhasin-yes"] },
       { text: "Whatever happened in Chhattarpur stays on it." },
-      { text: "Raju's last message is still “Main jaag raha hoon.”", english: "I'm awake.", needs: ["did:kept-raju-waiting"] },
     ],
     last: [{ text: "Four voice notes to M. One grey tick each.", needs: ["saw:vn-kunal"] }],
     onlyHere: "A shelf of parcels nobody will claim.",

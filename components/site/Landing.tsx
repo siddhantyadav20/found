@@ -1,410 +1,170 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { AppGlyph } from "@/components/owner/ios/icons";
 import YourCases from "@/components/found/Desk/YourCases";
 import SoundToggle from "@/components/found/SoundToggle";
 import { CASES } from "@/content/cases";
 import ChapterStatus from "./ChapterStatus";
+import Figures from "./Figures";
 import Mark from "./Mark";
 import styles from "./Landing.module.css";
 
 /* ===========================================================================
-   Found's front door (2026-10-23), replacing the desk.
+   Found's front door (rebuilt 2026-10-24 on Linear's system).
 
-   What it has to do: say what Found is in one breath, show how it's played
-   with the game's own pieces (a lock screen filling up, a voice note, a
-   photo leaned into, a sentence in the case file), and put Chapter 1 one tap
-   away. Server-rendered and animated in CSS; the only client parts are what
-   this browser alone knows (how far you got, the sound).
+   One quiet, left-aligned headline; then the product itself, large: the game
+   as a player sees it on a wide screen (his chats, M's voice notes, the case
+   file). A monochrome strip, a two-tone statement, three numbered figures,
+   and sections that each pair a split header with a real piece of the game.
+   No pills, no glows on buttons, no stickers: the restraint is the design.
 
-   Every picture here is from the game. Nothing is a stock icon.
+   Server-rendered. The only client parts are what this browser alone knows
+   (how far you got, the sound).
    =========================================================================== */
 
 const raakh = CASES.raakh;
 const local = CASES.lastlocal;
+const R = "/found/raakh";
 
-const STEPS = [
-  {
-    n: "01",
-    title: "It arrives",
-    body: "A parcel comes back to your door. Inside: a stranger's phone, cracked at one corner, and a note meant for someone else.",
-  },
-  {
-    n: "02",
-    title: "You get in",
-    body: "No passcode. Every app works the way it does on a real phone: chats, photos, Recently Deleted, locked notes, voice memos, calls that ring in your hand.",
-  },
-  {
-    n: "03",
-    title: "You put it together",
-    body: "Say what happened in the case file, a sentence at a time, and back it with what you found. Get it wrong and it tells you which word.",
-  },
-  {
-    n: "04",
-    title: "You decide",
-    body: "Send the record to the lawyer it was meant for, post it for everyone, or hand the parcel back. Each ending is the one you earned.",
-  },
+const CHATS = [
+  { name: "M", sub: "Voice message · 0:06", time: "Wed", avatar: `${R}/dp-meera.jpg`, pinned: true, on: true },
+  { name: "+91 62••• •4417", sub: "Bhaiya aap ho? Ya ye phone ab kisi aur…", time: "11:31 PM", unread: 2 },
+  { name: "Mummy", sub: "Beta, phone kyun nahi utha raha?", time: "10:52 PM", unread: 1 },
+  { name: "Banyan — Security", sub: "Messages disappear after 24 hours", time: "22/11", group: true },
+  { name: "Kunal", sub: "Video · 0:14", time: "22/11", avatar: `${R}/dp-kunal.jpg` },
+  { name: "Bhasin Uncle", sub: "Balance aaj aa jayega. Tab tak…", time: "Sunday", avatar: `${R}/dp-bhasin.jpg` },
+  { name: "Sethi Caterers", sub: "Dilip ka hisaab Bhasin sir ne kar diya…", time: "Monday" },
 ];
 
-const FAQ = [
-  ["Is it free?", "Yes. Chapter 1 and Chapter 2 are free to play, in your browser. No download, no sign-up, no ads."],
-  ["How long does a chapter take?", "Most players finish one in 45 minutes to an hour, in three episodes. Your place is kept, so you can stop between episodes."],
-  ["Phone or laptop?", "Either. It's built for a phone held in one hand, at night, with the sound on. On a laptop the case file opens beside the phone like a notebook."],
-  ["What if I get stuck?", "Choose “With help” at the start: the case file says where to look, every question has three hints, and the last one is the answer. Nothing counts how often you used them."],
-  ["Is any of it real?", "No. Every person, company and number in Found is invented, and the game never asks you for anything real. The places are real cities; the crimes aren't."],
-  ["Who is it for?", "Anyone 16 and up. Chapters deal with violence and its aftermath, never shown, and each one says what's in it before you open it."],
+const NOTES = [
+  { at: "9:40 AM", s: "0:18", t: "M… main jaanta hoon tu reply nahi karegi. Kal shaadi mein… Kunal firing kar raha tha. Ek ladka gir gaya.", e: "M… I know you won't reply. Last night at the wedding… Kunal was firing. A boy fell." },
+  { at: "11:20 PM", s: "0:11", t: "Usko hospital nahi le gaye. Bhasin ne kisi ko jaane nahi diya.", e: "They didn't take him to hospital. Bhasin didn't let anyone go." },
+  { at: "2:05 AM", s: "0:09", t: "Unhone usko jala diya, M. Main wahan tha. Maine dekha.", e: "They burned him, M. I was there. I saw it." },
 ];
 
-function LockScreen() {
+function Wave({ seed, n = 28 }: { seed: number; n?: number }) {
   return (
-    <div className={styles.phone} aria-hidden="true">
-      <div className={styles.phoneScreen}>
-        <Image src={raakh.wallpaper} alt="" fill sizes="320px" className={styles.wall} priority />
-        <div className={styles.island} />
-        <p className={styles.lockDate}>Saturday 29 November</p>
-        <p className={styles.lockTime}>11:40</p>
-        <ol className={styles.notes}>
-          <li style={{ "--i": 0 } as React.CSSProperties}>
-            <span className={styles.noteIcon}>
-              <AppGlyph app="phone" />
+    <span className={styles.wave} aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => (
+        <i key={i} style={{ height: `${22 + Math.round(72 * Math.abs(Math.sin(i * 1.7 + seed) * Math.cos(i * 0.55)))}%` }} />
+      ))}
+    </span>
+  );
+}
+
+/** The game on a wide screen, drawn as itself: his chats, M's voice notes, and the case file beside them. */
+function Product() {
+  return (
+    <div className={styles.product} aria-label="The game: his WhatsApp chats, M's voice notes, and the case file" role="img">
+      <div className={styles.window}>
+        <aside className={styles.chats}>
+          <div className={styles.chatsHead}>
+            <b>Chats</b>
+            <span className={styles.search}>Search</span>
+          </div>
+          <ul>
+            {CHATS.map((c) => (
+              <li key={c.name} data-on={c.on || undefined}>
+                <span className={styles.av}>
+                  {c.avatar ? <Image src={c.avatar} alt="" fill sizes="40px" className={styles.cover} /> : c.group ? "◎" : c.name[0] === "+" ? "" : c.name[0]}
+                </span>
+                <span className={styles.chatText}>
+                  <span className={styles.chatTop}>
+                    <b>{c.name}</b>
+                    <time>{c.time}</time>
+                  </span>
+                  <span className={styles.chatSub}>
+                    <span>{c.sub}</span>
+                    {c.unread ? <i>{c.unread}</i> : null}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <section className={styles.thread}>
+          <header className={styles.threadHead}>
+            <span className={styles.av}>
+              <Image src={`${R}/dp-meera.jpg`} alt="" fill sizes="40px" className={styles.cover} />
             </span>
             <span>
-              <b>Phone</b>
-              <span>47 Missed Calls</span>
+              <b>M</b>
+              <span>last seen a long time ago</span>
             </span>
-            <time>11:38 PM</time>
-          </li>
-          <li style={{ "--i": 1 } as React.CSSProperties}>
-            <span className={styles.noteIcon}>
-              <AppGlyph app="whatsapp" />
+          </header>
+          <div className={styles.bubbles}>
+            <p className={styles.day}>Sunday</p>
+            {NOTES.map((v, i) => (
+              <div key={v.at} className={styles.voice}>
+                <span className={styles.voiceRow}>
+                  <span className={styles.play} />
+                  <Wave seed={i * 2.3} />
+                  <span className={styles.voiceLen}>{v.s}</span>
+                </span>
+                <span className={styles.voiceText}>{v.t}</span>
+                <span className={styles.voiceEn}>{v.e}</span>
+                <span className={styles.tick}>
+                  {v.at} <b>✓</b>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <aside className={styles.file}>
+          <p className={styles.fileTop}>
+            <span>Episode 1 · Missed Calls</span>
+            <span className={styles.fileDots}>
+              <i data-done />
+              <i data-done />
+              <i data-now />
+              <i />
             </span>
-            <span>
-              <b>Mummy</b>
-              <span>Beta, phone kyun nahi utha raha? Khana khaya?</span>
-            </span>
-            <time>10:52 PM</time>
-          </li>
-          <li style={{ "--i": 2 } as React.CSSProperties}>
-            <span className={styles.noteIcon}>
-              <AppGlyph app="phone" />
-            </span>
-            <span>
-              <b>Bhasin Uncle</b>
-              <span>2 missed calls</span>
-            </span>
-            <time>Fri</time>
-          </li>
-          <li style={{ "--i": 3 } as React.CSSProperties} data-new>
-            <span className={styles.noteIcon}>
-              <AppGlyph app="whatsapp" />
-            </span>
-            <span>
-              <b>+91 70••• •2290</b>
-              <span>M? Tu hai?</span>
-            </span>
-            <time>now</time>
-          </li>
-        </ol>
-        <span className={styles.homeBar} />
+          </p>
+          <p className={styles.fileEyebrow}>Open question</p>
+          <p className={styles.fileQ}>What happened to Dilip at the wedding?</p>
+          <p className={styles.fileStep}>
+            <span>1</span> Say what happened
+          </p>
+          <p className={styles.fileSentence}>
+            Dilip was shot by <u>someone at the wedding</u>. Nobody took him to a hospital, and his body was <u>burned</u>.
+          </p>
+          <p className={styles.fileOk}>That&apos;s what the phone shows. Now show it.</p>
+          <p className={styles.fileStep}>
+            <span>2</span> Show it: the 2 things that prove it
+          </p>
+          <ul className={styles.proof}>
+            <li data-on>
+              <i />
+              Voice note: “Usko hospital nahi le gaye.”
+            </li>
+            <li data-on>
+              <i />
+              Voice note: “Unhone usko jala diya… Maine dekha.”
+            </li>
+            <li>
+              <i />
+              Nine seconds of fire, 4:47 AM Sunday
+            </li>
+          </ul>
+          <span className={styles.fileBtn}>File it</span>
+        </aside>
       </div>
     </div>
   );
 }
 
-function Hero() {
-  return (
-    <section className={styles.hero}>
-      <div className={styles.heroCopy}>
-        <Link href={raakh.href} className={styles.pill}>
-          <span className={styles.pillTag}>New</span>
-          <span>
-            Chapter 1, <i>Raakh</i>, is out
-          </span>
-          <span aria-hidden="true">→</span>
-        </Link>
-        <h1 className={styles.h1}>
-          Thrillers you play on <em>somebody else&apos;s</em> phone.
-        </h1>
-        <p className={styles.lede}>
-          A phone that isn&apos;t yours lands at your door. Read the chats, play the voice notes, dig through what was deleted, and work out what
-          happened, while the people looking for it keep calling.
-        </p>
-        <div className={styles.ctas}>
-          <ChapterStatus id="raakh" cta="Play Chapter 1: Raakh" primary />
-          <a href="#how" className={styles.btnGhost}>
-            How it&apos;s played
-          </a>
-        </div>
-        <ul className={styles.facts}>
-          <li>Free</li>
-          <li>In your browser</li>
-          <li>45–60 min a chapter</li>
-          <li>Sound on</li>
-        </ul>
-      </div>
+const APPS = ["WhatsApp", "Photos", "Instagram", "Phone", "Notes", "Mail", "Safari", "Voice Memos", "Settings"];
 
-      <div className={styles.heroArt}>
-        <div className={styles.glow} aria-hidden="true" />
-        <LockScreen />
-
-        {/* The pieces a play turns up, as the phone shows them. */}
-        <figure className={`${styles.float} ${styles.floatVoice}`} aria-hidden="true">
-          <span className={styles.voicePlay} />
-          <span className={styles.wave}>
-            {Array.from({ length: 22 }, (_, i) => (
-              <i key={i} style={{ height: `${24 + Math.round(70 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.55)))}%` }} />
-            ))}
-          </span>
-          <span className={styles.voiceTime}>0:18</span>
-          <figcaption>“M… main jaanta hoon tu reply nahi karegi.”</figcaption>
-        </figure>
-
-        <figure className={`${styles.float} ${styles.floatPhoto}`} aria-hidden="true">
-          <span className={styles.photo}>
-            <Image src="/found/raakh/w-portrait.jpg" alt="" fill sizes="180px" className={styles.cover} />
-            <span className={styles.loupe}>DILIP</span>
-          </span>
-          <figcaption>9:48 PM · a waiter, smiling into the lens</figcaption>
-        </figure>
-
-        <figure className={`${styles.float} ${styles.floatFile}`} aria-hidden="true">
-          <span className={styles.fileHead}>Case file · Q2</span>
-          <span className={styles.fileLine}>
-            Dilip was last seen as a <u>waiter</u> at the <u>Sehgal wedding</u>.
-          </span>
-          <span className={styles.fileProof}>
-            <i />2 pieces of proof
-          </span>
-        </figure>
-      </div>
-    </section>
-  );
-}
-
-function Apps() {
-  const apps = ["whatsapp", "photos", "phone", "instagram", "notes", "mail", "safari", "voicememos", "settings"] as const;
-  return (
-    <section className={styles.apps} aria-label="The apps you'll dig through">
-      <p className={styles.appsLabel}>Nine apps that work like the real ones. Every one of them holds something.</p>
-      <ul className={styles.appRow}>
-        {apps.map((a, i) => (
-          <li key={a} style={{ "--i": i } as React.CSSProperties}>
-            <AppGlyph app={a} />
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function How() {
-  return (
-    <section className={styles.section} id="how">
-      <header className={styles.sectionHead}>
-        <p className={styles.kicker}>How it&apos;s played</p>
-        <h2 className={styles.h2}>
-          Four steps. <span>No rules to learn: you already know how to use a phone.</span>
-        </h2>
-      </header>
-      <ol className={styles.steps}>
-        {STEPS.map((s, i) => (
-          <li key={s.n} className={styles.step}>
-            <div className={styles.stepArt} data-step={i + 1} aria-hidden="true">
-              {i === 0 && (
-                <span className={styles.envelope}>
-                  <span className={styles.hand}>
-                    M —<br />
-                    Sab isme hai.
-                    <br />
-                    Local thane mat le jaana.
-                  </span>
-                  <span className={styles.envStamp}>Return to origin</span>
-                </span>
-              )}
-              {i === 1 && (
-                <span className={styles.otp}>
-                  <span>Agar kuch hua</span>
-                  <span className={styles.otpBoxes}>
-                    <i>•</i>
-                    <i>•</i>
-                    <i data-on />
-                    <i />
-                  </span>
-                  <small>Hint: birthday · ddmm</small>
-                </span>
-              )}
-              {i === 2 && (
-                <span className={styles.sentence}>
-                  <span>
-                    S is <u>Sameer Khurrana</u>, a <u data-wrong>DJ</u>…
-                  </span>
-                  <small>“DJ” isn&apos;t what the phone shows. Look in Instagram or Mail.</small>
-                </span>
-              )}
-              {i === 3 && (
-                <span className={styles.acts}>
-                  <i>Send it to Meera Arora</i>
-                  <i>Post it on his Instagram</i>
-                  <i>Hand it back to the courier</i>
-                </span>
-              )}
-            </div>
-            <p className={styles.stepN}>{s.n}</p>
-            <h3 className={styles.h3}>{s.title}</h3>
-            <p className={styles.body}>{s.body}</p>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
-
-function Features() {
-  return (
-    <section className={styles.section} aria-labelledby="features">
-      <header className={styles.sectionHead}>
-        <p className={styles.kicker}>Why it feels real</p>
-        <h2 className={styles.h2} id="features">
-          The night doesn&apos;t wait for you. <span>It keeps happening while you read.</span>
-        </h2>
-      </header>
-      <div className={styles.bento}>
-        <article className={`${styles.card} ${styles.cardWide}`}>
-          <h3 className={styles.h3}>People call. People write. Someone comes to your gate.</h3>
-          <p className={styles.body}>Notifications land while you dig. A brother who hasn&apos;t slept rings the phone in your hand. What you tell him changes what he does next.</p>
-          <div className={styles.call} aria-hidden="true">
-            <span className={styles.callWho}>+91 62••• •4417</span>
-            <span className={styles.callSub}>mobile</span>
-            <span className={styles.callBtns}>
-              <i data-red />
-              <i />
-            </span>
-          </div>
-        </article>
-        <article className={styles.card}>
-          <h3 className={styles.h3}>Voices, not just text</h3>
-          <p className={styles.body}>Voice notes, memos and calls in Hindi and Hinglish, with English under every line.</p>
-          <span className={styles.bigWave} aria-hidden="true">
-            {Array.from({ length: 36 }, (_, i) => (
-              <i key={i} style={{ "--h": `${20 + Math.round(75 * Math.abs(Math.sin(i * 0.9) * Math.cos(i * 0.31)))}%`, "--d": `${(i % 9) * 0.08}s` } as React.CSSProperties} />
-            ))}
-          </span>
-        </article>
-        <article className={styles.card}>
-          <h3 className={styles.h3}>Nothing is handed to you</h3>
-          <p className={styles.body}>Chats behind Chat Lock. Photos stuck in iCloud. A note locked with a password only his life gives away. Every lock is one a real phone has.</p>
-          <span className={styles.lockRow} aria-hidden="true">
-            <AppGlyph app="whatsapp" />
-            <AppGlyph app="photos" />
-            <AppGlyph app="notes" />
-          </span>
-        </article>
-        <article className={styles.card}>
-          <h3 className={styles.h3}>Three episodes, one sitting</h3>
-          <p className={styles.body}>Each episode ends on a question the next one answers. Your phone has to keep his alive in between.</p>
-          <span className={styles.eps} aria-hidden="true">
-            <i data-on>Missed Calls</i>
-            <i>The Second Shot</i>
-            <i>The Cancelled Rescue</i>
-          </span>
-        </article>
-        <article className={styles.card}>
-          <h3 className={styles.h3}>Pass it on</h3>
-          <p className={styles.body}>
-            Finished? Seal the parcel and send it to a friend on WhatsApp, with their name on the label. You&apos;ll see how far they got, and never what they chose.
-          </p>
-          <span className={styles.share} aria-hidden="true">
-            <b>I traced 9 of 11 links in Raakh.</b>
-            <span>A wedding planner&apos;s phone. A missing waiter. Where does it end?</span>
-          </span>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-function Chapters() {
-  return (
-    <section className={styles.section} id="chapters">
-      <header className={styles.sectionHead}>
-        <p className={styles.kicker}>Chapters</p>
-        <h2 className={styles.h2}>
-          Every chapter is a different phone, in a different Indian city. <span>Start with the first.</span>
-        </h2>
-      </header>
-      <div className={styles.chapters}>
-        <article className={`${styles.chapter} ${styles.chapterLead}`}>
-          <div className={styles.chapterArt}>
-            <Image src="/found/raakh/key-lawn.jpg" alt="The back lawn of a Delhi farmhouse after midnight: fairy lights in the mango trees, chairs knocked over, a light panel face down beside an empty tripod." fill sizes="(max-width: 900px) 100vw, 60vw" className={styles.cover} />
-            <span className={styles.chapterNo}>Chapter 01</span>
-          </div>
-          <div className={styles.chapterBody}>
-            <p className={styles.chapterCity}>
-              {raakh.city} · {raakh.episodes} episodes · {raakh.tone.split(" · ").at(-1)}
-            </p>
-            <h3 className={styles.chapterTitle}>Raakh</h3>
-            <p className={styles.chapterHindi} lang="hi">
-              राख · ash
-            </p>
-            <p className={styles.body}>{raakh.logline}</p>
-            <p className={styles.note}>{raakh.note}</p>
-            <ChapterStatus id="raakh" cta="Open the parcel" primary />
-          </div>
-        </article>
-
-        <article className={styles.chapter}>
-          <div className={styles.chapterArt}>
-            <Image src="/found/lastlocal/wallpaper.jpg" alt="Mumbai's sea link at night." fill sizes="(max-width: 900px) 100vw, 40vw" className={styles.cover} />
-            <span className={styles.chapterNo}>Chapter 02</span>
-          </div>
-          <div className={styles.chapterBody}>
-            <p className={styles.chapterCity}>
-              {local.city} · {local.episodes} episodes · {local.tone.split(" · ").at(-1)}
-            </p>
-            <h3 className={styles.chapterTitle}>Last Local</h3>
-            <p className={styles.body}>{local.logline}</p>
-            <ChapterStatus id="lastlocal" cta="Pick it up" />
-          </div>
-        </article>
-
-        <article className={`${styles.chapter} ${styles.chapterLocked}`}>
-          <div className={styles.chapterArt} aria-hidden="true">
-            <span className={styles.silhouette} />
-            <span className={styles.chapterNo}>Chapter 03</span>
-          </div>
-          <div className={styles.chapterBody}>
-            <p className={styles.chapterCity}>Somewhere else · being found</p>
-            <h3 className={styles.chapterTitle}>Not yet</h3>
-            <p className={styles.body}>A different object, a different city. It&apos;ll be here when it arrives.</p>
-          </div>
-        </article>
-      </div>
-      <div className={styles.yours}>
-        <YourCases />
-      </div>
-    </section>
-  );
-}
-
-function Questions() {
-  return (
-    <section className={styles.section} id="faq">
-      <header className={styles.sectionHead}>
-        <p className={styles.kicker}>Questions</p>
-        <h2 className={styles.h2}>Before you open it.</h2>
-      </header>
-      <div className={styles.faq}>
-        {FAQ.map(([q, a]) => (
-          <details key={q} className={styles.qa}>
-            <summary>{q}</summary>
-            <p>{a}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-  );
-}
+const FAQ = [
+  ["Is it free?", "Yes. Both chapters are free to play in your browser. No download, no sign-up, no ads."],
+  ["How long is a chapter?", "Most players take 45 minutes to an hour, in three episodes. Your place is kept between them."],
+  ["Phone or laptop?", "Either. It's made for a phone in one hand, at night, with the sound on. On a laptop the case file sits beside the phone."],
+  ["What if I get stuck?", "Play “With help”: the case file says where to look, and every question has three hints, the last one the answer. Nothing counts how often you used them."],
+  ["Is any of it real?", "No. Every person, company and number is invented, and the game never asks you for anything real. The cities are real; the crimes aren't."],
+  ["Who is it for?", "Anyone 16 and over. Chapters deal with violence and its aftermath, never shown, and each says what's in it before you open it."],
+];
 
 export default function Landing() {
   return (
@@ -413,44 +173,267 @@ export default function Landing() {
         Skip to content
       </a>
       <header className={styles.nav}>
-        <Link href="/" aria-label="Found, home" className={styles.brand}>
-          <Mark size={19} />
-        </Link>
-        <nav className={styles.links} aria-label="Sections">
-          <a href="#how">How it works</a>
-          <a href="#chapters">Chapters</a>
-          <a href="#faq">Questions</a>
-        </nav>
-        <span className={styles.navEnd}>
-          <SoundToggle className={styles.sound} />
-          <Link href={raakh.href} className={styles.navCta}>
-            Play
+        <div className={styles.navInner}>
+          <Link href="/" aria-label="Found, home" className={styles.brand}>
+            <Mark size={18} />
           </Link>
-        </span>
+          <nav className={styles.links} aria-label="Sections">
+            <a href="#how">How it works</a>
+            <a href="#chapters">Chapters</a>
+            <a href="#faq">Questions</a>
+          </nav>
+          <span className={styles.navEnd}>
+            <SoundToggle className={styles.sound} />
+            <Link href={raakh.href} className={styles.navCta}>
+              Play
+            </Link>
+          </span>
+        </div>
       </header>
 
       <main id="main">
-        <Hero />
-        <Apps />
-        <How />
-        <Features />
-        <Chapters />
-        <Questions />
+        <section className={styles.hero}>
+          <h1 className={styles.h1}>
+            Thrillers you play on <br className={styles.br} />
+            someone else&apos;s phone
+          </h1>
+          <div className={styles.heroRow}>
+            <p className={styles.lede}>A stranger&apos;s phone arrives at your door. Everything you need is on it.</p>
+            <Link href={raakh.href} className={styles.newLink}>
+              <b>New</b> Chapter 1: Raakh <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <div className={styles.heroCtas}>
+            <ChapterStatus id="raakh" cta="Play Raakh, free" primary />
+            <span className={styles.heroNote}>In your browser · 45–60 minutes · sound on</span>
+          </div>
+        </section>
+
+        <div className={styles.productWrap}>
+          <Product />
+        </div>
+
+        <section className={styles.strip} aria-label="The apps you'll go through">
+          <ul>
+            {APPS.map((a) => (
+              <li key={a}>{a}</li>
+            ))}
+          </ul>
+          <p>Every app on his phone works, and every one of them holds something</p>
+        </section>
+
+        <section className={styles.statement}>
+          <p>
+            A new kind of thriller.{" "}
+            <span>
+              Not a film you watch or a book you read: a stranger&apos;s phone you open, and a night you put back together from what they left on it,
+              and what they didn&apos;t.
+            </span>
+          </p>
+        </section>
+
+        <Figures />
+
+        <section className={styles.split} id="how">
+          <header className={styles.splitHead}>
+            <h2 className={styles.h2}>The night keeps happening</h2>
+            <p className={styles.splitText}>
+              You don&apos;t read it after the fact. Messages land while you dig. A brother who hasn&apos;t slept rings the phone in your hand. Somebody
+              wants it back by morning, and knows your address.
+            </p>
+          </header>
+          <div className={styles.panel}>
+            <div className={styles.lock}>
+              <Image src={raakh.wallpaper} alt="" fill sizes="(max-width: 900px) 100vw, 380px" className={styles.cover} />
+              <span className={styles.lockTime}>11:40</span>
+              <ul className={styles.lockNotes}>
+                <li>
+                  <b>Phone</b> 47 Missed Calls
+                </li>
+                <li>
+                  <b>Mummy</b> Beta, phone kyun nahi utha raha?
+                </li>
+                <li data-new>
+                  <b>+91 70••• •2290</b> M? Tu hai?
+                </li>
+              </ul>
+            </div>
+            <div className={styles.call}>
+              <span className={styles.callWho}>+91 62••• •4417</span>
+              <span className={styles.callSub}>00:07</span>
+              <p className={styles.callLine}>
+                <span>Raju</span>…Aap kaun ho? Ye Sameer bhaiya ka phone hai na?
+                <em>…Who are you? This is Sameer bhaiya&apos;s phone, isn&apos;t it?</em>
+              </p>
+              <p className={styles.callLine}>
+                <span>Raju</span>Dilip kahan hai?
+                <em>Where&apos;s Dilip?</em>
+              </p>
+              <span className={styles.callOptions}>
+                <i>Main Sameer nahi hoon. Ye phone mujhe mila hai.</i>
+                <i>Dilip kaun?</i>
+                <i>Galat number.</i>
+              </span>
+            </div>
+            <div className={styles.threat}>
+              <span className={styles.threatWho}>Bhasin Uncle</span>
+              <p>Location dekh li hai.</p>
+              <p>Courier company mein bhi humare log hain. Parcel pe bhejne wale ka pata aapka hai na?</p>
+              <span className={styles.threatEn}>“We have people at the courier company too. The sender&apos;s address on that parcel is yours, isn&apos;t it?”</span>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.split}>
+          <header className={styles.splitHead}>
+            <h2 className={styles.h2}>Nothing is handed to you</h2>
+            <p className={styles.splitText}>
+              What he wanted read first is in plain view. What he didn&apos;t is behind real locks: Recently Deleted, chats hidden behind a secret code,
+              photos stuck in iCloud, a note only his birthday opens.
+            </p>
+          </header>
+          <div className={styles.duo}>
+            <div className={styles.card}>
+              <p className={styles.panelLabel}>Photos · Recently Deleted</p>
+              <div className={styles.grid3}>
+                {["w-twice", "reel-take", "w-blur"].map((src, i) => (
+                  <span key={src}>
+                    <Image src={`${R}/${src}.jpg`} alt="" fill sizes="160px" className={styles.cover} />
+                    <i>{[25, 28, 25][i]} days</i>
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className={styles.card}>
+              <p className={styles.panelLabel}>Notes · Agar kuch hua</p>
+              <div className={styles.otp}>
+                <span className={styles.otpLock}>This note is locked.</span>
+                <span className={styles.otpBoxes}>
+                  <i>•</i>
+                  <i>•</i>
+                  <i data-on />
+                  <i />
+                </span>
+                <span className={styles.otpHint}>Hint: birthday · ddmm</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.split}>
+          <header className={styles.splitHead}>
+            <h2 className={styles.h2}>Say it. Then prove it.</h2>
+            <p className={styles.splitText}>
+              The case file asks one question at a time. You finish the sentence, then put down what on his phone shows it. Get a word wrong and it tells
+              you which one, and where the right one is.
+            </p>
+          </header>
+          <div className={styles.caseShot}>
+            <p className={styles.caseQ}>Who is “S”, and where is he running to?</p>
+            <p className={styles.caseSentence}>
+              S is <u>Sameer Khurrana</u>, a <u data-wrong>DJ</u>, and tomorrow afternoon he&apos;s on a train to <u>Mumbai</u>.
+            </p>
+            <p className={styles.caseBad}>“DJ” isn&apos;t what the phone shows. The right word is on his phone: look in Instagram or Mail.</p>
+            <span className={styles.chips}>
+              <i>wedding planner</i>
+              <i>wedding photographer</i>
+              <i data-off>DJ</i>
+            </span>
+          </div>
+        </section>
+
+        <section className={styles.split} id="chapters">
+          <header className={styles.splitHead}>
+            <h2 className={styles.h2}>Chapters</h2>
+            <p className={styles.splitText}>Every chapter is a different phone, in a different Indian city, and a whole story on its own. Start with the first.</p>
+          </header>
+          <div className={styles.chapters}>
+            <article className={styles.chapter}>
+              <div className={styles.chapterArt}>
+                <Image
+                  src={`${R}/key-lawn.jpg`}
+                  alt="The back lawn of a Delhi farmhouse after midnight: fairy lights in the mango trees, chairs knocked over, a light panel face down beside an empty tripod."
+                  fill
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                  className={styles.cover}
+                />
+              </div>
+              <div className={styles.chapterBody}>
+                <p className={styles.mono}>Chapter 01 · {raakh.city}</p>
+                <h3 className={styles.chapterTitle}>Raakh</h3>
+                <p className={styles.body}>{raakh.logline}</p>
+                <p className={styles.small}>{raakh.note}</p>
+                <ChapterStatus id="raakh" cta="Open the parcel" primary />
+              </div>
+            </article>
+            <article className={styles.chapter}>
+              <div className={styles.chapterArt}>
+                <Image src="/found/lastlocal/wallpaper.jpg" alt="Mumbai's sea link at night." fill sizes="(max-width: 900px) 100vw, 50vw" className={styles.cover} />
+              </div>
+              <div className={styles.chapterBody}>
+                <p className={styles.mono}>Chapter 02 · {local.city}</p>
+                <h3 className={styles.chapterTitle}>Last Local</h3>
+                <p className={styles.body}>{local.logline}</p>
+                <p className={styles.small}>{local.note}</p>
+                <ChapterStatus id="lastlocal" cta="Pick it up" />
+              </div>
+            </article>
+          </div>
+          <p className={styles.next}>
+            <span className={styles.mono}>Chapter 03</span> A different object, another city. Being found.
+          </p>
+          <div className={styles.yours}>
+            <YourCases />
+          </div>
+        </section>
+
+        <section className={styles.split} id="faq">
+          <header className={styles.splitHead}>
+            <h2 className={styles.h2}>Questions</h2>
+            <p className={styles.splitText}>Before you open it.</p>
+          </header>
+          <dl className={styles.faq}>
+            {FAQ.map(([q, a]) => (
+              <div key={q} className={styles.qa}>
+                <dt>{q}</dt>
+                <dd>{a}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
 
         <section className={styles.final}>
           <h2 className={styles.finalTitle}>
-            It&apos;s 11:40 PM. <em>It isn&apos;t your phone.</em>
+            It&apos;s 11:40 PM.
+            <br />
+            <span>It isn&apos;t your phone.</span>
           </h2>
           <ChapterStatus id="raakh" cta="Open Chapter 1" primary />
         </section>
       </main>
 
       <footer className={styles.footer}>
-        <Mark size={16} />
-        <p>Interactive fiction. Every person, company and number in it is invented. Made in India.</p>
-        <p className={styles.footerHelp}>
-          If anything in it is close to home: Tele-MANAS, free, all day, <a href="tel:14416">14416</a>.
-        </p>
+        <div className={styles.footerInner}>
+          <div className={styles.footerBrand}>
+            <Mark size={16} />
+            <p>Interactive fiction. Every person, company and number in it is invented. Made in India.</p>
+          </div>
+          <div className={styles.footerCol}>
+            <b>Chapters</b>
+            <Link href={raakh.href}>01 · Raakh</Link>
+            <Link href={local.href}>02 · Last Local</Link>
+          </div>
+          <div className={styles.footerCol}>
+            <b>The game</b>
+            <a href="#how">How it works</a>
+            <a href="#faq">Questions</a>
+          </div>
+          <div className={styles.footerCol}>
+            <b>If you need it</b>
+            <a href="tel:14416">Tele-MANAS · 14416</a>
+            <a href="tel:112">Emergency · 112</a>
+          </div>
+        </div>
       </footer>
     </div>
   );

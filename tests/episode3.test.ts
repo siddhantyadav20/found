@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { offeredOptions, openReply } from "@/lib/game/chat";
 import { add, answer, answered, dueEvents, episodeOf, filedClaim, needsRevisit, seen, sideQuestions, traced } from "@/lib/game/engine";
 import { AIRPLANE } from "@/lib/game/phone";
+import { momentDone, sceneOf } from "@/lib/game/scene";
 import type { Flag, Thread } from "@/content/types";
 import { ep, look, play } from "./support/play";
 
@@ -34,7 +35,7 @@ describe("Episode 3", () => {
   });
 
   it("traces every link but the money for a player who dug, protected Nitin and confronted Sameer", () => {
-    expect(traced(ep, s).map((l) => l.id)).toEqual(["reel", "kunals-gun", "two-firings", "shot", "alive", "kept", "car", "lie", "fire", "edit"]);
+    expect(traced(ep, s).map((l) => l.id)).toEqual(["reel", "kunals-gun", "two-firings", "shot", "alive", "kept", "car", "lie", "fire", "alive-now", "edit"]);
   });
 
   it("hears Sameer say it, and only once the whole chain is traced", () => {
@@ -112,4 +113,29 @@ describe("his version, filed with confidence", () => {
     expect(needsRevisit(q("q11"), copy)).toBe(true);
     expect(sideQuestions(ep, copy).map((x) => x.id)).toContain("q11");
   });
+});
+
+/* Seven o'clock, lost (2026-10-24): every way of losing him is told at the
+   hour it happened, and leads to the finale; none of it is told at 6:58. */
+describe("losing him at seven", () => {
+  const routes: readonly (readonly string[])[] = [["police"], ["post"], ["froze"], ["meera", "sameer"], ["raju", "sameer"], ["sameer", "meera"], ["sameer", "police"], ["meera", "police"], ["raju", "post"]];
+  for (const route of routes)
+    it(route.join(" then "), () => {
+      let s = play((_, scene) => scene.kind === "moment");
+      let rest = [...route];
+      const told: string[] = [];
+      for (let step = 0; step < 6; step++) {
+        const scene = sceneOf(ep, s);
+        if (scene.kind !== "moment") break;
+        const m = scene.moment;
+        told.push(m.where);
+        const open = m.options.filter((o) => (o.requires ?? []).every((f) => s.flags.includes(f)) && !(o.unless ?? []).some((f) => s.flags.includes(f)));
+        const pick = open.find((o) => o.id === rest[0] || o.id === `${rest[0]}-faced`) ?? open.find((o) => o.id === "on")!;
+        if (pick.id !== "on") rest = rest.slice(1);
+        s = add(s, momentDone(m.id), ...pick.sets);
+      }
+      expect(s.flags).toContain("did:lost");
+      expect(s.flags).toContain("did:rescue-told");
+      expect(told.some((w) => w.startsWith("6:58"))).toBe(false);
+    });
 });

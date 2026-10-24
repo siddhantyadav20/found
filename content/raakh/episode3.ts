@@ -1,4 +1,4 @@
-import type { Evidence, IncomingCall, LiveEvent, Message, Question, Thread } from "../types";
+import type { Evidence, IncomingCall, LiveEvent, Message, Moment, Question, Thread } from "../types";
 import { SAMEER_NEW } from "./episode1";
 import { RAJU } from "./phone";
 
@@ -57,6 +57,14 @@ const evidence: readonly Evidence[] = [
   // Q13: their evidence.
   { id: "frame", device: "owner", app: "notes", label: "In his locked note: Kunal's chat, a video frame (an arm coming down, a flash, a boy behind a light) and “Humare paas bhi hai”", manual: true, requires: [...now, UNLOCKED] },
   { id: "kunal-frame", device: "owner", app: "whatsapp", label: "Kunal sends it again: the frame, “Tera Nitin bhi andar hai”", within: true, requires: ["ep:3", "did:exposed-nitin"] },
+
+  /* The living witness (2026-10-24). Planted since Episode 2 (the car at
+     2:55, the ticks, the last seen), counted here. */
+  { id: "car-255", device: "owner", app: "photos", label: "Screenshot: Pappu, 2:55 AM, “Sir gaadi nikal gayi.” Bhasin: “Baaki back plot pe.”", within: true, requires: now },
+  { id: "belongings", device: "owner", app: "whatsapp", label: "From Dilip's number: a patient's things in a bag, a maroon waistcoat, a badge: DILIP", within: true, requires: ["ep:3", "fired:the-witness"] },
+  { id: "patient-voice", device: "owner", app: "whatsapp", label: "From Dilip's number: five seconds of a patient whispering, “…bhaiya… light… ready…”", within: true, requires: ["ep:3", "fired:the-witness"] },
+  // His phone in airplane mode: the nurse found Raju through the poster instead, and Raju rang you.
+  { id: "raju-relay", device: "owner", app: "phone", label: "Raju: a nurse in Fatehpur Beri has a boy with Dilip's waistcoat and Dilip's voice", within: true, foundBy: ["did:answered-raju-relays"], requires: ["ep:3", "did:answered-raju-relays"] },
 
   // Sameer, one last time.
   { id: "sameer-rescuer", device: "owner", app: "whatsapp", label: "Sameer: “Haan. Maine koshish ki thi.”", within: true, requires: ["ep:3", "did:gave-rescuer"] },
@@ -178,43 +186,51 @@ const questions: readonly Question[] = [
   {
     kind: "file",
     id: "q12",
-    ask: "What did Sameer do at the fire, and why keep the footage?",
+    ask: "What did Sameer do at the fire, and what burned?",
     episode: 3,
     whereToLook: ["notes", "whatsapp"],
     hints: [
       "The clip in Favorites is nine seconds of something longer. He kept the rest somewhere only he could open.",
       "Notes › “Agar kuch hua” is locked, and its hint is his: “birthday · ddmm”. Settings has his birthday, under his name. Or ask Kunal what he remembers.",
-      "He took part, on Bhasin's orders. The password is 1403: he was born on 14 March. Table the whole fire clip, or Kunal's “Lakdi tu khud dhoke laaya tha” with the clip in Favorites.",
+      "He took part, on Bhasin's orders, and what burned was a mattress, sheets and clothes. The password is 1403: he was born on 14 March. Table the whole fire clip from the locked note.",
     ],
     say: {
-      line: "At the fire, Sameer {role}, on {whose} orders, and kept the footage {why}.",
+      line: "At the fire, Sameer {role}, on {whose} orders, and what burned was {what}.",
       blanks: {
         role: ["took part", "only watched", "tried to stop it"],
         whose: ["Bhasin's", "Kunal's"],
-        why: ["as proof against them", "to confess", "to sell it"],
+        what: ["Dilip's body", "a mattress, sheets and clothes"],
       },
     },
     claims: [
       {
         id: "proof",
-        words: { role: "only watched", whose: "Bhasin's", why: "as proof against them" },
-        text: "He saw it, and filmed it to have proof against them.",
+        words: { role: "only watched", whose: "Bhasin's", what: "Dilip's body" },
+        text: "He saw them burn Dilip's body, on Bhasin's orders.",
         proof: ["vn-burned", "fire-clip"],
         orProof: [["sameer-mistake", "fire-clip"]],
-        reply: "On the record, as he tells it: “Main wahan tha. Maine dekha.”",
+        reply: "On the record, as he tells it: “Unhone usko jala diya. Main wahan tha. Maine dekha.”",
         version: true,
         link: "fire",
       },
       {
         id: "part",
-        words: { role: "took part", whose: "Bhasin's", why: "as proof against them" },
-        text: "He took part, on Bhasin's orders, and kept the footage as proof against them.",
+        words: { role: "took part", whose: "Bhasin's", what: "a mattress, sheets and clothes" },
+        text: "He took part, on Bhasin's orders: he carried the jerrycan. What burned was a mattress, sheets and clothes. There is no body in the footage.",
         proof: ["fire-original"],
-        also: ["fire-clip", "vn-burned", "kunal-wood"],
-        orProof: [["kunal-wood", "fire-clip"]],
-        moment: "His hands.",
-        reply: "The first twenty-two seconds are his voice, “Bhasin sir, yahan?”, and his own hands, with the kada, setting down a jerrycan. He left M the last nine, and locked the rest away for himself.",
+        also: ["fire-clip", "vn-burned", "kunal-wood", "car-255", "not-speaking"],
+        orProof: [["kunal-wood", "fire-clip", "car-255"]],
+        moment: "No body.",
+        reply: "Thirty-one seconds, and his own hands with the kada set down a jerrycan beside a rolled mattress and a bundle of sheets. “Uske kapde bhi.” His clothes too. Sameer has told M for a week that they burned him. In the whole clip, there is no body. Then where is Dilip?",
         sets: ["link:fire"],
+      },
+      {
+        id: "body",
+        words: { role: "took part", whose: "Bhasin's", what: "Dilip's body" },
+        text: "",
+        proof: [],
+        reply: "",
+        refuse: "Watch the whole clip again. What's on the ground beside the jerrycan?",
       },
     ],
     reply: "On the record.",
@@ -271,9 +287,56 @@ const questions: readonly Question[] = [
     reply: "On the record.",
     reopenWhen: ["saw:frame"],
   },
+  /* The living witness (2026-10-24): the patient in Fatehpur Beri. Asked once
+     his number has written (or Raju has rung with it), and answered with
+     what's been on this phone since Episode 1: the badge, his voice, the car. */
+  {
+    kind: "file",
+    id: "q14",
+    ask: "The patient they call Deepak: who is he, and how did he get there?",
+    episode: 3,
+    requires: ["did:witness"],
+    whereToLook: ["whatsapp", "photos"],
+    hints: [
+      "Dilip's own number has written to this phone. Read what the nurse sent, and listen to it.",
+      "The badge on the waistcoat in the bag: you've seen it before, on the 9:48 PM portrait. The voice: you've heard it practising English. And Bhasin's group saw a car leave at 2:55.",
+      "Dilip, taken out in Bhasin's car at 2:55, and nobody burned a body. Table the nurse's photo of his belongings with the name badge from the portrait (or his voice with the portrait, or the 2:55 screenshot).",
+    ],
+    say: {
+      line: "The patient is {who}. Bhasin's car took him out at {time}, and nobody burned {body}.",
+      blanks: {
+        who: ["Dilip", "Nitin", "a stranger"],
+        time: ["2:55", "1:52", "4:47"],
+        body: ["a body", "his things"],
+      },
+    },
+    claims: [
+      {
+        id: "alive",
+        words: { who: "Dilip", time: "2:55", body: "a body" },
+        text: "The patient admitted as “Deepak, 19, road accident” is Dilip. Bhasin's car took him out of Banyan Farms at 2:55. Nobody burned a body. Bhasin told Sameer he was dead, and had him burn the rest.",
+        proof: ["belongings", "badge"],
+        also: ["patient-voice", "portrait", "car-255", "fire-original", "raju-relay", "not-speaking"],
+        orProof: [["patient-voice", "portrait"], ["belongings", "car-255"], ["raju-relay", "car-255"], ["raju-relay", "badge"]],
+        moment: "Alive.",
+        reply: "Dilip Kumar Mahto is alive, in a room in Fatehpur Beri, under somebody else's name. He has been for eight days. Bhasin didn't kill him; he hid him, and let Sameer believe the rest. They're moving him at seven.",
+        sets: ["link:alive-now", "did:knows-alive"],
+      },
+      {
+        id: "stranger",
+        words: { who: "a stranger", time: "2:55", body: "a body" },
+        text: "",
+        proof: [],
+        reply: "",
+        refuse: "Look at the badge on the waistcoat in the bag. You've zoomed into it before.",
+      },
+    ],
+    reply: "On the record.",
+  },
 ];
 
 /* --- Nitin, who thinks it's Sameer writing -------------------------------- */
+
 
 /** What Nitin says once Kunal has given his name to Bhasin: the route closes. */
 const nitinNamed = (event: string): Message[] => [
@@ -291,7 +354,19 @@ const nitinSends: readonly Message[] = [
     at: "01:55",
     with: "nitin-sends",
     requires: ["fired:nitin-sends"],
-    attachment: { kind: "photo", label: "Screenshot · Sameer, 1:52 AM: “Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bhej aur nikal yahan se.”" },
+    attachment: {
+      kind: "photo",
+      label: "Screenshot · Sameer, 1:52 AM: “Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bula aur so ja.”",
+      shot: {
+        name: "Sameer Bhai",
+        sub: "online",
+        lines: [
+          { text: "Vicky 10 min. service gate — Mandi Road wala na?", at: "01:40", out: true },
+          { who: "Sameer Bhai", text: "Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bula aur so ja.", english: "They've taken Dilip. In Bhasin sir's car, to hospital. Call Vicky back and go to sleep.", at: "01:52" },
+          { text: "theek hai bhai. agar le gaye hain toh main Vicky ko wapas bula leta hoon", at: "01:53", out: true },
+        ],
+      },
+    },
     english: "“They've taken Dilip. In Bhasin sir's car, to hospital. Send Vicky back and get out of here.”",
     evidence: "nitin-shot-152",
   },
@@ -302,7 +377,11 @@ const nitinSends: readonly Message[] = [
     at: "01:56",
     with: "nitin-sends",
     requires: ["fired:nitin-sends"],
-    attachment: { kind: "photo", label: "Screenshot · Vicky's live location, 1:38–2:06 AM: in along Mandi Road, six minutes at the service gate, out" },
+    attachment: {
+      kind: "photo",
+      label: "Screenshot · Vicky's live location, 1:38–2:06 AM: in along Mandi Road, six minutes at the service gate, out",
+      map: { title: "Vicky · Live location", sub: "1:38 AM – 2:06 AM", stop: "Service gate, Mandi Road · 1:58–2:04", ended: "Live location ended" },
+    },
     evidence: "vicky-location",
   },
   { id: "n-15", from: "them", day: "30/11", at: "01:56", with: "nitin-sends", requires: ["fired:nitin-sends"], typing: 8, text: "Maine check bhi nahi kiya. Bas maan gaya.", english: "I didn't even check. I just believed it." },
@@ -446,43 +525,41 @@ const raju: Thread = {
     { id: "r-13", from: "them", day: "30/11", at: "02:20", with: "raju-withdraws", requires: ["fired:raju-withdraws"], text: "Sehgal ke ghar gaya tha. Wahan bola goli wedding planner ne chalayi thi, Kunal ne nahi.", english: "I went to the Sehgals' house. They said the wedding planner fired, not Kunal." },
     { id: "r-14", from: "them", day: "30/11", at: "02:20", with: "raju-withdraws", requires: ["fired:raju-withdraws"], text: "Aapne jhooth bola.", english: "You lied." },
     { id: "r-15", from: "them", day: "30/11", at: "02:21", with: "raju-withdraws", requires: ["fired:raju-withdraws"], typing: 5, text: "Aap log sab ek jaise ho.", english: "You people are all the same." },
-    { id: "r-16", from: "them", day: "30/11", at: "02:34", with: "raju-last", requires: ["fired:raju-last"], text: "Aap abhi bhi jaag rahe ho?", english: "Are you still awake?" },
-    { id: "r-17", from: "them", day: "30/11", at: "02:34", with: "raju-last", requires: ["fired:raju-last"], typing: 5, text: "Kuch pata chala? Sach batana.", english: "Did you find out anything? Tell me the truth." },
-  ],
-  replies: [
-    /* The last thing asked of the player on his phone, and the one nobody
-       else can answer: what happened to Dilip, told to his brother. */
-    {
-      id: "raju-last",
-      requires: ["fired:raju-last"],
-      unless: ["did:raju-withdrew"],
-      options: [
-        {
-          id: "truth",
-          text: "Dilip ab nahi raha. Us raat goli lagi, woh kuch ghante zinda tha, aur kisi ne use bachaya nahi. Main sab likh ke de raha hoon.",
-          english: "Dilip is gone. He was shot that night, he was alive for hours, and nobody saved him. I'm writing it all down.",
-          sets: ["did:told-raju"],
-          then: [
-            { id: "r-18", from: "them", at: "02:36", typing: 16, text: "Maa ko kya bolun?", english: "What do I tell Maa?" },
-            { id: "r-19", from: "them", at: "02:38", attachment: { kind: "photo", label: "Dilip at Chhath, Samastipur: a yellow kurta, squinting into the sun, laughing" } },
-            { id: "r-20", from: "them", at: "02:38", text: "Isko rakhna. Uski yahi achhi photo hai.", english: "Keep this one. It's his only good photo." },
-          ],
-        },
-        {
-          id: "wait",
-          text: "Abhi pakka nahi keh sakta. Subah tak bata doonga.",
-          english: "I can't say for sure yet. I'll tell you by morning.",
-          sets: ["did:kept-raju-waiting"],
-          then: [{ id: "r-21", from: "them", at: "02:35", typing: 6, text: "Theek hai. Main jaag raha hoon.", english: "All right. I'm awake." }],
-        },
-      ],
-    },
   ],
 };
 
 /* --- Bhasin, who has the phone on a map ------------------------------------ */
 
 const incoming: readonly IncomingCall[] = [
+  /* His phone in airplane mode, so Dilip's number can't reach it: the nurse
+     found Raju through the poster, and Raju rings yours (2026-10-24). */
+  {
+    id: "raju-relays",
+    device: "yours",
+    from: "Raju",
+    sub: "mobile",
+    at: "02:16",
+    after: ["fired:witness-relay"],
+    insists: true,
+    lines: [
+      { who: "Raju", line: "Hello? Aap ho? …Suniye. Ek nurse ka phone aaya tha. Poster wala number.", english: "Hello? It's you? …Listen. A nurse called. The number on the poster." },
+      { who: "Raju", line: "Fatehpur Beri mein ek ladka hai. Naam Deepak likha hai. Uske bag mein waistcoat hai. Badge pe likha hai… Dilip.", english: "There's a boy in Fatehpur Beri. They've written Deepak. In his bag there's a waistcoat. The badge says… Dilip." },
+      { who: "Raju", line: "Nurse ne uski awaaz sunayi. Woh Dilip hai. Woh zinda hai.", english: "The nurse played me his voice. It's Dilip. He's alive." },
+      { who: "Raju", line: "Subah saat baje usko le jaayenge. Kya karoon? Bataiye.", english: "They're taking him at seven in the morning. What do I do? Tell me." },
+    ],
+    reply: {
+      id: "raju-relays-answer",
+      options: [
+        {
+          id: "wait",
+          text: "Ruko. Ek minute. Main sochta hoon kaun saath jaa sakta hai.",
+          english: "Wait. One minute. I'm working out who can go with you.",
+          then: [{ id: "rr-1", from: "them", at: "02:17", text: "Jaldi. Main jaag raha hoon.", english: "Quickly. I'm awake." }],
+        },
+      ],
+    },
+  },
+
   {
     id: "bhasin-calls",
     device: "owner",
@@ -672,7 +749,74 @@ const sameer: Thread = {
   ],
 };
 
-export const threads: readonly Thread[] = [nitin, kunal, raju, bhasin, sameer];
+/* --- Dilip's own number, at 2:10 (2026-10-24) -----------------------------
+   A night nurse at a nursing home in Fatehpur Beri has a patient admitted as
+   someone else, and his phone, charged at last. He woke once and said one
+   name. It writes in the chat Sameer locked: the boy's own. */
+const witness: readonly Message[] = [
+  { id: "nu-1", from: "them", day: "30/11", at: "02:10", with: "the-witness", requires: ["fired:the-witness"], text: "Hello? Ye phone ek patient ka hai. Aap Sameer bhaiya ho?", english: "Hello? This phone belongs to a patient. Are you Sameer bhaiya?" },
+  { id: "nu-2", from: "them", day: "30/11", at: "02:10", with: "the-witness", requires: ["fired:the-witness"], typing: 5, text: "Main Sister Anita. Bedi Nursing Home, Fatehpur Beri. Night duty pe hoon.", english: "I'm Sister Anita. Bedi Nursing Home, Fatehpur Beri. I'm on night duty." },
+  {
+    id: "nu-3",
+    from: "them",
+    day: "30/11",
+    at: "02:11",
+    with: "the-witness",
+    requires: ["fired:the-witness"],
+    typing: 8,
+    text: "8 din pehle raat ko ek ladka laaye the. File mein naam Deepak, 19, road accident. Par zakhm goli ka hai.",
+    english: "Eight days ago, at night, they brought in a boy. The file says Deepak, 19, road accident. But the wound is a bullet's.",
+  },
+  { id: "nu-4", from: "them", day: "30/11", at: "02:11", with: "the-witness", requires: ["fired:the-witness"], typing: 6, text: "Kal raat thoda hosh aaya. Bas ek naam liya. Sameer bhaiya. Is phone mein aap hi ho.", english: "Last night he came round a little. He said one name. Sameer bhaiya. You're the one in this phone." },
+  {
+    id: "nu-5",
+    from: "them",
+    day: "30/11",
+    at: "02:12",
+    with: "the-witness",
+    requires: ["fired:the-witness"],
+    attachment: { kind: "photo", label: "A patient's belongings in a plastic bag: a folded maroon waistcoat with a name badge, DILIP, and a cracked phone", src: "/found/raakh/nurse-bag.jpg" },
+    evidence: "belongings",
+  },
+  {
+    id: "nu-6",
+    from: "them",
+    day: "30/11",
+    at: "02:12",
+    with: "the-witness",
+    requires: ["fired:the-witness"],
+    attachment: { kind: "voice", seconds: 6, transcript: "…bhaiya… light… ready…", english: "…bhaiya… light… ready…" },
+    evidence: "patient-voice",
+  },
+  {
+    id: "nu-7",
+    from: "them",
+    day: "30/11",
+    at: "02:13",
+    with: "the-witness",
+    requires: ["fired:the-witness"],
+    typing: 7,
+    text: "Subah 7 baje inhe kahin aur shift kar rahe hain. Safari suit wale ek sahab aaye the. Bhasin sahab ka naam le rahe the.",
+    english: "At 7 in the morning they're moving him somewhere else. A man in a safari suit came. He kept saying Bhasin sahab's name.",
+  },
+  { id: "nu-8", from: "them", day: "30/11", at: "02:13", with: "the-witness", requires: ["fired:the-witness"], text: "Police ko mat bolna. Thane ka SHO roz aata hai yahan, unke saath.", english: "Don't tell the police. The SHO from the station comes here every day, with them." },
+  {
+    id: "nu-9",
+    from: "them",
+    day: "30/11",
+    at: "02:14",
+    with: "the-witness",
+    requires: ["fired:the-witness"],
+    typing: 8,
+    text: "Main akeli kuch nahi kar sakti. Do log chahiye. Ek jo inhe pehchaane. Aur ek jisse Bhasin sahab darte hon.",
+    english: "I can't do anything alone. I need two people. One who can identify him. And one Bhasin sahab is afraid of.",
+  },
+];
+
+const dilipNumber: Thread = { id: "dilip", app: "whatsapp", name: "Dilip", locked: true, messages: witness };
+
+export const threads: readonly Thread[] = [nitin, kunal, raju, bhasin, sameer, dilipNumber];
+
 
 const events: readonly LiveEvent[] = [
   // The man with the phone on a map rings it, a few minutes into the night's last hour.
@@ -693,7 +837,230 @@ const events: readonly LiveEvent[] = [
      (and can be asked what he said at 1:52); once the player knows why he
      sent it, Dilip's brother asks what happened. */
   { id: "sameer-last", device: "owner", after: ["ask:q10"], unless: [OFFLINE], delay: 12, app: "whatsapp", banner: `${SAMEER_NEW} · Sab dekh liya?` },
-  { id: "raju-last", device: "owner", after: ["ask:q13"], unless: [OFFLINE, "did:raju-withdrew"], delay: 45, app: "whatsapp", banner: `${RAJU} · Kuch pata chala? Sach batana.` },
+  /* The living witness (2026-10-24): once he knows why the phone was sent,
+     the boy's own number writes. In airplane mode it can't, and Raju rings
+     yours instead. Then, once the player knows who it is, the clock. */
+  { id: "the-witness", device: "owner", after: ["ask:q13"], unless: [OFFLINE], delay: 20, app: "whatsapp", banner: "Dilip · Hello? Ye phone ek patient ka hai. Aap Sameer bhaiya ho?", sets: ["did:witness"] },
+  { id: "witness-relay", device: "yours", after: ["ask:q13", OFFLINE], unless: ["fired:the-witness"], delay: 20, app: "yours:phone", sets: ["did:witness"] },
+  { id: "seven-clock", device: "owner", after: ["did:knows-alive"], delay: 6, app: "casefile" },
+  /* (game) 2026-10-24: the last hour. Once Raju has had his chance to ask
+     (or couldn't), the night stops for the player's decision. Quiet: it
+     waits for whatever they're reading. */
+  { id: "last-hour", device: "owner", after: ["did:rescue-told"], delay: 4, app: "casefile", sets: ["did:last-hour"] },
 ];
 
-export const episode3 = { evidence, questions, events, threads, incoming };
+
+/* --- Seven o'clock (2026-10-24) ----------------------------------------------
+   The decider, played full screen against a clock: two calls before anyone
+   moves. The nurse said what it takes: someone who can identify him, and
+   someone Bhasin is afraid of. The note on the envelope said where not to
+   go. Sameer goes only if he's been made to face what he did at 1:52. */
+const MEERA = "Meera Arora, the lawyer this phone was meant for";
+const RAJU_CALL = "Raju, his brother";
+const SAMEER_CALL = "Sameer, still in Delhi until his train";
+const POLICE = "112, the police";
+const POST = "Post it from his Instagram: “Dilip is alive, at Bedi Nursing Home”";
+const FACED = "did:confronted-sameer";
+/** The night's last moment is over, either way: the finale can come. */
+const TOLD = "did:rescue-told";
+
+/** Who's on the other end of each call: their face, or a mark for the ones that aren't a person. */
+const FACES: Record<string, { readonly face?: string; readonly glyph?: string }> = {
+  meera: { face: "/found/raakh/dp-meera.jpg" },
+  raju: { face: "/found/raakh/dp-raju.jpg" },
+  sameer: { face: "/found/raakh/dp-sameer.jpg" },
+  "sameer-faced": { face: "/found/raakh/dp-sameer.jpg" },
+  police: { glyph: "112" },
+  post: { glyph: "@" },
+  froze: { glyph: "…" },
+};
+
+const withFaces = (all: readonly Moment[]): readonly Moment[] =>
+  all.map((m) => ({ ...m, options: m.options.map((o) => ({ ...FACES[o.id], ...o })) }));
+
+export const moments: readonly Moment[] = withFaces([
+  {
+    id: "first-call",
+    after: ["did:knows-alive", "fired:seven-clock"],
+    where: "2:58 AM · Four hours to seven",
+    lines: [
+      { text: "Fatehpur Beri is twenty minutes from Chhattarpur. They move him at seven." },
+      { who: "Sister Anita", text: "Do log chahiye. Ek jo inhe pehchaane. Aur ek jisse Bhasin sahab darte hon.", english: "I need two people. One who can identify him. And one Bhasin sahab is afraid of." },
+      { text: "Two calls, before anyone notices. Who first?" },
+    ],
+    seconds: 40,
+    timeout: "froze",
+    options: [
+      { id: "meera", text: MEERA, sets: ["did:call-meera"] },
+      { id: "raju", text: RAJU_CALL, sets: ["did:call-raju"] },
+      { id: "sameer", text: SAMEER_CALL, sets: ["did:call-sameer"] },
+      { id: "police", text: POLICE, sets: ["did:call-police", "did:lost"] },
+      { id: "post", text: POST, sets: ["did:call-post", "did:lost"] },
+      { id: "froze", text: "Wait. Think it through first.", sets: ["did:froze", "did:lost"] },
+    ],
+  },
+  {
+    id: "after-meera",
+    after: ["did:call-meera"],
+    unless: ["did:lost", "did:saved"],
+    where: "3:01 AM · One more call",
+    lines: [
+      { who: "Meera", text: "Zinda hai? …Theek hai. Main DCP Saket ko jaanti hoon. Woh Bhasin ka aadmi nahi hai.", english: "Alive? …All right. I know the DCP at Saket. He isn't Bhasin's man." },
+      { who: "Meera", text: "Par file mein naam Deepak hai. Mujhe wahan koi chahiye jo usko pehchaane. Abhi.", english: "But the file says Deepak. I need someone there who can identify him. Now." },
+    ],
+    seconds: 30,
+    timeout: "police",
+    options: [
+      { id: "raju", text: RAJU_CALL, sets: ["did:call-raju", "did:saved"] },
+      { id: "sameer-faced", text: SAMEER_CALL, requires: [FACED], sets: ["did:call-sameer", "did:sameer-went", "did:saved"] },
+      { id: "sameer", text: SAMEER_CALL, unless: [FACED], sets: ["did:call-sameer", "did:sameer-stayed", "did:lost"] },
+      { id: "police", text: POLICE, sets: ["did:call-police", "did:lost"] },
+      { id: "post", text: POST, sets: ["did:call-post", "did:lost"] },
+    ],
+  },
+  {
+    id: "after-raju",
+    after: ["did:call-raju"],
+    unless: ["did:lost", "did:saved"],
+    where: "3:01 AM · One more call",
+    lines: [
+      { who: "Raju", text: "Fatehpur Beri? Main nikal raha hoon. Bike pe chaalis minute.", english: "Fatehpur Beri? I'm leaving now. Forty minutes on the bike." },
+      { who: "Raju", text: "Par akele mujhe andar nahi jaane denge. Main delivery wala hoon. Koi aur chahiye.", english: "But alone they won't let me in. I'm a delivery boy. I need someone else." },
+    ],
+    seconds: 30,
+    timeout: "police",
+    options: [
+      { id: "meera", text: MEERA, sets: ["did:call-meera", "did:saved"] },
+      { id: "sameer-faced", text: SAMEER_CALL, requires: [FACED], sets: ["did:call-sameer", "did:sameer-went", "did:saved"] },
+      { id: "sameer", text: SAMEER_CALL, unless: [FACED], sets: ["did:call-sameer", "did:sameer-stayed", "did:lost"] },
+      { id: "police", text: POLICE, sets: ["did:call-police", "did:lost"] },
+      { id: "post", text: POST, sets: ["did:call-post", "did:lost"] },
+    ],
+  },
+  /* He was made to say 1:52 out loud: this time, he goes. */
+  {
+    id: "after-sameer-faced",
+    after: ["did:call-sameer", FACED],
+    unless: ["did:lost", "did:saved"],
+    where: "3:01 AM · One more call",
+    lines: [
+      { who: "Sameer", text: "…Zinda hai?", english: "…He's alive?" },
+      { who: "Sameer", text: "Main jaata hoon. Abhi. Is baar main jaata hoon.", english: "I'm going. Now. This time, I'm going." },
+      { text: "He can say who the boy is. Someone still has to make Bhasin's people stand aside." },
+    ],
+    seconds: 30,
+    timeout: "police",
+    options: [
+      { id: "meera", text: MEERA, sets: ["did:call-meera", "did:sameer-went", "did:saved"] },
+      { id: "raju", text: RAJU_CALL, sets: ["did:call-raju", "did:sameer-went", "did:saved"] },
+      { id: "police", text: POLICE, sets: ["did:call-police", "did:lost"] },
+      { id: "post", text: POST, sets: ["did:call-post", "did:lost"] },
+    ],
+  },
+  /* Given the rescuer's story, or never pressed: he does at 3 AM what he did at 1:52. */
+  {
+    id: "after-sameer",
+    after: ["did:call-sameer"],
+    unless: ["did:lost", "did:saved", FACED],
+    where: "3:01 AM · One more call",
+    lines: [
+      { who: "Sameer", text: "…Zinda hai?", english: "…He's alive?" },
+      { who: "Sameer", text: "Main nahi aa sakta. Mera train hai. Tu samajh na. Bhasin dekh lega.", english: "I can't come. I've got my train. Understand. Bhasin will handle it." },
+      { text: "A week ago he sent help away with almost the same words. It's 3:04. One call left." },
+    ],
+    seconds: 30,
+    timeout: "police",
+    options: [
+      { id: "meera", text: MEERA, sets: ["did:call-meera", "did:sameer-stayed", "did:lost"] },
+      { id: "raju", text: RAJU_CALL, sets: ["did:call-raju", "did:sameer-stayed", "did:lost"] },
+      { id: "police", text: POLICE, sets: ["did:call-police", "did:sameer-stayed", "did:lost"] },
+      { id: "post", text: POST, sets: ["did:call-post", "did:sameer-stayed", "did:lost"] },
+    ],
+  },
+  {
+    id: "found",
+    after: ["did:saved"],
+    where: "4:12 AM · Bedi Nursing Home, Fatehpur Beri",
+    lines: [
+      { text: "A white Gypsy with a blue light turns in at the front gate. The man in the safari suit, smoking by the back gate, drops his cigarette and walks away fast." },
+      { text: "Sister Anita opens the side door. Room 6. A boy, thinner than in any photograph, a drip in his arm." },
+      { who: "Raju", text: "Dilip.", english: "Dilip." },
+      { text: "He opens his eyes." },
+      { who: "Dilip", text: "…Bhaiya. Light ready hai.", english: "…Bhaiya. The light's ready." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: ["did:rescue-told"] }],
+  },
+  /* Too late, told straight after the call that lost it, at the hour it
+     happened: what the two calls were missing. Seven o'clock itself, Room 6
+     empty, is left for the ending, after the record has gone out. */
+  {
+    id: "late-police",
+    after: ["did:lost", "did:call-police"],
+    unless: [TOLD],
+    where: "3:09 AM · 112",
+    lines: [
+      { text: "The control room puts you through to the local station. The man who answers asks your name twice, and the nursing home's address once." },
+      { who: "SHO, Chhattarpur", text: "Hum dekh lenge. Aap phone rakhiye.", english: "We'll look into it. Put the phone down." },
+      { text: "Four minutes later, Bhasin Uncle's number shows online." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
+  {
+    id: "late-post",
+    after: ["did:lost", "did:call-post"],
+    unless: [TOLD],
+    where: "3:12 AM · @sk.weddings",
+    lines: [
+      { text: "The post goes up from his account. Forty shares in ten minutes, then four hundred." },
+      { text: "Bhasin Uncle reads it. Online, then not." },
+      { text: "At 3:14 the back gate of Bedi Nursing Home opens, and closes." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
+  {
+    id: "late-froze",
+    after: ["did:lost", "did:froze"],
+    unless: [TOLD],
+    where: "3:00 AM · Four hours to seven",
+    lines: [
+      { text: "You hold the phone and think it through." },
+      { text: "By the time you have, it's past three, and nobody has called anybody." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
+  {
+    id: "late-meera",
+    after: ["did:lost", "did:call-meera"],
+    unless: [TOLD, "did:call-raju"],
+    where: "3:40 AM · Bedi Nursing Home, Fatehpur Beri",
+    lines: [
+      { text: "A DCP's car at the front gate, and Meera beside it in yesterday's clothes." },
+      { who: "Sister Anita", text: "Deepak naam ka patient hai. Koi inhe pehchaanne wala hai?", english: "The patient's name is Deepak. Is there anyone who can identify him?" },
+      { text: "Nobody there has ever seen Dilip's face. The DCP writes something down, and leaves a constable at the gate until his shift ends at six." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
+  {
+    id: "late-raju",
+    after: ["did:lost", "did:call-raju"],
+    unless: [TOLD, "did:call-meera"],
+    where: "3:50 AM · Bedi Nursing Home, Fatehpur Beri",
+    lines: [
+      { text: "Raju gets there on a borrowed scooter. The man in the safari suit at the back gate says the nursing home is closed." },
+      { text: "Raju shouts his brother's name at a dark window until the chowkidar threatens him with the police." },
+      { who: "Raju", text: "Bhaiya, woh andar hai. Main jaanta hoon woh andar hai.", english: "Bhaiya, he's in there. I know he's in there." },
+    ],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
+  /* Any other way of losing him: never a night with no way to its end. */
+  {
+    id: "late",
+    after: ["did:lost"],
+    unless: [TOLD],
+    where: "3:30 AM · Four hours to seven",
+    lines: [{ text: "Nobody you called is going to get to Room 6 before Bhasin's people do." }],
+    options: [{ id: "on", text: "Go on", sets: [TOLD] }],
+  },
+]);
+
+export const episode3 = { evidence, questions, events, threads, incoming, moments };
