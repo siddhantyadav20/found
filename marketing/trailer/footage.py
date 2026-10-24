@@ -15,8 +15,14 @@ to 9:16 around `x` (0 = left edge, 1 = right), pushed in from `zoom[0]` to
 `dark` darkens everything but the screen, to turn a daylit table into a
 night room; `wake` is when the screen comes on, and `glow` how much of its
 light falls on the table. `speed` below 1 is slow motion (from a 50 fps
-source). `y` moves the crop up or down. A `still` (from inserts.mjs) becomes
-a handheld shot of a prop. render.mjs turns these into frames; trailer.html grades them.
+source). `y` moves the crop up or down; `blur` throws it out of focus. A
+`still` (from inserts.mjs) becomes a handheld shot of a prop.
+
+`enter` is the way in: a hand holds the green phone in a dark room; its screen
+shows the lock screen, swipes up to a photo from that night (the first frame
+of the slot `enter` names), and the camera pushes through the glass until the
+photo is the whole frame, so the next shot carries on from it. render.mjs turns
+these into frames; trailer.html grades them.
 """
 
 import json
@@ -37,40 +43,44 @@ G = "public/found/raakh/"
 GF = "scripts/frames/raakh/"
 CLIPS = {
     # slot: source, start, dur, crop centre, push-in, extras. id = Pexels; file/image = the game's own; still = a prop.
-    "phone_dark":   dict(id=4525346, r="uhd_3840_2160_25fps", start=1.0, dur=2.6, x=.5, zoom=(1.0, 1.2), key="screen", dark=.16, wake=.22, glow=.55),
-    "parcel":       dict(still="parcel.png", dur=2.8, zoom=(1.04, 1.16)),
-    "delhi_fog":    dict(id=6587044, r="uhd_3840_2160_30fps", start=.5, dur=2.2, x=.53, zoom=(1.0, 1.12)),
-    # The Sehgal wedding, from the game's album.
-    "g_dhol":       dict(image=G + "w-4.jpg", dur=1.0, zoom=(1.06, 1.18)),
-    "g_baraat":     dict(image=G + "w-3.jpg", dur=.9, zoom=(1.12, 1.04)),
-    "g_varmala":    dict(image=G + "w-5.jpg", dur=.9, zoom=(1.04, 1.14)),
-    "w_sparkler":   dict(id=6378175, r="hd_1080_1920_25fps", start=2.0, dur=.8, x=.5, zoom=(1.0, 1.1)),
-    "g_portrait":   dict(image=G + "w-portrait.jpg", dur=1.5, y=.42, zoom=(1.02, 1.16)),
-    "k_dance":      dict(file=G + "clip-k-3.mp4", start=4.6, dur=1.6, zoom=(1.0, 1.06)),
-    "g_reel":       dict(image=GF + "reel-1.jpg", dur=1.5, y=.55, zoom=(1.0, 1.1)),
-    # After.
-    "poster":       dict(still="poster.png", dur=4.3, zoom=(1.04, 1.16)),
-    "g_chhath":     dict(image=G + "dilip-chhath.jpg", dur=4.0, y=.4, zoom=(1.02, 1.14)),
-    "g_lawn":       dict(image=G + "key-lawn.jpg", dur=4.0, zoom=(1.0, 1.14)),
-    "g_fire":       dict(file=G + "clip-fire.mp4", start=.8, dur=5.0, zoom=(1.0, 1.1)),
-    "rain_street":  dict(id=9481662, r="hd_1920_1080_24fps", start=2.0, dur=5.3, x=.5, zoom=(1.0, 1.1)),
-    "call":         dict(still="call.png", dur=2.2, zoom=(1.0, 1.06)),
-    # The montage: one slot per cut.
-    "m_rain":       dict(id=11631455, r="hd_1920_1080_60fps", start=1.0, dur=1.4, x=.5, zoom=(1.0, 1.1)),
-    "m_gravel":     dict(file=G + "clip-fire-whole.mp4", start=1.0, dur=1.3, zoom=(1.0, 1.08)),
-    "m_note":       dict(still="note.png", dur=1.2, zoom=(1.14, 1.02)),
-    "m_kfire":      dict(image=GF + "kunal-fire.jpg", dur=1.0, zoom=(1.0, 1.12)),
-    "m_poster":     dict(still="poster.png", dur=.9, zoom=(1.3, 1.18)),
-    "m_jerrycan":   dict(image=GF + "jerrycan.jpg", dur=1.0, zoom=(1.0, 1.12)),
-    "m_pheras":     dict(image=G + "w-pheras.jpg", dur=1.0, zoom=(1.1, 1.0)),
-    "m_fire":       dict(id=16753425, r="hd_1920_1080_60fps", start=10.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_reel3":      dict(image=GF + "reel-3.jpg", dur=1.0, zoom=(1.0, 1.12)),
-    "m_gate":       dict(id=6583820, r="uhd_3840_2160_30fps", start=4.0, dur=1.0, x=.5, zoom=(1.1, 1.0)),
-    "m_embers":     dict(id=4389495, r="hd_1366_720_60fps", start=3.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_traffic":    dict(id=11437954, r="hd_1920_1080_25fps", start=2.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "m_baraat":     dict(image=G + "w-baraat.jpg", dur=1.0, zoom=(1.0, 1.12)),
+    # I. Out here: his phone, the parcel, your hand. (bokeh is cut before enter: the photo on the screen is its first frame.)
+    "phone_dark":   dict(id=4525346, r="uhd_3840_2160_25fps", start=1.0, dur=3.0, x=.5, zoom=(1.0, 1.2), key="screen", dark=.16, wake=.4, glow=.55),
+    "parcel":       dict(still="parcel.png", dur=1.6, zoom=(1.04, 1.14)),
+    "bokeh":        dict(id=854088, r="hd_1920_1080_25fps", start=1.0, dur=2.4, x=.5, zoom=(1.25, 1.34)),
+    "enter":        dict(id=8566854, r="hd_1920_1080_30fps", start=.3, dur=4.8, x=.47, zoom=(1.0, 1.0), enter="bokeh", dark=.3, glow=.5),
+    # II. The night: hands, lights, fire. No faces.
+    "lamp":         dict(id=19971139, r="hd_1080_1920_60fps", start=1.5, dur=1.2, speed=.6, zoom=(1.0, 1.08)),
+    "mehndi":       dict(id=15455199, r="hd_1080_1920_30fps", start=2.0, dur=1.2, zoom=(1.0, 1.08)),
+    "diyas":        dict(id=14182074, r="hd_1080_1920_30fps", start=1.0, dur=1.2, zoom=(1.08, 1.0)),
+    "bangles":      dict(id=2078587, r="hd_1920_1080_24fps", start=.5, dur=1.2, x=.42, zoom=(1.0, 1.1)),
+    "sparkler":     dict(id=6378175, r="hd_1080_1920_25fps", start=2.0, dur=1.2, speed=.7, zoom=(1.0, 1.08)),
+    "havan":        dict(id=15157494, r="hd_1920_1080_25fps", start=.8, dur=1.2, x=.45, zoom=(1.0, 1.1)),
+    "fireworks":    dict(id=14875803, r="hd_1080_1920_50fps", start=4.0, dur=1.2, speed=.6, zoom=(1.0, 1.06)),
+    "blur":         dict(id=854088, r="hd_1920_1080_25fps", start=7.0, dur=1.2, x=.35, zoom=(1.1, 1.25)),
+    # The reel, out of focus: a figure, an arm up, the light.
+    "reel":         dict(file=G + "clip-reel-take.mp4", start=0.0, dur=2.4, zoom=(1.0, 1.12), blur=11, dark=.8),
+    "lawn":         dict(image=G + "key-lawn.jpg", dur=2.0, zoom=(1.0, 1.1)),
+    # III. After.
+    "gravel":       dict(file=G + "clip-fire-whole.mp4", start=1.0, dur=2.0, zoom=(1.0, 1.06)),
+    "jerrycan":     dict(file=G + "clip-fire-whole.mp4", start=11.0, dur=2.0, zoom=(1.0, 1.08)),
+    "fire":         dict(id=11210464, r="hd_1080_1920_30fps", start=5.0, dur=2.0, zoom=(1.0, 1.1)),
+    "ash":          dict(id=4211320, r="hd_1920_1080_24fps", start=6.0, dur=2.0, speed=.7, x=.4, zoom=(1.0, 1.08)),
+    # The montage: one slot per kind of cut.
+    "m_glass":      dict(id=12680281, r="hd_1920_1080_30fps", start=7.0, dur=1.0, x=.3, zoom=(1.0, 1.08)),
+    "m_car":        dict(id=10451977, r="hd_1920_1080_25fps", start=2.0, dur=1.0, x=.6, zoom=(1.0, 1.08)),
+    "m_aerial":     dict(id=9370566, r="hd_1920_1080_30fps", start=50.0, dur=1.0, x=.55, zoom=(1.0, 1.08)),
+    "m_note":       dict(still="note.png", dur=1.0, zoom=(1.14, 1.04)),
+    "m_pyre":       dict(file=G + "clip-fire.mp4", start=1.0, dur=1.0, zoom=(1.0, 1.08)),
+    "m_smoke":      dict(id=6894947, r="hd_1920_1080_30fps", start=38.0, dur=1.0, x=.5, zoom=(1.0, 1.08)),
+    "m_rain":       dict(id=11631455, r="hd_1920_1080_60fps", start=1.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
     "m_coals":      dict(id=7571829, r="hd_1920_1080_25fps", start=5.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
-    "title_embers": dict(id=12605103, r="uhd_3840_2160_25fps", start=2.0, dur=7.0, x=.5, zoom=(1.0, 1.06)),
+    "m_incense":    dict(id=1793318, r="hd_1920_1080_30fps", start=6.0, dur=1.0, x=.62, zoom=(1.0, 1.08)),
+    "m_fog":        dict(id=1405527, r="hd_1920_1080_30fps", start=3.0, dur=1.0, x=.5, zoom=(1.0, 1.08)),
+    "m_traffic":    dict(id=11437954, r="hd_1920_1080_25fps", start=2.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
+    "m_embers":     dict(id=4389495, r="hd_1366_720_60fps", start=3.0, dur=1.0, x=.5, zoom=(1.0, 1.1)),
+    # IV. Seven.
+    "clock":        dict(id=13687405, r="hd_1080_1920_30fps", start=2.0, dur=4.2, zoom=(1.0, 1.1)),
+    "title_embers": dict(id=12605103, r="uhd_3840_2160_25fps", start=2.0, dur=6.0, x=.5, zoom=(1.0, 1.06)),
 }
 
 
@@ -159,6 +169,134 @@ def put_screen(frame, screen, mode, dark, on=1.0, glow=0.0):
     return out * (1 - m) + lit * m
 
 
+def photo_viewer(photo, ph, sw=1170, sh=2532):
+    """The photo as Photos shows it, full width, on black, with its date."""
+    im = Image.new("RGB", (sw, sh), (0, 0, 0))
+    im.paste(photo.resize((sw, ph), Image.LANCZOS), (0, (sh - ph) // 2))
+    d = ImageDraw.Draw(im)
+    d.text((sw / 2, 120), "22 November", font=font("SemiBold", 50), fill=(255, 255, 255), anchor="mm")
+    d.text((sw / 2, 180), "9:41 PM", font=font("Regular", 38), fill=(170, 170, 170), anchor="mm")
+    return im
+
+
+def screen_at(t, lock, viewer, swipe=(1.6, 2.0)):
+    """The lock screen; a swipe up; the photo, coming forward as the lock screen goes."""
+    p = min(1.0, max(0.0, (t - swipe[0]) / (swipe[1] - swipe[0])))
+    if p <= 0:
+        return lock
+    e = p * p * (3 - 2 * p)
+    sw, sh = lock.size
+    k = .92 + .08 * e
+    back = Image.new("RGB", (sw, sh), (0, 0, 0))
+    v = viewer.resize((int(sw * k), int(sh * k)), Image.BILINEAR)
+    back.paste(Image.blend(Image.new("RGB", v.size, (0, 0, 0)), v, .4 + .6 * e), ((sw - v.width) // 2, (sh - v.height) // 2))
+    if p < 1:
+        back.paste(lock, (0, -int(e * sh)))
+    return back
+
+
+def green_mask(f):
+    f = f.astype(np.float32)
+    gness = f[..., 1] - np.maximum(f[..., 0], f[..., 2])
+    m = np.clip((gness - 25) / 50, 0, 1)
+    return np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.2)), np.float32) / 255
+
+
+def enter(slot, spec):
+    """The push through the glass (see the top of this file)."""
+    W, H, frames = frames_of(spec)
+    n = int(spec["dur"] * FPS)
+    raw = [f for _, f in zip(range(n), frames)]
+    # Track the screen, then steady the track: the camera will lock onto it.
+    quads = [screen_quad(f)[0] for f in raw]
+    for i, q in enumerate(quads):
+        if q is None:
+            quads[i] = quads[i - 1]
+    c = np.array([q[0] for q in quads])
+    up = np.array([q[1] for q in quads])
+    Ls = np.array([q[3] for q in quads])
+    Ws = np.array([q[4] for q in quads])
+    k = np.ones(9) / 9
+    sm = lambda a: np.convolve(np.pad(a, 4, mode="edge"), k, mode="valid")
+    c = np.stack([sm(c[:, 0]), sm(c[:, 1])], 1)
+    up = np.stack([sm(up[:, 0]), sm(up[:, 1])], 1)
+    up /= np.linalg.norm(up, axis=1, keepdims=True)
+    Ls, Ws = sm(Ls), sm(Ws)
+    sw, sh = 1170, 2532
+    # The photo fills exactly what the camera sees once it's through.
+    ph = int(round(OH * np.median(Ws) * sh / (OW * np.median(Ls)))) // 2 * 2
+    # The camera ends `over` of the way across the screen (its edges are in perspective, and must be out of
+    # shot), so the photo is the next shot's first frame seen that much wider: the next shot starts pushed in.
+    over = spec.get("over", .8)
+    target = CLIPS[spec["enter"]]
+    tW, tH, tf = frames_of(dict(target, dur=.1))
+    f0 = next(tf)
+    for _ in tf:
+        pass
+    z = target["zoom"][0] * over
+    tch = tH / z
+    tcw = tch * OW / OH
+    tcx = min(max(target.get("x", .5) * tW, tcw / 2), tW - tcw / 2)
+    tcy = min(max(target.get("y", .5) * tH, tch / 2), tH - tch / 2)
+    photo = Image.fromarray(f0).resize((OW, OH), Image.LANCZOS, box=(tcx - tcw / 2, tcy - tch / 2, tcx + tcw / 2, tcy + tch / 2))
+    lock, viewer = lock_screen(sw, sh), photo_viewer(photo, ph, sw, sh)
+    glass = Image.new("L", (sw, sh), 0)
+    ImageDraw.Draw(glass).rounded_rectangle((0, 0, sw - 1, sh - 1), 120, fill=255)
+    oc = np.array([OW / 2, OH / 2])
+    p0, p1 = spec.get("push", (2.6, spec["dur"]))
+    out = FOOT / f"{slot}.mp4"
+    enc = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{OW}x{OH}", "-r", str(FPS),
+                            "-i", "-", "-c:v", "libx264", "-crf", "15", "-preset", "medium", "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
+
+    def render(i, t):
+        f = raw[i]
+        right = np.array([-up[i][1], up[i][0]])
+        down = -up[i]
+        # The camera: from the shot's own framing to the screen, turning to square up with it, faster and faster.
+        p = min(1.0, max(0.0, (t - p0) / (p1 - p0)))
+        e = p ** 3
+        ch = H
+        s0, s1 = ch / OH, over * Ws[i] / OW
+        C0 = np.array([min(max(spec.get("x", .5) * W, ch * OW / OH / 2), W - ch * OW / OH / 2), H / 2])
+        C = C0 + (c[i] - C0) * e
+        s = s0 * (s1 / s0) ** e
+        phi = np.arctan2(right[1], right[0]) * e
+        R = np.array([[np.cos(phi), -np.sin(phi)], [np.sin(phi), np.cos(phi)]])
+        A = s * R
+        b = C - A @ oc
+        # The room, darkened, lit by the screen.
+        gm = green_mask(f)
+        room = f.astype(np.float32) * spec.get("dark", 1.0)
+        room[..., 1] -= np.maximum(room[..., 1] - np.maximum(room[..., 0], room[..., 2]), 0)
+        scr = screen_at(t, lock, viewer)
+        tint = np.asarray(scr.resize((1, 1), Image.BOX), np.float32).reshape(3) * .6 + 60
+        small = Image.fromarray((gm * 255).astype(np.uint8)).resize((W // 8, H // 8), Image.BILINEAR)
+        g = np.asarray(small.filter(ImageFilter.GaussianBlur(14)).resize((W, H), Image.BILINEAR), np.float32)[..., None] / 255
+        room += g * tint * spec.get("glow", 0) * (1 - gm[..., None])
+        aff = (A[0, 0], A[0, 1], b[0], A[1, 0], A[1, 1], b[1])
+        room_o = np.asarray(Image.fromarray(np.clip(room, 0, 255).astype(np.uint8)).transform((OW, OH), Image.AFFINE, aff, resample=Image.BICUBIC), np.float32)
+        gm_o = np.asarray(Image.fromarray((gm * 255).astype(np.uint8)).transform((OW, OH), Image.AFFINE, aff, resample=Image.BILINEAR), np.float32) / 255
+        M = np.stack([right * sw / Ws[i], down * sh / Ls[i]])
+        As, bs = M @ A, M @ (b - c[i]) + np.array([sw / 2, sh / 2])
+        saff = (As[0, 0], As[0, 1], bs[0], As[1, 0], As[1, 1], bs[1])
+        scr_o = np.asarray(scr.transform((OW, OH), Image.AFFINE, saff, resample=Image.BICUBIC), np.float32)
+        qm = np.asarray(glass.transform((OW, OH), Image.AFFINE, saff, resample=Image.BILINEAR), np.float32) / 255
+        # The thumb is over the screen until the camera's past it.
+        m = (qm * np.maximum(gm_o, min(1.0, max(0.0, (e - .3) * 2.5))))[..., None]
+        return room_o * (1 - m) + scr_o * m
+
+    for i in range(n):
+        t = i / FPS
+        if (t - p0) / (p1 - p0) > .7:  # the fast end of the push, with motion blur
+            fr = sum(render(i, t + dt) for dt in (-1 / 90, 0, 1 / 90)) / 3
+        else:
+            fr = render(i, t)
+        enc.stdin.write(np.clip(fr, 0, 255).astype(np.uint8).tobytes())
+    enc.stdin.close()
+    enc.wait()
+    print(f"{slot:14s} ← pexels {spec['id']} through the glass into {spec['enter']} +{spec['dur']}s", flush=True)
+
+
 def frames_of(spec):
     """The slot's source frames, as (W, H, iterator of RGB arrays)."""
     if "still" in spec or "image" in spec:
@@ -218,6 +356,8 @@ def cut(slot, spec):
             cy += H * .005 * np.cos(t * 1.1)
             cx, cy = min(max(cx, cw / 2), W - cw / 2), min(max(cy, ch / 2), H - ch / 2)
         im = Image.fromarray(f).resize((OW, OH), Image.LANCZOS, box=(cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2))
+        if spec.get("blur"):
+            im = im.filter(ImageFilter.GaussianBlur(spec["blur"]))
         enc.stdin.write(im.tobytes())
     enc.stdin.close()
     enc.wait()
@@ -234,4 +374,4 @@ if __name__ == "__main__":
             old.unlink()
     for slot, spec in CLIPS.items():
         if not only or slot in only:
-            cut(slot, spec)
+            (enter if "enter" in spec else cut)(slot, spec)

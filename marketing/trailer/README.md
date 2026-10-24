@@ -1,111 +1,128 @@
 # Raakh — the cinematic trailer
 
-A 70-second vertical trailer for Chapter 1, *Raakh* (1080×1920, 30 fps,
-stereo, −14 LUFS), in English, cut to the game as it now plays (CHAPTER1.md,
-"Seven o'clock" and "The final cut"). It never says the twist: no "alive",
-no nursing home, no rescue; "a body burned" only ever as Sameer's version.
+A 60-second vertical trailer for Chapter 1, *Raakh* (1080×1920, 30 fps,
+stereo, −14 LUFS). v5: pictures, a score, and only as many words as it
+needs. No voices: the story is the player's to hear in the game, and it
+never says the twist (no "alive", no nursing home, no rescue).
+
+The idea is a phone that isn't yours, and going into it. Out here it's a
+vertical phone shot in a dark room. A hand opens a photo from that night,
+the camera pushes through the glass, and inside is the night itself, framed
+like cinema as the letterbox closes in. The wedding is hands, lights and
+fire, never a face. Then one shot, what was done after, and the clock to
+seven.
 
 `scripts/trailers.py` (on main) builds a simpler, card-led cut of the same
-story on macOS; this one is the cinematic version: real footage graded with
-the game's own pictures, clips and voices, a score, and the game's type.
+story on macOS; this one is the cinematic version.
 
 ```bash
 node marketing/trailer/inserts.mjs                    # the props → footage/stills/
-python3 marketing/trailer/footage.py                  # footage, game pictures and props → footage/<slot>.mp4 (≈25 min)
+python3 marketing/trailer/footage.py                  # footage, game pictures and props → footage/<slot>.mp4 (≈20 min)
 python3 marketing/trailer/edit.py                     # edit.py → edit.json (the cut)
 node marketing/trailer/render.mjs --stills            # one PNG per shot and card
 node marketing/trailer/render.mjs --stills --at 9,34  # just those moments
-node marketing/trailer/render.mjs                     # → out/raakh-trailer.mp4 (≈50 min)
+node marketing/trailer/render.mjs                     # → out/raakh-trailer.mp4 (≈45 min)
 ```
 
 Needs Playwright (Chromium), ffmpeg, and Python 3 with numpy and Pillow.
-Neither `out/` nor `footage/` is committed.
+Neither `out/` nor `footage/` is committed. `footage.py` cuts `bokeh` before
+`enter`, because the photo on the phone is `bokeh`'s first frame.
 
 ## How it's made
 
-- **Picture:** the game's own pictures and clips (`public/found/raakh`,
-  `scripts/frames/raakh`: the Sehgal album, Dilip at 9:48 PM and at Chhath,
-  the back lawn, Kunal on the dance floor, the reel, the fire, the jerrycan,
-  the gravel), Pexels footage for Delhi, the street tonight and the montage,
-  and four props drawn in `inserts.html` (the returned parcel, the MISSING
-  poster with the game's photograph of Dilip, the envelope's note with its
-  English, Bhasin Uncle ringing). `footage.py` crops all of it to 9:16 with a
-  push-in, keys Sameer's lock screen (Saturday 29 November, 11:40) into a
-  green-screen phone that wakes on the first buzz, and gives props a hand's
-  drift. Everything is graded together in WebGL (`POST` in `scenes.js`):
-  bloom, anamorphic streaks, Delhi smog, chromatic aberration, teal and
-  amber, vignette, grain, gate weave, camera shake on the hits.
+- **Picture:** Pexels footage, the game's own pictures and clips
+  (`public/found/raakh`), and two of the props drawn in `inserts.html` (the
+  returned parcel and the note on the envelope).
+  `footage.py` crops it all to 9:16 with a push-in, and keys Sameer's lock
+  screen into two green-screen phones. The second one is the way in: it
+  tracks the screen, swipes it from the lock screen to a photo, and pushes the
+  camera through the glass, turning to square up with it, until the photo is
+  the whole frame and the next shot carries on from it. Everything is graded
+  together in WebGL (`POST` in `scenes.js`): bloom, anamorphic streaks, teal
+  and amber, vignette, grain, gate weave, whip-pans and light leaks across
+  cuts, and camera shake on the hits. The letterbox is keyframed: none out
+  here, 200 px inside.
 - **Words:** HTML over the picture (`trailer.html`) in the game's type:
-  Newsreader for the cards, IBM Plex Mono for labels (with the ember dot),
-  Inter Tight for subtitles and the title, which is set as the landing page
-  sets it, with the Found mark.
-- **Voices:** the game's own recordings (`public/voices/raakh`), cut phrase by
-  phrase in `edit.py`, each with an English subtitle and who's speaking.
-- **Sound:** `sound.py`. The game's dhol, gunshot, fire and buzz
-  (`public/sfx`); the rest synthesised with numpy. One original tune: band
-  baaja in Khamaj at the wedding, then harmonium in Bhairavi over a tanpura
-  under Dilip's voice, then its last phrase under the title. The voices sit
-  on their own bus and everything ducks under them (every line clears the
-  music by 6 dB or more in the 300 Hz–4 kHz band a phone plays).
+  Newsreader for the cards, IBM Plex Mono for labels and times, Inter Tight
+  for the title. Four cards in a minute, a date, four times, one typed line,
+  one message.
+- **Sound:** `sound.py`. Four movements on one four-note motif (A, D, F, E).
+  I: a felt piano alone over a low drone, the game's buzz, a reversed swell
+  into the screen. II: 100 bpm from the moment we're through, with the
+  shehnai taking the motif over strings, tanpura, dhol and claps, in D
+  Bhairavi with a flattened ninth on the way home. It stops dead for the
+  reel; the game's gunshot; ringing. III: 120 bpm, a cello ostinato and
+  taikos under footsteps on gravel, a jerrycan, the game's fire, a braam on
+  the turn, then drums and a Shepard tone that run away with the montage.
+  IV: silence, a message, a clock, the motif on the piano, and the whole
+  orchestra on the name. All synthesised with numpy apart from the game's
+  sounds, through three convolution reverbs (room, hall, cathedral), and
+  tilted towards the midrange a phone speaker plays.
 
 ## The cut
 
 | | Picture | Words | Sound |
 |---|---|---|---|
-| 0:00 | His phone on a dark table, the screen waking | This phone isn't yours. | The buzz, a hit, a piano note, a watch |
-| 0:02 | The parcel: Meera Arora, Kalkaji · RETURN TO ORIGIN | It was meant for someone else. | Kraft paper |
-| 0:04 | India Gate in smog | ● SATURDAY 22 NOVEMBER · DELHI | Horns; a band somewhere |
-| 0:06 | The Sehgal wedding: dhol players, the baraat, the varmala, a sparkler | | Band baaja over the game's dhol |
-| 0:09 | Dilip with his tray | ● 9:48 PM | |
-| 0:10 | Kunal firing into the air on the dance floor | | Shots, cheering, *"Oye hoye!"* |
-| 0:12 | The reel on the back lawn: the light, the revolver | ● THE BACK LAWN · *Rolling, bro?* | The band stops; one note |
-| 0:13 | White | | One shot. Ringing |
-| 0:13 | Black | One shot in the air. | |
-| 0:15 | The MISSING poster | DILIP · VOICE NOTE: *Bhaiya, listen… "Sir, light is ready." "Sir, battery full."* | His voice; the tune on a harmonium |
-| 0:19 | Dilip at Chhath | *Did I say it right? In Mumbai, I'll have to speak English.* | |
-| 0:23 | The back lawn after: a chair over, the tripod | SAMEER · VOICE NOTE TO M: *Kunal was firing. A boy fell.* | Wind, tanpura |
-| 0:27 | The fire, 4:47 AM | *They burned him, M. I was there. I saw.* | The game's fire |
-| 0:32 | A street tonight, in the rain | THE GUARD · GATE 2: *There's a man at the gate. In a safari suit. He's asking for your flat number.* | Rain, horns, a heartbeat |
-| 0:38 | Bhasin Uncle calling | *You're not Sameer.* | The ring |
-| 0:40 | India Gate in smog | *Give it back to the courier by morning. We'll handle the rest.* | Strings |
-| 0:44 | Black | Everything on it is true. *Somebody edited the night.* | Braam |
-| 0:47 | Montage: windshield rain, the gravel at night, his note, Kunal firing, the poster, the jerrycan, a bonfire, the pheras, the reel… | 11:52 PM · 12:32 AM · 1:52 AM | Strings, Shepard tone, dhol-tasha speeding up |
-| 0:53 | His lock screen | *4. Nitin —* typed | Everything stops but a note |
-| 0:54 | Black | | Silence |
-| 0:55 | | UNKNOWN NUMBER · *M? Tu hai?* · M? Is that you? | A bell |
-| 0:57 | Black | THE GUARD: *He's gone. Said he'll be back at seven.* | A clock |
-| 1:01 | Black | Before seven, *you'll have to choose.* | |
-| 1:03 | Embers | Found · CHAPTER 01 · DELHI · **Raakh** · A thriller you play on someone else's phone. · PLAY FREE · FOUND-GAME.VERCEL.APP | The biggest hit, the tune's last phrase |
-| 1:09 | Black | | One more buzz |
+| 0:00 | Black | | A buzz in the dark |
+| 0:00 | His phone on a dark table, waking: Saturday 29 November, 11:40 | This phone isn't yours. | A low hit, the felt piano, the drone |
+| 0:03 | The parcel: Meera Arora, Kalkaji · RETURN TO ORIGIN | | Kraft paper |
+| 0:05 | Your hand holding it. The lock screen swipes away to a photo of lights; the camera pushes into the screen | | The motif, alone; a reversed swell, a riser |
+| 0:10 | Through: the same lights, alive; the letterbox closes in | ● SATURDAY 22 NOVEMBER · DELHI | An impact; the band comes in |
+| 0:12 | A hand lighting diyas, mehndi, hands with bangles, diyas, a sparkler, the havan, fireworks, lights out of focus (whips and light leaks between) | | Shehnai, strings, tanpura, dhol, claps |
+| 0:22 | The back lawn, out of focus: a figure, an arm up, a light | | Everything stops but one note and a pulse |
+| 0:24 | White, then black | | One shot. Its echo. Ringing |
+| 0:25 | The back lawn after: chairs over, the tripod | | Wind, a cold chord, one note |
+| 0:27 | A shoe on gravel in a torch's light; a jerrycan; a fire; ash falling | | Cello ostinato, taikos, footsteps, the game's fire |
+| 0:35 | Black | Somebody edited *the night.* | Braam |
+| 0:38 | Montage: rain on glass, a night drive, a city from above, his note, the fire, smoke, coals, incense, fog, traffic, embers, the parcel… | 11:52 PM · 12:32 AM · 1:52 AM · 4:47 AM | Drums speeding up, a Shepard tone, a hit on every cut |
+| 0:45 | His lock screen | *4. Nitin —* typed | One high note |
+| 0:46 | Black | | Silence |
+| 0:47 | | UNKNOWN NUMBER · *M? Tu hai?* · M? Is that you? | A bell, one piano note |
+| 0:49 | A clock tower over a street at night | Before seven, *you'll have to choose.* | A clock, the motif on the piano, strings and choir rising |
+| 0:53 | Embers | Found · CHAPTER 01 · DELHI · **Raakh** · A thriller you play on someone else's phone. · PLAY FREE · FOUND-GAME.VERCEL.APP | Braam, taiko, the motif home over the orchestra |
+| 0:59 | | | One more buzz |
 
 ## Sources
 
-The game's own pictures, clips and voices are the game's. The rest is
+The game's own pictures, clips and sounds are the game's. The rest is
 Pexels footage under the [Pexels licence](https://www.pexels.com/license/)
 (free, commercial use allowed, no attribution required), downloaded from
-`videos.pexels.com` by id; every clip was checked by eye: no identifiable
-face, nothing graphic.
+`videos.pexels.com` by id. Every clip was checked by eye: no identifiable
+face, nothing graphic. The one human figure, at the reel, is the game's own,
+thrown out of focus.
 
 | Slot | What it is | Source |
 |---|---|---|
 | `phone_dark` | Green-screen phone on a table, keyed with the lock screen | Pexels [4525346](https://www.pexels.com/video/4525346/) |
-| `parcel`, `poster`, `m_poster`, `m_note`, `call` | Props | `inserts.html` |
-| `delhi_fog`, `m_gate` | India Gate at dusk, graded to smog | Pexels [6587044](https://www.pexels.com/video/6587044/), [6583820](https://www.pexels.com/video/6583820/) |
-| `g_dhol`, `g_baraat`, `g_varmala`, `g_portrait`, `m_pheras`, `m_baraat` | The Sehgal wedding | the game: `w-4`, `w-3`, `w-5`, `w-portrait`, `w-pheras`, `w-baraat` |
-| `w_sparkler` | A sparkler | Pexels [6378175](https://www.pexels.com/video/6378175/) |
-| `k_dance` | Kunal firing on the dance floor | the game: `clip-k-3.mp4` |
-| `g_reel`, `m_reel3`, `m_kfire`, `m_jerrycan` | The reel, Kunal firing, the jerrycan | the game: `scripts/frames/raakh/` |
-| `g_chhath` | Dilip at Chhath | the game: `dilip-chhath.jpg` |
-| `g_lawn` | The back lawn after | the game: `key-lawn.jpg` |
-| `g_fire`, `m_gravel` | The fire; the walk over gravel | the game: `clip-fire.mp4`, `clip-fire-whole.mp4` (picture only) |
-| `rain_street` | An Indian street at night in the rain | Pexels [9481662](https://www.pexels.com/video/9481662/) |
+| `enter` | A hand holding a green-screen phone; the push through the glass | Pexels [8566854](https://www.pexels.com/video/8566854/) |
+| `parcel`, `m_note` | Props | `inserts.html` |
+| `bokeh`, `blur` | Lights out of focus | Pexels [854088](https://www.pexels.com/video/854088/) |
+| `lamp` | A hand lighting diyas | Pexels [19971139](https://www.pexels.com/video/19971139/) |
+| `mehndi` | Mehndi being drawn, marigolds | Pexels [15455199](https://www.pexels.com/video/15455199/) |
+| `bangles` | Hands with mehndi and bangles | Pexels [2078587](https://www.pexels.com/video/2078587/) |
+| `diyas` | Diyas | Pexels [14182074](https://www.pexels.com/video/14182074/) |
+| `sparkler` | A sparkler | Pexels [6378175](https://www.pexels.com/video/6378175/) |
+| `havan` | The havan's fire | Pexels [15157494](https://www.pexels.com/video/15157494/) |
+| `fireworks` | Fireworks | Pexels [14875803](https://www.pexels.com/video/14875803/) |
+| `reel` | The reel on the back lawn, out of focus | the game: `clip-reel-take.mp4` (picture only) |
+| `lawn` | The back lawn after | the game: `key-lawn.jpg` |
+| `gravel`, `jerrycan`, `m_pyre` | The walk over gravel, the jerrycan, the fire | the game: `clip-fire-whole.mp4`, `clip-fire.mp4` (picture only) |
+| `fire` | A fire, close | Pexels [11210464](https://www.pexels.com/video/11210464/) |
+| `ash` | Ash falling | Pexels [4211320](https://www.pexels.com/video/4211320/) |
+| `m_glass` | Rain on glass, tail lights | Pexels [12680281](https://www.pexels.com/video/12680281/) |
+| `m_car` | A night drive | Pexels [10451977](https://www.pexels.com/video/10451977/) |
+| `m_aerial` | A highway from above at night | Pexels [9370566](https://www.pexels.com/video/9370566/) |
+| `m_smoke` | Smoke | Pexels [6894947](https://www.pexels.com/video/6894947/) |
 | `m_rain` | Rain on a windshield at night | Pexels [11631455](https://www.pexels.com/video/11631455/) |
-| `m_fire` | A bonfire, close | Pexels [16753425](https://www.pexels.com/video/16753425/) |
-| `m_embers` | Embers | Pexels [4389495](https://www.pexels.com/video/4389495/) |
-| `m_traffic` | Highway light trails | Pexels [11437954](https://www.pexels.com/video/11437954/) |
 | `m_coals` | Coals | Pexels [7571829](https://www.pexels.com/video/7571829/) |
+| `m_incense` | Incense smoke | Pexels [1793318](https://www.pexels.com/video/1793318/) |
+| `m_fog` | A road in fog | Pexels [1405527](https://www.pexels.com/video/1405527/) |
+| `m_traffic` | Highway light trails | Pexels [11437954](https://www.pexels.com/video/11437954/) |
+| `m_embers` | Embers | Pexels [4389495](https://www.pexels.com/video/4389495/) |
+| `clock` | A clock tower over a street at night | Pexels [13687405](https://www.pexels.com/video/13687405/) |
 | `title_embers` | Embers, under the title | Pexels [12605103](https://www.pexels.com/video/12605103/) |
 
 Left out on purpose: `dilip-awake.jpg`, `nurse-bag.jpg`, `kunal-frame.jpg`,
 `bts.jpg`, the memo at 4:58, the reel take's and the whole fire clip's
-audio, and every Episode 3 call. Each gives part of the twist away.
+audio, every Episode 3 call, and every voice. Each gives part of the story
+away.

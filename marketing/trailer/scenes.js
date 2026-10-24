@@ -517,7 +517,7 @@ export const fragments = Object.fromEntries(Object.entries(SCENES).map(([k, v]) 
 
 export const POST = `#version 300 es
 precision highp float;
-uniform sampler2D S; uniform vec2 OUTR, shake; uniform float T, flash, exposure, warmth, sat_, seed, foot, haze, streak;
+uniform sampler2D S; uniform vec2 OUTR, shake, whip; uniform float T, flash, exposure, warmth, sat_, seed, foot, haze, streak, leak, leakPhase;
 out vec4 O;
 float h21(vec2 p){ vec3 q = fract(vec3(p.xyx) * .1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
 float n2(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
@@ -532,6 +532,13 @@ void main(){
   uv = .5 + (uv - .5) * (1. - length(shake) * 1.5) + weave + shake;
   float ca = .004 * dot(c, c) * 4. + length(shake) * .6;
   vec3 col = vec3(texture(S, uv + c * ca).r, texture(S, uv).g, texture(S, uv - c * ca).b);
+  // A whip-pan across a cut: the frame flung sideways, smeared along the way it's going.
+  if (length(whip) > 0.) {
+    uv += whip;
+    vec3 acc = vec3(0);
+    for (int k = 0; k < 28; k++) acc += texture(S, uv - whip * .9 * (float(k) / 27. - .5)).rgb;
+    col = acc / 28.;
+  }
   vec3 bl = textureLod(S, uv, 3.).rgb * .45 + textureLod(S, uv, 5.).rgb * .35 + textureLod(S, uv, 6.5).rgb * .3;
   // Footage is already display-referred: decode it, and bloom only its brightest.
   if (foot > .5) { col = pow(col, vec3(2.2)); bl = pow(bl, vec3(2.2)); }
@@ -546,6 +553,12 @@ void main(){
     col += st * vec3(.45, .65, 1.) * streak * .35;
   }
   col *= exposure;
+  // A light leak: warm light burning across the frame from one side, as film does at a splice.
+  if (leak > 0.) {
+    float lx = uv.x * 1.3 - (leakPhase * 2.2 - .6) + (n2(vec2(uv.y * 2.5, leakPhase * 3. + seed * .01)) - .5) * .5;
+    float g = exp(-lx * lx * 16.) * (.5 + .5 * n2(uv * vec2(2., 5.) + leakPhase * 2.));
+    col += leak * (g * vec3(1.4, .5, .14) * .5 + vec3(.05, .02, .006) * (1. - abs(leakPhase * 2. - 1.)));
+  }
   // Delhi's smog: a warm, moving murk that eats contrast and lifts the blacks.
   if (haze > 0.) {
     float f = n2(uv * vec2(3., 6.) + vec2(T * .05, T * .02)) * .6 + n2(uv * vec2(7., 14.) - vec2(T * .08, 0)) * .4;
