@@ -1,0 +1,147 @@
+/* The fanned hand (Fan.tsx) and what's printed on its cards. Each card is
+   its own colour, ruled with rings like a topographic map, glossed at the
+   top; its picture floats a little off the card. */
+
+.fan {
+  --cw: clamp(176px, 16vw, 244px);
+  position: relative;
+  height: calc(var(--cw) * 1.2);
+}
+
+.slot {
+  position: absolute;
+  bottom: calc(var(--cw) * -0.42);
+  left: 50%;
+  width: var(--cw);
+  aspect-ratio: 0.7;
+  margin-left: calc(var(--cw) / -2);
+  transform-origin: 50% 320%;
+  transform: rotate(calc(var(--o) * 10.5deg)) translateY(calc(var(--a) * 14px)) scale(calc(1 - var(--a) * 0.05));
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.6s,
+    filter 0.6s;
+}
+
+.slot[data-on] {
+  transform: translateY(calc(var(--cw) * -0.08)) scale(1.06);
+}
+
+.slot[data-far] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slot:not([data-on]) {
+  filter: brightness(0.72) saturate(0.9);
+}
+
+.slot:not([data-on]):hover {
+  filter: brightness(0.92);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 16px 16px 18px;
+  overflow: hidden;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 22%), transparent 26%),
+    repeating-radial-gradient(circle at 24% 18%, rgb(255 255 255 / 9%) 0 1.5px, transparent 1.5px 13px),
+    var(--c);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 22%),
+    inset 0 -30px 60px rgb(0 0 0 / 18%),
+    0 30px 60px rgb(0 0 0 / 55%);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* --- printed on a card --------------------------------------------------------- */
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.eyebrow {
+  display: block;
+  font-family: var(--font-gmono), monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.name {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-cond), Impact, sans-serif;
+  font-size: calc(var(--cw) * 0.14);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 20%);
+}
+
+.chip {
+  flex: none;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 28%);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-gmono), monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.art {
+  display: grid;
+  flex: 1;
+  place-items: center;
+}
+
+/* An app's icon, lifted off the card and leaning. */
+.art > span {
+  display: block;
+  width: 52%;
+  aspect-ratio: 1;
+  filter: drop-shadow(0 18px 24px rgb(0 0 0 / 40%));
+  rotate: -8deg;
+  transition:
+    rotate 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    scale 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.slot[data-on] .art > span {
+  rotate: 0deg;
+  scale: 1.12;
+}
+
+.line {
+  display: block;
+  font-size: calc(var(--cw) * 0.058);
+  line-height: 1.35;
+  opacity: 0.92;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot,
+  .art > span {
+    transition: none;
+  }
+}

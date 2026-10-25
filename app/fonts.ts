@@ -1,4 +1,4 @@
-import { IBM_Plex_Mono, IBM_Plex_Sans, Inter, Inter_Tight, Kalam, Newsreader } from "next/font/google";
+import { Geist, IBM_Plex_Mono, IBM_Plex_Sans, Inter, Kalam, Newsreader } from "next/font/google";
 
 /**
  * Display face: Newsreader (Production Type, SIL Open Font Licence), in the
@@ -66,13 +66,14 @@ export const phone = Inter({
 });
 
 /**
- * The site's own voice (2026-10-23): Inter Tight (SIL OFL) for the landing
- * page's headlines and controls, set tight, as product sites set theirs.
- * Newsreader stays for the one word in a headline that's the story's.
+ * The site's own voice: Geist (Vercel, SIL OFL), one variable file for every
+ * weight. It replaced Inter Tight on 2026-10-25, with the site's revamp:
+ * the wordmark, the headlines and the controls round the game, set tight.
+ * The site's other faces (Anton, Instrument Serif, Geist Mono) load only on
+ * its own pages: components/site/fonts.ts.
  */
-export const sans = Inter_Tight({
+export const sans = Geist({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });

@@ -1,0 +1,570 @@
+/* ===========================================================================
+   Chapter 1's page (2026-10-25, the revamp). Tokens and shared pieces are
+   in Site.module.css; this is Raakh's own: its name across the dark with
+   your table in front of it, the camera roll, the cold open as a script,
+   his contacts, and seven in the morning.
+   =========================================================================== */
+
+/* --- the table, under its title ----------------------------------------------- */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 12fr);
+  grid-template-areas:
+    "head table"
+    "body table";
+  grid-template-rows: 1fr 1fr;
+  gap: 28px clamp(24px, 4vw, 64px);
+  min-height: max(720px, calc(100svh - 20px));
+  margin: 10px;
+  padding: 110px clamp(24px, 5vw, 80px) 72px;
+  overflow: hidden;
+  border-radius: 32px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  /* Your table under one lamp, going into the dark at its edges. */
+  background:
+    radial-gradient(45% 55% at 72% 50%, rgb(255 170 90 / 18%), transparent 70%),
+    radial-gradient(120% 100% at 60% 40%, transparent 30%, rgb(6 6 8 / 92%) 85%),
+    repeating-linear-gradient(97deg, rgb(255 255 255 / 1.2%) 0 1px, transparent 1px 7px, rgb(0 0 0 / 6%) 7px 9px, transparent 9px 16px),
+    linear-gradient(100deg, #1c120b, #2a190f 40%, #21150d 70%, #170e08);
+}
+
+/* The chapter's name across the dark, as a film's title stands behind its cast. */
+.word {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  font-family: var(--font-cond), Impact, sans-serif;
+  font-size: clamp(180px, 34vw, 560px);
+  line-height: 0.8;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: linear-gradient(180deg, rgb(255 210 150 / 18%), rgb(255 210 150 / 3%) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  translate: calc(-50% + var(--mx, 0) * -14px) -50%;
+  transition: translate 1s var(--ease);
+  pointer-events: none;
+  user-select: none;
+}
+
+.heroHead {
+  grid-area: head;
+  align-self: end;
+  display: grid;
+  gap: 26px;
+  justify-items: start;
+}
+
+.heroBody {
+  grid-area: body;
+  align-self: start;
+  display: grid;
+  gap: 28px;
+  justify-items: start;
+  max-width: 560px;
+}
+
+.heroHead > *,
+.heroBody,
+.heroTable {
+  animation: enter 1s var(--ease) both;
+}
+
+.heroHead > :nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.heroTable {
+  animation-delay: 0.16s;
+}
+
+.heroBody {
+  animation-delay: 0.24s;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    translate: 0 24px;
+  }
+}
+
+:global(html:not([data-splashed])) .heroHead > *,
+:global(html:not([data-splashed])) .heroBody,
+:global(html:not([data-splashed])) .heroTable {
+  animation-delay: 2.1s;
+}
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ch {
+  margin-right: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--ember);
+  font-family: var(--font-gmono), monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 0 24px rgb(255 81 50 / 45%);
+}
+
+.h1 {
+  font-size: clamp(44px, 5vw, 86px);
+  font-weight: 650;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  text-shadow: 0 2px 40px rgb(0 0 0 / 40%);
+}
+
+.h1 span {
+  display: block;
+  white-space: nowrap;
+}
+
+.h1 em {
+  padding-right: 0.06em;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, #ffe2a0, var(--gold) 50%, var(--gold-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lede {
+  max-width: 46ch;
+  font-size: clamp(16.5px, 1.35vw, 18.5px);
+  line-height: 1.6;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+.heroCta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 24px;
+}
+
+.heroMeta {
+  font-family: var(--font-gmono), monospace;
+  font-size: 11.5px;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.heroTable {
+  grid-area: table;
+  align-self: center;
+  justify-self: end;
+  width: 100%;
+  max-width: 700px;
+}
+
+@media (max-width: 899px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "table"
+      "body";
+    grid-template-rows: auto;
+    gap: 0;
+    min-height: 0;
+    padding: 100px 20px 32px;
+    border-radius: 26px;
+  }
+
+  .word {
+    top: 34%;
+  }
+
+  .heroHead {
+    gap: 20px;
+  }
+
+  .heroTable {
+    justify-self: center;
+    max-width: 520px;
+    margin: 4px 0 8px;
+  }
+
+  .heroBody {
+    gap: 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    margin: 6px;
+  }
+}
+
+/* --- the night ------------------------------------------------------------------- */
+
+.nightSection {
+  position: relative;
+  padding-top: clamp(96px, 12vw, 170px);
+}
+
+/* --- the wedding, as his camera roll kept it ---------------------------------- */
+
+.roll {
+  padding: clamp(110px, 13vw, 190px) 0 clamp(80px, 10vw, 140px);
+}
+
+.film {
+  overflow: hidden;
+  perspective: 1400px;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+/* The roll goes past tipped back a little, like a reel seen from the side. */
+.filmTrack {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: roll 90s linear infinite;
+  transform: rotateY(-8deg) rotateX(4deg);
+}
+
+.film:hover .filmTrack {
+  animation-play-state: paused;
+}
+
+@keyframes roll {
+  to {
+    translate: calc(-50% - 7px) 0;
+  }
+}
+
+.filmTrack li {
+  position: relative;
+  height: clamp(220px, 28vw, 380px);
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--bg-3);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 8%);
+}
+
+.filmTrack img {
+  filter: saturate(0.95) contrast(1.04);
+  transition: scale 0.8s var(--ease);
+}
+
+.filmTrack li:hover img {
+  scale: 1.05;
+}
+
+.exif {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgb(10 10 14 / 45%);
+  backdrop-filter: blur(10px);
+  font-family: var(--font-gmono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: rgb(255 255 255 / 85%);
+}
+
+/* The chapter's first fifteen seconds, as a script. */
+.cold {
+  display: grid;
+  gap: 24px;
+  max-width: 680px;
+  margin-top: clamp(80px, 11vw, 140px);
+  text-align: center;
+}
+
+.coldWhere {
+  font-family: var(--font-gmono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+.coldLine {
+  display: grid;
+  gap: 6px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(30px, 3.6vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.coldLine span {
+  font-family: var(--font-gmono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.coldLine em {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  letter-spacing: 0;
+  color: var(--text-3);
+}
+
+.coldBang {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--text-3);
+}
+
+.coldBang[data-last] {
+  color: var(--ember);
+}
+
+/* Each line comes up as it's reached, the way the chapter plays them; a shot flashes. */
+@supports (animation-timeline: view()) {
+  .coldLine,
+  .coldBang {
+    animation: said linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 32%;
+  }
+
+  .coldBang {
+    animation-name: said, flash;
+  }
+
+  @keyframes said {
+    from {
+      opacity: 0;
+      filter: blur(6px);
+      translate: 0 14px;
+    }
+  }
+
+  @keyframes flash {
+    0%,
+    60% {
+      color: #fff;
+      text-shadow: 0 0 30px rgb(255 220 170 / 90%);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film {
+    overflow-x: auto;
+  }
+
+  .filmTrack,
+  .coldLine,
+  .coldBang {
+    animation: none;
+  }
+}
+
+/* --- his contacts ------------------------------------------------------------------ */
+
+.people {
+  padding: clamp(96px, 12vw, 160px) 0 0;
+}
+
+.cast {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.person {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-areas:
+    "dp name"
+    "dp line"
+    "who who";
+  column-gap: 14px;
+  row-gap: 4px;
+  align-content: start;
+  padding: 24px;
+  border-radius: 24px;
+  transition: translate 0.4s var(--ease);
+}
+
+.person:hover {
+  translate: 0 -3px;
+}
+
+.dp {
+  grid-area: dp;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #6b6b73, #48484f);
+  color: #fff;
+  font-family: var(--font-ios);
+  font-size: 22px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 10%);
+}
+
+.personName {
+  grid-area: name;
+  align-self: end;
+  font-family: var(--font-ios);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Their last word to him, the way it sits in his chat list. */
+.personLine {
+  grid-area: line;
+  align-self: start;
+  overflow: hidden;
+  font-family: var(--font-ios);
+  font-size: 14.5px;
+  color: rgb(235 235 245 / 60%);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.personWho {
+  position: relative;
+  grid-area: who;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+@media (max-width: 960px) {
+  .cast {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .cast {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .person {
+    padding: 20px;
+  }
+}
+
+/* --- after, and questions ------------------------------------------------------------ */
+
+.after {
+  padding: clamp(110px, 13vw, 180px) 0 0;
+}
+
+.faq {
+  padding: clamp(110px, 13vw, 180px) 0 0;
+}
+
+/* --- seven in the morning ------------------------------------------------------------ */
+
+.dawn {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  justify-items: center;
+  gap: 26px;
+  margin: clamp(110px, 13vw, 180px) 10px 10px;
+  padding: clamp(110px, 14vw, 200px) var(--gut) clamp(90px, 11vw, 150px);
+  overflow: hidden;
+  border-radius: 32px;
+  text-align: center;
+  background: linear-gradient(180deg, #08080b 0%, #160d0b 40%, #3a1a10 75%, #6e2c14 100%);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* The sun, coming up under the clock. */
+.sunrise {
+  position: absolute;
+  bottom: -55%;
+  left: 50%;
+  z-index: -1;
+  width: min(1100px, 140vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 196 77 / 70%), rgb(255 81 50 / 45%) 45%, transparent 75%);
+  filter: blur(30px);
+  translate: -50% 0;
+}
+
+@supports (animation-timeline: view()) {
+  .sunrise {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 60%;
+  }
+
+  @keyframes rise {
+    from {
+      translate: -50% 30%;
+      opacity: 0.3;
+    }
+  }
+}
+
+.dawnDate {
+  font-family: var(--font-gmono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 235 215 / 70%);
+}
+
+/* His lock screen's clock, a minute short. */
+.dawnClock {
+  margin: -6px 0 0.04em;
+  font-family: var(--font-cond), Impact, sans-serif;
+  font-size: clamp(150px, 26vw, 380px);
+  line-height: 0.82;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #fff6ea 20%, rgb(255 196 120 / 35%) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 10px 60px rgb(255 120 60 / 35%));
+}
+
+.dawnTitle {
+  max-width: 18ch;
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+@media (max-width: 560px) {
+  .dawn {
+    margin-inline: 6px;
+  }
+}

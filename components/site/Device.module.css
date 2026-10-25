@@ -1,0 +1,35 @@
+/* The phone at its own 412 × 866, scaled to its box. Until the box has been
+   measured it holds its place and stays out of sight. */
+
+.box {
+  position: relative;
+  aspect-ratio: 412 / 866;
+  width: 100%;
+}
+
+.scaled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 412px;
+  height: 866px;
+  transform-origin: 0 0;
+  scale: var(--k, 0.8);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.box[data-ready] .scaled {
+  opacity: 1;
+}
+
+/* The game sizes the frame to the room; here the box does. */
+.device.device {
+  width: 412px;
+  height: 866px;
+  animation: none;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 8%),
+    inset 0 0 0 3px #050505,
+    0 1px 0 4px rgb(0 0 0 / 30%);
+}

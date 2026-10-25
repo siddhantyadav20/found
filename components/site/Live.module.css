@@ -1,0 +1,17 @@
+/* His phone, live, wherever a site page wants one (2026-10-25). */
+
+.phone {
+  position: relative;
+  width: 100%;
+}
+
+/* The phone's outline, holding its place until the phone arrives. */
+.shell {
+  display: block;
+  aspect-ratio: 412 / 866;
+  border-radius: 13% / 6.2%;
+  background: linear-gradient(150deg, #2c2c2e 0%, #0d0d0e 38%, #1b1b1c 100%);
+  box-shadow:
+    inset 0 0 0 11px #0b0b0c,
+    inset 0 0 0 12px rgb(255 255 255 / 6%);
+}

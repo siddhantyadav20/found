@@ -13,6 +13,8 @@ import { meta, teaser } from "./raakh";
 export type CaseMeta = {
   readonly id: string;
   readonly href: string;
+  /** The chapter's own page on the site, where it has one (Raakh, 2026-10-25). */
+  readonly page?: string;
   readonly title: string;
   readonly cta: string;
   /** Its number on the site, and its city. */

@@ -5,6 +5,7 @@ import type { CaseMeta } from "../cases";
 export const meta: Omit<CaseMeta, "teaser"> = {
   id: "raakh",
   href: "/c/raakh",
+  page: "/chapters/raakh",
   title: "Raakh",
   cta: "Open the parcel",
   chapter: 1,

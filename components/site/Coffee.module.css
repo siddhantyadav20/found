@@ -1,0 +1,195 @@
+/* The coffee button, and the glass it brings up (2026-10-25): the QR on a
+   postage stamp, as if the thanks were going back by the same courier,
+   with an ember "Thank you" franked across its corner. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 54px;
+  padding: 0 24px 0 20px;
+  border: 1px solid rgb(255 196 77 / 45%);
+  border-radius: 999px;
+  background: rgb(255 196 77 / 10%);
+  color: #ffd780;
+  font-size: 15.5px;
+  font-weight: 600;
+  box-shadow: 0 0 30px rgb(255 170 60 / 12%);
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s,
+    translate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.button:hover {
+  translate: 0 -2px;
+  background: rgb(255 196 77 / 16%);
+  box-shadow: 0 0 44px rgb(255 170 60 / 28%);
+}
+
+.button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Steam, rising. */
+.button svg path {
+  stroke-dasharray: 60;
+}
+
+.button:hover svg {
+  animation: steam 1.2s ease-in-out infinite;
+}
+
+@keyframes steam {
+  50% {
+    translate: 0 -1px;
+  }
+}
+
+.dialog {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  color: #f6f3ee;
+}
+
+.dialog::backdrop {
+  background: rgb(4 4 6 / 60%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.dialog[open] .card {
+  animation: up 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.dialog[open]::backdrop {
+  animation: dim 0.4s ease-out both;
+}
+
+@keyframes up {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: perspective(900px) translateY(30px) rotateX(18deg) scale(0.96);
+  }
+}
+
+@keyframes dim {
+  from {
+    opacity: 0;
+  }
+}
+
+.card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(360px, calc(100vw - 32px));
+  padding: 30px 26px 24px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 28px;
+  background:
+    radial-gradient(80% 50% at 50% 0%, rgb(255 180 70 / 18%), transparent 70%),
+    rgb(22 22 28 / 72%);
+  backdrop-filter: blur(30px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 50px 120px rgb(0 0 0 / 70%);
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: var(--font-gmono, var(--font-mono)), monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffc44d;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+/* The stamp: white, perforated, a little turned. */
+.qr {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 252px;
+  height: 252px;
+  margin: 8px 0 6px;
+  padding: 16px;
+  background: #fff;
+  rotate: -2deg;
+  filter: drop-shadow(0 18px 30px rgb(0 0 0 / 45%));
+  /* Perforations: a row of bites along every edge. */
+  -webkit-mask:
+    radial-gradient(circle 5px at 50% 50%, #0000 98%, #000) -6px -6px / 14px 14px round,
+    linear-gradient(#000, #000) 7px 7px / calc(100% - 14px) calc(100% - 14px) no-repeat;
+  mask:
+    radial-gradient(circle 5px at 50% 50%, #0000 98%, #000) -6px -6px / 14px 14px round,
+    linear-gradient(#000, #000) 7px 7px / calc(100% - 14px) calc(100% - 14px) no-repeat;
+}
+
+.qr img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.missing {
+  padding: 24px;
+  font-size: 14px;
+  color: rgb(20 20 24 / 60%);
+}
+
+.note {
+  max-width: 28ch;
+  font-size: 14px;
+  color: rgb(246 243 238 / 64%);
+}
+
+.stamp {
+  position: absolute;
+  top: 22px;
+  right: -30px;
+  padding: 5px 38px 4px;
+  background: #ff5132;
+  color: #fff;
+  font-family: var(--font-gmono, var(--font-mono)), monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  rotate: 35deg;
+  box-shadow: 0 0 24px rgb(255 81 50 / 50%);
+}
+
+.close {
+  margin-top: 6px;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 6%);
+  color: #f6f3ee;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.close:hover {
+  background: rgb(255 255 255 / 12%);
+}

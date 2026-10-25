@@ -6,7 +6,7 @@ import { useSyncExternalStore } from "react";
 import { CASES, type CaseId } from "@/content/cases";
 import { describeCase } from "@/lib/found/keeping";
 import { useYourCases } from "@/lib/found/shelf";
-import styles from "./Landing.module.css";
+import styles from "./Buttons.module.css";
 
 const never = () => () => {};
 const minute = () => Math.floor(Date.now() / 60_000) * 60_000;
