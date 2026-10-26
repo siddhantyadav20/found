@@ -44,6 +44,7 @@ import { wrong } from "./playthrough";
 import { nightly, stamp } from "@/lib/found/time";
 import { moment as momentTone } from "@/lib/found/tones";
 import CloseCase from "./CloseCase";
+import NightStrip from "./NightStrip";
 import { holding } from "@/lib/game/hold";
 
 /** When something was filed: read in the click that files it, never in a render. */
@@ -219,6 +220,7 @@ export default function CaseFile({
       <div className={styles.file}>
         <div className={note.card}>
           <Progress story={story} state={state} />
+          <NightStrip story={story} state={state} />
           <p className={styles.done}>
             {holding(story, state)
               ? story.hold?.note
@@ -359,6 +361,7 @@ export default function CaseFile({
       )}
       <div className={note.card}>
         <Progress story={story} state={state} now={q.id} />
+        <NightStrip story={story} state={state} />
         <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : "Open question"}</p>
         <h3 className={note.question}>{q.ask}</h3>
         {!detective && (

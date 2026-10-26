@@ -14,8 +14,9 @@ import styles from "./Recap.module.css";
    The end of an episode, said as one (2026-10-23). It used to stop on a
    battery warning, mid-thought. Now it lands: the episode stamped closed,
    what the player has to show for it (questions filed, things found, links
-   traced, hunches that came good), the line it ends on, and what's still
-   open. Then the cliffhanger's own action: the charger, or the next title.
+   traced, hunches that came good), and the line it ends on. What's still
+   open is the next episode's briefing (Previously.tsx) where there is one.
+   Then the cliffhanger's own action: the charger, or the next title.
    =========================================================================== */
 
 /** A number that counts itself up, once, when the card arrives. */
@@ -115,14 +116,17 @@ export default function Recap({ story, state, episode, onDone }: { story: Story;
           {recap.english && <p className={styles.english}>{recap.english}</p>}
         </figure>
 
-        <div className={styles.open}>
-          <p className={styles.openHead}>Still open</p>
-          <ol>
-            {recap.open.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ol>
-        </div>
+        {/* What's still open moved to the next episode's briefing (Previously.tsx, 2026-10-26), unless there's no briefing to carry it. */}
+        {!story.openers?.[(episode + 1) as 2 | 3] && (
+          <div className={styles.open}>
+            <p className={styles.openHead}>Still open</p>
+            <ol>
+              {recap.open.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ol>
+          </div>
+        )}
 
         {held ? (
           /* Held back for a launch: when it arrives, a countdown, and a way to hear (lib/found/release.ts). */

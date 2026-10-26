@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { add, episodeOf, homeIcons, newCase, see, seen, settle, type CaseState } from "@/lib/game/engine";
-import { installed, library, loaded, memos, offload, SHOW_HIDDEN, syncPaused, unlocked } from "@/lib/game/phone";
+import { installed, isCode, library, loaded, memos, offload, SHOW_HIDDEN, syncPaused, unlocked } from "@/lib/game/phone";
+import { all } from "@/lib/game/engine";
 import { ep, play } from "./support/play";
 
 /**
@@ -96,5 +97,34 @@ describe("what's read in plain view before it can count (PLAYTEST-SHAGUN.md #25)
 
   it("isn't counted for what was never read", () => {
     expect(seen(settle(ep, add(start(), "ep:2")), "gun-to-kunal")).toBe(false);
+  });
+});
+
+/* Q3 of the perfection pass (2026-10-26): Safari and the locked chats are
+   Episode 2's layer, so a code passed on by a friend, or a curious tap on
+   Safari, can't skip ahead. */
+describe("Episode 2's other doors", () => {
+  it("keeps the locked chats shut in Episode 1, even to the right code", () => {
+    expect(isCode(ep, start(), "pakki")).toBe(false);
+    expect(isCode(ep, add(start(), "ep:2"), " Pakki ")).toBe(true);
+  });
+
+  it("keeps Safari on a tab that can't reload until Episode 2", () => {
+    const waits = ep.safariWaits!;
+    expect(all(start(), waits.until)).toBe(false);
+    expect(all(add(start(), "ep:2"), waits.until)).toBe(true);
+  });
+
+  it("asks nothing in Episode 1 that only Safari or the locked chats can prove", () => {
+    const later = new Set(
+      ep.evidence.filter((e) => e.app === "safari" || ["nitin-car", "nitin-gate", "nitin-reply", "nitin-back", "dilip-107", "promise"].includes(e.id)).map((e) => e.id),
+    );
+    for (const q of ep.questions) {
+      if (q.episode !== 1 || q.kind !== "file") continue;
+      for (const c of q.claims.filter((c) => !c.refuse)) {
+        const routes = [c.proof, ...(c.orProof ?? [])];
+        expect(routes.some((r) => r.every((id) => !later.has(id))), `${q.id}:${c.id}`).toBe(true);
+      }
+    }
   });
 });

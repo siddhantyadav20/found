@@ -907,6 +907,11 @@ export const calls: readonly CallEntry[] = [
   // He did call for help: Nitin, at home with a fever, at 1:15, for two and a half minutes.
   { id: "c-nitin-115", name: "Nitin", kind: "out", at: "01:15", day: "Sunday", seconds: 158 },
   { id: "c-nitin", name: "Nitin", kind: "missed", at: "02:06", day: "Sunday", count: 3 },
+  /* Thursday, 11:24 PM: four minutes after "4. Nitin —", two before he
+     edited the list for the last time. One ring, and he hung up. Nothing on
+     the phone says so; Nitin does, if he trusts you (2026-10-26). */
+  { id: "c-nitin-thu", name: "Nitin", kind: "out", at: "23:24", day: "Thursday" },
+  { id: "c-nitin-thu-back", name: "Nitin", kind: "missed", at: "23:25", day: "Thursday" },
 ];
 
 /* Safari, which he never thought to tidy: he believed it showed a man trying to help. */

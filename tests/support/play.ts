@@ -17,7 +17,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, CHATS_UNLOCKED, installed, offload, unlocked } from "@/lib/game/phone";
-import { momentDone, PLUGGED_IN, recapShown, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
+import { momentDone, openerShown, PLUGGED_IN, recapShown, sceneOf, titleShown, type Scene } from "@/lib/game/scene";
 
 /**
  * A player, played the way a person can: open every app, open what's inside
@@ -125,6 +125,10 @@ export function play(
     }
     if (scene.kind === "recap") {
       s = add(s, recapShown(scene.episode));
+      continue;
+    }
+    if (scene.kind === "opener") {
+      s = add(s, openerShown(scene.episode));
       continue;
     }
     if (scene.kind === "title") {

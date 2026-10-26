@@ -105,8 +105,16 @@ export const story: Story = {
      it himself in Episode 2, to show he tried; Raju, trusted, says the word
      the boy asked every day; and on the phone alone, the memo he deleted
      says the code is what the boy asked him, which the reel take has, seconds
-     before the shot. */
-  chatLock: { code: "pakki", knownWhen: [["did:installed-voicememos", "saw:reel-take"], ["fired:sameer-code"], ["did:raju-trusts"]] },
+     before the shot. Typed before Episode 2 (a friend's tip, a replay), it
+     opens nothing: the chats are Episode 2's layer (2026-10-26). */
+  chatLock: { code: "pakki", requires: ["ep:2"], knownWhen: [["did:installed-voicememos", "saw:reel-take"], ["fired:sameer-code"], ["did:raju-trusts"]] },
+  /* Safari is Episode 2's layer (2026-10-26): on the day's data used up, the
+     tab he left open can't reload, and his History waits with it. */
+  safariWaits: {
+    until: ["ep:2"],
+    site: "faq.whatsapp.com",
+    note: "Jio · Daily data used up. Internet speed is 64 Kbps until midnight.",
+  },
   /* What a wedding planner keeps on the first page. */
   home: {
     pages: [
@@ -147,6 +155,34 @@ export const story: Story = {
   moments: episode3.moments,
   chain,
   endings,
+  /* Two nights share one clock, a week apart: the player's is always called
+     this, so 1:52 tonight is never read as 1:52 that night (2026-10-26). */
+  nowLabel: "Tonight",
+  /* The six minutes a player ever has to hold (2026-10-26), pinned as they're
+     traced, and the cluster Q10 points at; tonight runs under them, a week
+     to the minute later. */
+  timeline: {
+    thatNight: "That night · 22–23 Nov",
+    tonight: "Tonight · 29–30 Nov",
+    from: "23:30",
+    to: "05:00",
+    marks: [
+      { at: "23:52", label: "Kunal fires", when: [["saw:kunal-clip"], ["link:two-firings"]] },
+      { at: "00:32", label: "The shot", when: [["link:shot"]] },
+      { at: "01:14", label: "Awake", when: [["link:alive"]] },
+      { at: "01:49", label: "Sameer in the room", when: [["ask:q10"]], minor: true },
+      { at: "01:52", label: "The lie", when: [["link:lie"]] },
+      { at: "01:53", label: "Car called back", when: [["ask:q10"]], minor: true },
+      { at: "01:56", label: "Ambulance search", when: [["ask:q10"]], minor: true },
+      { at: "02:55", label: "Bhasin's car", when: [["link:alive-now"]] },
+      { at: "04:47", label: "The fire", when: [["link:fire"]] },
+    ],
+    now: [
+      { at: "23:40", label: "The parcel", when: [[]] },
+      { at: "00:32", label: "Episode 2", when: [["ep:2"]] },
+      { at: "01:52", label: "Episode 3", when: [["ep:3"]] },
+    ],
+  },
   /* What a newcomer is doing here, said plainly (2026-10-24). */
   brief: {
     title: "Tonight",
@@ -158,7 +194,7 @@ export const story: Story = {
     ],
   },
   finale: {
-    when: "4:40 AM · Sunday",
+    when: "Tonight · 4:40 AM · Sunday",
     line: "Everything is on the table now.",
     sub: "The record is still yours to put your name to: who did what that night, and what you can prove. Sameer's train leaves at 4:55 this afternoon.",
     after: {
@@ -192,6 +228,22 @@ export const story: Story = {
     go: ["fired:seven-clock"],
     out: ["did:froze", "did:lost", "did:moment-first-call"],
   },
+  /* Each later episode opens on what the player filed, in their own words,
+     and a briefing (2026-10-26): what's still open moved here from the recap. */
+  openers: {
+    2: {
+      previously: ["q1", "q3", "q4"],
+      objective: "Who fired the shot that hit Dilip, and whether it killed him.",
+      against: "A new number knows this phone is on, and it's asking for M. Somebody else wants the phone back before morning.",
+      clock: "Tonight · 12:32 AM · Sameer's train leaves at 4:55 this afternoon",
+    },
+    3: {
+      previously: ["q6", "q7", "q8", "q9"],
+      objective: "What happened to Dilip after the car left without him.",
+      against: "Bhasin Sehgal, who gave the orders that night, wants this phone back.",
+      clock: "Tonight · 1:52 AM · Sameer's train leaves at 4:55 this afternoon",
+    },
+  },
   /* Each episode ends on what it's left open (2026-10-23). */
   voices,
   recaps: {
@@ -206,7 +258,7 @@ export const story: Story = {
       ],
     },
     2: {
-      who: "Nitin, 1:53 AM",
+      who: "Nitin · that night, 1:53 AM",
       cliff: "theek hai bhai. agar le gaye hain toh main Vicky ko wapas bula leta hoon",
       english: "OK bro. If they've taken him, I'll call Vicky back.",
       open: [
@@ -307,6 +359,11 @@ export const story: Story = {
     { what: "The boy smiling over a tray, in Favorites.", where: "photos", meant: "A portrait he'd planned (“Dilip portrait!!”), of someone he'd promised Mumbai to." },
     { what: "The fire clip starts mid-movement.", where: "photos", meant: "He trimmed it to its last nine seconds. The rest, with his hands in it, he locked away." },
     { what: "“For M”, stopping at “4. Nitin —”.", where: "notes", meant: "The whole chapter: he started to tell M, and didn't." },
+    {
+      what: "Thursday, 11:06 to 11:26 PM.",
+      where: "phone",
+      meant: "Twenty minutes: he looks up how to hide chats, locks Nitin's and Dilip's, records the code for M and deletes it, writes “For M”, rings Nitin once at 11:24 and hangs up, and cuts the list at “4. Nitin —”.",
+    },
     { what: "Safari: “private ambulance chhattarpur 24 hours”.", where: "safari", meant: "1:56: four minutes after he'd told Nitin help had come." },
     { what: "Mummy: “Bhasin uncle phir aaye the.”", where: "whatsapp", meant: "The family's man, at his mother's door, all week." },
     { what: "The title cards: 12:32 AM and 1:52 AM.", where: "casefile", meant: "The shot, and the lie." },

@@ -17,7 +17,10 @@ import { stamp } from "@/lib/found/time";
    Tapped, an entry opens its page again, as Safari does, and that needs the
    network: on a day's data used up (Episode 1) it sits loading; in airplane
    mode Safari can't open it; with data back, the results are what he read
-   that night. One of them is the end card's fact, read by him at 12:47. */
+   that night. One of them is the end card's fact, read by him at 12:47.
+
+   Before its layer opens (`Story.safariWaits`, Episode 2 for Raakh), it's
+   only the tab he left open, failing to reload: his History is Episode 2's. */
 
 /** The data is back (Episode 2's Jio SMS) and the phone isn't in airplane mode. */
 const online = (s: CaseState) => s.flags.includes("fired:data-renewed") && !s.flags.includes(AIRPLANE);
@@ -89,6 +92,18 @@ export default function Safari({
   onHome?: () => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
+  /* Before its layer: the last tab, reloading on 64 Kbps, and nothing behind it. */
+  const waits = story.safariWaits;
+  if (waits && !all(state, waits.until))
+    return (
+      <Page title={waits.site} root onBack={onHome} backLabel="Home">
+        <div className={styles.loading} role="status">
+          <span className={styles.bar} />
+          Loading {waits.site}…
+        </div>
+        <p className={styles.waitNote}>{waits.note}</p>
+      </Page>
+    );
   const cal = calendarOf(story, state);
   const searches = story.searches.filter((s) => all(state, s.requires)).sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const here = searches.find((s) => s.id === open);

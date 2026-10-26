@@ -891,6 +891,25 @@ export type Recording = {
   readonly lines: readonly { readonly who: string; readonly line: string; readonly english?: string }[];
 };
 
+/** An episode's way in: what the player filed before it, and tonight's briefing. */
+export type Opener = {
+  /** The questions whose filed claims are "Previously", in this order; unfiled ones are skipped. */
+  readonly previously: readonly string[];
+  /** Under "Find out": the episode's question, said as a phrase. */
+  readonly objective: string;
+  readonly against: string;
+  readonly clock: string;
+};
+
+/** A minute on the case file's night strip, shown once any one of `when`'s flag sets is complete. */
+export type NightMark = {
+  readonly at: string;
+  readonly label: string;
+  readonly when: readonly (readonly Flag[])[];
+  /** A tick without a caption: part of a cluster the caption beside it names. */
+  readonly minor?: boolean;
+};
+
 export type CallEntry = {
   readonly id: string;
   readonly name: string;
@@ -1067,8 +1086,10 @@ export type Story = {
   /**
    * WhatsApp's secret code for its hidden locked chats, and when a player can
    * know it: any one of these sets of flags (for a solver and for tests).
+   * `requires`: until these are all set, the code opens nothing, so a code
+   * passed on by a friend can't skip an episode.
    */
-  readonly chatLock?: { readonly code: string; readonly knownWhen: readonly (readonly Flag[])[] };
+  readonly chatLock?: { readonly code: string; readonly knownWhen: readonly (readonly Flag[])[]; readonly requires?: readonly Flag[] };
   /** The found phone's home screen, as its owner left it: pages, and the dock. */
   readonly home: {
     readonly pages: readonly (readonly HomeIcon[])[];
@@ -1084,6 +1105,32 @@ export type Story = {
   readonly profiles: readonly Profile[];
   readonly incoming: readonly IncomingCall[];
   readonly searches: readonly Search[];
+  /**
+   * Safari before its layer opens (2026-10-26): it reopens on its last tab,
+   * which can't reload on the day's data, and its History stays behind it
+   * until every flag in `until` is set.
+   */
+  /**
+   * The night it all happened, beside the player's own (2026-10-26): a strip
+   * in the case file that pins the few minutes that matter as they're
+   * traced, with tonight's clock running under it, a week later.
+   */
+  readonly timeline?: {
+    readonly thatNight: string;
+    readonly tonight: string;
+    /** The strip's span, as clock times; the night turns at noon (`nightly`). */
+    readonly from: string;
+    readonly to: string;
+    readonly marks: readonly NightMark[];
+    /** Tonight's own marks: where each episode opened. */
+    readonly now: readonly NightMark[];
+  };
+  /**
+   * What the player's own night is called wherever its clock is shown (title
+   * cards), when the story's past runs on the same clock: "Tonight".
+   */
+  readonly nowLabel?: string;
+  readonly safariWaits?: { readonly until: readonly Flag[]; readonly site: string; readonly note: string };
   readonly calls: readonly CallEntry[];
   readonly settings: readonly SettingsGroup[];
   readonly questions: readonly Question[];
@@ -1188,6 +1235,14 @@ export type Story = {
    * Keyed by the episode that's ending.
    */
   readonly recaps?: Readonly<Partial<Record<1 | 2, { readonly cliff: string; readonly english?: string; readonly who?: string; readonly open: readonly string[] }>>>;
+  /**
+   * Before a later episode's title (2026-10-26, Q4 of the perfection pass):
+   * "Previously", in the player's own filed words (Life is Strange, Telltale),
+   * then tonight's briefing (Hitman, Alan Wake 2's board): what to find out,
+   * what's still open (the ending recap's `open`), who's against you, and the
+   * clock. Keyed by the episode that's starting.
+   */
+  readonly openers?: Readonly<Partial<Record<2 | 3, Opener>>>;
   /**
    * Instagram's home feed and Explore: other people's posts, and the night
    * spreading in public (RAAKH, since 2026-10-23, where it replaced your phone).

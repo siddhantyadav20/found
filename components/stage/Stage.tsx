@@ -6,7 +6,7 @@ import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
 import { add, has, newCase } from "@/lib/game/engine";
 import { stamp } from "@/lib/found/time";
-import { DETECTIVE, REALTIME, momentDone, PLUGGED_IN, recapShown, sceneOf, titleShown } from "@/lib/game/scene";
+import { DETECTIVE, REALTIME, momentDone, openerShown, PLUGGED_IN, recapShown, sceneOf, titleShown } from "@/lib/game/scene";
 import { AWAY_MS } from "@/lib/found/keeping";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { useReplay } from "@/lib/found/shelf";
@@ -26,6 +26,7 @@ import Finale from "./Finale";
 import Loader from "@/components/site/Loader";
 import Ringing from "./Ringing";
 import TitleCard from "./TitleCard";
+import Previously from "./Previously";
 import Table from "./Table";
 import { flag, save, say } from "./playthrough";
 
@@ -163,6 +164,10 @@ export default function Stage() {
     case "recap":
       return <Recap story={story} state={state} episode={scene.episode} onDone={() => flag(recapShown(scene.episode))} />;
 
+    /* Before a later episode: what the player filed, and tonight's briefing. */
+    case "opener":
+      return <Previously story={story} state={state} episode={scene.episode} onDone={() => flag(openerShown(scene.episode))} />;
+
     /* A new episode: its title, and the minute it opens on, never explained. */
     case "title": {
       const clock = story.clocks[scene.episode - 1];
@@ -170,7 +175,7 @@ export default function Stage() {
         <TitleCard
           n={scene.episode}
           title={story.episodes[scene.episode - 1]}
-          when={`${clock.day} · ${stamp(clock.base)}`}
+          when={`${story.nowLabel ? `${story.nowLabel} · ` : ""}${clock.day} · ${stamp(clock.base)}`}
           onDone={() => flag(titleShown(scene.episode))}
         />
       );

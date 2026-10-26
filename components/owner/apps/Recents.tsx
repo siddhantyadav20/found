@@ -120,7 +120,7 @@ export default function Recents({
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d={kind.d} />
                   </svg>
-                  {c.ongoing ? "On call" : c.kind === "missed" ? "Missed" : `Mobile · ${length(c.seconds)}`}
+                  {c.ongoing ? "On call" : c.kind === "missed" ? "Missed" : c.seconds ? `Mobile · ${length(c.seconds)}` : "Mobile · Cancelled"}
                 </span>
               </span>
             </>

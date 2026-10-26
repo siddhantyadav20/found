@@ -64,7 +64,8 @@ const evidence: readonly Evidence[] = [
   { id: "kunal-pose", device: "owner", app: "instagram", label: "His archived post, 12:22 AM: Kunal with a revolver by his face, “Papa ki hai, asli wali”", within: true },
   { id: "kunal-papa", device: "owner", app: "whatsapp", label: "Kunal, Thursday before: “reel mein Papa wali le aaunga”", within: true },
   { id: "shot-list", device: "owner", app: "notes", label: "His run sheet: “12:15 — SK reel w/ Kunal. back lawn… D — light (N sick)”", within: true },
-  { id: "search-1244", device: "owner", app: "safari", label: "Safari, 12:44 AM: “goli lagne pe kya karein”", within: true },
+  // Safari is Episode 2's layer (story.safariWaits): read there, it counts from then.
+  { id: "search-1244", device: "owner", app: "safari", label: "Safari, 12:44 AM: “goli lagne pe kya karein”", within: true, requires: ["ep:2"] },
 
   // Q4: prepared.
   { id: "passcode-off", device: "owner", app: "settings", label: "Passcode: off. Anyone who has the phone can open it.", within: true },
@@ -196,7 +197,7 @@ const questions: readonly Question[] = [
         words: { who: "someone at the wedding", then: "burned" },
         text: "Dilip was shot at the wedding. The phone doesn't say by whom. Nobody took him to a hospital, and his body was burned.",
         proof: ["vn-hospital", "vn-burned"],
-        also: ["poster", "vn-kunal", "vn-hospital", "kunal-pose", "kunal-papa", "shot-list", "search-1244"],
+        also: ["poster", "vn-kunal", "vn-hospital", "kunal-pose", "kunal-papa", "shot-list"],
         orProof: [["vn-burned", "fire-clip"], ["vn-kunal", "fire-clip"], ["vn-kunal", "vn-burned"]],
         reply: "On the record, and no further than it goes. His voice note names Kunal as firing. It doesn't say whose bullet hit Dilip.",
       },
@@ -206,11 +207,11 @@ const questions: readonly Question[] = [
         text: "Dilip was shot at the wedding, and I think Sameer fired. Nobody took him to a hospital, and his body was burned.",
         proof: ["vn-hospital", "vn-burned"],
         // Circumstance, not proof: his reel, his lawn, a real gun around. It can sit beside the proof.
-        also: ["shot-list", "kunal-papa", "kunal-pose", "sethi-dilip", "portrait", "search-1244", "vn-kunal", "fire-clip"],
+        also: ["shot-list", "kunal-papa", "kunal-pose", "sethi-dilip", "portrait", "vn-kunal", "fire-clip"],
         orProof: [["vn-burned", "fire-clip"], ["vn-kunal", "fire-clip"], ["vn-kunal", "vn-burned"]],
         reply: "Filed, as your hunch. Nothing you've tabled puts the gun in his hand. Not yet.",
         backed: {
-          by: ["shot-list", "kunal-papa", "search-1244"],
+          by: ["shot-list", "kunal-papa"],
           // Never narrates what wasn't tabled (PLAYTEST-SHAGUN.md #42).
           reply: "Filed, as your hunch, and not a wild one: what you've tabled puts him close. Whose hand the gun was in, the phone doesn't say yet.",
         },

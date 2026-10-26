@@ -140,6 +140,13 @@
   background: linear-gradient(90deg, var(--ios-blue) 0 18%, rgba(120, 120, 128, 0.3) 18%);
 }
 
+.waitNote {
+  padding: 4px 4px 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ios-grey);
+}
+
 .cant {
   display: grid;
   gap: 6px;

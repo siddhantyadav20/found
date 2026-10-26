@@ -29,9 +29,12 @@ export const unlocked = (id: string): Flag => `did:unlocked-${id}`;
 /** WhatsApp's hidden locked chats, shown once their secret code has been typed into Search. */
 export const CHATS_UNLOCKED: Flag = "did:unlocked-chats";
 
-/** Is this what the player typed into WhatsApp's Search the story's secret code? Case and spaces aside. */
-export const isCode = (story: Story, typed: string): boolean =>
-  Boolean(story.chatLock) && typed.trim().toLowerCase() === story.chatLock!.code.toLowerCase();
+/**
+ * Is this what the player typed into WhatsApp's Search the story's secret
+ * code, at a point in the story where it opens anything? Case and spaces aside.
+ */
+export const isCode = (story: Story, s: CaseState, typed: string): boolean =>
+  Boolean(story.chatLock) && all(s, story.chatLock!.requires) && typed.trim().toLowerCase() === story.chatLock!.code.toLowerCase();
 
 /** An offloaded app, downloaded again from its Home Screen icon. */
 export const installed = (app: AppId): Flag => `did:installed-${app}`;

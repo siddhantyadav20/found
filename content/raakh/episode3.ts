@@ -47,7 +47,7 @@ const evidence: readonly Evidence[] = [
   { id: "site-plan", device: "owner", app: "mail", label: "The site plan: the service room, 40 m from the service gate on Mandi Road", within: true, requires: now },
 
   // Q11: Nitin's copy, if he trusts you.
-  { id: "nitin-shot-152", device: "owner", app: "whatsapp", label: "Nitin's screenshot: Sameer at 1:52, “Dilip ko le gaye… Tu Vicky ko wapas bhej”", within: true, requires: ["ep:3", "did:protect-nitin"] },
+  { id: "nitin-shot-152", device: "owner", app: "whatsapp", label: "Nitin's screenshot: Sameer at 1:52, “Dilip ko le gaye… Tu Vicky ko wapas bula aur so ja”", within: true, requires: ["ep:3", "did:protect-nitin"] },
   { id: "vicky-location", device: "owner", app: "whatsapp", label: "Vicky's live location, 1:38–2:06: six minutes at the service gate", within: true, requires: ["ep:3", "did:protect-nitin"] },
 
   // Q12: the fire.
@@ -166,7 +166,7 @@ const questions: readonly Question[] = [
         also: ["nitin-reply", "search-156", "nitin-car", "nitin-gate", "swift", "left-empty", "nitin-back", "the-line", "vicky-location"],
         orProof: [["sameer-room", "nitin-reply", "search-156"], ["the-line"]],
         moment: "He knew.",
-        reply: "At 1:49 he was in the room with Dilip. At 1:52 he told Nitin that Dilip had gone. The car that could have taken him was minutes from the gate.",
+        reply: "At 1:49 he was in the room with Dilip. At 1:52 he told Nitin that Dilip had gone. The car that could have taken him was minutes from the gate. A week later, to the minute, his phone came back online, and Nitin saw it.",
         sets: ["link:lie"],
         pays: ["q9:sameer"],
       },
@@ -280,7 +280,8 @@ const questions: readonly Question[] = [
           ["frame", "reel-take", "memo"],
         ],
         moment: "His version.",
-        reply: "Everything on this phone is true. The order is his, and so is what's missing: the reel, the second shot, 1:52, and his hands at the fire. They had their proof; this was his.",
+        // "4. Nitin —", answered (2026-10-26): where his list stopped is where the lie is.
+        reply: "Everything on this phone is true. The order is his, and so is what's missing: the reel, the second shot, 1:52, and his hands at the fire. They had their proof; this was his. And “For M” stops where it does for a reason: item 4 was Nitin's chat, the one place 1:52 still exists. That's where he stopped writing.",
         sets: ["link:edit"],
       },
     ],
@@ -303,17 +304,16 @@ const questions: readonly Question[] = [
       "Dilip, taken out in Bhasin's car at 2:55, and nobody burned a body. Table the nurse's photo of his belongings with the name badge from the portrait (or his voice with the portrait, or the 2:55 screenshot).",
     ],
     say: {
-      line: "The patient is {who}. Bhasin's car took him out at {time}, and nobody burned {body}.",
+      line: "The patient is {who}. Bhasin's car took him out of Banyan Farms, and nobody burned {body}.",
       blanks: {
         who: ["Dilip", "Nitin", "a stranger"],
-        time: ["2:55", "1:52", "4:47"],
         body: ["a body", "his things"],
       },
     },
     claims: [
       {
         id: "alive",
-        words: { who: "Dilip", time: "2:55", body: "a body" },
+        words: { who: "Dilip", body: "a body" },
         text: "The patient admitted as “Deepak, 19, road accident” is Dilip. Bhasin's car took him out of Banyan Farms at 2:55. Nobody burned a body. Bhasin told Sameer he was dead, and had him burn the rest.",
         proof: ["belongings", "badge"],
         also: ["patient-voice", "portrait", "car-255", "fire-original", "raju-relay", "not-speaking"],
@@ -324,7 +324,7 @@ const questions: readonly Question[] = [
       },
       {
         id: "stranger",
-        words: { who: "a stranger", time: "2:55", body: "a body" },
+        words: { who: "a stranger", body: "a body" },
         text: "",
         proof: [],
         reply: "",
@@ -367,7 +367,7 @@ const nitinSends: readonly Message[] = [
         ],
       },
     },
-    english: "“They've taken Dilip. In Bhasin sir's car, to hospital. Send Vicky back and get out of here.”",
+    english: "“They've taken Dilip. In Bhasin sir's car, to hospital. Call Vicky back and go to sleep.”",
     evidence: "nitin-shot-152",
   },
   {
@@ -385,6 +385,19 @@ const nitinSends: readonly Message[] = [
     evidence: "vicky-location",
   },
   { id: "n-15", from: "them", day: "30/11", at: "01:56", with: "nitin-sends", requires: ["fired:nitin-sends"], typing: 8, text: "Maine check bhi nahi kiya. Bas maan gaya.", english: "I didn't even check. I just believed it." },
+  /* "4. Nitin —", answered by the one person it named (2026-10-26): the
+     11:24 call in Recents, and the call back he didn't take. */
+  {
+    id: "n-15a",
+    from: "them",
+    day: "30/11",
+    at: "01:57",
+    with: "nitin-sends",
+    requires: ["fired:nitin-sends"],
+    typing: 10,
+    text: "Thursday raat usne call kiya tha. Ek ring. Phir kaat diya. Maine wapas kiya, usne nahi uthaya.",
+    english: "He called me on Thursday night. One ring. Then he hung up. I called back; he didn't pick up.",
+  },
 ];
 
 /* (game) #107: with the phone online at 1:52, Nitin writes first, so a
@@ -886,7 +899,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "first-call",
     after: ["did:knows-alive", "fired:seven-clock"],
     unless: ["did:lost"],
-    where: "2:58 AM · Four hours to seven",
+    where: "Tonight · 2:58 AM · Four hours to seven",
     lines: [
       { text: "Fatehpur Beri is twenty minutes from Chhattarpur. They move him at seven." },
       { who: "Sister Anita", text: "Do log chahiye. Ek jo inhe pehchaane. Aur ek jisse Bhasin sahab darte hon.", english: "I need two people. One who can identify him. And one Bhasin sahab is afraid of." },
@@ -907,7 +920,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "after-meera",
     after: ["did:call-meera"],
     unless: ["did:lost", "did:saved"],
-    where: "3:01 AM · One more call",
+    where: "Tonight · 3:01 AM · One more call",
     lines: [
       { who: "Meera", text: "Zinda hai? …Theek hai. Main DCP Saket ko jaanti hoon. Woh Bhasin ka aadmi nahi hai.", english: "Alive? …All right. I know the DCP at Saket. He isn't Bhasin's man." },
       { who: "Meera", text: "Par file mein naam Deepak hai. Mujhe wahan koi chahiye jo usko pehchaane. Abhi.", english: "But the file says Deepak. I need someone there who can identify him. Now." },
@@ -926,7 +939,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "after-raju",
     after: ["did:call-raju"],
     unless: ["did:lost", "did:saved"],
-    where: "3:01 AM · One more call",
+    where: "Tonight · 3:01 AM · One more call",
     lines: [
       { who: "Raju", text: "Fatehpur Beri? Main nikal raha hoon. Bike pe chaalis minute.", english: "Fatehpur Beri? I'm leaving now. Forty minutes on the bike." },
       { who: "Raju", text: "Par akele mujhe andar nahi jaane denge. Main delivery wala hoon. Koi aur chahiye.", english: "But alone they won't let me in. I'm a delivery boy. I need someone else." },
@@ -946,7 +959,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "after-sameer-faced",
     after: ["did:call-sameer", FACED],
     unless: ["did:lost", "did:saved"],
-    where: "3:01 AM · One more call",
+    where: "Tonight · 3:01 AM · One more call",
     lines: [
       { who: "Sameer", text: "…Zinda hai?", english: "…He's alive?" },
       { who: "Sameer", text: "Main jaata hoon. Abhi. Is baar main jaata hoon.", english: "I'm going. Now. This time, I'm going." },
@@ -966,7 +979,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "after-sameer",
     after: ["did:call-sameer"],
     unless: ["did:lost", "did:saved", FACED],
-    where: "3:01 AM · One more call",
+    where: "Tonight · 3:01 AM · One more call",
     lines: [
       { who: "Sameer", text: "…Zinda hai?", english: "…He's alive?" },
       { who: "Sameer", text: "Main nahi aa sakta. Mera train hai. Tu samajh na. Bhasin dekh lega.", english: "I can't come. I've got my train. Understand. Bhasin will handle it." },
@@ -984,7 +997,7 @@ export const moments: readonly Moment[] = withFaces([
   {
     id: "found",
     after: ["did:saved"],
-    where: "3:24 AM · Bedi Nursing Home, Fatehpur Beri",
+    where: "Tonight · 3:24 AM · Bedi Nursing Home, Fatehpur Beri",
     lines: [
       { text: "A white Gypsy with a blue light turns in at the front gate. The man in the safari suit, smoking by the back gate, drops his cigarette and walks away fast." },
       { text: "Sister Anita opens the side door. Room 6. A boy, thinner than in any photograph, a drip in his arm." },
@@ -1001,7 +1014,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-police",
     after: ["did:lost", "did:call-police"],
     unless: [TOLD],
-    where: "3:09 AM · 112",
+    where: "Tonight · 3:09 AM · 112",
     lines: [
       { text: "The control room puts you through to the local station. The man who answers asks your name twice, and the nursing home's address once." },
       { who: "SHO, Chhattarpur", text: "Hum dekh lenge. Aap phone rakhiye.", english: "We'll look into it. Put the phone down." },
@@ -1013,7 +1026,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-post",
     after: ["did:lost", "did:call-post"],
     unless: [TOLD],
-    where: "3:12 AM · @sk.weddings",
+    where: "Tonight · 3:12 AM · @sk.weddings",
     lines: [
       { text: "The post goes up from his account. Forty shares in ten minutes, then four hundred." },
       { text: "Bhasin Uncle reads it. Online, then not." },
@@ -1026,7 +1039,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-clock",
     after: ["did:lost", "did:froze", "did:realtime"],
     unless: [TOLD],
-    where: "3:30 AM · Bedi Nursing Home, Fatehpur Beri",
+    where: "Tonight · 3:30 AM · Bedi Nursing Home, Fatehpur Beri",
     lines: [
       { text: "Sister Anita's shift ends. The side door is locked behind her." },
       { text: "Nobody you could have called is on their way." },
@@ -1037,7 +1050,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-froze",
     after: ["did:lost", "did:froze"],
     unless: [TOLD],
-    where: "3:00 AM · Four hours to seven",
+    where: "Tonight · 3:00 AM · Four hours to seven",
     lines: [
       { text: "You hold the phone and think it through." },
       { text: "By the time you have, it's past three, and nobody has called anybody." },
@@ -1048,7 +1061,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-meera",
     after: ["did:lost", "did:call-meera"],
     unless: [TOLD, "did:call-raju"],
-    where: "3:24 AM · Bedi Nursing Home, Fatehpur Beri",
+    where: "Tonight · 3:24 AM · Bedi Nursing Home, Fatehpur Beri",
     lines: [
       { text: "A DCP's car at the front gate, and Meera beside it in yesterday's clothes." },
       { who: "Sister Anita", text: "Deepak naam ka patient hai. Koi inhe pehchaanne wala hai?", english: "The patient's name is Deepak. Is there anyone who can identify him?" },
@@ -1060,7 +1073,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late-raju",
     after: ["did:lost", "did:call-raju"],
     unless: [TOLD, "did:call-meera"],
-    where: "3:50 AM · Bedi Nursing Home, Fatehpur Beri",
+    where: "Tonight · 3:50 AM · Bedi Nursing Home, Fatehpur Beri",
     lines: [
       { text: "Raju gets there on a borrowed scooter. The man in the safari suit at the back gate says the nursing home is closed." },
       { text: "Raju shouts his brother's name at a dark window until the chowkidar threatens him with the police." },
@@ -1073,7 +1086,7 @@ export const moments: readonly Moment[] = withFaces([
     id: "late",
     after: ["did:lost"],
     unless: [TOLD],
-    where: "3:30 AM · Four hours to seven",
+    where: "Tonight · 3:30 AM · Four hours to seven",
     lines: [{ text: "Nobody you called is going to get to Room 6 before Bhasin's people do." }],
     options: [{ id: "on", text: "Go on", sets: [TOLD] }],
   },

@@ -4,7 +4,7 @@ import { STORIES } from "@/content/stories";
 import type { Story } from "@/content/types";
 import { add, battery, clockNow, dayNow, minutesSince, newCase, stamp, type CaseState } from "@/lib/game/engine";
 import { ENDING_SEEN, finish } from "@/lib/game/endings";
-import { NEEDS_CHARGE, PLUGGED_IN, sceneOf, titleShown, recapShown } from "@/lib/game/scene";
+import { NEEDS_CHARGE, openerShown, PLUGGED_IN, sceneOf, titleShown, recapShown } from "@/lib/game/scene";
 
 /**
  * Where the player is, decided by the save alone, so a reload always lands
@@ -27,18 +27,22 @@ describe("the way in", () => {
 describe("between episodes", () => {
   const unlocked = () => add(opened(), "did:unlock");
 
-  it("closes each episode on its recap, waits on the charger, then shows each new episode's title once", () => {
+  it("closes each episode on its recap, waits on the charger, then opens each new one on Previously and its title, once", () => {
     let s = add(unlocked(), NEEDS_CHARGE);
     expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 1 });
     s = add(s, recapShown(1));
     expect(sceneOf(ep, s).kind).toBe("charge");
     s = add(s, ...PLUGGED_IN);
+    expect(sceneOf(ep, s)).toEqual({ kind: "opener", episode: 2 });
+    s = add(s, openerShown(2));
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 2 });
     s = add(s, titleShown(2));
     expect(sceneOf(ep, s).kind).toBe("table");
     s = add(s, "ep:3");
     expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 2 });
     s = add(s, recapShown(2));
+    expect(sceneOf(ep, s)).toEqual({ kind: "opener", episode: 3 });
+    s = add(s, openerShown(3));
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 3 });
     expect(sceneOf(ep, add(s, titleShown(3))).kind).toBe("table");
   });
@@ -98,5 +102,20 @@ describe("the end", () => {
     s = add(s, ...finish("a"));
     expect(sceneOf(ending, s).kind).toBe("ending");
     expect(sceneOf(ending, add(s, ENDING_SEEN)).kind).toBe("end-card");
+  });
+});
+
+/* Q4 of the perfection pass (2026-10-26): each later episode opens on what
+   the player filed, in their words, and a briefing. */
+describe("Previously", () => {
+  it("draws only on questions that exist and were asked before the episode it opens", () => {
+    for (const [n, opener] of Object.entries(ep.openers ?? {})) {
+      for (const id of opener!.previously) {
+        const q = ep.questions.find((x) => x.id === id);
+        expect(q, id).toBeDefined();
+        expect(q!.episode, id).toBeLessThan(Number(n));
+      }
+      expect(ep.recaps?.[(Number(n) - 1) as 1 | 2]?.open.length, `episode ${n}`).toBeGreaterThan(0);
+    }
   });
 });

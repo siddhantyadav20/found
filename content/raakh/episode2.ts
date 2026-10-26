@@ -70,7 +70,7 @@ const evidence: readonly Evidence[] = [
   // Q8 and Q9: the car.
   { id: "nitin-car", device: "owner", app: "whatsapp", label: "Nitin, 1:22 AM: Vicky's car, to the service gate", manual: true, requires: now },
   { id: "nitin-gate", device: "owner", app: "whatsapp", label: "Nitin, 1:40 AM: “service gate — Mandi Road wala na?”", manual: true, requires: now },
-  { id: "nitin-reply", device: "owner", app: "whatsapp", label: "Nitin, 1:53 AM: “theek hai bhai. agar le gaye hain toh main Vicky ko wapas bhej deta hoon”", manual: true, requires: now },
+  { id: "nitin-reply", device: "owner", app: "whatsapp", label: "Nitin, 1:53 AM: “theek hai bhai. agar le gaye hain toh main Vicky ko wapas bula leta hoon”", manual: true, requires: now },
   { id: "nitin-back", device: "owner", app: "whatsapp", label: "Nitin, 2:04 AM: “Vicky wapas aa gaya.”", manual: true, requires: now },
   { id: "swift", device: "owner", app: "photos", label: "Screenshot: Pappu, 1:59 AM, a Swift at the service gate", within: true, requires: now },
   { id: "left-empty", device: "owner", app: "photos", label: "Screenshot: Pappu, 2:04 AM, “Chali gayi sir. Driver bol raha tha cancel ho gaya.”", within: true, requires: now },
@@ -151,7 +151,7 @@ const questions: readonly Question[] = [
       {
         id: "sameer",
         words: { place: "dance floor", who: "Sameer", which: "second" },
-        text: "Two firings, forty minutes and a lawn apart. Kunal's on the dance floor at 11:52; on the back lawn at 12:31, Sameer fired twice, and the second shot hit Dilip.",
+        text: "Two firings, forty minutes and a lawn apart. Kunal's on the dance floor at 11:52; on the back lawn at 12:32, Sameer fired twice, and the second shot hit Dilip.",
         proof: ["kunal-clip", "reel-take", "memo"],
         also: ["bts", "kunal-papa", "gun-to-kunal", "sameer-mistake", "sameer-loaded", "kunal-pose", "shot-list"],
         orProof: [
@@ -160,7 +160,8 @@ const questions: readonly Question[] = [
           ["kunal-clip", "reel-take", "sameer-loaded"],
         ],
         moment: "Sameer.",
-        reply: "The first shot was for the camera, straight up. The second, as he posed for Kunal, went lower than he meant. It hit the boy holding his light. Four minutes later, Bhasin's first order was to take the gun off him.",
+        // The title card's minute, said once (2026-10-26): Episode 2 opened on the minute of the shot.
+        reply: "The first shot was for the camera, straight up. The second, as he posed for Kunal, went lower than he meant. It hit the boy holding his light. Four minutes later, Bhasin's first order was to take the gun off him. That was 12:32. A week later, to the minute, his phone came back on in your hands.",
         sets: ["link:two-firings", "link:shot"],
         pays: ["q3:sameer"],
       },
@@ -248,10 +249,9 @@ const questions: readonly Question[] = [
       "Nitin, and it left at 2:04 without him. Table Nitin's 1:22 message about the car with Pappu's 2:04 “Chali gayi sir”, or with Nitin's own 2:04 “Vicky wapas aa gaya”.",
     ],
     say: {
-      line: "{who} got a car to the service gate. At {time} it left {how}.",
+      line: "{who} got a car to the service gate, and it left {how}.",
       blanks: {
         who: ["Nitin", "Sameer", "Bhasin", "Kunal"],
-        time: ["2:04", "1:40", "1:59"],
         how: ["without him", "with him"],
       },
       learn: { Nitin: NITIN, Sameer: SAMEER, Bhasin: BHASIN, Kunal: KUNAL },
@@ -259,7 +259,7 @@ const questions: readonly Question[] = [
     claims: [
       {
         id: "car",
-        words: { who: "Nitin", time: "2:04", how: "without him" },
+        words: { who: "Nitin", how: "without him" },
         text: "Nitin got a car to the service gate, and at 2:04 it left without Dilip.",
         proof: ["nitin-car", "left-empty"],
         also: ["swift", "nitin-gate", "nitin-reply", "nitin-back", "left-empty"],
@@ -269,7 +269,7 @@ const questions: readonly Question[] = [
       },
       {
         id: "sameer-car",
-        words: { who: "Sameer", time: "2:04", how: "without him" },
+        words: { who: "Sameer", how: "without him" },
         text: "",
         proof: [],
         reply: "",

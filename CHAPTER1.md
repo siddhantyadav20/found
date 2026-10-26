@@ -23,6 +23,50 @@ origin** (M).
 
 ---
 
+## The perfection pass: Q1–Q4 (2026-10-26)
+
+**This section supersedes everything below wherever they disagree.** Siddhant asked
+for Se7en-level care: no detail unnoticed, the script not sacred. Four of his
+five questions are done here; **Q5 (the endings) is held** until he has
+gathered feedback, so the decider, the record and endings.ts are unchanged.
+
+**Q1 · "4. Nitin —", paid off.** Item 4 would have sent M to Nitin's chat, the
+one place 1:52 still exists: that's why the list stops. Thursday night is now
+a sequence a player can find (11:06 Safari, 11:10 the lock, 11:12 the memo,
+11:16 the insurance note, 11:20 "For M", **11:24 a cancelled call to Nitin**,
+11:25 Nitin's call back, missed, 11:26 the last edit). Nitin, once trusted,
+says it ("Thursday raat usne call kiya tha. Ek ring. Phir kaat diya."); Q13's
+answer says it out loud; Look again has the twenty minutes as a row.
+
+**Q2 · Two nights, one clock, kept apart.** The wedding night (22–23 Nov) and
+tonight (29–30 Nov) share their minutes. Tonight is labelled wherever its
+clock shows (`Story.nowLabel`: title cards, the finale, the night's moments);
+the Episode 2 cliff names "that night". The minutes a player handles are six
+anchors (11:52, 12:32, 1:14, 1:52, 2:55, 4:47): Q8 and Q14 lost their time
+blanks, and the shot is 12:32 everywhere. The case file opens on **the night
+strip** (`Story.timeline`, `NightStrip.tsx`): that night above, a minute pinned
+only once it's traced (and the 1:49/1:53/1:56 cluster once Q10 is filed);
+tonight below, faint, where each episode opened and where the clock is now.
+The title-card device is said once each: Q6's answer ("That was 12:32. A
+week later, to the minute, his phone came back on in your hands.") and Q11's.
+Two misquoted labels (Nitin's 1:53, his copy of 1:52) now quote the messages.
+
+**Q3 · Safari and the locked chats are Episode 2's layer.** Before Episode 2,
+Safari is only the tab he left open, failing to reload on 64 Kbps
+(`Story.safariWaits`); "pakki" opens nothing (`chatLock.requires`). Nothing
+in Episode 1 needs either (tests/layers.test.ts holds it).
+
+**Q4 · Every later episode opens on "Previously" and a briefing**
+(`Story.openers`, `Previously.tsx`, scene `opener`, before the title card).
+Researched first: Life is Strange / Telltale recap the player's own choices;
+Alan Wake 2's case board is the re-onboarding; Hitman briefs target, stakes
+and obstacles; Golden Idol states the goals. So: the player's own filed
+sentences for the beats this episode pays off ("his version" and "your
+hunch" marked), the last cliff line, then *Find out*, *Still open* (moved
+from the end recap), *Against you*, *Clock*. Skippable at once.
+
+---
+
 ## Seven o'clock: the living witness (2026-10-24)
 
 **This section supersedes everything below wherever they disagree**, including

@@ -1196,7 +1196,7 @@ export default function Chat({
                 onChange={(e) => {
                   const typed = e.target.value;
                   // The secret code, typed where WhatsApp says to type it: the locked chats open.
-                  if (isCode(story, typed)) {
+                  if (isCode(story, state, typed)) {
                     onUnlock?.();
                     setQuery("");
                     setView("locked");

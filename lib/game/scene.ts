@@ -21,6 +21,7 @@ export type Scene =
   | { readonly kind: "charge" }
   | { readonly kind: "recap"; readonly episode: 1 | 2 }
   | { readonly kind: "title"; readonly episode: 2 | 3 }
+  | { readonly kind: "opener"; readonly episode: 2 | 3 }
   | { readonly kind: "ending" }
   | { readonly kind: "end-card" }
   | { readonly kind: "ringing"; readonly call: IncomingCall }
@@ -45,6 +46,9 @@ export const REALTIME: Flag = "did:realtime";
 
 /** Set when an episode's title card has been shown, so it shows once. */
 export const titleShown = (episode: 2 | 3): Flag => `fired:title-${episode}`;
+
+/** Set once an episode's "Previously" and briefing have been seen, so they show once. */
+export const openerShown = (episode: 2 | 3): Flag => `did:opener-${episode}`;
 
 /** Set once an episode's recap has been seen, so it shows once. */
 export const recapShown = (episode: 1 | 2): Flag => `did:recap-${episode}`;
@@ -83,6 +87,9 @@ export function sceneOf(story: Story, s: CaseState | null): Scene {
   /* A new episode opens on its title and its minute before the table comes back. */
   const ep = episodeOf(s);
   if (ep === 3 && story.recaps?.[2] && !has(s, titleShown(3)) && !has(s, recapShown(2))) return { kind: "recap", episode: 2 };
+  /* "Previously", then the title: as television does it, before the minute it opens on. */
+  if (ep > 1 && story.openers?.[ep as 2 | 3] && !has(s, titleShown(ep as 2 | 3)) && !has(s, openerShown(ep as 2 | 3)))
+    return { kind: "opener", episode: ep as 2 | 3 };
   if (ep > 1 && !has(s, titleShown(ep as 2 | 3))) return { kind: "title", episode: ep as 2 | 3 };
 
   /* The choice, what it costs, and the card. Once a choice is made there is
