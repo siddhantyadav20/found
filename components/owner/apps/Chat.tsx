@@ -19,7 +19,9 @@ import {
   has,
   type CaseState,
 } from "@/lib/game/engine";
-import { AIRPLANE, calendarOf, CHATS_UNLOCKED, isCode } from "@/lib/game/phone";
+import { calendarOf, CHATS_UNLOCKED, isCode } from "@/lib/game/phone";
+import { clockOf, goneOf, offline as isOffline } from "@/lib/game/engine";
+import { sentFlag } from "@/lib/game/reading";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { useVoice } from "@/lib/found/voice";
@@ -387,9 +389,15 @@ export function Poster({
 }) {
   return (
     <span className={local.poster} role="img" aria-label={a.label}>
-      <span className={local.posterHead} lang="hi">
+      <span className={local.posterHead} lang="hi" data-struck={a.found ? "" : undefined}>
         {a.heading}
       </span>
+      {/* Written over it in ballpoint, once he's found (RAAKH-V3 §11, Room 6). */}
+      {a.found && (
+        <span className={local.posterFound} lang="hi-Latn">
+          {a.found}
+        </span>
+      )}
       {a.subheading && <span className={local.posterSub}>{a.subheading}</span>}
       {/* His photograph, until the shoot: a silhouette, never a stranger's face (ASSETS.md). */}
       <span className={local.posterFace} aria-hidden="true">
@@ -604,6 +612,26 @@ function Bubble({
   );
 }
 
+/** "Delete for me", asked once, as WhatsApp asks it. */
+function DeleteForMe({ onDelete }: { onDelete: () => void }) {
+  const [asking, setAsking] = useState(false);
+  return asking ? (
+    <span className={local.deleteAsk}>
+      Delete for me? It can&apos;t be undone.
+      <button type="button" onClick={onDelete}>
+        Delete
+      </button>
+      <button type="button" onClick={() => setAsking(false)}>
+        Cancel
+      </button>
+    </span>
+  ) : (
+    <button type="button" className={local.deleteMine} onClick={() => setAsking(true)} aria-label="Delete this message for me">
+      Delete for me
+    </button>
+  );
+}
+
 function Conversation({
   story,
   thread,
@@ -616,6 +644,7 @@ function Conversation({
   coming,
   onLink,
   attach,
+  onDelete,
 }: {
   story: Story;
   thread: Thread;
@@ -631,14 +660,28 @@ function Conversation({
   onLink?: (to: NonNullable<Message["link"]>["to"]) => void;
   /** Something the player can attach in this chat (the record, for Meera), and what doing it opens. */
   attach?: { readonly label: string; readonly onAttach: () => void };
+  /** Delete a message for good ("Delete for me"). */
+  onDelete?: (id: string) => void;
 }) {
   /* What was said back, once said: the player's line, then whatever comes
      back (the option's `then`), revealed with "typing…" like anything new. */
-  const messages: Message[] = conversation(
-    state,
-    thread,
-    dateNow(story, state),
-  );
+  const messages: Message[] = [
+    // Deleted "for me", for good: nothing marks where it was.
+    ...conversation(state, thread, dateNow(story, state)).filter((m) => goneOf(state, m.id) !== "perm"),
+    // What the player sent to M, in her chat, as forwarded (RAAKH-V3 §8.7).
+    ...(story.sendTo?.thread === thread.id
+      ? story.evidence
+          .filter((e) => state.flags.includes(sentFlag(e.id)))
+          .map((e): Message => ({
+            id: `sent-${e.id}`,
+            from: "owner",
+            at: clockOf(state, `sent:${e.id}`) ?? "04:00",
+            day: dateNow(story, state),
+            forwarded: true,
+            attachment: { kind: "document", label: e.label, meta: "Forwarded" },
+          }))
+      : []),
+  ];
   const cal = calendarOf(story, state);
   // WhatsApp's contact info, opened by tapping the name at the top.
   const [info, setInfo] = useState(false);
@@ -690,7 +733,7 @@ function Conversation({
   }, [key, shown, onMark, state.at]);
 
   // In airplane mode nothing leaves his phone either. Yours isn't in airplane mode.
-  const offline = app !== "yours:chats" && state.flags.includes(AIRPLANE);
+  const offline = app !== "yours:chats" && isOffline(story, state);
 
   if (info && thread.contact)
     return (
@@ -809,6 +852,10 @@ function Conversation({
               onLink={onLink}
               voices={story.voices}
             />
+            {/* What the phone lets go of (RAAKH-V3 §17): WhatsApp's "Delete for me", which keeps nothing. */}
+            {onDelete && m.evidence && story.evidence.find((e) => e.id === m.evidence)?.deletable && (
+              <DeleteForMe onDelete={() => onDelete(m.id)} />
+            )}
           </div>
         ))}
         {/* Somebody writing back: said where the player is looking, not only in the header. */}
@@ -879,7 +926,7 @@ function Conversation({
                 : "Text Message"
               : offline && openReply(state, thread)
                 ? "Airplane Mode is on."
-                : coming || pending
+                : coming || pending || story.reveal
                   ? ""
                   : "It isn't your phone."}
             <svg
@@ -924,6 +971,7 @@ export default function Chat({
   onLink,
   attachFor,
   opened,
+  onDelete,
 }: {
   story: Story;
   state: CaseState;
@@ -943,6 +991,8 @@ export default function Chat({
   chrome?: boolean;
   /** The secret code, typed into Search: the locked chats show, and the save keeps it. */
   onUnlock?: () => void;
+  /** Delete a message for good: "Delete for me" (RAAKH-V3 §17). */
+  onDelete?: (id: string) => void;
   /** Opening a chat is how what's in it gets found. */
   onRead: (evidenceIds: readonly string[]) => void;
   /** The player, saying something on somebody else's phone. */
@@ -979,6 +1029,7 @@ export default function Chat({
         coming={coming(here)}
         onLink={onLink && ((to) => onLink(to, here))}
         attach={attachFor?.(here)}
+        onDelete={onDelete}
       />
     );
 

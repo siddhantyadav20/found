@@ -1,6 +1,6 @@
 import type { AppId, Caption, Flag, HomeIcon, Memo, Photo, Story } from "@/content/types";
 import { calendar, type Calendar } from "@/lib/found/time";
-import { all, episodeOf, has, type CaseState } from "./engine";
+import { AIRPLANE, all, dateNow, goneOf, has, type CaseState } from "./engine";
 
 /* ===========================================================================
    How the found phone's own apps behave, as far as that can be decided
@@ -14,8 +14,8 @@ import { all, episodeOf, has, type CaseState } from "./engine";
 /** Settings › Apps › Photos › Show Hidden Album, once it's on. */
 export const SHOW_HIDDEN: Flag = "did:show-hidden-album";
 
-/** Control Centre's airplane mode, turned on by hand. */
-export const AIRPLANE: Flag = "did:airplane";
+/** Control Centre's airplane mode, turned on by hand (kept in the engine, which holds events back for it). */
+export { AIRPLANE };
 
 /** Put back from Recently Deleted. */
 export const restored = (id: string): Flag => `did:restored-${id}`;
@@ -51,9 +51,18 @@ export function offload(s: CaseState, icon: HomeIcon): "installed" | "offloaded"
   return all(s, icon.offloaded) ? "available" : "offloaded";
 }
 
-/** In the bin: deleted, and not put back. */
-export const inBin = (s: CaseState, item: { readonly id: string; readonly deletedAt?: string }): boolean =>
-  Boolean(item.deletedAt) && !has(s, restored(item.id));
+/**
+ * In the bin: deleted before the phone reached the player and not put back,
+ * or deleted by the player since (RAAKH-V3 §17). Gone for good is neither.
+ */
+export const inBin = (s: CaseState, item: { readonly id: string; readonly deletedAt?: string }): boolean => {
+  const gone = goneOf(s, item.id);
+  if (gone) return gone === "soft";
+  return Boolean(item.deletedAt) && !has(s, restored(item.id));
+};
+
+/** Deleted for good: not anywhere on the phone any more. */
+export const goneForGood = (s: CaseState, item: { readonly id: string }): boolean => goneOf(s, item.id) === "perm";
 
 export type Library = {
   /** Recents: everything that isn't hidden or in the bin, oldest first. */
@@ -69,7 +78,7 @@ export type Library = {
 export function library(story: Story, s: CaseState): Library {
   // Oldest first, by when each was taken, as the Library grid is.
   const cal = calendarOf(story, s);
-  const visible = story.photos.filter((p) => all(s, p.requires)).toSorted((a, b) => cal.when(a.day, a.at) - cal.when(b.day, b.at));
+  const visible = story.photos.filter((p) => all(s, p.requires) && !goneForGood(s, p)).toSorted((a, b) => cal.when(a.day, a.at) - cal.when(b.day, b.at));
   const bin = visible.filter((p) => inBin(s, p));
   const kept = visible.filter((p) => !inBin(s, p));
   const recents = kept.filter((p) => !p.hidden);
@@ -93,7 +102,7 @@ export function clipOf(s: CaseState, p: Photo): { readonly seconds: number; read
 export const revertible = (s: CaseState, p: Photo): boolean => Boolean(p.original) && !has(s, reverted(p.id));
 
 export function memos(story: Story, s: CaseState): { readonly recordings: readonly Memo[]; readonly bin: readonly Memo[] } {
-  const visible = story.memos.filter((m) => all(s, m.requires));
+  const visible = story.memos.filter((m) => all(s, m.requires) && !goneForGood(s, m));
   return { recordings: visible.filter((m) => !inBin(s, m)), bin: visible.filter((m) => inBin(s, m)) };
 }
 
@@ -105,5 +114,4 @@ export const mmss = (seconds: number): string =>
 export const rupees = (n: number): string => `₹${Math.abs(n).toLocaleString("en-IN")}`;
 
 /** The phone's calendar now: days labelled from the date of the episode the player is in. */
-export const calendarOf = (story: Story, s: CaseState): Calendar =>
-  calendar(story.clocks[0], story.clocks[episodeOf(s) - 1].date);
+export const calendarOf = (story: Story, s: CaseState): Calendar => calendar(story.clocks[0], dateNow(story, s));

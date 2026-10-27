@@ -73,6 +73,26 @@ const ART: Record<AppId, (id: string) => ReactNode> = {
     </>
   ),
   "yours:phone": (id) => ART.phone(id),
+  /* Camera: a light-grey tile, the body in near-black, a lens ringed in grey with a blue-black glass. */
+  camera: (id) => (
+    <>
+      <defs>
+        <Vertical id={`${id}b`} from="#f2f2f4" to="#b8b8bd" />
+        <radialGradient id={`${id}g`} cx="0.42" cy="0.38" r="0.7">
+          <stop offset="0" stopColor="#4f6b8c" />
+          <stop offset="0.55" stopColor="#1b2533" />
+          <stop offset="1" stopColor="#05070a" />
+        </radialGradient>
+      </defs>
+      <Tile fill={`url(#${id}b)`} />
+      <rect x="17" y="33" width="66" height="44" rx="9" fill="#1c1c1e" />
+      <path d="M37 33l4.5-7h17l4.5 7Z" fill="#1c1c1e" />
+      <circle cx="50" cy="55" r="15.5" fill="#8e8e93" />
+      <circle cx="50" cy="55" r="12" fill={`url(#${id}g)`} />
+      <circle cx="45.5" cy="50.5" r="2.6" fill="#ffffff" opacity="0.55" />
+      <circle cx="73" cy="40" r="2.6" fill="#ffd60a" />
+    </>
+  ),
   messages: (id) => (
     <>
       <defs>

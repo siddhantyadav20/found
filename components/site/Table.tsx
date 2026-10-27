@@ -131,7 +131,7 @@ export default function Table() {
         <span className={styles.glow} aria-hidden="true" />
         <div className={styles.phone} data-buzz={buzz % 2 ? "a" : buzz ? "b" : undefined}>
           <Device time="11:40" battery={9} locked wallpaper={raakh.wallpaper} label={`His phone's lock screen, Saturday 11:40 PM: ${calls} missed calls, and Mummy asking why he isn't picking up`}>
-            <LockScreen day="Saturday 29 November" clock="11:40" notes={waiting(calls)} onOpen={() => router.push(raakh.href)} />
+            <LockScreen day="Saturday 28 November" clock="11:40" notes={waiting(calls)} onOpen={() => router.push(raakh.href)} />
           </Device>
           <span className={styles.crack} aria-hidden="true" />
         </div>

@@ -3,8 +3,8 @@
 import { useState } from "react";
 
 import type { Search, Story } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
-import { AIRPLANE, calendarOf } from "@/lib/game/phone";
+import { all, offline, type CaseState } from "@/lib/game/engine";
+import { calendarOf } from "@/lib/game/phone";
 import { Page, SearchField } from "../AppView";
 import styles from "./Safari.module.css";
 import { stamp } from "@/lib/found/time";
@@ -23,7 +23,7 @@ import { stamp } from "@/lib/found/time";
    only the tab he left open, failing to reload: his History is Episode 2's. */
 
 /** The data is back (Episode 2's Jio SMS) and the phone isn't in airplane mode. */
-const online = (s: CaseState) => s.flags.includes("fired:data-renewed") && !s.flags.includes(AIRPLANE);
+const online = (story: Story, s: CaseState) => s.flags.includes("fired:data-renewed") && !offline(story, s);
 
 /** A page Safari still has open in a tab: there without the network. */
 function Article({ search, onBack }: { search: Search & { page: NonNullable<Search["page"]> }; onBack: () => void }) {
@@ -47,8 +47,8 @@ function Article({ search, onBack }: { search: Search & { page: NonNullable<Sear
   );
 }
 
-function Results({ search, state, onBack }: { search: Search; state: CaseState; onBack: () => void }) {
-  const offline = state.flags.includes(AIRPLANE);
+function Results({ story, search, state, onBack }: { story: Story; search: Search; state: CaseState; onBack: () => void }) {
+  const away = offline(story, state);
   if (search.page) return <Article search={{ ...search, page: search.page }} onBack={onBack} />;
   return (
     <Page title="google.com" onBack={onBack} backLabel="History">
@@ -58,12 +58,12 @@ function Results({ search, state, onBack }: { search: Search; state: CaseState; 
         </span>
         {search.text}
       </p>
-      {offline ? (
+      {away ? (
         <div className={styles.cant}>
           <b>Safari Can&apos;t Open the Page</b>
           <span>Your iPhone is not connected to the internet.</span>
         </div>
-      ) : !online(state) ? (
+      ) : !online(story, state) ? (
         // 64 Kbps: the bar creeps, and nothing comes.
         <div className={styles.loading} role="status">
           <span className={styles.bar} />
@@ -107,7 +107,7 @@ export default function Safari({
   const cal = calendarOf(story, state);
   const searches = story.searches.filter((s) => all(state, s.requires)).sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const here = searches.find((s) => s.id === open);
-  if (here) return <Results search={here} state={state} onBack={() => setOpen(null)} />;
+  if (here) return <Results story={story} search={here} state={state} onBack={() => setOpen(null)} />;
 
   // One section a day, in the order the days come.
   const days: { label: string; items: Search[] }[] = [];

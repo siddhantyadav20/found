@@ -1,204 +1,304 @@
 import type { Ending, EndingLine } from "../types";
 
 /* ===========================================================================
-   The endings (CHAPTER1.md I), each reached by an act:
-   A · The Complete Record, B · Sameer's Version, C · The Wrong Story, and
-   the early exit, Return to Sender, chosen from the case file since
-   2026-10-23. The first whose rule fits is the one.
+   The endings (RAAKH-V3 §11). The last question selects one; the night
+   changes lines, people and costs inside it, and nothing else. No hidden
+   score, no first-rule-that-fits.
 
-   No ending declares a verdict (script §18): formal outcomes stay outside the
-   game. Each reads the player's night back through what they did: NITIN,
-   RAJU, MEERA, SAMEER, PUBLIC (posted, not sent), and what the record held.
+     me + Fatehpur Beri ............ Room 6
+     me + Gate 2, with the phone .... The Trade
+     me + the 4:55 .................. The 4:55
+     "Sameer Khurrana", or face down  Return to Origin
+     Close the case before 3:58 ..... Unopened
+
+   Each plays on a lock screen as the clock moves (PG-LOCK): somebody saying
+   something is a notification; what nobody says is a line under the clock;
+   `kind` marks what's shown another way (a card, the media, the last image).
    =========================================================================== */
 
-/** The last image, saved or lost: a photograph from his brother, and, saved, the boy himself. */
-const LAST_IMAGE: readonly EndingLine[] = [
-  { who: "Raju", text: "📷 Dilip, awake, his hand in his brother's", src: "/found/raakh/dilip-awake.jpg", needs: ["did:saved"] },
-  { who: "Raju", text: "Isko rakhna. Ab achhi photo hai.", english: "Keep this one. Now it's a good photo.", needs: ["did:saved"] },
-  /* The last voice on the phone is his: to whoever had it, which is you. */
-  { who: "Dilip", voice: "ending:dilip-thanks", text: "Jo bhi ye phone rakhta hai… shukriya. Sach mein.", english: "Whoever has this phone… thank you. Really.", needs: ["did:saved"] },
-  { who: "Raju", text: "📷 Dilip at Chhath, Samastipur: a yellow kurta, squinting into the sun, laughing", src: "/found/raakh/dilip-chhath.jpg", needs: ["did:lost"] },
-  { who: "Raju", text: "Isko rakhna. Jab tak woh mil nahi jaata.", english: "Keep this one. Until he's found.", needs: ["did:lost"] },
-];
+const R = "/found/raakh";
 
-/** Weeks on, lost: the poster again, with the one line that's new. */
-const WEEKS_LATER: readonly EndingLine[] = [
-  {
-    at: "Three weeks later",
-    clock: "21:10",
-    day: { day: "Sunday", date: "21/12" },
-    who: "Raju",
-    text: "Naya chhapwaya hai. Ek line badli hai.",
-    english: "I've had a new one printed. One line's changed.",
-    poster: {
-      kind: "poster",
-      src: "/found/raakh/poster-dilip.jpg",
-      label: "LAPATA, printed again: Dilip Kumar Mahto, 19. Last seen alive: Fatehpur Beri, Delhi, 30 November.",
-      heading: "लापता",
-      subheading: "LAPATA · MISSING",
-      name: "Dilip Kumar Mahto",
-      lines: ["Umar 19 saal · Age 19", "Aakhri baar zinda dekha: Fatehpur Beri, 30 November", "Last seen alive: Fatehpur Beri, 30 November", "Ghar: Samastipur, Bihar"],
-      contact: "Sampark: Raju (bhai) · +91 62••• •4417",
-      marked: [1, 2],
-    },
-    needs: ["did:lost"],
-  },
-];
+/** Every ending, if Nitin's name reached Bhasin (`nitin_exposed`). */
+const NITIN_AGAIN: EndingLine = { at: "5:30 AM", who: "Nitin", text: "Bhasin ke log phir aaye the.", english: "Bhasin's men came again.", needs: ["did:nitin-exposed"] };
 
-/* What the twist meant, said once at the end of the record: everybody edited the night. */
-const EDITED: EndingLine = {
-  text: "Sameer arranged this phone so his part would end before a death. Bhasin arranged the night so there would be a death for it to end before.",
-  needs: ["did:knows-alive"],
-};
+/** The money, where the player saw both halves of it (E23 + E26). */
+const MONEY: EndingLine = { text: "The balance was real. The silence it bought wasn't on the invoice.", needs: ["saw:balance", "saw:bhasin-balance"] };
 
-/** The last line of every ending that knew his name. */
-const HELD_THE_LIGHT: EndingLine = { text: "Dilip Kumar Mahto, 19. He held the light.", needs: ["did:named-dilip"] };
-
-/*
- * Seven o'clock (2026-10-24): what the two calls bought. The record is put
- * to a name at 4:40 AM (story.finale), so the night splits around it: what
- * had already happened opens every ending, and the morning comes after the
- * record's own replies, in the order the clock gives it.
- */
-const SEVEN_NIGHT: readonly EndingLine[] = [
-  { at: "3:15 AM", text: "Your post had 900 shares by half past three. By then the back gate of Bedi Nursing Home had already opened, once.", needs: ["did:call-post"] },
-  { at: "3:20 AM", text: "The SHO from the local station rang Bhasin before he rang anyone else.", needs: ["did:call-police"] },
-  { at: "3:40 AM", text: "Dilip Kumar Mahto is alive. A DCP from Saket takes his statement at the bedside, a word at a time.", needs: ["did:saved"] },
-  { at: "4:30 AM", who: "Sameer", text: "Main Sameer Khurrana hoon. Goli maine chalayi thi. 1:52 pe maine jhooth bola tha.", english: "I'm Sameer Khurrana. I fired the shot. At 1:52 I lied.", needs: ["did:saved", "did:sameer-went"] },
-];
-
-const SEVEN_MORNING: readonly EndingLine[] = [
-  { at: "6:40 AM", who: "Raju", text: "Maa ko bata diya. Woh ro rahi hai. Is baar achha wala.", english: "I told Maa. She's crying. The good kind, this time.", needs: ["did:saved"] },
-  { at: "6:58 AM", text: "A white Innova pulls out of the back gate of Bedi Nursing Home with its lights off. Room 6 has a new sheet on the bed, and a file with no name on it.", needs: ["did:lost"] },
-  { who: "Sister Anita", text: "Le gaye. Kahan, nahi pata.", english: "They took him. Where, I don't know.", needs: ["did:lost"] },
-  { who: "Sister Anita", text: "Unka phone bhi le gaye.", english: "They took his phone too.", needs: ["did:lost"] },
-  { at: "7:00 AM", text: "A white Innova waits at the back gate of Bedi Nursing Home for a patient called Deepak. Nobody comes out.", needs: ["did:saved"] },
-  { text: "Dilip Kumar Mahto is still missing. Raju prints the poster again, with one new line: last seen alive, Fatehpur Beri.", needs: ["did:lost"] },
-];
-
-/** Bhasin, who had the phone on a map: whether the map still led anywhere. */
-const BHASIN_AFTER: readonly EndingLine[] = [
-  {
-    at: "7:00 AM",
-    text: "A man in a grey safari suit asks your building's guard about a parcel. The guard says nothing came.",
-    needs: ["fired:bhasin-near"],
-    unless: ["did:airplane", "did:done-guard-calls"],
-  },
-  /* The man the guard turned away at 2:40 (T12), back as he said he'd be. */
-  {
-    at: "7:00 AM",
-    who: "Gate 2 · Guard",
-    text: "Ji, woh safari suit wala phir aaya tha. Maine bola aap bahar gaye ho. Aapka naam ek parchi pe likh ke le gaya.",
-    english: "The man in the safari suit came again. I said you'd gone out. He wrote your name on a slip and took it with him.",
-    needs: ["did:done-guard-calls"],
-  },
-  { at: "7:00 AM", text: "Nobody comes. The last place the phone was seen online is a road away from yours.", needs: ["did:airplane", "fired:bhasin-rings"] },
-];
-
-/** The train in his Mail, Sunday afternoon. Nobody on this phone says who's in it. */
-const THE_TRAIN: readonly EndingLine[] = [
-  { at: "4:55 PM", text: "Train 12952 leaves New Delhi for Mumbai Central. In coach B3, seat 41 is taken.", unless: ["did:sameer-went", "did:sameer-stayed"] },
-  { at: "4:55 PM", text: "Sameer is on the 4:55, as he told you he would be.", needs: ["did:sameer-stayed"] },
-];
-
-/** (game) T18: who his leaving costs, on the phone still face-down on your table. */
-const MUMMY_AFTER: EndingLine = {
-  at: "7:40 PM",
-  who: "On his phone · Mummy",
-  text: "Beta, Bhasin uncle bol rahe the tu Mumbai chala gaya. Bina bataye?",
-  english: "Beta, Bhasin uncle says you've gone to Mumbai. Without telling me?",
+/** Dilip's own front-camera video from 18 November: in frame, at last (Room 6's coda). */
+const HELLO: EndingLine = {
+  kind: "media",
+  text: "Dilip, 18 November, on his front camera",
+  src: `${R}/dp-dilip.jpg`,
+  seconds: 9,
+  captions: [
+    { at: 0.5, who: "Dilip", line: "Hello sir, my name is Dilip Kumar Mahto." },
+    { at: 3.5, who: "Dilip", line: "I am from Samastipur." },
+    { at: 5.5, who: "Dilip", line: "I can hold light, I can do anything." },
+  ],
 };
 
 export const endings: readonly Ending[] = [
+  /* --- Room 6 -------------------------------------------------------------- */
   {
-    id: "wrong",
-    row: "The Wrong Story",
-    // Posted before the two firings were told apart (canon).
-    when: { acts: ["post"], untraced: ["two-firings"] },
+    id: "room6",
+    row: "Room 6",
+    when: {},
+    headline: "Dilip Kumar Mahto is alive. Sameer Khurrana told them.",
+    onlyHere: "His own voice, to his own camera.",
+    day: { day: "Sunday", date: "29/11" },
     lines: [
-      ...SEVEN_NIGHT,
-      { text: "The post climbs. Kunal Sehgal's name is in every share." },
-      ...SEVEN_MORNING,
-      ...BHASIN_AFTER,
-      ...THE_TRAIN,
-      MUMMY_AFTER,
-      // Monday, last: the turn comes after the day it went out.
-      { at: "The next morning", clock: "09:10", day: { day: "Monday", date: "01/12" }, text: "The Sehgals release a frame from Kunal's video: Sameer with the gun, and Dilip behind the light." },
-      { who: "The Sehgal family", text: "The wedding planner fired. Our son was forty metres away." },
-      { text: "The story turns around in an hour. Your correction is shared a tenth as often as your post was." },
-      { who: "Raju", text: "Aapke post mein toh Kunal tha…", english: "Your post said it was Kunal…", any: ["did:raju-told-truth", "did:raju-trusts"] },
-      ...WEEKS_LATER,
+      { at: "4:52 AM", who: "Bhasin Uncle", text: "Sameer. Gaadi dikh rahi hai. Kahan ja raha hai?", english: "I can see the car. Where are you going?" },
+      { at: "5:01 AM", who: "Bhasin Uncle", text: "Theek hai. Jaa. Dekhte hain kaun pehle pahunchta hai.", english: "Fine. Go. Let's see who gets there first." },
+      { at: "5:18 AM", who: "Dilip", text: "Side door khula hai. Main yahin hoon.", english: "The side door's open. I'm here." },
+      NITIN_AGAIN,
+      {
+        at: "5:31 AM",
+        kind: "media",
+        text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
+        seconds: 14,
+        captions: [
+          { at: 1, line: "[his breathing, close to the phone]" },
+          { at: 5, line: "[a tube light flickers once]" },
+          { at: 8, line: "[a hand points to a door: 6]" },
+          { at: 10, who: "Sister Anita", line: "Aap akele aaye ho? …Aap hi dono ho.", english: "You came alone? …You're both." },
+        ],
+        unless: ["did:raju-called", "did:dcp-route"],
+      },
+      {
+        at: "5:31 AM",
+        kind: "media",
+        text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
+        seconds: 14,
+        captions: [
+          { at: 1, line: "[his breathing, close to the phone]" },
+          { at: 5, line: "[a tube light flickers once]" },
+          { at: 8, line: "[a hand points to a door: 6]" },
+        ],
+        any: ["did:raju-called", "did:dcp-route"],
+      },
+      {
+        at: "5:33 AM",
+        kind: "media",
+        text: "Room 6, the phone held low: the edge of a bed, a boy, a bandaged shoulder. His eyes open.",
+        src: `${R}/room6.jpg`,
+        seconds: 10,
+        captions: [
+          { at: 3, who: "Dilip", line: "…Bhaiya. Aap aa gaye.", english: "…Bhaiya. You came." },
+          { at: 7, who: "Dilip", line: "Light ready hai.", english: "The light's ready." },
+        ],
+      },
+      { at: "5:40 AM", who: "Raju", text: "Pahunch gaya. Gate pe hoon.", english: "I'm here. At the gate.", needs: ["did:raju-called"] },
+      { at: "5:52 AM", who: "Meera", text: "DCP raste mein hai. Pandrah minute.", english: "The DCP's on the way. Fifteen minutes.", needs: ["did:dcp-route"] },
+      /* 6:05, the statement: the first time "their" voice is heard live, said
+         to his own camera, from what the player filed (RAAKH-V3 §11). */
+      { at: "6:05 AM", kind: "statement", who: "Sameer", text: "Main Sameer Khurrana hoon.", english: "I am Sameer Khurrana." },
+      { kind: "statement", who: "Sameer", text: "Doosri goli maine chalayi thi.", english: "I fired the second shot.", any: ["claim:q4:truth", "claim:q4:hunch"] },
+      { kind: "statement", who: "Sameer", text: "Us raat goli chali thi. Main wahan tha.", english: "A shot was fired that night. I was there.", unless: ["claim:q4:truth", "claim:q4:hunch"] },
+      { kind: "statement", who: "Sameer", text: "1:52 pe maine Nitin ko jhooth bola. Gaadi meri wajah se khaali gayi.", english: "At 1:52 I lied to Nitin. The car left empty because of me.", needs: ["claim:q6:truth"] },
+      { kind: "statement", who: "Sameer", text: "4:47 pe aag maine lagayi thi, Bhasin sir ke kehne pe.", english: "At 4:47 I lit the fire, on Bhasin sir's word.", needs: ["claim:q7:truth"] },
+      { kind: "statement", who: "Sameer", text: "Ye Dilip hai. Dilip Kumar Mahto. Zinda hai.", english: "This is Dilip. He's alive." },
+      { at: "6:20 AM", text: "DCP South arrives. The admission record is copied in front of her.", needs: ["did:dcp-route"] },
+      { at: "6:20 AM", text: "The SHO from Fatehpur Beri arrives, after making one call before he comes in.", unless: ["did:dcp-route"] },
+      { at: "6:58 AM", text: "A white Innova waits at the back gate for a patient called Deepak. Nobody comes out." },
+      { at: "7:10 AM", text: "Dilip is moved to AIIMS Trauma Centre under his own name. Sameer gives a formal statement.", needs: ["did:dcp-route"] },
+      { at: "7:10 AM", text: "Sister Anita doesn't sign the discharge. Dilip stays in Room 6. The SHO takes Sameer instead.", unless: ["did:dcp-route"] },
+      // A promise to keep everything, kept.
+      { at: "7:30 AM", who: "Meera", text: "Phone mein kuch nahi badla. Achha kiya.", english: "Nothing on the phone changed. Good.", needs: ["did:promise-p3", "did:meera-contact"], unless: ["did:deleted-perm"] },
+      { at: "9:12 AM", who: "Instagram · dilli.dhamaka", text: "Wedding planner caught firing at catering worker.", src: `${R}/kunal-frame.jpg` },
+      { text: "The frame is Kunal's second angle. Bhasin released it first." },
+      { at: "9:40 AM", who: "Mummy", text: "Beta, TV pe tera naam aa raha hai. Tu theek hai? Khana khaya?", english: "Your name is on TV. Are you okay? Have you eaten?" },
+      { at: "11:12 AM", who: "Nitin", text: "Mera naam aaya. Theek hai. Sach hai.", english: "My name came up. It's okay. It's true.", needs: ["did:nitin-warned", "claim:q6:truth"] },
+      { at: "11:12 AM", who: "Nitin", text: "Tune pakki bola tha.", english: "You said pakki.", needs: ["did:promise-p1", "claim:q6:truth"], unless: ["did:nitin-warned"] },
+      { at: "11:12 AM", who: "Nitin", text: "Tune 1:52 nahi bataya.", english: "You didn't tell them about 1:52.", unless: ["claim:q6:truth"] },
+      { at: "11:30 AM", text: "Police record a statement from the bride's father about a 12:38 AM order. He denies it.", needs: ["did:dcp-route"] },
+      MONEY,
+      /* The last image (PG-FINAL): the old phone in an evidence bag on a steel
+         table, lighting up; then the poster, found. */
+      { kind: "final", text: "The phone, in a police evidence bag on a steel table. Its screen lights: “Mummy: …Khana khaya?”" },
+      {
+        who: "Raju",
+        text: "",
+        poster: {
+          kind: "poster",
+          src: `${R}/poster-dilip.jpg`,
+          label: "The LAPATA poster, LAPATA struck through in ballpoint and MIL GAYA written over it",
+          heading: "लापता",
+          subheading: "LAPATA · MISSING",
+          name: "Dilip Kumar Mahto",
+          lines: ["Umar 19 saal · Age 19", "Last seen: Banyan Farms, Chhattarpur", "Ghar: Samastipur, Bihar"],
+          contact: "Sampark: Raju (bhai) · +91 62••• •4417",
+          found: "MIL GAYA",
+        },
+        needs: ["did:raju-called"],
+      },
+      {
+        who: "Dilip",
+        text: "Inke bhai ne bheja.",
+        english: "His brother sent this.",
+        poster: {
+          kind: "poster",
+          src: `${R}/poster-dilip.jpg`,
+          label: "The LAPATA poster, LAPATA struck through in ballpoint and MIL GAYA written over it",
+          heading: "लापता",
+          subheading: "LAPATA · MISSING",
+          name: "Dilip Kumar Mahto",
+          lines: ["Umar 19 saal · Age 19", "Last seen: Banyan Farms, Chhattarpur", "Ghar: Samastipur, Bihar"],
+          contact: "Sampark: Raju (bhai) · +91 62••• •4417",
+          found: "MIL GAYA",
+        },
+        unless: ["did:raju-called"],
+      },
+      { kind: "card", text: "Dilip Kumar Mahto, 19. He held the light." },
+      HELLO,
     ],
-    last: [...LAST_IMAGE, HELD_THE_LIGHT],
-    onlyHere: "The frame, released by the people you'd named.",
+    last: [],
   },
+
+  /* --- The Trade ------------------------------------------------------------
+     The old phone goes down with the guard, face to the floor, and goes dark.
+     The rest plays on the plainer phone: Marine Drive on its wallpaper. */
   {
-    id: "complete",
-    row: "The Complete Record",
-    // The lie and the edit traced and left in, and nothing untraced passed off as fact.
-    when: { acts: ["send", "post"], in: ["lie", "edit"], noFacts: true },
+    id: "trade",
+    row: "The Trade",
+    when: {},
+    on: "yours",
+    headline: "Dilip Kumar Mahto is home.",
+    line: "The record of that night is with Bhasin.",
+    onlyHere: "A thank-you from the boy, for what Bhasin did.",
+    day: { day: "Sunday", date: "29/11" },
     lines: [
-      ...SEVEN_NIGHT,
-      { at: "4:48 AM", who: "Meera", text: "Ye complete hai. Isliye kisi ko pasand nahi aayega.", english: "It's complete. That's why nobody will like it.", needs: ["did:sent"] },
-      // (game) T19: what it costs her to take it.
-      { at: "4:52 AM", who: "Meera", text: "Aaj Saket mein file kar rahi hoon. Senior ne mana kiya hai. Phir bhi.", english: "I'm filing at Saket today. My senior told me not to. Even so.", needs: ["did:sent"] },
-      { at: "5:05 AM", who: "Instagram · Sehgal & Associates", text: "This post is false and defamatory. Remove it within 24 hours.", needs: ["did:posted"] },
-      { text: "The record holds: every line has its source.", needs: ["did:posted"] },
-      { who: "Meera", text: "Phone mein kuch nahi badla. Achha kiya.", english: "Nothing on the phone changed. You did well.", needs: ["did:meera-preserved"] },
-      { text: "Kunal handed over a loaded gun. Sameer fired it, and lied at 1:52. Bhasin kept Dilip in a room with no doctor, hid him under another name, and let Sameer burn a mattress believing it was a boy. The one man who sent a car believed what he was told." },
-      { at: "Later", clock: "05:12", who: "Nitin", text: "Mera naam nahi hai. …Par sach hai. Shukriya.", english: "My name isn't in it. …But it's true. Thank you.", needs: ["did:protect-nitin", "did:kept-witness"] },
-      { at: "Later", clock: "05:12", who: "Nitin", text: "Theek hai. Sach hai.", english: "All right. It's true.", needs: ["did:protect-nitin"], unless: ["did:named-witness", "did:kept-witness"] },
-      { text: "Nitin reads his own name in it. You'd promised him it wouldn't be there.", needs: ["did:promised-nitin", "did:named-witness"] },
-      { text: "Nitin's name is in it: the one person who tried.", needs: ["did:named-witness"], unless: ["did:promised-nitin"] },
-      // (game) T22: what naming him costs, before anyone official has asked him anything.
-      { at: "5:30 AM", who: "Nitin", text: "Bhasin ke log ghar aaye the. Maa ro rahi hai.", english: "Bhasin's people came to my house. Ma is crying.", needs: ["did:named-witness"] },
-      ...SEVEN_MORNING,
-      ...BHASIN_AFTER,
-      EDITED,
-      { text: "Sameer's number stops existing on WhatsApp.", unless: ["did:sameer-went"] },
-      ...THE_TRAIN,
-      MUMMY_AFTER,
-      ...WEEKS_LATER,
+      { at: "4:44 AM", who: "Gate 2 · Ram Kishan ji", text: "Le gaye, sahab. Bhasin sahab ne bola, shukriya.", english: "They've taken it. Bhasin sahab said thank you." },
+      { at: "5:02 AM", who: "Bhasin Uncle", text: "Shabaash beta. Saat baje bus.", english: "Well done. Bus at seven." },
+      NITIN_AGAIN,
+      { at: "6:50 AM", who: "+91 98••• •5512", text: "Main Anita. Discharge ho gaya. Woh chal ke gaya.", english: "It's Anita. He's discharged. He walked out." },
+      { at: "7:20 AM", who: "Bhasin Uncle", text: "📷 Dilip in a bus seat at Anand Vihar ISBT, his arm in a sling, looking at the camera, not smiling", english: "" },
+      { who: "Bhasin Uncle", text: "Zinda. Jaisa kaha tha.", english: "Alive. As I said." },
+      { at: "9:30 AM", who: "Meera", text: "Bhasin ka phone aaya tha mere senior ko. Maine copy delete nahi ki. Dilip ghar pahunch jaaye, phir baat karenge.", english: "Bhasin called my senior. I haven't deleted the copy. Once Dilip's home, we'll talk.", needs: ["did:sent-m"] },
+      { at: "4:55 PM", who: "RailBook", text: "Train 12952 has departed New Delhi. Coach B3, seat 41." },
+      { at: "11:02 PM", who: "Mail · Rangmanch Weddings", text: "Welcome aboard, Sameer! Mr Sehgal speaks very highly of you. (cc: Sehgal Enterprises)" },
+      { kind: "card", text: "Three weeks later." },
+      {
+        at: "Three weeks later",
+        clock: "19:40",
+        day: { day: "Saturday", date: "19/12" },
+        who: "+91 79••• •0823",
+        voice: "ending:dilip-thanks",
+        text: "Bhaiya, main Dilip. Bhasin sir ne aapka naya number diya. Bole aapne hi mujhe ghar bhijwaya. Shukriya bhaiya. Sach mein. Maa ko kuch nahi bataya. …Mumbai mein light ka kaam ho toh bula lena.",
+        english: "It's Dilip. Bhasin sir gave me your new number. Said you're the one who sent me home. Thank you. Really. I didn't tell Maa anything. …If there's light work in Mumbai, call me.",
+      },
+      { kind: "final", src: `${R}/dilip-chhath.jpg`, text: "From Dilip: Chhath at a Samastipur ghat, evening lamps on the water, his mother beside him." },
+      { kind: "card", text: "Dilip Kumar Mahto, 19. He thinks you saved him." },
     ],
-    last: [...LAST_IMAGE, HELD_THE_LIGHT],
-    onlyHere: "1:52, in the record, under your name.",
+    last: [],
   },
+
+  /* --- The 4:55 ------------------------------------------------------------- */
   {
-    id: "version",
-    row: "Sameer's Version",
-    when: { acts: ["send", "post"] },
-    lines: [
-      ...SEVEN_NIGHT,
-      { who: "Sameer", text: "Thank you. Tune wahi dekha jo hua tha.", english: "Thank you. You saw what happened.", unless: ["did:confronted-sameer"] },
-      { at: "4:48 AM", who: "Meera", text: "Ye uska version hai. Par jo bhi likha hai, sach hai.", english: "This is his version. But everything in it is true.", needs: ["did:sent"] },
-      { text: "It's shared widely, and it is almost all true.", needs: ["did:posted"] },
-      { text: "The record names Bhasin for the car. Nobody asks the man who sent it why he turned it round." },
-      { text: "You knew about 1:52. You left it out.", needs: ["did:left-out-lie"] },
-      ...SEVEN_MORNING,
-      ...BHASIN_AFTER,
-      { text: "His boundary holds: “I caused the accident; they caused the death.”", unless: ["did:knows-alive"] },
-      { text: "His boundary holds: “I caused the accident; they caused the rest.” Nobody asks him what the rest was.", needs: ["did:knows-alive"] },
-      ...THE_TRAIN,
-      MUMMY_AFTER,
-      ...WEEKS_LATER,
+    id: "train",
+    row: "The 4:55",
+    when: {},
+    headline: "Dilip Kumar Mahto is still missing.",
+    line: "Sameer Khurrana reached Mumbai.",
+    onlyHere: "A new boy behind the light.",
+    day: { day: "Sunday", date: "29/11" },
+    notes: [
+      { text: "You knew who sent you.", needs: ["saw:offer-p2"] },
+      { text: "Page 2 of the offer: “Referred by: Mr B. Sehgal.”", unless: ["saw:offer-p2"] },
+      MONEY,
     ],
-    last: [...LAST_IMAGE, HELD_THE_LIGHT],
-    onlyHere: "What Sameer said when he said thank you.",
+    lines: [
+      { at: "4:41 AM", who: "Bhasin Uncle", text: "Neeche nahi aayega? …Theek hai.", english: "Not coming down? …Fine." },
+      NITIN_AGAIN,
+      { at: "6:30 AM", who: "Bhasin Uncle", text: "Jaa. Mumbai mein humare log hain. Phone sambhaal ke rakhna. Ladka hum sambhaal ke rakhenge.", english: "Go. We have people in Mumbai. Look after the phone. We'll look after the boy." },
+      { at: "6:58 AM", who: "Dilip", text: "Le gaye. White Innova. Kahan, nahi bataya.", english: "They took him. White Innova. Didn't say where." },
+      { at: "7:02 AM", who: "Dilip", text: "Woh pooch raha tha aap aaye kyun nahi.", english: "He was asking why you didn't come." },
+      { at: "7:03 AM", who: "Dilip", text: "Uska phone mere paas hai. Main rakh lungi. Shayad koi aaye.", english: "I have his phone. I'll keep it. Maybe someone will come." },
+      { at: "8:00 AM", who: "Phone", text: `Missed call: +91 62••• •4417 (48)` },
+      { at: "4:55 PM", who: "Kunal", text: "Safe journey bhai. Papa ne bola tension mat lena.", english: "Dad said don't worry." },
+      { at: "11:40 PM", who: "Mail · Rangmanch Weddings", text: "Welcome aboard, Sameer! (cc: Sehgal Enterprises)" },
+      {
+        kind: "final",
+        at: "8:35 AM",
+        clock: "08:35",
+        day: { day: "Monday", date: "30/11" },
+        src: "/found/lastlocal/sea.jpg",
+        text: "Marine Drive, Monday morning, the haze on the water. Two bubbles drift up from the old chat: “Bhaiya, Mumbai mein samundar roz dikhega?” · “Roz.”",
+      },
+      { kind: "card", text: "Three weeks later." },
+      {
+        at: "Three weeks later",
+        clock: "21:10",
+        day: { day: "Saturday", date: "19/12" },
+        who: "Raju",
+        text: "Naya chhapwaya hai. Koi bhi khabar ho toh batana.",
+        english: "Had new ones printed. If you hear anything, tell me.",
+        poster: {
+          kind: "poster",
+          src: `${R}/poster-dilip.jpg`,
+          label: "The LAPATA poster, reprinted: Dilip Kumar Mahto, 19. Last seen: Banyan Farms, Chhattarpur.",
+          heading: "लापता",
+          subheading: "LAPATA · MISSING",
+          name: "Dilip Kumar Mahto",
+          lines: ["Umar 19 saal · Age 19", "Last seen: Banyan Farms, Chhattarpur", "Ghar: Samastipur, Bihar"],
+          contact: "Sampark: Raju (bhai) · +91 62••• •4417",
+        },
+      },
+      {
+        kind: "media",
+        text: "A Rangmanch reel at a Mumbai wedding: fairy lights, and a new boy, about eighteen, behind an LED panel",
+        src: `${R}/key-lawn.jpg`,
+        seconds: 10,
+        captions: [
+          { at: 1.5, who: "A boy, behind the light", line: "Sir, light yahan theek hai?", english: "Sir, is the light okay here?" },
+          { at: 5, who: "Sameer, off camera", line: "Haan. Wahin. Ab hilna mat.", english: "Yes. There. Now don't move." },
+        ],
+      },
+      { kind: "card", text: "Dilip Kumar Mahto, 19. He held the light. Somebody else holds it now." },
+    ],
+    last: [],
   },
+
+  /* --- Return to Origin ------------------------------------------------------
+     Back in the envelope, at the gate for the courier. It will come back. */
   {
-    id: "returned",
-    row: "Return to Sender",
-    when: { acts: ["return"] },
+    id: "origin",
+    row: "Return to Origin",
+    when: {},
+    headline: "Return to Origin.",
+    line: "It will come back.",
+    onlyHere: "The parcel, at your door again.",
+    day: { day: "Sunday", date: "29/11" },
+    notes: [{ text: "You didn't look.", needs: ["did:facedown"] }],
     lines: [
-      ...SEVEN_NIGHT,
-      ...SEVEN_MORNING,
-      { text: "In the morning you tape the parcel shut, with the envelope inside, and write across the label: not the sender." },
-      { text: "The courier takes it back. It goes to the hub, onto a shelf of parcels nobody will claim.", unless: ["did:bhasin-yes"] },
-      { text: "The courier takes it back. By noon it's gone from the hub. Nobody signs for it.", needs: ["did:bhasin-yes"] },
-      { text: "Whatever happened in Chhattarpur stays on it." },
-      ...WEEKS_LATER,
+      { at: "4:58 AM", who: "Your phone · Ram Kishan ji", text: "Gate pe rakh diya, sahab. Courier subah aayega.", english: "Left it at the gate. Courier comes in the morning." },
+      { at: "5:10 AM", who: "Bhasin Uncle", text: "Phir bhej raha hai? Theek hai. Hum bhi intezaar kar lete hain. Ladka bhi.", english: "Sending it again? Fine. We'll wait too. So will the boy." },
+      NITIN_AGAIN,
+      { at: "6:58 AM", who: "Dilip", text: "Le gaye.", english: "They took him." },
+      // The last image: the sealed envelope on the guard's counter, the phone lighting up through it.
+      { kind: "final", text: "The sealed envelope on the guard's counter, in early light." },
+      { kind: "glow", who: "Phone", text: "48 missed calls" },
+      { kind: "glow", who: "M", text: "Maine copy rakh li hai. Jab tu tayyar ho.", english: "I've kept a copy. Whenever you're ready.", needs: ["did:sent-m"] },
+      { kind: "glow", who: "Mummy", text: "Khana khaya?", english: "Have you eaten?" },
+      { kind: "cold", text: "" },
+      { kind: "card", text: "Seven days later, a parcel comes back to your door." },
+      { kind: "parcel", text: "RETURN TO ORIGIN · Attempt 2 · Refused by addressee" },
+      { kind: "card", text: "Dilip Kumar Mahto, 19. He asked if you were coming." },
     ],
-    last: [{ text: "Four voice notes to M. One grey tick each.", needs: ["saw:vn-kunal"] }],
-    onlyHere: "A shelf of parcels nobody will claim.",
+    last: [],
+  },
+
+  /* --- Unopened: put away before the reveal ---------------------------------- */
+  {
+    id: "unopened",
+    row: "Unopened",
+    when: {},
+    headline: "Unopened",
+    onlyHere: "It's still ringing.",
+    lines: [
+      { kind: "glow", who: "Raju", text: "Missed call" },
+      { kind: "glow", who: "Mummy", text: "Beta, phone kyun nahi utha raha?", english: "Why aren't you picking up?" },
+      { kind: "card", text: "You put it away. It's still ringing." },
+    ],
+    last: [],
   },
 ];

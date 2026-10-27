@@ -1,6 +1,8 @@
 import type { CaseMeta } from "../cases";
 
-/* The site's copy for Chapter 1, Raakh (called Shagun until 2026-10-23). No story here: see CHAPTER1.md. */
+/* The site's copy for Chapter 1, Raakh. No story here: see RAAKH-V3.md. Every
+   line is true of the chapter's twist (RAAKH-V3 §15): the phone "comes back"
+   to a door; nothing calls it a stranger's, or the door anyone's. */
 
 export const meta: Omit<CaseMeta, "teaser"> = {
   id: "raakh",
@@ -10,38 +12,35 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   cta: "Open the parcel",
   chapter: 1,
   city: "Delhi",
-  logline: "A wedding planner's phone comes back to your door with a note meant for his ex. Somewhere on it is the night a waiter went missing.",
-  hint: "A parcel for a lawyer came back to your door. Inside: a stranger's phone, and a note.",
+  logline: "A wedding planner's phone comes back to your door with a note meant for his ex. Somewhere on it is the night a catering boy went missing.",
+  hint: "A parcel for a lawyer came back to your door. Inside: a wedding planner's phone, and a note.",
   description:
-    "A wedding planner's phone arrives with a shagun envelope and a note meant for someone else. A Delhi wedding, a shot, a missing waiter, and a phone arranged before it reached you.",
+    "A wedding planner's phone comes back to your door. Read his chats, play his voice notes, open what he deleted, and work out what happened.",
   wallpaper: "/found/raakh-wallpaper.jpg",
   time: "11:40",
   episodes: 3,
   tone: "Mystery · Delhi · 45–60 min",
   note: "16+ · gun violence, a missing person, a fire · this game never asks for anything real",
-  ask: "Did you get there before seven?",
-  // CHAPTER1.md J's preset message, less its question.
-  hook: "A wedding planner's phone. A missing waiter.",
-  envelope: { front: "Ishita weds Rohan", small: "Sehgal Parivar · 22.11" },
-  /* O1, decided 2026-09-24: returned to origin. He sent it to Meera at home in
-     Kalkaji; she was at a wedding in Jaipur; it came back to the sender's
-     address he'd made up, which is yours. No house number: a real one could
-     be a real person's. */
+  ask: "Who did you tell, by seven?",
+  hook: "A wedding planner's phone. A missing catering boy.",
+  envelope: { front: "Ishita weds Rohan", small: "Sehgal Parivar · 21.11" },
+  /* The waybill (RAAKH-V3 §7.2): sent same-city to M, refused at her door,
+     returned to origin. Never a label saying whose address it is: whose door stays a
+     fact the player can deduce, not one they're told. */
   label: {
     to: "Meera Arora",
     address: "Kalkaji, New Delhi 110019",
-    // Couriers print the receiver's mobile: it's how the player can reach her.
-    phone: "+91 98••• •1206",
-    // The sender he wrote: a name you don't know, over your own address (#56).
-    from: "S. Khurrana · your address",
-    stamp: ["RETURN TO ORIGIN", "Addressee not available"],
+    from: "S. Khurrana, B-14 Navjeevan Apartments, Malviya Nagar, New Delhi 110017",
+    stamp: ["RETURN TO ORIGIN", "Refused by addressee · 28/11 11:10"],
+    courier: "DakRoute Express · Same-city · AWB DR-4471-0926 · Attempt 1",
+    contains: "1 mobile phone, used",
   },
-  links: 12,
+  links: 0,
 };
 
 /** What keeps landing on his lock screen while the desk waits. */
 export const teaser = [
   { from: "Phone", text: "47 Missed Calls" },
   { from: "Mummy", text: "Beta, phone kyun nahi utha raha?" },
-  { from: "Bhasin Uncle", text: "Missed call" },
+  { from: "Bhasin Uncle", text: "2 missed calls" },
 ] as const;

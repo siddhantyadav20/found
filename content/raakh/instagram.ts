@@ -1,13 +1,14 @@
-import type { FeedPost, LiveEvent, Message, Profile, Thread } from "../types";
+import type { FeedPost, LiveEvent, Profile, Thread } from "../types";
 
 /* ===========================================================================
    Instagram on Sameer's phone (2026-10-23: it replaced "your phone").
 
    Photos is what he shot and kept: candids, screenshots, the bin. Instagram
-   is what people put out: his polished wedding posts, Kunal showing off a
-   revolver for the reel, Nitin with a fever the day before, Meera's private
-   account, and the night spreading in public once the player knows what it
-   is. Faces go with names here, and anybody can be searched.
+   is what people put out: his polished wedding posts, Nitin with a fever
+   the day before, Meera's private account, Kunal's 12:22 story, shared to
+   him by DM (RAAKH-V3 E18), and the night spreading in public once the
+   player knows what it is. Faces go with names here, and anybody can be
+   searched.
 
    The public chatter is the old Pulse feed, moved: none of it comes before
    the player has found its thread on the phone, so it never answers Episode
@@ -28,26 +29,6 @@ export const profiles: readonly Profile[] = [
     following: "611",
     posts: [
       // Sunday afternoon, the day after: he posted the wedding as if it had been one.
-      /* The reel's first frame, posted from the back lawn at 12:22 AM and
-         archived at 9:31 on Sunday morning: public for nine hours (Ritika
-         saw it), gone from his grid, still in his Archive, where only he can
-         see it. True, and it points away from him: the wrong story, for the
-         right reasons (script §23). */
-      {
-        id: "k-pose",
-        archived: "Archived Sunday 9:31 AM",
-        when: "Saturday 22 Nov, 12:22 AM",
-        src: `${R}/w-kunal.jpg`,
-        title: "Back lawn, fairy lights in the mango trees: Kunal holds a revolver up beside his face, grinning",
-        caption: "BTS for the Sehgal reel 🎬 @kunal.sehgal going full Animal 😂🔫",
-        place: "Banyan Farms · Chhattarpur",
-        likes: 388,
-        comments: [
-          { who: "kunal.sehgal", text: "Papa ki hai, asli wali 😎🔥", english: "It's Papa's, the real one." },
-          { who: "ishita.sehgal", text: "Kunal PLEASE papa ko pata chala na", english: "Kunal PLEASE, if Papa finds out…" },
-        ],
-        evidence: "kunal-pose",
-      },
       { id: "i-couple", when: "6 days ago", src: `${R}/w-couple.jpg`, title: "Ishita and Rohan under fairy lights", caption: "Ishita 🤍 Rohan. Banyan Farms, Chhattarpur. Planned by us, lit by the mango trees. #SKWeddings #SehgalShaadi", likes: 1840 },
       { id: "i-family", when: "6 days ago", src: `${R}/w-family.jpg`, title: "The Sehgals on the stage: Bhasin Sehgal on the left, the couple, Kunal at the end", caption: "Sehgal parivar 🙏 Thank you Bhasin uncle for trusting us with Ishita's big day. @kunal.sehgal bhai, you're next 😄", likes: 1213 },
       { id: "i-pheras", when: "6 days ago", src: `${R}/w-pheras.jpg`, title: "Pheras at night, the fire in the middle", caption: "Pheras at 1:20 AM. Worth every minute. 🔥", likes: 2106 },
@@ -132,7 +113,7 @@ export const feed: readonly FeedPost[] = [
     text: "Sehgal parivar ke kareebi sources: “Goli wedding planner ne chalayi thi. Parivar ka koi lena dena nahi.”",
     english: "Sources close to the Sehgal family: “The wedding planner fired. The family has nothing to do with it.”",
     shares: [0, 0, 9700],
-    requires: ["ask:q11"],
+    requires: ["ask:q6"],
   },
   {
     id: "f-ritika-2",
@@ -142,7 +123,7 @@ export const feed: readonly FeedPost[] = [
     card: "#2d2340",
     text: "Ok so now they're blaming the wedding planner?? Someone who was actually there needs to say what happened.",
     shares: [0, 0, 1800],
-    requires: ["ask:q11"],
+    requires: ["ask:q6"],
   },
   {
     id: "f-proof",
@@ -175,7 +156,7 @@ export const feed: readonly FeedPost[] = [
     text: "Waiter ko Kunal Sehgal ne goli maari. Paisa hai toh sab maaf? #JusticeForDilip",
     english: "Kunal Sehgal shot the waiter. If you've got money, all's forgiven?",
     shares: [1200, 8400, 31000],
-    requires: ["did:heard-him"],
+    requires: ["ask:q2"],
   },
   {
     id: "f-poster",
@@ -204,7 +185,7 @@ export const feed: readonly FeedPost[] = [
     card: "#1f2b3a",
     text: "Was at this wedding. The bride's brother was literally firing in the air like it's a film, the planner even posted him with the gun. Then the waiters vanished from the back lawn and nobody would say why 😶",
     shares: [340, 1200, 2900],
-    requires: ["did:heard-him"],
+    requires: ["ask:q2"],
   },
   {
     id: "f-video",
@@ -216,7 +197,7 @@ export const feed: readonly FeedPost[] = [
     english: "A Chhattarpur farmhouse wedding, and open firing on the dance floor. Where are the police?",
     media: "Video: a dance floor at night, phones in the air",
     shares: [2400, 9100, 23800],
-    requires: ["did:heard-him"],
+    requires: ["ask:q2"],
   },
 
   /* --- an ordinary Saturday night's feed, from everywhere -------------------- */
@@ -235,49 +216,32 @@ export const feed: readonly FeedPost[] = [
   { id: "x-quote", who: "Small Things", handle: "smallthings.co", when: "2d", card: "#20453b", text: "You don't rise to the level of your goals. You fall to the level of your excuses.", shares: [22000, 22100, 22200] },
 ];
 
-/* --- Meera, once she's rung and unblocked him (episode2.ts) ------------------
-   She said she'd write to his phone, and she does, in the chat he pinned for
-   her: one tick turns to two. What she knows about him is what a player
-   without her can't easily get; once the lie is traced she takes back what
-   she said about him. */
-const meera: readonly Message[] = [
-  { id: "me-0", from: "them", at: "00:46", with: "meera-call", requires: ["did:meera-called"], text: "Unblock kar diya. Ye main hoon. Meera.", english: "I've unblocked him. This is me. Meera." },
-  {
-    id: "me-5",
-    from: "them",
-    at: "01:20",
-    with: "meera-reads",
-    requires: ["fired:meera-reads"],
-    text: "Ek baat. Sameer jo nahi dekhna chahta, lock kar deta hai. Aur password hamesha apna birthday rakhta hai. Har jagah. Bewakoof.",
-    english: "One thing. What Sameer doesn't want to look at, he locks. And his password is always his birthday. Everywhere. Idiot.",
-  },
-  {
-    id: "me-air",
-    from: "them",
-    at: "02:12",
-    with: "meera-airplane",
-    requires: ["fired:meera-airplane"],
-    text: "Bhasin uncle ko location dikh rahi hai? Toh phone airplane mode pe daalo. Abhi. Uske baad mera message bhi nahi aayega, theek hai.",
-    english: "Bhasin uncle can see the location? Then put the phone on airplane mode. Now. My messages won't come through after that either, that's fine.",
-  },
-  { id: "me-7", from: "them", at: "02:20", with: "meera-takes-back", requires: ["fired:meera-takes-back"], text: "Maine kaha tha woh jhooth nahi bolta.", english: "I said he doesn't lie." },
-  { id: "me-8", from: "them", at: "02:20", with: "meera-takes-back", requires: ["fired:meera-takes-back"], typing: 5, text: "Maine galat kaha tha.", english: "I was wrong." },
-];
+/* --- Kunal's story, shared to Sameer by DM (RAAKH-V3 E18) ------------------
+   12:22 AM on the back lawn, ten minutes before the reel: Kunal with his
+   father's revolver by his face. True, and it points away from Sameer. */
+const kunalStory: Thread = {
+  id: "ig-kunal",
+  app: "instagram",
+  name: "kunal.sehgal",
+  avatar: `${R}/dp-kunal.jpg`,
+  sub: "Kunal Sehgal",
+  messages: [
+    {
+      id: "igk-1",
+      from: "them",
+      at: "00:22",
+      day: "Sunday",
+      attachment: { kind: "photo", label: "Kunal's story: the back lawn, fairy lights in the mango trees, Kunal holding a revolver up beside his face, grinning", src: `${R}/w-kunal.jpg` },
+      text: "Papa ki hai, asli wali 😎🔥",
+      english: "It's Dad's. The real one.",
+      evidence: "kunal-story",
+    },
+    { id: "igk-2", from: "owner", at: "00:24", day: "Sunday", text: "😂🔥 reel mein rakhte hain", english: "Let's put it in the reel." },
+  ],
+};
 
-export const threads: readonly Thread[] = [{ id: "m", app: "whatsapp", name: "M", messages: meera }];
+export const threads: readonly Thread[] = [kunalStory];
 
-/* The phone speaks rarely, and only when it matters: Meera, once she knows,
-   and the night going public on Instagram once the player knows what it is.
-   News that didn't get through in its own episode lapses rather than
-   arrives stale. */
-export const events: readonly LiveEvent[] = [
-  { id: "meera-reads", device: "owner", after: ["did:knows-meera"], unless: ["did:airplane"], delay: 30, app: "whatsapp", banner: "M · Ek baat. Sameer jo nahi dekhna chahta, lock kar deta hai.", sets: ["did:meera-preserved"] },
-  { id: "meera-airplane", device: "owner", after: ["did:knows-meera", "fired:bhasin-rings"], unless: ["did:airplane"], delay: 8, app: "whatsapp", banner: "M · Phone airplane mode pe daalo. Abhi." },
-  // Once the lie is traced, she takes back what she said about him, however she said it.
-  { id: "meera-takes-back", device: "owner", after: ["did:knows-meera", "link:lie"], unless: ["did:airplane"], delay: 6, app: "whatsapp", banner: "M · Maine kaha tha woh jhooth nahi bolta." },
-  { id: "ig-trend", device: "owner", after: ["did:heard-him"], unless: ["ep:2", "did:airplane"], delay: 25, app: "instagram", banner: "Instagram · dilli.dhamaka: Chhattarpur farmhouse ki shaadi, aur dance floor pe khule aam firing 🔫" },
-  { id: "ig-rumour", device: "owner", after: ["ask:q5"], unless: ["ep:3", "did:airplane"], delay: 30, app: "instagram", banner: "Instagram · sach.ka.saath: “Waiter ko Kunal Sehgal ne goli maari.”" },
-  { id: "ig-family", device: "owner", after: ["ask:q11"], unless: ["did:airplane"], delay: 30, app: "instagram", banner: "Instagram · dilli.dhamaka: “Goli wedding planner ne chalayi thi.”" },
-  // Bhasin's man at the player's own gate, a little after Bhasin says he knows where it is (T12; the call is in episode3.ts).
-  { id: "guard-rings", device: "yours", after: ["fired:bhasin-near"], delay: 45, app: "yours:phone" },
-];
+/* The feed changes as the night does (each post's `requires`), and says
+   nothing about it: the beats are RAAKH-V3 §5's and nobody else's. */
+export const events: readonly LiveEvent[] = [];

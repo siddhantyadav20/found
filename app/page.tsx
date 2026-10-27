@@ -4,7 +4,7 @@ import Landing from "@/components/site/Landing";
 export const metadata: Metadata = {
   title: { absolute: "Found · Thrillers you play on somebody else's phone" },
   description:
-    "A stranger's phone arrives at your door. Read the chats, play the voice notes, dig through what was deleted, and work out what happened. Chapter 1, Raakh, is free in your browser.",
+    "A wedding planner's phone comes back to your door. Read his chats, play his voice notes, open what he deleted, and work out what happened. Chapter 1, Raakh, is free in your browser.",
   alternates: { canonical: "/" },
 };
 

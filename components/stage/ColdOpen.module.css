@@ -120,3 +120,13 @@
   .flash { animation: flash-quiet 0.6s ease-out both; }
   @keyframes flash-quiet { from { opacity: 0.25; } to { opacity: 0; } }
 }
+
+/* The first time, the night is only heard: the words stay for a screen reader (RAAKH-V3 §6, PG-COLD). */
+.captions[data-hidden] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

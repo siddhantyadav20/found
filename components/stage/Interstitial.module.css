@@ -91,3 +91,12 @@
 }
 
 .back { width: 100%; max-width: 34rem; margin-top: 14px; }
+
+/* Under the time: what this minute was a week ago (RAAKH-V3 §8.1). */
+.small {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 17px;
+  line-height: 1.4;
+  color: var(--muted);
+  animation: in 1s 1.1s ease-out both;
+}

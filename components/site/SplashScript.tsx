@@ -13,7 +13,8 @@ export default function SplashScript() {
       type={typeof window === "undefined" ? "text/javascript" : "text/plain"}
       suppressHydrationWarning
       dangerouslySetInnerHTML={{
-        __html: `try{if(sessionStorage.getItem("${SEEN}"))document.documentElement.setAttribute("data-splashed","");else sessionStorage.setItem("${SEEN}","1")}catch(e){}`,
+        // On Raakh's own pages the series line stays off the splash (RAAKH-V3 §20): that phone turns out to be yours.
+        __html: `try{if(/raakh/.test(location.pathname))document.documentElement.setAttribute("data-chapter","raakh");if(sessionStorage.getItem("${SEEN}"))document.documentElement.setAttribute("data-splashed","");else sessionStorage.setItem("${SEEN}","1")}catch(e){}`,
       }}
     />
   );

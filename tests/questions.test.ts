@@ -92,34 +92,30 @@ describe("picking the proof", () => {
     expect(answer(story, s, "who-is-he", ["portrait", "caterer"]).reply).toBe(PARTLY);
   });
 
-  /* What a player tabled in the playtest of 2026-09-24 (PLAYTEST-SHAGUN.md
-     #12–13): every item true, and each once turned away. */
+  /* More true proof is still proof, in the chapter itself (RAAKH-V3 §12):
+     anything on the point can sit beside a route; only what proves nothing
+     here has to come off the table. */
   describe("in the chapter, proved more than it needs", () => {
-    const shagun = STORIES.raakh;
+    const raakh = STORIES.raakh;
     const has = (...ids: string[]): CaseState => {
-      for (const id of ids) expect(shagun.evidence.some((e) => e.id === id), id).toBe(true);
+      for (const id of ids) expect(raakh.evidence.some((e) => e.id === id), id).toBe(true);
       return add(start(), "ep:2", "ep:3", ...ids.map((id) => `saw:${id}` as const));
     };
 
-    it("takes the Apple Account, his Instagram and the invoice for whose phone it is", () => {
+    it("takes his Instagram, the invoice and his Apple Account for whose phone it is", () => {
       const s = has("apple-account", "sk-films", "invoice", "poster");
-      expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "invoice"] }).ok).toBe(true);
-      expect(answer(shagun, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster"] }).reply).toContain(TOO_MUCH);
+      expect(answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "invoice"] }).ok).toBe(true);
+      expect(answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster"] }).reply).toContain(TOO_MUCH);
     });
 
-    it("takes all three voice notes with the fire for his version", () => {
-      const s = has("vn-kunal", "vn-hospital", "vn-burned", "fire-clip");
-      expect(answer(shagun, s, "q3", { claim: "his", proof: ["vn-kunal", "vn-hospital", "vn-burned", "fire-clip"] }).ok).toBe(true);
+    it("takes the reel take with the 12:29 photo and the run sheet for who fired", () => {
+      const s = has("kunal-clip", "reel-take", "bts", "shot-list");
+      expect(answer(raakh, s, "q4", { claim: "truth", proof: ["kunal-clip", "reel-take", "shot-list"] }).ok).toBe(true);
     });
 
-    it("takes the 12:29 photo, the shot list and Kunal's promise for the back lawn", () => {
-      const s = has("bts", "shot-list", "kunal-papa");
-      expect(answer(shagun, s, "q5", { claim: "reel", proof: ["bts", "shot-list", "kunal-papa"] }).ok).toBe(true);
-    });
-
-    it("takes Nitin's copy of 1:52 as the edit it is", () => {
-      const s = has("frame", "fire-original", "nitin-shot-152");
-      expect(answer(shagun, s, "q13", { claim: "counter", proof: ["frame", "fire-original", "nitin-shot-152"] }).ok).toBe(true);
+    it("takes Nitin's copy of 1:52 with 1:49 and the 1:56 search for why the car left empty", () => {
+      const s = has("nitin-152", "sameer-room", "search-156", "nitin-reply");
+      expect(answer(raakh, s, "q6", { claim: "truth", proof: ["nitin-152", "sameer-room", "search-156"] }).ok).toBe(true);
     });
   });
 

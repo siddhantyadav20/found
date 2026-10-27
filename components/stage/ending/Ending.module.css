@@ -563,3 +563,11 @@
   box-shadow: 0 18px 40px rgb(0 0 0 / 50%);
   object-fit: cover;
 }
+
+/* The Trade plays on the plainer phone: Marine Drive behind its lock screen (RAAKH-V3 §11). */
+.morning[data-yours] {
+  background:
+    linear-gradient(180deg, rgb(5 6 8 / 55%), rgb(5 6 8 / 85%)),
+    var(--wall) center / cover no-repeat,
+    #0b0d12;
+}

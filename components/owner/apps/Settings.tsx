@@ -5,6 +5,8 @@ import { useState } from "react";
 import type { AppId, Flag, SettingsRow, Story } from "@/content/types";
 import { all, has, type CaseState } from "@/lib/game/engine";
 import { AIRPLANE } from "@/lib/game/phone";
+import { offline } from "@/lib/game/engine";
+import { toggleAirplane } from "@/components/stage/playthrough";
 import { Page, SearchField } from "../AppView";
 import Switch from "../ios/Switch";
 import app from "../ios/App.module.css";
@@ -257,7 +259,7 @@ export default function Settings({
   if (opened?.detail)
     return <Detail row={{ ...opened, detail: opened.detail }} state={state} onBack={() => setPage(null)} onAct={onAct} />;
 
-  const airplane = has(state, AIRPLANE);
+  const airplane = offline(story, state);
   /* What every iPhone's Settings opens with, under the account: its radios. Airplane
      Mode is the real switch, one way, as in Control Centre; the rest only say how things are. */
   const radios = [
@@ -306,7 +308,11 @@ export default function Settings({
                 <span className={app.rowTitle}>{r.title}</span>
               </span>
               {r.title === "Airplane Mode" ? (
-                <OneWay sets={[AIRPLANE]} label="Airplane Mode" state={state} onAct={onAct} />
+                story.airplaneToggles ? (
+                  <Switch on={airplane} label="Airplane Mode" onChange={toggleAirplane} />
+                ) : (
+                  <OneWay sets={[AIRPLANE]} label="Airplane Mode" state={state} onAct={onAct} />
+                )
               ) : (
                 <>
                   {r.value && <span className={app.rowMeta}>{r.value}</span>}

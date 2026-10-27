@@ -1,5 +1,5 @@
 import type { AppId, Message, Reply, ReplyOption, Story, Thread } from "@/content/types";
-import { all, dateNow, has, type CaseState } from "./engine";
+import { all, chosenIn, dateNow, has, type CaseState } from "./engine";
 
 /* ===========================================================================
    What a chat holds, in the order it happened.
@@ -12,18 +12,7 @@ import { all, dateNow, has, type CaseState } from "./engine";
    in Episode 1, and before whatever Episode 3 brings.
    =========================================================================== */
 
-/**
- * The option picked in an exchange, if one was. Options can share a flag
- * (Nitin's "for Raju" and "promise" both protect him), so the pick is the
- * option whose flags are all set, the most specific of them first, and only
- * then one that merely shares a flag (PLAYTEST-SHAGUN.md #52).
- */
-export function chosenIn(s: CaseState, r: Reply): ReplyOption | undefined {
-  const set = (o: ReplyOption) => (o.sets ?? []).filter((f) => s.flags.includes(f)).length;
-  const whole = r.options.filter((o) => o.sets?.length && set(o) === o.sets.length);
-  if (whole.length) return whole.reduce((a, b) => (b.sets!.length > a.sets!.length ? b : a));
-  return r.options.find((o) => set(o) > 0);
-}
+export { chosenIn };
 
 /** Where a set of flags landed in the playthrough: the latest of them, or before everything. */
 const landed = (s: CaseState, flags: readonly string[] = []): number =>
@@ -31,7 +20,7 @@ const landed = (s: CaseState, flags: readonly string[] = []): number =>
 
 export function conversation(s: CaseState, t: Thread, today: string): Message[] {
   const items: { m: Message; key: number }[] = t.messages
-    .filter((m) => all(s, m.requires))
+    .filter((m) => all(s, m.requires) && !(m.unless ?? []).some((f) => has(s, f)))
     .map((m) => ({ m, key: landed(s, m.requires) }));
 
   for (const r of t.replies ?? []) {
@@ -64,7 +53,8 @@ export function openReply(s: CaseState, t: Thread): Reply | undefined {
 }
 
 /** What the player can say in an exchange now: the options whose `requires` hold. */
-export const offeredOptions = (s: CaseState, r: Reply): ReplyOption[] => r.options.filter((o) => all(s, o.requires));
+export const offeredOptions = (s: CaseState, r: Reply): ReplyOption[] =>
+  r.options.filter((o) => all(s, o.requires) && (!o.any || o.any.some((f) => has(s, f))) && !(o.unless ?? []).some((f) => has(s, f)));
 
 /**
  * A chat app's threads as it lists them: two entries with the same name are

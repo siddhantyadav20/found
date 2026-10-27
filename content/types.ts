@@ -29,6 +29,7 @@ export type AppId =
   | "paytap"
   | "casefile"
   | "findmy"
+  | "camera"
   // Your phone
   | "yours:chats"
   | "yours:phone"
@@ -88,7 +89,24 @@ export type Evidence = {
    * episode comes (the hybrid pacing: CHAPTER1.md F).
    */
   readonly foundBy?: readonly Flag[];
+  /** Its number in the chapter's evidence register ("E30"), for anyone checking the data against the script. */
+  readonly code?: string;
+  /**
+   * The phone lets it be deleted (RAAKH-V3 §17): to Recently Deleted, and
+   * from there for good. Every question still has a way in that can't be.
+   */
+  readonly deletable?: boolean;
 };
+
+/**
+ * Which of the two Sameers a choice comes from (RAAKH-V3 §2, §14): the one
+ * checking whether the lie holds, or the one who wants it found. Read back
+ * at the reveal and on the end card; it never decides what can happen.
+ */
+export type Impulse = { readonly side: "auditor" | "confessor"; readonly weight: number };
+
+/** A turn of the story's clock: it reads `at` once these flags hold (RAAKH-V3 §5, §17). */
+export type Beat = { readonly at: string; readonly after: readonly Flag[] };
 
 /** Three steps: a nudge, a push, and the answer. Never fewer. */
 export type Hints = readonly [string, string, string];
@@ -157,6 +175,21 @@ export type FileClaim = {
   readonly refuse?: string;
   /** The line that lands first, large, before the reply: the reveal itself. */
   readonly moment?: string;
+  /**
+   * A refusal that stops refusing once any of these routes has all been
+   * seen: then the next claim with the same words is the one (Q1's "me",
+   * "Not yet.", until the parcel and his account agree).
+   */
+  readonly liftedBy?: readonly (readonly string[])[];
+  /** Filed on the words alone: nothing to table (the last question's "Sameer Khurrana"). */
+  readonly free?: boolean;
+  /** Filing it leans one way (RAAKH-V3 §14); a story-wide rule may add to it. */
+  readonly impulse?: Impulse;
+  /** The last question: the ending this files, and the one line that says what it means before it's done. */
+  readonly ending?: string;
+  readonly confirm?: string;
+  /** Not offered once any of these holds (the Trade, once Bhasin's car has gone). */
+  readonly unless?: readonly Flag[];
 };
 
 /**
@@ -211,6 +244,17 @@ type Asked = {
   readonly optional?: boolean;
   readonly reply: string;
   readonly sets?: readonly Flag[];
+  /**
+   * Sameer's version and the truth can both be filed here, and which one
+   * stands is read back: "Your story held on N of 4" (RAAKH-V3 §12).
+   */
+  readonly contestable?: boolean;
+  /** Filed, it can be filed again (as a hunch) until any of these holds: Q1, until the reveal. */
+  readonly editable?: readonly Flag[];
+  /** The last question: asked once the night is over, in the first person. Filing it ends the chapter. */
+  readonly final?: boolean;
+  /** A heading over the question, when it isn't "Open question": "Q1, again". */
+  readonly eyebrow?: string;
 };
 
 /**
@@ -324,6 +368,17 @@ export type LiveEvent = {
   /** Something that arrived while nobody was looking: it goes into the list at this time, with no banner. */
   readonly at?: string;
   readonly sets?: readonly Flag[];
+  /**
+   * Where the story's clock stands once it has happened, as "00:51": with
+   * `Story.beats`, the clock moves only at beats and at events like this one.
+   */
+  readonly clock?: string;
+  /**
+   * Happens on the phone itself (a low-battery warning, a note being
+   * written): airplane mode doesn't hold it back. Everything else waits for
+   * the network when the story's airplane mode can be switched off again.
+   */
+  readonly local?: boolean;
 };
 
 /**
@@ -350,6 +405,20 @@ export type EndingLine = {
   readonly needs?: readonly Flag[];
   readonly any?: readonly Flag[];
   readonly unless?: readonly Flag[];
+  /**
+   * How it's shown, when it isn't a notification or a line under the clock
+   * (RAAKH-V3 §6): `card`, white serif on black; `media`, full screen and
+   * played through once (`film`, `src`, `captions`); `final`, the ending's
+   * last photograph, full bleed; `cold`, the cold open again, as it was;
+   * `parcel`, the waybill coming back (`text` is its attempt line);
+   * `statement`, said to his own camera, assembled from what was filed
+   * (one line each, read off the save, shown together); `glow`, a
+   * notification seen through an envelope's paper.
+   */
+  readonly kind?: "card" | "media" | "final" | "cold" | "parcel" | "statement" | "glow";
+  readonly film?: string;
+  readonly seconds?: number;
+  readonly captions?: readonly Caption[];
 };
 
 /**
@@ -405,6 +474,14 @@ export type Ending = {
   readonly last: readonly EndingLine[];
   /** The one thing only this ending shows, for the end card. */
   readonly onlyHere: string;
+  /** The end card's headline and the line under it (RAAKH-V3 §11), and lines the night adds to it. */
+  readonly headline?: string;
+  readonly line?: string;
+  readonly notes?: readonly EndingLine[];
+  /** Whose lock screen it plays on: his phone (the default), or the plainer one that slides up (`yours`). */
+  readonly on?: "his" | "yours";
+  /** The ending's own day and date on the lock screen, before any line moves it. */
+  readonly day?: { readonly day: string; readonly date: string };
 };
 
 export type Clock = {
@@ -423,6 +500,12 @@ export type Clock = {
   readonly charging?: boolean;
   /** The battery falling with the beats rather than with a timer: the last step whose flag is set wins. */
   readonly drain?: readonly { readonly after: Flag; readonly battery: number }[];
+  /** Under the episode's title card, smaller: what this minute was a week ago. */
+  readonly card?: string;
+  /** The day and date once the clock has passed midnight, when the episode opens before it. */
+  readonly after?: { readonly day: string; readonly date: string };
+  /** On the charger with `Story.beats`: points gained per minute of the story's clock. */
+  readonly rate?: number;
 };
 
 /** Waiting on the found phone's lock screen before anything arrives. */
@@ -536,6 +619,8 @@ export type Attachment =
       readonly src?: string;
       /** Lines that are new since the last printing, marked by hand (indexes into `lines`). */
       readonly marked?: readonly number[];
+      /** Written over it in ballpoint, the heading struck through: "MIL GAYA". */
+      readonly found?: string;
     }
   /** A page in someone's own hand, photographed: drawn as paper, in cursive. */
   | {
@@ -585,6 +670,8 @@ export type Message = {
   readonly link?: { readonly label: string; readonly to: "return" };
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
+  /** Never shown once any of these holds: the other version of the same message. */
+  readonly unless?: readonly Flag[];
 };
 
 /**
@@ -600,6 +687,14 @@ export type ReplyOption = {
   readonly sets?: readonly Flag[];
   /** What comes back, and when. */
   readonly then?: readonly Message[];
+  /** Which Sameer said it, and how much (RAAKH-V3 §14). */
+  readonly impulse?: Impulse;
+  /** On a call: the conversation goes on, with another exchange, once the answer has been heard. */
+  readonly next?: Reply;
+  /** Not on offer once any of these holds. */
+  readonly unless?: readonly Flag[];
+  /** Only on offer once at least one of these holds. */
+  readonly any?: readonly Flag[];
 };
 
 export type Reply = {
@@ -608,6 +703,8 @@ export type Reply = {
   /** Closed for good once any of these holds: the other side has stopped talking. */
   readonly unless?: readonly Flag[];
   readonly prompt?: string;
+  /** On a call, what the other side says before this exchange's options (`ReplyOption.next`). */
+  readonly before?: IncomingCall["lines"];
   readonly options: readonly ReplyOption[];
 };
 
@@ -860,6 +957,8 @@ export type Note = {
   readonly hint?: string;
   /** When the password can be known from what's on the phone: a solver unlocks it then, and not before. */
   readonly knownAfter?: readonly Flag[];
+  /** Still coming down from iCloud until these hold: it won't open (RAAKH-V3 §7.8, "This note hasn't finished downloading"). */
+  readonly downloadsAfter?: readonly Flag[];
   /** What is inside once it opens. */
   readonly inside?: readonly string[];
   /** Photos and videos put in the note, shown under its text once it opens. */
@@ -908,6 +1007,12 @@ export type NightMark = {
   readonly when: readonly (readonly Flag[])[];
   /** A tick without a caption: part of a cluster the caption beside it names. */
   readonly minor?: boolean;
+  /**
+   * Pinned as Sameer tells it, once any of these holds and `when` doesn't
+   * (RAAKH-V3 §17: "Sameer says"); both holding, it's "Contradicted".
+   */
+  readonly says?: readonly (readonly Flag[])[];
+  readonly saysLabel?: string;
 };
 
 export type CallEntry = {
@@ -1039,7 +1144,186 @@ export type FindMy = {
   readonly stopSharing: readonly Flag[];
 };
 
+/* --- Raakh v3 (RAAKH-V3.md, 27 Oct 2026) ----------------------------------
+   The vocabulary for a chapter whose reader turns out to be its owner: a
+   clock that moves only at authored beats, things the phone lets you delete,
+   the two impulses a choice comes from, promises, the dark-screen moments,
+   the reveal, and a last question asked in the first person. All optional:
+   a chapter that doesn't name them plays as before. */
+
+/**
+ * A shot in "Previously" or "Next" (PG-PREV, PG-NEXT): what's on the screen,
+ * and what's heard. Assembled from the save where it says so (`filed`,
+ * `said`), and left out when the save has nothing for it.
+ */
+export type Shot = (
+  | { readonly kind: "card"; readonly text: string; readonly sub?: string }
+  /** A question's filed sentence, typed out. */
+  | { readonly kind: "filed"; readonly question: string }
+  /** A voice, heard, with its words. */
+  | { readonly kind: "voice"; readonly who: string; readonly text: string; readonly english?: string; readonly voice?: string }
+  /** What the player said in an exchange, quoted with the time they said it. */
+  | { readonly kind: "said"; readonly reply: string; readonly to: string }
+  | { readonly kind: "banner"; readonly from: string; readonly text: string; readonly english?: string }
+  | { readonly kind: "battery"; readonly from: number; readonly to: number }
+  | { readonly kind: "black"; readonly seconds?: number }
+  | { readonly kind: "image"; readonly src: string; readonly blur?: boolean }
+  | { readonly kind: "ring"; readonly from: string }
+  | { readonly kind: "sound"; readonly text: string }
+  | { readonly kind: "lock"; readonly digits: number }
+  | { readonly kind: "bubble"; readonly who: string; readonly text: string; readonly english?: string; readonly at: string }
+) & { readonly needs?: readonly Flag[]; readonly any?: readonly Flag[]; readonly unless?: readonly Flag[] };
+
+/**
+ * The screen goes dark for one line or one voice (PG-DARK, used three
+ * times), or freezes on one bubble before an episode cuts to black.
+ */
+export type Dark = {
+  readonly id: string;
+  readonly after: readonly Flag[];
+  readonly unless?: readonly Flag[];
+  readonly line?: string;
+  readonly sub?: string;
+  /** A voice note on black: its waveform, and its words a line at a time. */
+  readonly voice?: { readonly who: string; readonly key?: string; readonly seconds: number; readonly lines: readonly Caption[] };
+  /** A message bubble, held, before the black. */
+  readonly bubble?: { readonly who: string; readonly text: string; readonly english?: string; readonly at: string };
+  readonly sets?: readonly Flag[];
+};
+
+/** Something said to the player at the reveal or before an ending, read off the save like an ending line. */
+export type Said = {
+  readonly who?: string;
+  readonly text: string;
+  readonly english?: string;
+  readonly needs?: readonly Flag[];
+  readonly any?: readonly Flag[];
+  readonly unless?: readonly Flag[];
+};
+
+/** One of the player's own lines, for the reveal's montage: the flag that says they said it, and what it answered. */
+export type MontageLine = { readonly said: Flag; readonly answering: Said };
+
+/** The reveal (RAAKH-V3 §9, scene 3.10): nine steps, played in order, nothing else allowed in. */
+export type Reveal = {
+  readonly after: readonly Flag[];
+  /** 1: a voice note, heard through. */
+  readonly voice: { readonly who: string; readonly key?: string; readonly seconds: number; readonly lines: readonly Caption[] };
+  /** 2: the second phone, ringing; declined, it rings twice more and texts. */
+  readonly yours: { readonly call: IncomingCall; readonly text: string };
+  /** 3: a call on this phone, ending on two buttons. */
+  readonly call: IncomingCall;
+  readonly look: { readonly open: string; readonly away: string; readonly awayLine: Said };
+  /** The call's opening line instead, after an early reveal. */
+  readonly early: Said;
+  /** 4: his own face, from the front camera. */
+  readonly camera: { readonly src: string; readonly alt: string };
+  /** 5: the case file turns over: its info panel, and the line it lights. */
+  readonly info: { readonly lines: readonly string[]; readonly question: string; readonly called: string };
+  /** 6: the montage, from the player's own lines; at most `limit` of them, in this order of priority. */
+  readonly montage: { readonly limit: number; readonly lines: readonly MontageLine[]; readonly cuts: readonly { readonly text: string; readonly src?: string; readonly sub?: string }[] };
+  /** 7: what she says, by which Sameer read the phone, or after an early reveal. */
+  readonly lines: { readonly confessor: Said; readonly auditor: Said; readonly early: Said };
+  /** 8: the last dark screen, and the count under it ("{n} of {of}"). */
+  readonly dark: { readonly line: string; readonly held: string };
+  /** 9: the clock, on a card. */
+  readonly card: string;
+};
+
+/** Something to do before an ending (RAAKH-V3 §10): a call, a message, a deletion, a line on the note. */
+export type PreStep = {
+  readonly id: string;
+  readonly label: string;
+  readonly requires?: readonly Flag[];
+  readonly unless?: readonly Flag[];
+  /** What's said, read off the save. */
+  readonly lines?: readonly Said[];
+  readonly sets?: readonly Flag[];
+  /** A choice that must be made to go on with it (Raju, lied to, hears the truth first). */
+  readonly choose?: readonly {
+    readonly id: string;
+    readonly text: string;
+    readonly english?: string;
+    readonly sets: readonly Flag[];
+    readonly requires?: readonly Flag[];
+    readonly unless?: readonly Flag[];
+  }[];
+  /** A clean-up row: this evidence, deleted for good. */
+  readonly delete?: string;
+};
+
+/** The last question's endings: what comes before each, and what's echoed while choosing. */
+export type Final = {
+  readonly before: Readonly<Record<string, { readonly title: string; readonly steps: readonly PreStep[]; readonly go: string; readonly echo?: Said }>>;
+  /** While the last question is open, besides answering it (call M, listen again). */
+  readonly asides: readonly PreStep[];
+};
+
+/** An identity clue (RAAKH-V3 §15), for Look again: what, where, and when the player first saw it. */
+export type Clue = {
+  readonly id: string;
+  readonly what: string;
+  readonly where: string;
+  /** Seen once any one of these sets of flags all hold. */
+  readonly seen: readonly (readonly Flag[])[];
+  readonly meant: string;
+};
+
+/** A promise the player can make (RAAKH-V3 §14), and what breaks it. */
+export type Vow = {
+  readonly id: string;
+  readonly to: string;
+  readonly text: string;
+  readonly made: Flag;
+  /** Broken once any one of these sets of flags all hold. */
+  readonly broken: readonly (readonly Flag[])[];
+};
+
 export type Story = {
+  /* Raakh v3, all optional (see above). */
+  /** The clock moves only at these and at events with a `clock` (RAAKH-V3 §17). */
+  readonly beats?: readonly Beat[];
+  /** Airplane mode goes back off, and what's sent meanwhile waits rather than being lost. */
+  readonly airplaneToggles?: boolean;
+  /** The case file is a note on this phone: what it's called, when it was made, and what its info panel says. */
+  readonly caseNote?: { readonly title: string; readonly created: string; readonly header: string; readonly when: readonly Flag[] };
+  readonly reveal?: Reveal;
+  readonly final?: Final;
+  readonly dark?: readonly Dark[];
+  /** The phone dying: an alert, two flickers, and someone's shape in the black glass (PG-DEATH). */
+  readonly death?: { readonly after: readonly Flag[]; readonly alert: string; readonly cliff: Said };
+  readonly clues?: readonly Clue[];
+  readonly vows?: readonly Vow[];
+  /** "Previously" before an episode, and "Next" after one, as shots. */
+  readonly previously?: Readonly<Partial<Record<2 | 3, readonly Shot[]>>>;
+  readonly teasers?: Readonly<Partial<Record<1 | 2, readonly Shot[]>>>;
+  /** The two impulses (RAAKH-V3 §14): their names on the end card, and what besides choices counts. */
+  readonly impulse?: {
+    readonly labels: { readonly auditor: string; readonly confessor: string };
+    readonly version: number;
+    readonly truth: number;
+    readonly soft: number;
+    readonly perm: number;
+    readonly recover: number;
+    readonly send: number;
+  };
+  /** Anything found can be sent to someone, once they've asked for it. */
+  readonly sendTo?: { readonly name: string; readonly after: readonly Flag[]; readonly label: string; readonly thread: string };
+  /** The camera: unavailable, with this alert, until these hold. */
+  readonly camera?: { readonly unavailable: string; readonly after: readonly Flag[]; readonly src: string };
+  /** The second phone, sliding up from the bottom edge (PG-YOURPHONE). */
+  readonly yourPhone?: { readonly wallpaper: string };
+  /** Putting it away before the reveal (RAAKH-V3 §11, Unopened). */
+  readonly unopened?: { readonly before: readonly Flag[]; readonly ask: string; readonly card: string; readonly again: string };
+  /** The end card's own words, so every narrated string is in the content (RAAKH-V3 §15). */
+  readonly endCopy?: {
+    readonly impulses: string;
+    readonly held: string;
+    readonly promises: string;
+    readonly clues: string;
+    readonly share: string;
+  };
+
   readonly id: string;
   readonly title: string;
   /** Whose phone it is: the name on the account, and what transcripts call them. */
@@ -1074,6 +1358,8 @@ export type Story = {
   readonly seat?: { readonly line: string; readonly note: string; readonly act: string };
   /** Heard under the whole chapter, low: the train (Last Local). */
   readonly ambience?: "train";
+  /** Said on the parcel before anything is opened: what's in it (RAAKH-V3 §7, scene 1.0). */
+  readonly warning?: string;
   /** False: no case file, no questions. The story is played through the phone. */
   readonly caseFile?: false;
   /** What the home screen's widget says instead of a question: the last line whose `requires` hold. */
@@ -1219,6 +1505,10 @@ export type Story = {
     readonly act: string;
     readonly go: readonly Flag[];
     readonly out: readonly Flag[];
+    /** The live event it starts from (`event:<id>` in the save); "seven-clock-real" by default. */
+    readonly event?: string;
+    /** Stops it, without running out, once any of these holds (the last question filed). */
+    readonly stop?: readonly Flag[];
   };
   /**
    * While the night's decider is coming (2026-10-24 QA): from `after` until
@@ -1234,7 +1524,23 @@ export type Story = {
    * abruptly"): the line it ends on, and the questions the next one opens.
    * Keyed by the episode that's ending.
    */
-  readonly recaps?: Readonly<Partial<Record<1 | 2, { readonly cliff: string; readonly english?: string; readonly who?: string; readonly open: readonly string[] }>>>;
+  readonly recaps?: Readonly<
+    Partial<
+      Record<
+        1 | 2,
+        {
+          readonly cliff: string;
+          readonly english?: string;
+          readonly who?: string;
+          readonly open: readonly string[];
+          /** "Found so far" (RAAKH-V3 §7.12): the questions whose filed sentences the card reads back. */
+          readonly filed?: readonly string[];
+          /** The card's last line, said plainly. */
+          readonly last?: string;
+        }
+      >
+    >
+  >;
   /**
    * Before a later episode's title (2026-10-26, Q4 of the perfection pass):
    * "Previously", in the player's own filed words (Life is Strange, Telltale),

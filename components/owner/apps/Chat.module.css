@@ -564,3 +564,53 @@ button.setRow {
   align-self: flex-end;
   background: #005c4b;
 }
+
+/* Found: LAPATA struck through in ballpoint, and the two words over it (RAAKH-V3 §11, Room 6). */
+.posterHead[data-struck] {
+  position: relative;
+}
+
+.posterHead[data-struck]::after {
+  content: "";
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: 52%;
+  height: 3px;
+  border-radius: 2px;
+  background: #1f3a93;
+  rotate: -4deg;
+}
+
+.posterFound {
+  margin-top: -4px;
+  font-family: var(--font-hand), cursive;
+  font-size: 30px;
+  line-height: 1;
+  color: #1f3a93;
+  rotate: -5deg;
+}
+
+/* "Delete for me", on what the phone lets go of (RAAKH-V3 §17). */
+.deleteMine {
+  display: block;
+  margin: -2px 0 8px auto;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: rgb(235 235 245 / 45%);
+}
+
+.deleteAsk {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin: -2px 0 8px;
+  font-size: 12px;
+  color: rgb(235 235 245 / 70%);
+}
+
+.deleteAsk button:first-of-type {
+  color: #ff453a;
+  font-weight: 600;
+}

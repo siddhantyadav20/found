@@ -59,7 +59,7 @@ const BEATS = [
     at: "11:47 PM",
     day: "Saturday",
     title: "The night keeps happening while you read.",
-    text: "Messages land while you dig. A stranger rings the phone in your hand, asking for his brother, and what you say back is what he hears.",
+    text: "Messages land while you dig. Someone rings the phone in your hand, asking for his brother, and what you say back is what he hears.",
     try: "Answer him",
   },
   {
@@ -80,10 +80,10 @@ const BEATS = [
   },
   {
     id: "seven",
-    at: "6:52 AM",
+    at: "4:10 AM",
     day: "Sunday",
     title: "Before seven, you decide.",
-    text: "Two calls, against a clock. Then what happens to everything you proved: the lawyer, the internet, or back in the parcel. Every ending is one somebody earned.",
+    text: "By four you know who fired, who lied, and who is still alive. Then a choice nobody can make cleanly. Every ending is one somebody earned.",
   },
 ] as const;
 
@@ -151,11 +151,11 @@ export default function RaakhPage() {
             <p className={styles.kicker}>
               <span className={styles.ch}>Chapter 01</span>
               <span className={s.tag}>Delhi</span>
-              <span className={s.tag}>22 November</span>
+              <span className={s.tag}>21 November</span>
               <span className={s.tag}>16+</span>
             </p>
             <h1 className={styles.h1}>
-              <span>It&apos;s 11:40 PM.</span> <span>It isn&apos;t <em>your</em> phone.</span>
+              <span>It&apos;s 11:40 PM.</span> <span>It came <em>back</em>.</span>
             </h1>
           </div>
           <div className={styles.heroTable}>
@@ -180,7 +180,7 @@ export default function RaakhPage() {
         {/* --- the night ------------------------------------------------- */}
         <section className={styles.nightSection} id="night" aria-labelledby="night-title">
           <header className={`${s.wrap} ${s.head}`}>
-            <p className={s.eyebrow}>Saturday 11:40 PM → Sunday 7:00 AM</p>
+            <p className={s.eyebrow}>Saturday 11:40 PM → Sunday 4:40 AM</p>
             <h2 id="night-title" className={s.h2}>
               One night, on his phone. <span>Everything below is the game itself. Touch it.</span>
             </h2>
@@ -203,7 +203,7 @@ export default function RaakhPage() {
         {/* --- the wedding, as his camera roll kept it --------------------- */}
         <section className={styles.roll} aria-labelledby="roll-title">
           <header className={`${s.wrap} ${s.head}`}>
-            <p className={s.eyebrow}>Banyan Farms, Chhattarpur · Saturday 22 November</p>
+            <p className={s.eyebrow}>Banyan Farms, Chhattarpur · Saturday 21 November</p>
             <h2 id="roll-title" className={s.h2}>
               Ishita weds Rohan. <span>He planned every minute of it, and filmed most of them.</span>
             </h2>
@@ -279,7 +279,7 @@ export default function RaakhPage() {
         {/* --- seven in the morning --------------------------------------- */}
         <section className={styles.dawn}>
           <span className={styles.sunrise} aria-hidden="true" />
-          <p className={styles.dawnDate}>Sunday 30 November</p>
+          <p className={styles.dawnDate}>Sunday 29 November</p>
           <p className={styles.dawnClock} aria-hidden="true">
             6:59
           </p>

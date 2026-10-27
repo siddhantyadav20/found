@@ -1,35 +1,87 @@
-import type { NightBeat } from "../types";
+import type { NightBeat, Shot } from "../types";
 
 /* ===========================================================================
-   Your night (2026-10-24): the end card's timeline of what this player did,
-   at the hour the story did it, and a version of each beat that spoils
-   nothing for the share ("Made a call at 2:58"). Beats without `share` stay
-   off the shared version.
+   Your night (the end card's timeline), and the shots that open and close
+   the episodes (RAAKH-V3 §6: PG-PREV, PG-NEXT).
+
+   The night's beats say what this player did, at the hour they did it, and
+   a version of each for the share that spoils nothing. "Previously" is
+   assembled from the save: the player's filed sentences being typed, what
+   they said, and the line the last episode ended on.
    =========================================================================== */
 
 export const night: readonly NightBeat[] = [
-  { at: "11:40 PM", text: "Pulled the strip on a parcel meant for Meera Arora.", share: "Opened a parcel that wasn't mine.", needs: ["did:opened"] },
-  { at: "11:46 PM", text: "Picked up when Raju rang, looking for his brother.", share: "Picked up a stranger's call.", needs: ["did:answered-raju"] },
-  { at: "11:46 PM", text: "Let Raju ring out.", share: "Let a stranger's call ring out.", needs: ["did:declined-raju"] },
-  { at: "12:58 AM", text: "Heard two firings where everyone said there was one.", share: "Found the second shot.", needs: ["link:two-firings"] },
-  { at: "1:20 AM", text: "Put his phone in airplane mode, with Bhasin watching the map.", share: "Went dark.", needs: ["did:airplane"] },
-  { at: "1:58 AM", text: "Opened “Agar kuch hua” with his birthday.", share: "Opened a note nobody was meant to.", needs: ["did:unlocked-insurance"] },
-  { at: "2:33 AM", text: "Made Sameer say what he told Nitin at 1:52.", share: "Made him say it.", needs: ["did:confronted-sameer"] },
-  { at: "2:33 AM", text: "Told Sameer he'd tried to save him.", share: "Believed him.", needs: ["did:gave-rescuer"] },
-  { at: "2:40 AM", text: "Had the guard send the man in the safari suit away.", share: "Kept someone from my door.", needs: ["did:guard-held"] },
-  { at: "2:50 AM", text: "Learned that nobody burned a body. Dilip is alive, in Fatehpur Beri.", share: "Got a message I didn't expect.", needs: ["did:knows-alive"] },
-  { at: "2:58 AM", text: "Called Meera first.", share: "Made a call at 2:58.", needs: ["did:moment-after-meera"] },
-  { at: "2:58 AM", text: "Called Raju first.", share: "Made a call at 2:58.", needs: ["did:moment-after-raju"] },
-  { at: "2:58 AM", text: "Called Sameer first.", share: "Made a call at 2:58.", any: ["did:moment-after-sameer", "did:moment-after-sameer-faced"] },
-  { at: "3:00 AM", text: "Froze, and called nobody.", share: "Waited too long.", needs: ["did:froze"] },
-  { at: "3:01 AM", text: "Then Meera.", share: "Then another.", needs: ["did:call-meera"], any: ["did:moment-after-raju", "did:moment-after-sameer", "did:moment-after-sameer-faced"] },
-  { at: "3:01 AM", text: "Then Raju.", share: "Then another.", needs: ["did:call-raju"], any: ["did:moment-after-meera", "did:moment-after-sameer", "did:moment-after-sameer-faced"] },
-  { at: "3:01 AM", text: "Then Sameer.", share: "Then another.", needs: ["did:call-sameer"], any: ["did:moment-after-meera", "did:moment-after-raju"] },
-  { at: "3:09 AM", text: "Called 112. The local station rang Bhasin.", share: "Called the police.", needs: ["did:call-police"] },
-  { at: "3:12 AM", text: "Posted it from his Instagram. Bhasin read it.", share: "Posted it.", needs: ["did:call-post"] },
-  { at: "3:24 AM", text: "Got there. Room 6, and Dilip opened his eyes.", share: "Got there before seven.", needs: ["did:saved"] },
-  { at: "4:40 AM", text: "Sent the record to Meera.", share: "Sent the record.", needs: ["did:sent"] },
-  { at: "4:40 AM", text: "Posted the record from @sk.weddings.", share: "Posted the record.", needs: ["did:posted"] },
-  { at: "4:40 AM", text: "Taped the parcel shut: not the sender.", share: "Sent it back.", needs: ["did:returned"] },
-  { at: "6:58 AM", text: "A white Innova left Bedi Nursing Home with its lights off.", share: "Didn't get there before seven.", needs: ["did:lost"] },
+  { at: "11:40 PM", text: "Pulled the strip on a parcel meant for M.", share: "Opened a parcel.", needs: ["did:opened"] },
+  { at: "11:41 PM", text: "Told Raju you weren't Sameer.", share: "Picked up a call.", needs: ["did:raju-first-denial"] },
+  { at: "11:41 PM", text: "Told Raju you were finding out.", share: "Picked up a call.", needs: ["did:raju-first-finding"] },
+  { at: "11:41 PM", text: "Asked Raju, “Dilip kaun?”", share: "Picked up a call.", needs: ["did:raju-first-whos"] },
+  { at: "11:41 PM", text: "Let Raju ring out.", share: "Let a call ring out.", needs: ["did:declined-raju"] },
+  { at: "12:02 AM", text: "Told his mother you weren't Sameer.", share: "Answered a mother.", needs: ["did:mummy-stranger"] },
+  { at: "12:02 AM", text: "Told Mummy you were fine.", share: "Answered a mother.", needs: ["did:mummy-fine"] },
+  { at: "12:10 AM", text: "Left Mummy on seen.", share: "Left someone on seen.", needs: ["did:mummy-none"] },
+  { at: "12:13 AM", text: "Let the phone die at 2%.", share: "Lost the phone at 2%.", needs: ["did:needs-charge"] },
+  { at: "12:51 AM", text: "Told Meera, “Main hoon.”", share: "Said it first.", needs: ["did:early-reveal"] },
+  { at: "12:51 AM", text: "Promised Meera you'd delete nothing.", share: "Made a promise.", needs: ["did:promise-p3"] },
+  { at: "1:05 AM", text: "Told Raju his brother had been shot.", share: "Told someone the truth.", needs: ["did:raju-told-shot"] },
+  { at: "1:05 AM", text: "Promised Raju you'd find him.", share: "Made a promise.", needs: ["did:promise-p2"] },
+  { at: "1:05 AM", text: "Told Raju it was Kunal Sehgal.", share: "Named someone.", needs: ["did:raju-told-kunal"] },
+  { at: "1:25 AM", text: "Asked Nitin if he was okay.", share: "Asked after someone.", needs: ["did:nitin-care"] },
+  { at: "1:25 AM", text: "Asked Nitin why he'd recalled the car.", share: "Blamed someone.", needs: ["did:nitin-blame"] },
+  { at: "1:27 AM", text: "Promised Nitin his name wouldn't come up.", share: "Made a promise.", needs: ["did:promise-p1"] },
+  { at: "1:52 AM", text: "Got back the message Sameer deleted, a week to the minute.", share: "Got a message back.", needs: ["fired:nitin-copy"] },
+  { at: "2:10 AM", text: "Told Kunal you weren't Sameer.", share: "Lied to someone.", needs: ["did:kunal-denial"] },
+  { at: "2:10 AM", text: "Asked Kunal for the truth, and got a frame.", share: "Asked for the truth.", needs: ["did:kunal-frame"] },
+  { at: "2:10 AM", text: "Gave Kunal Nitin's name.", share: "Named someone.", needs: ["did:nitin-exposed"] },
+  { at: "2:50 AM", text: "Watched the whole fire. The mattress was empty.", share: "Watched it all.", needs: ["claim:q7:truth"] },
+  { at: "3:20 AM", text: "Asked the nurse how the boy was.", share: "Asked after someone.", needs: ["did:anita-care"] },
+  { at: "3:20 AM", text: "Told the nurse you weren't Sameer.", share: "Answered a nurse.", needs: ["did:anita-denial"] },
+  { at: "3:20 AM", text: "Asked the nurse, “Kaun ladka?”", share: "Answered a nurse.", needs: ["did:anita-what"] },
+  { at: "3:40 AM", text: "Heard Dilip ask if you were coming.", share: "Heard a voice note.", needs: ["saw:dilip-plea"] },
+  { at: "4:01 AM", text: "Opened the front camera.", share: "Looked.", needs: ["did:camera-open"] },
+  { at: "4:01 AM", text: "Put the phone face down.", share: "Didn't look.", needs: ["did:facedown"] },
+  { at: "4:02 AM", text: "Took the photo.", needs: ["did:camera-photo"] },
+  { at: "4:40 AM", text: "Deleted something for good.", share: "Deleted something.", needs: ["did:deleted-perm"] },
+  { at: "4:40 AM", text: "Went to Fatehpur Beri.", share: "Went.", needs: ["did:end-room6"] },
+  { at: "4:40 AM", text: "Sent the phone down with the guard.", share: "Made a trade.", needs: ["did:end-trade"] },
+  { at: "4:40 AM", text: "Kept the phone, and took the 4:55.", share: "Took the train.", needs: ["did:end-train"] },
+  { at: "4:40 AM", text: "Sent it back to M.", share: "Sent it back.", needs: ["did:end-origin"] },
 ];
+
+/** "Previously on Raakh", before Episodes 2 and 3 (PG-PREV). */
+export const previously: Readonly<Record<2 | 3, readonly Shot[]>> = {
+  2: [
+    { kind: "card", text: "Seven days later, a parcel comes back to your door." },
+    { kind: "filed", question: "q1" },
+    { kind: "voice", who: "Sameer, to M", text: "Kunal firing kar raha tha.", english: "Kunal was firing.", voice: "voice:m-1" },
+    { kind: "said", reply: "raju-call", to: "Raju" },
+    { kind: "banner", from: "Bhasin Uncle", text: "Ghar pe hi hai. Achha hai.", english: "It's at home. Good.", unless: ["did:went-dark"] },
+    { kind: "banner", from: "Bhasin Uncle", text: "Phone band kar diya? Koi baat nahi. Ghar ka pata hai.", english: "Switched it off? Doesn't matter. I know the house.", needs: ["did:went-dark"] },
+    { kind: "battery", from: 9, to: 2 },
+  ],
+  3: [
+    { kind: "filed", question: "q4" },
+    { kind: "filed", question: "q5" },
+    { kind: "voice", who: "Meera", text: "Kuch delete mat karna.", english: "Don't delete anything.", voice: "prev:meera-delete" },
+    { kind: "said", reply: "nitin-open", to: "Nitin" },
+    { kind: "bubble", who: "Sameer Bhai", text: "Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bula aur so ja.", english: "They've taken Dilip. In Bhasin sir's car, to hospital. Call Vicky back and sleep.", at: "01:52" },
+  ],
+};
+
+/** "Next on Raakh", after Episodes 1 and 2 (PG-NEXT): nothing in it answers a question. */
+export const teasers: Readonly<Record<1 | 2, readonly Shot[]>> = {
+  1: [
+    { kind: "black", seconds: 1.2 },
+    { kind: "voice", who: "", text: "Rolling, bhai?", voice: "cold:2" },
+    { kind: "image", src: "/found/raakh/bts.jpg", blur: true },
+    { kind: "ring", from: "M" },
+    { kind: "voice", who: "", text: "Kuch delete mat karna.", english: "Don't delete anything.", voice: "prev:meera-delete" },
+    { kind: "card", text: "Episode 2 · The Second Shot" },
+  ],
+  2: [
+    { kind: "sound", text: "[a jerrycan, set down]" },
+    { kind: "lock", digits: 4 },
+    { kind: "banner", from: "Dilip", text: "" },
+    { kind: "sound", text: "[a whisper you can't make out]" },
+    { kind: "card", text: "Episode 3 · Return to Origin" },
+  ],
+};

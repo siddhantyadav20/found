@@ -1,0 +1,128 @@
+/* PG-YOURPHONE (RAAKH-V3 §6): a plainer phone slides up from the bottom edge
+   and covers about 40% of the screen. Marine Drive at dusk on its wallpaper.
+   Never browsable: only a call, or a notification, on it. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(0 0 0 / 42%);
+  animation: fade 0.4s ease-out both;
+}
+
+@keyframes fade {
+  from { background: rgb(0 0 0 / 0%); }
+}
+
+.phone {
+  position: relative;
+  width: min(100%, 430px);
+  height: max(40dvh, 340px);
+  margin: 0 auto;
+  border-radius: 34px 34px 0 0;
+  border: 6px solid #1c1c1e;
+  border-bottom: 0;
+  background: #0b0d10;
+  box-shadow: 0 -24px 60px rgb(0 0 0 / 55%);
+  overflow: hidden;
+  animation: up 0.62s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+@keyframes up {
+  from { translate: 0 100%; }
+  to { translate: 0 0; }
+}
+
+.wallpaper {
+  position: absolute;
+  inset: 0;
+  background: var(--wall) center / cover no-repeat;
+  filter: brightness(0.5) saturate(1.1);
+}
+
+.status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 22px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  z-index: 2;
+}
+
+.body {
+  position: absolute;
+  inset: 26px 0 0;
+  z-index: 1;
+}
+
+.note {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 34px;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 12px 14px;
+  border-radius: 20px;
+  background: rgb(58 58 60 / 82%);
+  backdrop-filter: blur(24px);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-sans), sans-serif;
+  animation: drop 0.5s 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes drop {
+  from { translate: 0 -30px; opacity: 0; }
+  to { translate: 0 0; opacity: 1; }
+}
+
+.note i {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #34c759;
+}
+
+.note b {
+  display: block;
+  font-size: 15px;
+}
+
+.note span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.35;
+  color: rgb(235 235 245 / 84%);
+}
+
+.note small {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: rgb(235 235 245 / 60%);
+}
+
+.go {
+  position: absolute;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 3;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 16%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+}

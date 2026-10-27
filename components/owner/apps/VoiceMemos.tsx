@@ -158,18 +158,23 @@ export default function VoiceMemos({
   onRead,
   onRestore,
   onHome,
+  onDelete,
 }: {
   story: Story;
   state: CaseState;
   onRead: (ids: readonly string[]) => void;
   onRestore: (id: string) => void;
   onHome?: () => void;
+  /** Delete a recording the phone lets go of: to Recently Deleted, or from there for good (RAAKH-V3 §17). */
+  onDelete?: (id: string, how: "soft" | "perm") => void;
 }) {
   const [folder, setFolder] = useState<"all" | "deleted" | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   // What Recover just moved, said where the player is looking (it used to vanish without a word).
   const [recovered, setRecovered] = useState<string | null>(null);
   const { recordings, bin } = memos(story, state);
+  // What the phone lets go of: a recording whose evidence is marked deletable.
+  const deletable = (m: Memo) => Boolean(m.evidence && story.evidence.find((e) => e.id === m.evidence)?.deletable);
   const cal = calendarOf(story, state);
 
   // Voice Memos' first screen: its folders, and how much is in each.
@@ -239,16 +244,44 @@ export default function VoiceMemos({
               </button>
               {open === m.id && <Player key={m.id} memo={m} voice={story.voices?.[`memo:${m.id}`]?.src} />}
               {open === m.id && folder === "deleted" && (
+                <span className={styles.binActs}>
+                  <button
+                    type="button"
+                    className={styles.recover}
+                    onClick={() => {
+                      onRestore(m.id);
+                      setOpen(null);
+                      setRecovered(m.title);
+                    }}
+                  >
+                    Recover
+                  </button>
+                  {onDelete && deletable(m) && (
+                    <button
+                      type="button"
+                      className={styles.recover}
+                      data-danger
+                      onClick={() => {
+                        onDelete(m.id, "perm");
+                        setOpen(null);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </span>
+              )}
+              {open === m.id && folder === "all" && onDelete && deletable(m) && (
                 <button
                   type="button"
                   className={styles.recover}
+                  data-danger
                   onClick={() => {
-                    onRestore(m.id);
+                    onDelete(m.id, "soft");
                     setOpen(null);
-                    setRecovered(m.title);
                   }}
                 >
-                  Recover
+                  Delete
                 </button>
               )}
             </li>

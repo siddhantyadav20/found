@@ -24,7 +24,24 @@ const AFTER_MS = 2600;
 
 type Cold = NonNullable<Story["coldOpen"]>;
 
-export default function ColdOpen({ cold, onDone, voices }: { cold: Cold; onDone: () => void; voices?: Voices }) {
+export default function ColdOpen({
+  cold,
+  onDone,
+  voices,
+  replay = false,
+}: {
+  cold: Cold;
+  onDone: () => void;
+  voices?: Voices;
+  /**
+   * Played before (PG-COLD, RAAKH-V3 §6): the words show, and it can be
+   * skipped. The first time it's sound on true black, if every voice in it
+   * is recorded; the captions are still there for a screen reader.
+   */
+  replay?: boolean;
+}) {
+  const voiced = cold.lines.every((l, i) => !l.who || Boolean(voices?.[`cold:${i}`]));
+  const captions = replay || !voiced;
   // 0: the place; 1..n: lines; n + 1: "Seven days later".
   const [step, setStep] = useState(0);
   const last = cold.lines.length + 1;
@@ -84,18 +101,20 @@ export default function ColdOpen({ cold, onDone, voices }: { cold: Cold; onDone:
       }}
       role="presentation"
     >
-      <button
-        type="button"
-        className={styles.skip}
-        onClick={(e) => {
-          e.stopPropagation();
-          onDone();
-        }}
-      >
-        Skip
-      </button>
+      {replay && (
+        <button
+          type="button"
+          className={styles.skip}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDone();
+          }}
+        >
+          Skip
+        </button>
+      )}
       {step < last ? (
-        <div className={styles.captions} aria-live="polite">
+        <div className={styles.captions} aria-live="polite" data-hidden={captions ? undefined : ""}>
           <p className={styles.where}>{cold.where}</p>
           {shown.map((l, i) => (
             <p key={i} className={l.who ? styles.said : styles.sound} data-old={i < shown.length - 3 || undefined}>

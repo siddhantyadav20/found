@@ -45,9 +45,13 @@ export type CaseMeta = {
     readonly to: string;
     readonly address: string;
     readonly phone?: string;
-    /** The sender, as written: for Raakh, a stranger's name over your own address. */
+    /** The sender, as written on the waybill. */
     readonly from?: string;
     readonly stamp: readonly [string, string];
+    /** The courier's own line across the top: service, AWB, attempt. */
+    readonly courier?: string;
+    /** What the waybill declares is inside. */
+    readonly contains?: string;
   };
   /**
    * Something besides the phone in the parcel, drawn on the passed-on

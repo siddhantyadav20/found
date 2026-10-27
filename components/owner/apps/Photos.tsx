@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import type { Photo, Story } from "@/content/types";
-import type { CaseState } from "@/lib/game/engine";
+import { evidenceIn, has, type CaseState } from "@/lib/game/engine";
+import { sentFlag } from "@/lib/game/reading";
 import {
   calendarOf,
   clipOf,
@@ -391,6 +392,10 @@ function Glyph({ d, filled = false }: { d: string; filled?: boolean }) {
   );
 }
 
+/** Whether the phone lets this item go (RAAKH-V3 §17): what's in it is marked deletable. */
+const deletable = (story: Story, item: string): boolean =>
+  evidenceIn(story, item).some((id) => story.evidence.find((e) => e.id === id)?.deletable);
+
 /** How long the viewer spins on something still in iCloud before it gives up. */
 const LOAD_TRY_MS = 1600;
 
@@ -405,7 +410,15 @@ function Viewer({
   onStep,
   place,
   voice,
+  onDelete,
+  onSend,
+  sent,
 }: {
+  /** The phone lets this one go (RAAKH-V3 §17): to Recently Deleted, or, from there, for good. */
+  onDelete?: () => void;
+  /** Send to M, once she's asked for things (`Story.sendTo`); `sent` once it has gone. */
+  onSend?: () => void;
+  sent?: boolean;
   photo: Photo;
   /** The recording under a video, where there is one. */
   voice?: string;
@@ -423,6 +436,7 @@ function Viewer({
 }) {
   const [info, setInfo] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   // Still in iCloud: it tries, and then says it couldn't, the way Photos does.
   const here = loaded(state, photo);
   const [failed, setFailed] = useState(false);
@@ -609,6 +623,30 @@ function Viewer({
         </div>
       )}
 
+      {/* Delete, as Photos asks it: from the library to Recently Deleted; from there, for good. */}
+      {deleting && onDelete && (
+        <div className={frame.sheet} role="dialog" aria-label="Delete">
+          <p className={frame.sheetText}>
+            {onRecover
+              ? `This ${video ? "video" : "photo"} will be deleted. This action can't be undone.`
+              : `This ${video ? "video" : "photo"} will be moved to Recently Deleted.`}
+          </p>
+          <button
+            type="button"
+            className={frame.sheetDanger}
+            onClick={() => {
+              setDeleting(false);
+              onDelete();
+            }}
+          >
+            {onRecover ? `Delete ${video ? "Video" : "Photo"}` : `Delete ${video ? "Video" : "Photo"}`}
+          </button>
+          <button type="button" className={frame.sheetCancel} onClick={() => setDeleting(false)}>
+            Cancel
+          </button>
+        </div>
+      )}
+
       {failed && !told && (
         <Alert
           title={video ? "Unable to Load Video" : "Unable to Load Photo"}
@@ -619,9 +657,15 @@ function Viewer({
 
       {/* iOS 26's viewer toolbar: share, then favourite, info and edit, then delete, on one pane of glass. */}
       <div className={`${frame.toolbar} lg`}>
-        <span className={frame.tool} aria-hidden="true">
-          <Glyph d={SHARE} />
-        </span>
+        {onSend ? (
+          <button type="button" className={frame.tool} onClick={onSend} disabled={sent} aria-label={sent ? "Sent to M" : "Send to M"} data-on={sent || undefined}>
+            <Glyph d={SHARE} />
+          </button>
+        ) : (
+          <span className={frame.tool} aria-hidden="true">
+            <Glyph d={SHARE} />
+          </span>
+        )}
         {onRecover ? (
           <span className={frame.toolText} />
         ) : (
@@ -657,9 +701,15 @@ function Viewer({
         ) : (
           <span className={frame.toolText} />
         )}
-        <span className={frame.tool} aria-hidden="true">
-          <Glyph d={TRASH} />
-        </span>
+        {onDelete ? (
+          <button type="button" className={frame.tool} onClick={() => setDeleting(true)} aria-label={onRecover ? "Delete permanently" : "Delete"}>
+            <Glyph d={TRASH} />
+          </button>
+        ) : (
+          <span className={frame.tool} aria-hidden="true">
+            <Glyph d={TRASH} />
+          </span>
+        )}
       </div>
     </div>
   );
@@ -672,6 +722,8 @@ export default function Photos({
   onRead,
   onRestore,
   onRevert,
+  onDelete,
+  onSend,
 }: {
   story: Story;
   state: CaseState;
@@ -679,6 +731,10 @@ export default function Photos({
   onRead: (ids: readonly string[]) => void;
   onRestore: (id: string) => void;
   onRevert: (id: string) => void;
+  /** Delete an item the phone lets go of: to the bin, or from the bin for good (RAAKH-V3 §17). */
+  onDelete?: (id: string, how: "soft" | "perm") => void;
+  /** Send what's in it to M (`Story.sendTo`). */
+  onSend?: (evidence: readonly string[]) => void;
 }) {
   const [tab, setTab] = useState<Tab>("library");
   const [album, setAlbum] = useState<string | null>(null);
@@ -695,6 +751,7 @@ export default function Photos({
   }, [tab, album]);
 
   const lib = library(story, state);
+  const sendable = Boolean(story.sendTo && story.sendTo.after.every((f) => has(state, f)));
   const cal = calendarOf(story, state);
   const albums: Album[] = [
     ...(lib.favorites.length
@@ -741,6 +798,16 @@ export default function Photos({
       onClose={() => setViewing(null)}
       onRead={onRead}
       onRevert={() => onRevert(photo.id)}
+      onDelete={
+        onDelete && deletable(story, photo.id)
+          ? () => {
+              onDelete(photo.id, open?.bin ? "perm" : "soft");
+              setViewing(null);
+            }
+          : undefined
+      }
+      onSend={onSend && sendable && loaded(state, photo) && evidenceIn(story, photo.id).length ? () => onSend(evidenceIn(story, photo.id)) : undefined}
+      sent={evidenceIn(story, photo.id).every((id) => has(state, sentFlag(id)))}
       onRecover={
         open?.bin
           ? () => {

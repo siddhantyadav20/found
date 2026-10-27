@@ -38,7 +38,7 @@ const AT: Record<Beat, { time: string; battery: number; charging?: boolean }> = 
   call: { time: "11:47", battery: 7 },
   photos: { time: "12:58", battery: 64, charging: true },
   file: { time: "1:52", battery: 64, charging: true },
-  seven: { time: "6:52", battery: 81, charging: true },
+  seven: { time: "4:10", battery: 81, charging: true },
 };
 
 /** What each beat opens on. */
@@ -77,10 +77,10 @@ export default function NightPhone({ beat }: { beat: Beat }) {
     case "lock":
       body = (
         <LockScreen
-          day="Sunday 30 November"
-          clock="6:52"
+          day="Sunday 29 November"
+          clock="4:10"
           notes={[
-            { key: "seven", app: "casefile", from: "Case file", text: "They move him at seven. Two calls, before anyone notices." },
+            { key: "seven", app: "casefile", from: "Case file", text: "Q1, again: who is S, and where is he going?" },
             { key: "bhasin", app: "phone", from: "Bhasin Uncle", text: "Missed call" },
           ]}
           onOpen={() => {}}

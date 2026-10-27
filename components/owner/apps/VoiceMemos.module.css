@@ -269,3 +269,13 @@
   border-radius: 50%;
   background: #ff3b30;
 }
+
+/* Recover and Delete side by side, as Recently Deleted offers them. */
+.binActs {
+  display: flex;
+  gap: 8px;
+}
+
+.recover[data-danger] {
+  color: #ff453a;
+}

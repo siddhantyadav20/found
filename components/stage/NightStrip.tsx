@@ -15,7 +15,13 @@ import styles from "./NightStrip.module.css";
    each episode opened and where the clock is now.
    =========================================================================== */
 
-const shown = (s: CaseState, m: NightMark) => m.when.some((set) => all(s, set));
+const known = (s: CaseState, m: NightMark) => m.when.some((set) => all(s, set));
+const says = (s: CaseState, m: NightMark) => Boolean(m.says?.some((set) => all(s, set)));
+const shown = (s: CaseState, m: NightMark) => known(s, m) || says(s, m);
+
+/** How a pinned minute stands (RAAKH-V3 §17): known, as Sameer tells it, or his telling contradicted. */
+const standing = (s: CaseState, m: NightMark): "Known" | "Sameer says" | "Contradicted" | undefined =>
+  !m.says ? undefined : known(s, m) ? (says(s, m) ? "Contradicted" : "Known") : "Sameer says";
 
 /** "1:52", without its AM: the strip is all one night. */
 const short = (at: string) => stamp(at).replace(/ [AP]M$/, "");
@@ -62,11 +68,15 @@ export default function NightStrip({ story, state }: { story: Story; state: Case
       {/* What each pinned minute was, in the night's order: the strip only says when. */}
       {marks.length > 0 && (
         <p className={styles.legend}>
-          {marks.map((m) => (
-            <span key={m.at} data-minor={m.minor || undefined}>
-              <b>{short(m.at)}</b> {m.label}
-            </span>
-          ))}
+          {marks.map((m) => {
+            const st = standing(state, m);
+            return (
+              <span key={m.at} data-minor={m.minor || undefined} data-standing={st}>
+                <b>{short(m.at)}</b> {st === "Sameer says" ? (m.saysLabel ?? m.label) : m.label}
+                {st && <em className={styles.standing}>{st}</em>}
+              </span>
+            );
+          })}
         </p>
       )}
     </figure>

@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { AppId, Evidence, FileClaim, Question, Say, Story } from "@/content/types";
 import {
+  editable,
+  fileSentence,
+  has,
+  keepClock,
+  type Answer,
   answer,
   answered,
   appLabel,
@@ -40,7 +45,8 @@ import {
 import { DETECTIVE } from "@/lib/game/scene";
 import note from "@/components/owner/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
-import { wrong } from "./playthrough";
+import { flag, wrong } from "./playthrough";
+import { Asides, CloseTheCase, FoundList, NoteHead } from "./v3/CaseNote";
 import { nightly, stamp } from "@/lib/found/time";
 import { moment as momentTone } from "@/lib/found/tones";
 import CloseCase from "./CloseCase";
@@ -124,6 +130,8 @@ export default function CaseFile({
     text: string;
     ok: boolean;
     ask: string;
+    /** The question this answers: reading the result is what lets the night go on ("did:read-<q>"). */
+    q?: string;
     filed: boolean;
     lit?: readonly { at: string; text: string }[];
     /** The reveal, large, before the rest. */
@@ -140,7 +148,29 @@ export default function CaseFile({
      the player moves them (With help only; a detective gets the count). */
   const [offRows, setOffRows] = useState<Record<string, string>>({});
 
+  // The last question's answer, waiting on the one line that says what it means (RAAKH-V3 §10).
+  const [confirming, setConfirming] = useState<{ answer: Answer; claim: FileClaim } | null>(null);
+
+  /* Opening the case file is reading its header (IC4). A result read is a
+     result the night can move on from, even if the case file is put away
+     before "Keep going". */
+  useEffect(() => {
+    if (story.caseNote && !has(state, "did:case-opened")) flag("did:case-opened");
+  }, [story.caseNote, state]);
+  // A refusal said back is something the player saw (Q1's "Not yet", IC15).
+  const heard = q?.kind === "file" && q.say ? readSentence(q, words, state) : undefined;
+  const refused = heard?.whole && heard.claim?.refuse && q ? (`did:refused-${q.id}-${heard.claim.id}` as const) : undefined;
+  useEffect(() => {
+    if (refused && !state.flags.includes(refused)) flag(refused);
+  }, [refused, state.flags]);
+  const readQ = said?.ok ? said.q : undefined;
+  useEffect(() => {
+    if (!readQ) return undefined;
+    return () => flag(`did:read-${readQ}`);
+  }, [readQ]);
+
   const reset = () => {
+    if (said?.ok && said.q) flag(`did:read-${said.q}`);
     setSaid(null);
     setPicked([]);
     setClaim(null);
@@ -151,6 +181,31 @@ export default function CaseFile({
     setStray([]);
     setAside(null);
   };
+
+  /* The last question, answered: one plain line that says what it means,
+     and a yes (RAAKH-V3 §10). Nothing after this can be taken back. */
+  if (confirming)
+    return (
+      <div className={note.card}>
+        <p className={note.eyebrow}>{confirming.claim.text}</p>
+        <h3 className={note.question}>{confirming.claim.confirm}</h3>
+        <div className={note.actions}>
+          <button
+            type="button"
+            className={note.primary}
+            onClick={() => {
+              save(confirming.answer.state);
+              setConfirming(null);
+            }}
+          >
+            Yes
+          </button>
+          <button type="button" className={note.secondary} onClick={() => setConfirming(null)}>
+            Not yet
+          </button>
+        </div>
+      </div>
+    );
 
   /* An answered question stays on screen with its reply. The reply is the
      payoff for the whole search, and it used to be replaced in the same frame
@@ -209,7 +264,7 @@ export default function CaseFile({
           }}
         >
           <span className={styles.laneText}>{x.ask}</span>
-          <span className={styles.tag}>{needsRevisit(x, state) ? "Revisit" : "Open"}</span>
+          <span className={styles.tag}>{needsRevisit(x, state) ? "Revisit" : editable(x, state) ? "Edit" : "Open"}</span>
         </button>
       ))}
     </div>
@@ -218,13 +273,16 @@ export default function CaseFile({
   if (!q)
     return (
       <div className={styles.file}>
+        <NoteHead story={story} state={state} />
         <div className={note.card}>
           <Progress story={story} state={state} />
           <NightStrip story={story} state={state} />
           <p className={styles.done}>
             {holding(story, state)
               ? story.hold?.note
-              : story.close && episodeOf(state) === 3
+              : state.flags.includes("did:chose")
+                ? "It's over. Everything here is as you left it."
+                : story.close && episodeOf(state) === 3
                 ? "Every question is filed. What happens to the record is up to you."
                 : "Nothing else to answer yet. Keep looking through his phone: the night isn't over."}
           </p>
@@ -232,7 +290,8 @@ export default function CaseFile({
         {others}
         {story.close && !holding(story, state) && <CloseCase story={story} state={state} open={episodeOf(state) === 3} />}
         {record}
-        <Found found={found} story={story} />
+        {story.caseNote ? <FoundList story={story} state={state} /> : <Found found={found} story={story} />}
+        <CloseTheCase story={story} state={state} />
       </div>
     );
 
@@ -242,11 +301,12 @@ export default function CaseFile({
   // The old line has to be struck, by hand, before the board comes back.
   const striking = Boolean(onFile) && struck !== q.id;
 
-  const give = (given: Given) => {
-    const r = answer(story, state, q.id, given);
+  const give = (given: Given, done?: Answer & { claim?: FileClaim }) => {
+    const r = done ?? answer(story, state, q.id, given);
     const lit = q.kind === "timeline" ? q.rows.filter((row) => row.odd && seen(state, row.evidence)) : undefined;
     const c: FileClaim | undefined =
-      q.kind === "file" && typeof given === "object" && !Array.isArray(given) ? q.claims.find((x) => x.id === (given as { claim: string }).claim) : undefined;
+      done?.claim ??
+      (q.kind === "file" && typeof given === "object" && !Array.isArray(given) ? q.claims.find((x) => x.id === (given as { claim: string }).claim) : undefined);
     // What this answer crossed out: a version on file elsewhere that it just proved wrong.
     const crossed = r.ok
       ? story.questions.filter((x) => !struckOut(x, state) && struckOut(x, r.state)).map((x) => filedClaim(x, r.state)?.text ?? "")
@@ -255,6 +315,7 @@ export default function CaseFile({
       text: r.reply,
       ok: r.ok,
       ask: q.ask,
+      q: q.id,
       filed: q.kind === "file",
       lit,
       moment: r.ok ? c?.moment : undefined,
@@ -287,8 +348,9 @@ export default function CaseFile({
     if (r.ok) {
       // A reveal lands with the room going quiet around it.
       if (c?.moment) momentTone();
-      // When it was filed, so a hunch proved later can say when it was called.
-      save(c ? { ...r.state, at: { ...r.state.at, [FILED_AT(q.id, c.id)]: filedNow() } } : r.state);
+      // When it was filed, so a hunch proved later can say when it was called: by the wall, and by the story's clock.
+      const at = filedNow();
+      save(c ? keepClock(story, { ...r.state, at: { ...r.state.at, [FILED_AT(q.id, c.id)]: at } }, FILED_AT(q.id, c.id), at) : r.state);
       onTable.delete(q.id);
       onLine.delete(q.id);
     } else wrong(q.id);
@@ -296,10 +358,10 @@ export default function CaseFile({
 
   // Said as a sentence: the words decide the claim. Otherwise, with only one thing to say, it's the one being filed.
   const saying = q.kind === "file" && q.say ? q.say : undefined;
-  const read = saying ? readSentence(q, words) : undefined;
+  const read = saying ? readSentence(q, words, state) : undefined;
   // A sentence the phone bears out, ready for its proof.
   const filable = read?.claim && !read.claim.refuse ? read.claim : undefined;
-  const whole = saying ? blanksOf(saying.line).every((b) => words[b]) : false;
+  const whole = saying ? blanksOf(saying.line).every((b) => words[b]) || Boolean(read?.whole) : false;
   const sayable = q.kind === "file" && !saying ? stillOffered(q, state) : [];
   const chosen = saying ? (filable?.id ?? null) : (claim ?? (sayable.length === 1 ? sayable[0].id : null));
 
@@ -307,7 +369,7 @@ export default function CaseFile({
     q.kind === "type"
       ? typed.trim().length > 0
       : saying
-        ? Boolean(filable) && picked.length > 0
+        ? Boolean(filable) && (picked.length > 0 || Boolean(filable?.free))
         : q.kind === "file"
           ? Boolean(chosen) && picked.length > 0
           : picked.length > 0;
@@ -324,7 +386,10 @@ export default function CaseFile({
 
   const fileSaid = () => {
     if (!filable) return;
-    give({ claim: filable.id, proof: picked });
+    const r = fileSentence(story, state, q.id, words, picked);
+    // The last question says what it means first, and waits for a yes (RAAKH-V3 §10).
+    if (q.final && r.ok && r.claim?.confirm) return setConfirming({ answer: r, claim: r.claim });
+    give({ claim: r.claim?.id ?? filable.id, proof: picked }, r);
   };
 
   const whyNot =
@@ -349,6 +414,8 @@ export default function CaseFile({
 
   return (
     <div className={styles.file}>
+      <NoteHead story={story} state={state} />
+      {q.final && <Asides story={story} state={state} />}
       {brief && (
         <section className={styles.brief} aria-label={brief.title}>
           <p className={styles.briefHead}>{brief.title}</p>
@@ -362,7 +429,7 @@ export default function CaseFile({
       <div className={note.card}>
         <Progress story={story} state={state} now={q.id} />
         <NightStrip story={story} state={state} />
-        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : "Open question"}</p>
+        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : (q.eyebrow ?? "Open question")}</p>
         <h3 className={note.question}>{q.ask}</h3>
         {!detective && (
           <p className={note.ask}>
@@ -457,6 +524,8 @@ export default function CaseFile({
       {others}
       {story.close && !holding(story, state) && <CloseCase story={story} state={state} />}
       {record}
+      {story.caseNote && <FoundList story={story} state={state} />}
+      <CloseTheCase story={story} state={state} />
     </div>
   );
 }
@@ -480,9 +549,11 @@ function Progress({ story, state, now }: { story: Story; state: CaseState; now?:
           <i key={x.id} data-done={answered(state, x.id) || undefined} data-now={x.id === now || undefined} />
         ))}
       </span>
-      <span className={styles.progressLinks}>
-        {traced(story, state).length}/{story.chain.length} links
-      </span>
+      {story.chain.length > 0 && (
+        <span className={styles.progressLinks}>
+          {traced(story, state).length}/{story.chain.length} links
+        </span>
+      )}
     </div>
   );
 }
@@ -732,13 +803,21 @@ function Board({
     const need = ok ? Math.min(...[read!.claim!.proof, ...(read!.claim!.orProof ?? [])].map((r) => r.length)) : 0;
     return (
       <>
-        <SayLine q={q} say={q.say} words={words} setWords={setWords} wrong={read?.wrong ?? []} />
-        {read?.whole && (
+        <SayLine q={q} say={q.say} words={words} setWords={setWords} wrong={read?.wrong ?? []} morph={ok && read?.claim?.free ? read.claim.text : undefined} />
+        {read?.whole && !read.claim?.free && (
           <p className={styles.verdict} data-ok={ok || undefined} role="status">
-            {ok ? (read.claim!.version ? "That's how Sameer tells it. You can file it, if you can show it." : read.claim!.hunch ? "That's a hunch, and you can file it as one. Show what it rests on." : "That's what the phone shows. Now show it.") : why}
+            {ok
+              ? q.final
+                ? "Now show it."
+                : read.claim!.version
+                  ? "That's how Sameer tells it. You can file it, if you can show it."
+                  : read.claim!.hunch
+                    ? "That's a hunch, and you can file it as one. Show what it rests on."
+                    : "That's what the phone shows. Now show it."
+              : why}
           </p>
         )}
-        {ok && (
+        {ok && !read?.claim?.free && (
           <div className={styles.step} aria-label="Proof">
             <p className={styles.stepHead}>
               <span className={styles.stepNo}>2</span> Show it: tap {need === 1 ? "the thing on his phone that proves it" : `the ${need} things on his phone that prove it`}
@@ -913,6 +992,7 @@ function SayLine({
   words,
   setWords,
   wrong = [],
+  morph,
 }: {
   q: Question;
   say: Say;
@@ -920,10 +1000,21 @@ function SayLine({
   setWords: (next: Record<string, string>) => void;
   /** Blanks whose word isn't what the phone shows: marked red until changed. */
   wrong?: readonly string[];
+  /** The sentence these words turn back into (the last question's "Sameer Khurrana", RAAKH-V3 §10). */
+  morph?: string;
 }) {
   const names = blanksOf(say.line);
   const [open, setOpen] = useState<string | null>(() => names.find((n) => !words[n]) ?? null);
   const parts = say.line.split(/(\{\w+\})/);
+  if (morph)
+    return (
+      <div className={styles.saying}>
+        <Morph to={morph} from={say.line.replace(/\{(\w+)\}/g, (_, n: string) => words[n] ?? "…")} />
+        <button type="button" className={styles.more} onClick={() => setWords({})}>
+          Say it another way
+        </button>
+      </div>
+    );
   return (
     <div className={styles.saying}>
       <p className={styles.stepHead}>
@@ -969,5 +1060,21 @@ function SayLine({
         </span>
       )}
     </div>
+  );
+}
+
+/** A sentence turning, letter by letter, into another: Episode 1's, back again (RAAKH-V3 §10). */
+function Morph({ from, to }: { from: string; to: string }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (n >= to.length) return undefined;
+    const t = window.setTimeout(() => setN((x) => x + 1), 22);
+    return () => window.clearTimeout(t);
+  }, [n, to]);
+  return (
+    <p className={styles.sentence} aria-label={to}>
+      {to.slice(0, n)}
+      <span style={{ opacity: 0.4 }}>{from.slice(n)}</span>
+    </p>
   );
 }

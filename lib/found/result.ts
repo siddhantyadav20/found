@@ -1,5 +1,7 @@
 import type { EpisodeNo, Story } from "@/content/types";
 import { episodeOf, traced, type CaseState } from "@/lib/game/engine";
+import { chosen } from "@/lib/game/endings";
+import { vowsOf } from "@/lib/game/reading";
 
 /* ===========================================================================
    How a playthrough went, in a form that spoils nothing.
@@ -26,7 +28,20 @@ export type Result = {
   readonly detective?: boolean;
   /** What the night's last hours decided, as the share says it ("I got there before seven."). */
   readonly fate?: string;
+  /** The whole share line, where the chapter writes its own (`Story.endCopy.share`, RAAKH-V3 §11). */
+  readonly line?: string;
 };
+
+/** "Raakh · Ending: Room 6 · Promises kept: 1 of 3.": spoiler-safe, from the chapter's own words. */
+export function endLine(story: Story, s: CaseState): string | undefined {
+  const ending = chosen(story, s);
+  if (!story.endCopy || !ending) return undefined;
+  const vows = vowsOf(story, s);
+  return story.endCopy.share
+    .replace("{ending}", ending.row)
+    .replace("{kept}", String(vows.filter((v) => v.state === "kept").length))
+    .replace("{made}", String(vows.length));
+}
 
 export function resultOf(story: Story, s: CaseState, now?: number): Result {
   const last = Math.max(s.started, ...Object.values(s.at), now ?? 0);
@@ -39,6 +54,7 @@ export function resultOf(story: Story, s: CaseState, now?: number): Result {
     title: story.title,
     detective: s.flags.includes("did:detective"),
     fate: story.fate ? (s.flags.includes(story.fate.yes) ? story.fate.share.yes : s.flags.includes(story.fate.no) ? story.fate.share.no : undefined) : undefined,
+    line: endLine(story, s),
   };
 }
 
@@ -46,7 +62,9 @@ export function resultOf(story: Story, s: CaseState, now?: number): Result {
 export const tracedLine = (n: number, of: number): string => `I traced ${n} of ${of} link${of === 1 ? "" : "s"}.`;
 
 export const resultLine = (r: Result): string =>
-  (r.fate ? `${r.fate} ` : "") + tracedLine(r.traced.length, r.links) + (r.detective ? " As a detective." : "");
+  r.line
+    ? r.line + (r.detective ? " As a detective." : "")
+    : (r.fate ? `${r.fate} ` : "") + tracedLine(r.traced.length, r.links) + (r.detective ? " As a detective." : "");
 
 /**
  * What goes in the chat when someone passes the phone on: the title, the

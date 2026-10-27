@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import type { CaseMeta } from "@/content/cases";
 import Mark from "@/components/site/Mark";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
+import Hand from "./v3/Hand";
 import styles from "./Parcel.module.css";
 
 /* ===========================================================================
@@ -38,6 +39,7 @@ export default function Parcel({
   minutes,
   replay,
   realtime,
+  warning,
   onOpen,
 }: {
   meta: CaseMeta;
@@ -49,6 +51,8 @@ export default function Parcel({
   replay?: boolean;
   /** Real-time mode, where the story offers one: what it says (`Story.realtime.offer`). */
   realtime?: string;
+  /** The content note, said before anything is opened (RAAKH-V3 §7, scene 1.0). */
+  warning?: string;
   /** Opened, and how they chose to play: with the case file's help, or as a detective; on a real clock, or not. */
   onOpen: (detective: boolean, realtime: boolean) => void;
 }) {
@@ -130,23 +134,27 @@ export default function Parcel({
         }}
       >
         <span className={styles.strip} aria-hidden="true">
-          <span>{replay ? "Opened" : "Pull to open"}</span>
+          <span>{replay ? "Opened" : "Pull the strip"}</span>
           <i>→</i>
         </span>
+        {/* The hand that pulls it (IC3): a right wrist, a kada half under the cuff. */}
+        {(pull > 0 || torn) && !replay && <Hand holding="strip" className={styles.hand} />}
 
         <span className={styles.waybill}>
           <span className={styles.barcode} aria-hidden="true" />
-          <span className={styles.courier}>DakRoute Express · Surface · 1 of 1</span>
+          <span className={styles.courier}>{meta.label?.courier ?? "DakRoute Express · Surface · 1 of 1"}</span>
           <span className={styles.to}>{to ? `TO ${to.toUpperCase()}` : meta.label ? `TO ${meta.label.to.toUpperCase()}` : "TO —"}</span>
           {meta.label && <span className={styles.line}>{to ? `By hand, over a courier's label to ${meta.label.to}` : meta.label.address}</span>}
           {meta.label?.phone && !to && <span className={styles.line}>Mob: {meta.label.phone}</span>}
           {meta.label?.from && !to && <span className={styles.line}>From: {meta.label.from}</span>}
           <span className={styles.decl}>
-            <b>Contains</b> {contains}
+            <b>Contains</b> {meta.label?.contains ?? contains}
           </span>
-          <span className={styles.decl}>
-            <b>Declared</b> {declared}
-          </span>
+          {!meta.label?.contains && (
+            <span className={styles.decl}>
+              <b>Declared</b> {declared}
+            </span>
+          )}
           {meta.label && (
             <span className={styles.stamp} aria-label={`Stamped: ${meta.label.stamp.join(". ")}`}>
               {meta.label.stamp[0]}
@@ -159,7 +167,8 @@ export default function Parcel({
       <section className={styles.cover}>
         <p className={styles.kicker}>Episode 1 · {episode}</p>
         <h1 className={styles.title}>{meta.title}</h1>
-        <p className={styles.logline}>{replay ? "It isn't yours. It still isn't." : "Something inside is buzzing. It isn't yours. Read the label, then pull the strip."}</p>
+        <p className={styles.logline}>{replay ? "It came back. It always comes back." : "Something inside is buzzing. It was meant for M."}</p>
+        {warning && <p className={styles.warning}>{warning}</p>}
         <p className={styles.meta}>
           {meta.episodes} episodes · {minutes ? `about ${minutes} minutes` : meta.tone.split(" · ").at(-1)} · sound on
         </p>
@@ -184,7 +193,7 @@ export default function Parcel({
         )}
 
         <button type="button" className={styles.open} onClick={finish}>
-          {replay ? "Take it out again" : "Open the parcel"}
+          {replay ? "Take it out again" : "Pull the strip"}
         </button>
       </section>
     </div>

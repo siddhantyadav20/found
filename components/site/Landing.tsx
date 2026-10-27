@@ -240,8 +240,8 @@ export default function Landing() {
                 ))}
               </h1>
               <p className={scene.lede}>
-                A stranger&apos;s phone arrives at your door. Read their chats, play their voice notes, open what they deleted, and work out what
-                happened. Then decide what to do about it.
+                A wedding planner&apos;s phone comes back to your door. Read his chats, play his voice notes, open what he deleted, and work out
+                what happened.
               </p>
               <div className={scene.bar}>
                 <Link href={RAAKH_PAGE} className={scene.barText}>
@@ -360,8 +360,8 @@ export default function Landing() {
                   <p className={s.eyebrow}>It arrives</p>
                   <h3 className={styles.levelTitle}>It comes to your door</h3>
                   <p className={styles.levelLine}>
-                    Every chapter starts with something that wasn&apos;t meant for you. In Chapter 1, a parcel comes back to your address: a stranger&apos;s
-                    phone, a wedding envelope with a note to M, and a courier&apos;s label stamped return to origin.
+                    Every chapter starts with something that wasn&apos;t meant for you. In Chapter 1, a parcel comes back to your door: a wedding
+                    planner&apos;s phone, a wedding envelope with a note to M, and a courier&apos;s label stamped return to origin.
                   </p>
                 </div>
                 <div className={styles.levelArt}>
@@ -393,13 +393,13 @@ export default function Landing() {
                   <p className={s.eyebrow}>You decide</p>
                   <h3 className={styles.levelTitle}>Say it, then prove it</h3>
                   <p className={styles.levelLine}>
-                    The case file asks one question at a time, against a clock. Finish the sentence, then put down what on his phone shows it. Then
-                    choose what happens to everything you proved.
+                    The case file asks one question at a time. Finish the sentence, then put down what on his phone shows it. Then choose what
+                    you do at seven.
                   </p>
                   <ul className={styles.perks}>
                     <li>With help, or as a detective</li>
                     <li>Hinglish, with English underneath</li>
-                    <li>The battery is real</li>
+                    <li>Take your time. Nothing is lost by reading slowly.</li>
                     <li>Pass it on to a friend</li>
                   </ul>
                 </div>
@@ -466,7 +466,7 @@ export default function Landing() {
             11:40<small>PM</small>
           </p>
           <h2 className={styles.finalTitle}>
-            It&apos;s 11:40 PM. <em>It isn&apos;t your phone.</em>
+            It&apos;s 11:40 PM. <em>It came back.</em>
           </h2>
           <ChapterStatus id="raakh" cta="Open Chapter 1" primary />
         </section>

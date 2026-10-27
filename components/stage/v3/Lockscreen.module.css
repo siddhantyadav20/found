@@ -1,0 +1,266 @@
+/* The endings' own pieces (RAAKH-V3 §11): the media, the statement, the last image, the parcel. */
+
+.media {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  color: #fff;
+  overflow: hidden;
+}
+
+.still {
+  object-fit: cover;
+  animation: drift 14s ease-out both;
+}
+
+@keyframes drift {
+  from { scale: 1.04; }
+  to { scale: 1.1; }
+}
+
+.film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* No footage: a corridor at night, one tube light. */
+.corridor {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 85%), transparent 30%, transparent 70%, rgb(0 0 0 / 85%)),
+    linear-gradient(180deg, #c9dcd6 0 2%, #6f8a83 8%, #1a2421 40%, #0b0f0e 100%);
+  animation: tube 4s steps(1) infinite;
+}
+
+@keyframes tube {
+  0%, 30%, 34%, 100% { filter: brightness(1); }
+  32% { filter: brightness(0.35); }
+}
+
+.mediaTitle {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: calc(18px + env(safe-area-inset-top));
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 55%);
+}
+
+.rec {
+  position: absolute;
+  right: var(--gutter);
+  top: calc(18px + env(safe-area-inset-top));
+  font-family: -apple-system, BlinkMacSystemFont, var(--font-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ff453a;
+}
+
+.captions {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(40px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 10px;
+}
+
+.captions p {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgb(0 0 0 / 62%);
+  font-size: 17px;
+  line-height: 1.4;
+  animation: rise 0.5s ease-out both;
+}
+
+.captions p[data-sound] {
+  font-style: italic;
+  color: rgb(255 255 255 / 70%);
+}
+
+.captions b {
+  display: block;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 60%);
+}
+
+.captions small {
+  display: block;
+  font-size: 13px;
+  color: rgb(255 255 255 / 65%);
+}
+
+@keyframes rise {
+  from { opacity: 0; translate: 0 6px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.final {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #050505;
+  overflow: hidden;
+}
+
+/* Drawn when there's no photograph yet: a steel table, a phone in a bag, or an envelope in early light. */
+.drawn {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 46%, rgb(210 220 230 / 22%), transparent 55%),
+    repeating-linear-gradient(0deg, #2a2d31 0 3px, #2f3236 3px 6px);
+}
+
+.drawn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(46vw, 210px);
+  aspect-ratio: 9 / 18;
+  translate: -50% -50%;
+  rotate: -8deg;
+  border-radius: 26px;
+  background: linear-gradient(160deg, #111 0%, #1b1f24 100%);
+  box-shadow: 0 0 0 10px rgb(255 255 255 / 9%), 0 20px 40px rgb(0 0 0 / 50%);
+}
+
+.finalText {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(36px + env(safe-area-inset-bottom));
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 19px;
+  line-height: 1.4;
+  color: #f4f1ea;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 70%);
+  animation: rise 1.2s 0.6s ease-out both;
+}
+
+.glow {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: min(80vw, 300px);
+  translate: -50% -50%;
+  display: grid;
+  gap: 8px;
+}
+
+.glow p {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 10%);
+  color: rgb(255 255 255 / 70%);
+  font-family: -apple-system, BlinkMacSystemFont, var(--font-sans), sans-serif;
+  font-size: 14px;
+  filter: blur(0.6px);
+  animation: glowIn 1.2s ease-out both;
+}
+
+.glow p:nth-child(2) { animation-delay: 1.4s; }
+.glow p:nth-child(3) { animation-delay: 2.8s; }
+
+@keyframes glowIn {
+  from { opacity: 0; }
+  60% { opacity: 1; }
+  to { opacity: 0.75; }
+}
+
+.envelope {
+  width: min(70vw, 320px);
+  aspect-ratio: 16 / 10;
+  border-radius: 4px;
+  background: linear-gradient(160deg, #f1e4c8, #d9c39b);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 50%);
+}
+
+.waybill {
+  display: grid;
+  gap: 6px;
+  width: min(86vw, 360px);
+  padding: 18px 18px 22px;
+  border-radius: 4px;
+  background: #f6f2e8;
+  color: #1a1815;
+  font-family: var(--font-mono), monospace;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 50%);
+  position: relative;
+  animation: rise 0.8s ease-out both;
+}
+
+.wbCourier {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #5b554b;
+}
+
+.wbTo {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.wbLine {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.wbStamp {
+  justify-self: end;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border: 3px solid #c4161c;
+  border-radius: 4px;
+  color: #c4161c;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  rotate: -7deg;
+  animation: stamp 0.45s 0.8s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+.wbStamp small {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+@keyframes stamp {
+  from { scale: 2; opacity: 0; }
+  to { scale: 1; opacity: 1; }
+}
+
+.voice {
+  font-size: 13px;
+  color: #9a948c;
+}
+
+.attached {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.attached img {
+  object-fit: cover;
+}

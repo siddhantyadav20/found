@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Photo, Story } from "@/content/types";
-import { add, arrivedAt, fire, newCase } from "@/lib/game/engine";
-import { calendar } from "@/lib/found/time";
+import { add, arrivedAt, clockNow, fire, newCase } from "@/lib/game/engine";
+import { calendar, nightly } from "@/lib/found/time";
 import { SHOW_HIDDEN, clipOf, inBin, library, memos, mmss, restored, reverted, revertible, rupees } from "@/lib/game/phone";
 
 /**
@@ -102,20 +102,30 @@ describe("how the phone writes things", () => {
 });
 
 describe("what arrives during the night", () => {
-  it("is stamped when it arrived, on the story's clock, never in the future", () => {
-    const s = fire(STORIES.raakh, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
+  // Without beats, the story's clock runs on the wall: a chapter written that way keeps its stamps by arrival.
+  const walled = { ...STORIES.raakh, beats: undefined };
+
+  it("is stamped when it arrived, on the story's clock, never in the future (a wall clock)", () => {
+    const s = fire(walled, add(newCase("t", 0), "did:unlock"), "raju-text", 6 * 60_000);
     // The chapter opens at 11:40 PM; six minutes in, that's 11:46, whatever the script's own guess.
-    expect(arrivedAt(STORIES.raakh, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
-    expect(arrivedAt(STORIES.raakh, s, { at: "00:06" })).toBe("00:06");
-    expect(arrivedAt(STORIES.raakh, s, { at: "00:06", with: "never-fired" })).toBe("00:06");
+    expect(arrivedAt(walled, s, { at: "00:06", with: "raju-text" })).toBe("23:46");
+    expect(arrivedAt(walled, s, { at: "00:06" })).toBe("00:06");
+    expect(arrivedAt(walled, s, { at: "00:06", with: "never-fired" })).toBe("00:06");
   });
 
-  it("keeps the time it arrived by once the next episode's clock has taken over", () => {
-    let s = fire(STORIES.raakh, add(newCase("t", 0), "did:prepared"), "sameer-writes", 6 * 60_000);
+  it("keeps the time it arrived by once the next episode's clock has taken over (a wall clock)", () => {
+    let s = fire(walled, add(newCase("t", 0), "did:unlock"), "raju-text", 6 * 60_000);
     s = { ...add(s, "ep:2"), began: { 2: 20 * 60_000 } };
-    s = fire(STORIES.raakh, s, "sameer-online", 23 * 60_000);
-    expect(arrivedAt(STORIES.raakh, s, { at: "00:06", with: "sameer-writes" })).toBe("23:46");
-    expect(arrivedAt(STORIES.raakh, s, { at: "00:33", with: "sameer-online" })).toBe("00:35");
+    s = fire(walled, s, "data-renewed", 23 * 60_000);
+    expect(arrivedAt(walled, s, { at: "00:06", with: "raju-text" })).toBe("23:46");
+    expect(arrivedAt(walled, s, { at: "00:33", with: "data-renewed" })).toBe("00:35");
+  });
+
+  it("with beats, is stamped as written, and the clock is never behind what's arrived (RAAKH-V3 §17)", () => {
+    const raakh = STORIES.raakh;
+    const s = fire(raakh, add(newCase("t", 0), "did:unlock", "ask:q2"), "mummy-findmy", 99 * 60_000);
+    expect(arrivedAt(raakh, s, { at: "00:02", with: "mummy-findmy" })).toBe("00:02");
+    expect(nightly(clockNow(raakh, s, 0))).toBeGreaterThanOrEqual(nightly("00:02"));
   });
 });
 

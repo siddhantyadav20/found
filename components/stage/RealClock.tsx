@@ -5,7 +5,8 @@ import { useEffect, useSyncExternalStore } from "react";
 import type { Story } from "@/content/types";
 import { all, has, type CaseState } from "@/lib/game/engine";
 import { buzz } from "@/lib/found/buzz";
-import { flag } from "./playthrough";
+import { readProgress } from "@/lib/found/progress";
+import { flag, save } from "./playthrough";
 import styles from "./RealClock.module.css";
 
 /* ===========================================================================
@@ -16,7 +17,9 @@ import styles from "./RealClock.module.css";
    it for them (`Story.realtime`).
    =========================================================================== */
 
-const EVENT = "event:seven-clock-real";
+/** Time the page spent hidden since the clock started: it doesn't count (RAAKH-V3 §17, pausable). */
+const PAUSED = "rt:paused";
+const HIDDEN = "rt:hidden";
 
 function subscribe(on: () => void): () => void {
   const t = window.setInterval(on, 250);
@@ -25,10 +28,28 @@ function subscribe(on: () => void): () => void {
 
 export default function RealClock({ story, state }: { story: Story; state: CaseState }) {
   const rt = story.realtime;
-  const started = state.at[EVENT];
-  const live = Boolean(rt && started && all(state, rt.after) && !rt.go.every((f) => has(state, f)) && !rt.out.some((f) => has(state, f)));
+  const started = state.at[`event:${rt?.event ?? "seven-clock-real"}`];
+  const stopped = Boolean(rt && ((rt.go.length && rt.go.every((f) => has(state, f))) || (rt.stop ?? []).some((f) => has(state, f))));
+  const live = Boolean(rt && started && all(state, rt.after) && !stopped && !rt.out.some((f) => has(state, f)));
   const now = useSyncExternalStore(live ? subscribe : () => () => {}, () => Math.floor(Date.now() / 250) * 250, () => 0);
-  const left = rt && started && now ? Math.max(0, rt.seconds * 1000 - (now - started)) : 0;
+  const paused = state.at[PAUSED] ?? 0;
+  const left = rt && started && now ? Math.max(0, rt.seconds * 1000 - (now - started - paused)) : 0;
+
+  // Leaving the game pauses it: the time away is kept and taken off.
+  useEffect(() => {
+    if (!live) return undefined;
+    const on = () => {
+      const s = readProgress();
+      if (!s) return;
+      if (document.visibilityState === "hidden") save({ ...s, at: { ...s.at, [HIDDEN]: Date.now() } });
+      else if (s.at[HIDDEN]) {
+        const { [HIDDEN]: since, ...at } = s.at;
+        save({ ...s, at: { ...at, [PAUSED]: (at[PAUSED] ?? 0) + (Date.now() - since) } });
+      }
+    };
+    document.addEventListener("visibilitychange", on);
+    return () => document.removeEventListener("visibilitychange", on);
+  }, [live]);
   const over = live && now > 0 && left === 0;
 
   // Run out: the story decides. A buzz at the last minute, and at the last ten seconds.
@@ -62,9 +83,11 @@ export default function RealClock({ story, state }: { story: Story; state: CaseS
         </b>
       </span>
       <span className={styles.hint}>{rt.hint}</span>
-      <button type="button" className={styles.act} onClick={() => flag(...rt.go)}>
-        {rt.act}
-      </button>
+      {rt.go.length > 0 && (
+        <button type="button" className={styles.act} onClick={() => flag(...rt.go)}>
+          {rt.act}
+        </button>
+      )}
     </div>
   );
 }

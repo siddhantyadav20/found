@@ -1,121 +1,110 @@
 import type { Story } from "../types";
 
-import { chain } from "./chain";
+import { clues } from "./clues";
 import { endings } from "./endings";
 import { episode1 } from "./episode1";
 import { episode2 } from "./episode2";
 import { episode3 } from "./episode3";
+import { evidence } from "./evidence";
 import * as instagram from "./instagram";
-import { night } from "./night";
+import { night, previously, teasers } from "./night";
+import { questions } from "./questions";
+import { final, reveal } from "./reveal";
 import { voices } from "./voices";
 import { calls, mail, memos, notes, payments, photos, searches, settings, threads } from "./phone";
 
 /* ===========================================================================
-   Chapter One — "Raakh" (ash) · Delhi. Called "Shagun" until 2026-10-23.
+   Chapter 1 — "Raakh" (ash) · Delhi. The build is RAAKH-V3.md, "Script and
+   Player Journey v3: Return to Origin" (27 Oct 2026), which supersedes every
+   earlier design where they differ.
 
-   Sameer Khurrana's phone, a week after the Sehgal wedding, arriving with a
-   note meant for someone called M. The story is SCRIPT.md (canon, never
-   edited); the game adaptation is CHAPTER1.md; this is where it becomes data.
+   A parcel comes back to a door in Malviya Nagar: a wedding planner's phone,
+   sent to his ex and refused. The player reads it the way she would have.
+   By four in the morning they know who fired, who lied, and who is still
+   alive. Then the phone tells them whose door this is.
 
-   The phone as he left it is phone.ts; each episode adds what arrives during
-   the player's night, and the questions (ROADMAP S6–S8).
+   Two nights share one clock, a week apart: the Sehgal wedding, Saturday 21
+   into Sunday 22 November 2026, and the player's own, Saturday 28 into
+   Sunday 29. The clock moves only at authored beats (each episode's
+   `beats`, and events with a `clock`).
    =========================================================================== */
+
+const VIEWFINDER = "/found/raakh/viewfinder.jpg";
 
 export const story: Story = {
   id: "raakh",
   title: "Raakh",
   owner: { name: "Sameer Khurrana", short: "Sameer", photo: "/found/raakh/dp-sameer.jpg" },
-  episodes: ["Missed Calls", "The Second Shot", "The Cancelled Rescue"],
-  /* A week to the night after the wedding. The title cards carry the minute
-     of the shot (12:32) and the minute of the lie (1:52), and never say so. */
+  episodes: ["Missed Calls", "The Second Shot", "Return to Origin"],
   clocks: [
-    // Off the charger, it falls with what the player finds, and dies after Sameer writes.
     {
       base: "23:40",
       day: "Saturday",
-      date: "29/11",
+      date: "28/11",
+      after: { day: "Sunday", date: "29/11" },
       battery: 9,
+      // 9% to 2% across Episode 1's beats, then dead (RAAKH-V3 §17).
       drain: [
-        { after: "did:named-dilip", battery: 7 },
-        { after: "did:heard-him", battery: 5 },
-        { after: "did:prepared", battery: 3 },
+        { after: "ask:q1", battery: 7 },
+        { after: "ask:q2", battery: 5 },
+        { after: "ask:q3", battery: 3 },
         { after: "fired:dying", battery: 2 },
       ],
     },
-    { base: "00:32", day: "Sunday", date: "30/11", battery: 2, charging: true },
-    { base: "01:52", day: "Sunday", date: "30/11", battery: 64, charging: true },
+    { base: "00:32", day: "Sunday", date: "29/11", battery: 2, charging: true, rate: 0.78, card: "A week ago, to the minute: the second shot." },
+    { base: "01:52", day: "Sunday", date: "29/11", battery: 64, charging: true, rate: 0.5, card: "A week ago, to the minute: the lie." },
   ],
-  /* (game) T1: the reel take's own minute, heard before anything is known.
-     Unnamed on purpose: "Rolling, bhai?" is Kunal's line in the take, the
-     boy asking about the light is Dilip, and the minute, 12:31, is forty
-     minutes after Kunal's clip: the two firings, planted in the first
-     fifteen seconds for whoever remembers them. No "pakki": it opens his
-     locked chats. */
+  beats: [...episode1.beats, ...episode2.beats, ...episode3.beats],
+  airplaneToggles: true,
+
+  /* PG-COLD (RAAKH-V3 §7.1): audio on true black. On the first play, no
+     words on screen where the voices are recorded; the captions stay
+     unnamed either way, so nobody is told who fired. */
   coldOpen: {
     where: "Banyan Farms, Chhattarpur · Sunday, 12:31 AM",
     lines: [
-      { line: "[dhol, a wedding at full volume, far off]" },
-      { line: "[fairy lights humming in the mango trees]" },
-      { who: "A boy", line: "Bhaiya, light yahan theek hai?", english: "Bhaiya, is the light all right here?" },
-      { who: "A voice", line: "Rolling, bhai?" },
-      { line: "[a shot, straight up]", flash: true },
+      { line: "[dhol and a crowd, far off]" },
+      { who: "A boy", line: "Bhaiya, light yahan theek hai?", english: "Is the light okay here?" },
+      { who: "A man", line: "Haan, wahin. Rolling, bhai?", english: "Yes, there. Rolling?" },
+      { who: "Another man", line: "Rolling." },
+      { who: "The boy", line: "Bhaiya… Mumbai pakki na?", english: "Mumbai's settled, right?" },
+      { who: "The man", line: "Pakki. Ab hilna mat.", english: "Settled. Now don't move." },
+      { line: "[a shot]", flash: true },
       { line: "[laughter]" },
-      { line: "[a second shot]", flash: true },
+      { who: "The man", line: "Ek aur, pose mein—", english: "One more, posing—" },
+      { line: "[a shot]", flash: true },
       { line: "[the laughter stops]" },
       { line: "[the dhol plays on]" },
     ],
     after: "Seven days later, a parcel comes back to your door.",
   },
+  warning: "A shooting at a wedding, a cover-up, a missing worker. Violence is heard, never shown.",
   arrival: {
     note: ["M —", "Sab isme hai.", "Local thane mat le jaana.", "Bhasin ke log wahan baithe hain."],
     sign: "— S",
     english: "M — It's all in here. Don't take it to the local police station. Bhasin's people sit there.",
-    caption: "His phone, face-down, cracked at one corner.",
-    /* The note is on the back of the Sehgal wedding's shagun envelope: the
-       title, made physical, and a clue from the first second (CHAPTER1.md
-       O2, proposed). */
+    caption: "The phone: face down, cracked at one corner.",
     envelope: {
       front: "Ishita weds Rohan",
-      small: "Sehgal Parivar · 22.11",
-      caption: "Somebody else's wedding envelope. There's writing on the back.",
+      small: "Sehgal Parivar · 21.11",
+      caption: "A wedding envelope. There's writing on the back, in a man's quick hand.",
     },
   },
   gate: {
     level: "2%",
-    lines: [
-      "His phone is about to die.",
-      "The voice notes, the photographs and whoever is still ringing it go dark with it.",
-    ],
-    ask: "Find a charger. Plug in to keep it alive.",
+    lines: ["The phone is dead.", "Whoever is still ringing it is ringing nothing."],
+    ask: "Plug it in.",
   },
   lockScreen: [
     { key: "calls", app: "phone", from: "Phone", text: "47 Missed Calls", time: "11:38 PM" },
-    {
-      key: "mummy",
-      app: "whatsapp",
-      from: "Mummy",
-      text: "Beta, phone kyun nahi utha raha? Khana khaya?",
-      english: "Why aren't you picking up? Have you eaten?",
-      time: "10:52 PM",
-    },
-    { key: "bhasin", app: "phone", from: "Bhasin Uncle", text: "2 missed calls", time: "Fri" },
+    { key: "mummy", app: "whatsapp", from: "Mummy", text: "Beta, phone kyun nahi utha raha? Khana khaya?", english: "Why aren't you picking up? Have you eaten?", time: "10:52 PM" },
+    { key: "bhasin", app: "phone", from: "Bhasin Uncle", text: "2 missed calls", time: "9:40 PM" },
   ],
-  /* Nitin's and Dilip's chats, locked and hidden on Thursday. The code is the
-     word of his promise to Dilip ("Mumbai wali baat pakki na?"). Sameer gives
-     it himself in Episode 2, to show he tried; Raju, trusted, says the word
-     the boy asked every day; and on the phone alone, the memo he deleted
-     says the code is what the boy asked him, which the reel take has, seconds
-     before the shot. Typed before Episode 2 (a friend's tip, a replay), it
-     opens nothing: the chats are Episode 2's layer (2026-10-26). */
-  chatLock: { code: "pakki", requires: ["ep:2"], knownWhen: [["did:installed-voicememos", "saw:reel-take"], ["fired:sameer-code"], ["did:raju-trusts"]] },
-  /* Safari is Episode 2's layer (2026-10-26): on the day's data used up, the
-     tab he left open can't reload, and his History waits with it. */
-  safariWaits: {
-    until: ["ep:2"],
-    site: "faq.whatsapp.com",
-    note: "Jio · Daily data used up. Internet speed is 64 Kbps until midnight.",
-  },
-  /* What a wedding planner keeps on the first page. */
+  /* Dilip's and Nitin's chats, locked and hidden on Thursday with the word of
+     his promise. Found three ways: the reel audio, the code memo with the
+     7:10 PM "pakki", or Raju (§8.6). Accepted from Episode 2. */
+  chatLock: { code: "pakki", requires: ["ep:2"], knownWhen: [["saw:reel-take"], ["saw:memo-code"], ["did:raju-code"]] },
+  safariWaits: { until: ["fired:data-renewed"], site: "faq.whatsapp.com", note: "Jio · Daily data used up. Internet speed is 64 Kbps until midnight." },
   home: {
     pages: [
       [
@@ -124,9 +113,10 @@ export const story: Story = {
         { app: "notes", label: "Notes" },
         { app: "mail", label: "Mail" },
         { app: "paytap", label: "Paytap" },
-        // Offloaded on Thursday, straight after the memo went in the bin: the app gone, what it kept kept (CHAPTER1.md E).
-        { app: "voicememos", label: "Voice Memos", offloaded: ["ep:2"] },
+        // Offloaded on Thursday night: the app gone, what it kept kept, until the data's back.
+        { app: "voicememos", label: "Voice Memos", offloaded: ["fired:data-renewed"] },
         { app: "safari", label: "Safari" },
+        { app: "camera", label: "Camera" },
         { app: "settings", label: "Settings" },
       ],
     ],
@@ -145,151 +135,123 @@ export const story: Story = {
   payments,
   profiles: instagram.profiles,
   feed: instagram.feed,
-  incoming: [...episode1.incoming, ...episode2.incoming, ...episode3.incoming],
+  incoming: [...episode1.incoming, ...episode2.incoming],
   searches,
   calls,
   settings,
-  evidence: [...episode1.evidence, ...episode2.evidence, ...episode3.evidence],
-  questions: [...episode1.questions, ...episode2.questions, ...episode3.questions],
+  evidence,
+  questions,
   events: [...episode1.events, ...episode2.events, ...episode3.events, ...instagram.events],
-  moments: episode3.moments,
-  chain,
+  dark: [...episode2.dark, ...episode3.dark],
+  reveal,
+  final,
+  clues,
+  chain: [],
   endings,
-  /* Two nights share one clock, a week apart: the player's is always called
-     this, so 1:52 tonight is never read as 1:52 that night (2026-10-26). */
   nowLabel: "Tonight",
-  /* The six minutes a player ever has to hold (2026-10-26), pinned as they're
-     traced, and the cluster Q10 points at; tonight runs under them, a week
-     to the minute later. */
+  /* The night strip (RAAKH-V3 §17): that night beside tonight, a week to the
+     minute apart, each minute pinned once it's known. */
   timeline: {
-    thatNight: "That night · 22–23 Nov",
-    tonight: "Tonight · 29–30 Nov",
+    thatNight: "That night · 21–22 Nov",
+    tonight: "Tonight · 28–29 Nov",
     from: "23:30",
     to: "05:00",
     marks: [
-      { at: "23:52", label: "Kunal fires", when: [["saw:kunal-clip"], ["link:two-firings"]] },
-      { at: "00:32", label: "The shot", when: [["link:shot"]] },
-      { at: "01:14", label: "Awake", when: [["link:alive"]] },
-      { at: "01:49", label: "Sameer in the room", when: [["ask:q10"]], minor: true },
-      { at: "01:52", label: "The lie", when: [["link:lie"]] },
-      { at: "01:53", label: "Car called back", when: [["ask:q10"]], minor: true },
-      { at: "01:56", label: "Ambulance search", when: [["ask:q10"]], minor: true },
-      { at: "02:55", label: "Bhasin's car", when: [["link:alive-now"]] },
-      { at: "04:47", label: "The fire", when: [["link:fire"]] },
+      { at: "23:52", label: "Kunal fires", when: [["saw:kunal-clip"]] },
+      { at: "00:32", label: "The shot: Sameer, the second", when: [["claim:q4:truth"], ["claim:q4:hunch"]], says: [["claim:q4:version"]], saysLabel: "The shot: Kunal" },
+      { at: "01:14", label: "Awake", when: [["ask:q5"]] },
+      { at: "01:49", label: "Sameer in the room", when: [["saw:sameer-room"]], minor: true },
+      { at: "01:52", label: "The lie", when: [["claim:q6:truth"]], says: [["claim:q6:version"]], saysLabel: "The car turned away" },
+      { at: "02:04", label: "The car leaves", when: [["ask:q5"]], minor: true },
+      { at: "02:55", label: "Bhasin's car", when: [["saw:car-255"]] },
+      { at: "04:47", label: "The fire: an empty mattress", when: [["claim:q7:truth"]], says: [["claim:q7:version"]], saysLabel: "The fire: a body" },
     ],
     now: [
       { at: "23:40", label: "The parcel", when: [[]] },
       { at: "00:32", label: "Episode 2", when: [["ep:2"]] },
       { at: "01:52", label: "Episode 3", when: [["ep:3"]] },
+      { at: "03:58", label: "Gate 2", when: [["did:reveal-start"]] },
     ],
   },
-  /* What a newcomer is doing here, said plainly (2026-10-24). */
+  caseNote: { title: "Case file", created: "23:44", header: "On this iPhone · Today 11:44 PM", when: ["did:past-lock"] },
   brief: {
-    title: "Tonight",
+    title: "Case file",
     lines: [
-      "This phone was posted to a lawyer, Meera Arora. It came back to your door instead. She's at a wedding in Jaipur, her phone off till morning.",
-      "A boy called Dilip went missing at a Delhi wedding a week ago. His brother keeps ringing this number.",
-      "Find out what happened to Dilip. What you file here traces that night, link by link. There are twelve.",
+      "This phone was posted to M — Meera Arora, Kalkaji. She refused it.",
+      "A boy called Dilip went missing at a Delhi wedding a week ago. Find out what happened to him.",
       "Somebody else wants this phone back before morning.",
     ],
   },
-  finale: {
-    when: "Tonight · 4:40 AM · Sunday",
-    line: "Everything is on the table now.",
-    sub: "The record is still yours to put your name to: who did what that night, and what you can prove. Sameer's train leaves at 4:55 this afternoon.",
-    after: {
-      yes: "Dilip is in an ambulance to Saket, a constable in the front seat. What's left is the record: who did what that night, and what you can prove, under your name. Sameer's train leaves at 4:55 this afternoon.",
-      no: "Nobody you called got to Room 6 before Bhasin heard, and at seven they move him. What's left is the record: who did what that night, and what you can prove, under your name. It's the only thing still pointing at him. Sameer's train leaves at 4:55 this afternoon.",
-    },
-  },
-  fate: {
-    yes: "did:saved",
-    no: "did:lost",
-    headline: { yes: "Dilip Kumar Mahto is alive.", no: "Dilip Kumar Mahto is still missing." },
-    share: { yes: "I got there before seven.", no: "I didn't get there before seven." },
-    others: "{yes}% of everyone who's played got there before seven.",
-  },
-  night,
-  hold: {
-    after: ["did:knows-alive"],
-    until: ["did:rescue-told"],
-    note: "Every question is filed. The record can wait. Dilip can't: they move him at seven.",
-    widget: "They move him at seven. Two calls, before anyone notices.",
-  },
-  realtime: {
-    offer: "Real time: the night's last decision runs on a real clock. Four minutes, no pause",
-    after: ["did:knows-alive", "did:realtime"],
-    seconds: 240,
-    from: "02:58",
-    to: "03:30",
-    label: "Sister Anita's shift ends at 3:30. After that, the side door stays shut.",
-    hint: "Two calls: one who can identify him, one Bhasin is afraid of.",
-    act: "Make the calls",
-    go: ["fired:seven-clock"],
-    out: ["did:froze", "did:lost", "did:moment-first-call"],
-  },
-  /* Each later episode opens on what the player filed, in their own words,
-     and a briefing (2026-10-26): what's still open moved here from the recap. */
-  openers: {
-    2: {
-      previously: ["q1", "q3", "q4"],
-      objective: "Who fired the shot that hit Dilip, and whether it killed him.",
-      against: "A new number knows this phone is on, and it's asking for M. Somebody else wants the phone back before morning.",
-      clock: "Tonight · 12:32 AM · Sameer's train leaves at 4:55 this afternoon",
-    },
-    3: {
-      previously: ["q6", "q7", "q8", "q9"],
-      objective: "What happened to Dilip after the car left without him.",
-      against: "Bhasin Sehgal, who gave the orders that night, wants this phone back.",
-      clock: "Tonight · 1:52 AM · Sameer's train leaves at 4:55 this afternoon",
-    },
-  },
-  /* Each episode ends on what it's left open (2026-10-23). */
-  voices,
   recaps: {
     1: {
-      who: "A new number, to his phone",
-      cliff: "M? Tu hai?",
-      english: "M? Is that you?",
-      open: [
-        "Who is writing to his phone, and how do they know it's on?",
-        "What was in the photos the phone couldn't load from iCloud?",
-        "Why does his list for M stop at “4. Nitin —”?",
-      ],
+      who: "Bhasin Uncle",
+      cliff: "Ghar pe hi hai. Achha hai.",
+      english: "It's at home. Good.",
+      filed: ["q1", "q2", "q3"],
+      open: ["Who fired the shot that hit Dilip?"],
+      last: "Sameer has told M what happened. He hasn't proved it.",
     },
     2: {
-      who: "Nitin · that night, 1:53 AM",
-      cliff: "theek hai bhai. agar le gaye hain toh main Vicky ko wapas bula leta hoon",
-      english: "OK bro. If they've taken him, I'll call Vicky back.",
-      open: [
-        "Nitin is answering a message that isn't on this phone. Who told him Dilip had gone?",
-        "What did Sameer lock away in “Agar kuch hua”?",
-        "Why did he send this phone at all?",
-      ],
+      who: "Sameer, to Nitin · 1:52 AM",
+      cliff: "Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bula aur so ja.",
+      english: "They've taken Dilip. In Bhasin sir's car, to hospital. Call Vicky back and sleep.",
+      filed: ["q4", "q5"],
+      open: ["Why did the car leave empty?"],
+      last: "The phone was edited. Somebody kept what he deleted.",
     },
   },
-  /* Closing the case (2026-10-23): the record, and what to do with it, from
-     the case file. Meera's number is on the parcel's label, so she can be
-     sent it from the first minute; posting is from his own Instagram, to the
-     12.4k people who follow SK Weddings; and the parcel can always go back. */
-  close: {
-    intro: "What happened at the Sehgal wedding · Banyan Farms, Chhattarpur · 22 Nov",
-    sendTo: "Meera Arora",
-    sendNote: "The lawyer it was meant for. Her number is on the parcel's label.",
-    postTo: "his Instagram",
-    postNote: "From @sk.weddings, to the 12,400 people who follow it. Anyone can share it.",
-    /* Return to Sender, where the sender on paper is you (O1): the
-       legitimate channel for a parcel that isn't yours is the courier. */
-    parcel: {
-      note: "It came back to your address as the sender's. You didn't send it. The courier takes a parcel back as “not the sender”, and keeps it.",
-      act: "Hand it to the courier: not the sender",
-      ask: "Hand his phone back to the courier, as not yours? You won't see it again.",
-    },
+  death: {
+    after: ["did:needs-charge"],
+    alert: "Low Battery · 2% of battery remaining",
+    cliff: { who: "Bhasin Uncle", text: "Ghar pe hi hai. Achha hai.", english: "It's at home. Good.", unless: ["did:went-dark"] },
   },
-  // The replay image (CHAPTER1.md J): the note whose last line stops at "4. Nitin —".
-  replay: { note: "for-m", caption: "He started to tell you." },
-  /* Canon §21: Meera, with a separate case and another handset, in Mumbai. The
-     player's role is established now; this time the label is theirs. */
+  previously,
+  teasers,
+  vows: [
+    { id: "P1", to: "Nitin", text: "“Tera naam kahin nahi aayega. Pakki.”", made: "did:promise-p1", broken: [["did:end-room6", "claim:q6:truth"]] },
+    { id: "P2", to: "Raju", text: "“Main usse dhoondh lunga. Pakki.”", made: "did:promise-p2", broken: [["did:end-train"], ["did:end-origin"]] },
+    { id: "P3", to: "Meera", text: "“Kuch delete nahi karunga.”", made: "did:promise-p3", broken: [["did:deleted-perm"]] },
+  ],
+  impulse: {
+    labels: { auditor: "The one checking", confessor: "The one who wanted it found" },
+    version: 1,
+    truth: 1,
+    soft: 1,
+    perm: 2,
+    recover: 1,
+    send: 1,
+  },
+  sendTo: { name: "M", after: ["did:meera-contact"], label: "Send to M", thread: "m" },
+  camera: { unavailable: "Camera is unavailable in Low Power Mode on this device.", after: ["did:reveal-start"], src: VIEWFINDER },
+  yourPhone: { wallpaper: "/found/lastlocal/sea.jpg" },
+  unopened: { before: ["did:reveal-start"], ask: "Put it away? You can open it again.", card: "You put it away. It's still ringing.", again: "Open it again" },
+  /* Real time, opt-in (RAAKH-V3 §9.11): only Bhasin's half hour at the gate,
+     five real minutes, pausable. Run out, his car leaves, and the Trade
+     with it. Nothing else is lost. */
+  realtime: {
+    offer: "Real time: the last half hour of the night runs on a real clock. Nothing is lost if it runs out.",
+    after: ["fired:bhasin-terms", "did:realtime"],
+    seconds: 300,
+    from: "04:06",
+    to: "04:36",
+    label: "Bhasin waits",
+    hint: "Answer the last question in the case file before his half hour is up, if you want his trade.",
+    act: "Open the case file",
+    go: [],
+    out: ["did:bhasin-left"],
+    event: "bhasin-terms",
+    stop: ["ask:qf", "did:chose"],
+  },
+  endCopy: {
+    impulses: "Which Sameer read the phone",
+    held: "Your story held on {n} of {of}.",
+    promises: "Promises made: {made}. Kept: {kept}.",
+    clues: "Clues you walked past: {n} of {of}",
+    share: "Raakh · Ending: {ending} · Promises kept: {kept} of {made}.",
+  },
+  voices,
+  night,
+  replay: { note: "for-m", caption: "He started to tell M." },
   next: {
     title: "Chapter 2 · Last Local",
     from: "Meera",
@@ -302,70 +264,44 @@ export const story: Story = {
     cta: "Play Chapter 2",
   },
   /* Checked at the source on 2026-09-24: the Arms Act, 1959, s.25(9) as
-     inserted by Act 48 of 2019 (indiankanoon.org/doc/26451110); Parmanand
-     Katara v. Union of India, AIR 1989 SC 2039 (indiankanoon.org/doc/498126);
-     Tele-MANAS, the Ministry of Health's line (telemanas.mohfw.gov.in). */
+     inserted by Act 48 of 2019; Parmanand Katara v. Union of India, AIR 1989
+     SC 2039; Tele-MANAS, the Ministry of Health's line. */
   outside: [
-    {
-      text: "Celebratory gunfire is a crime in India: up to two years in prison, a fine of up to ₹1 lakh, or both.",
-      source: "Arms Act, 1959, s.25(9), added in 2019",
-    },
-    {
-      text: "Every doctor, at a government hospital or a private one, must treat an injured person to save their life. Police formalities can't come first.",
-      source: "Supreme Court, Parmanand Katara v. Union of India, 1989",
-    },
+    { text: "Celebratory gunfire is a crime in India: up to two years in prison, a fine of up to ₹1 lakh, or both.", source: "Arms Act, 1959, s.25(9), added in 2019" },
+    { text: "Every doctor, at a government hospital or a private one, must treat an injured person to save their life. Police formalities can't come first.", source: "Supreme Court, Parmanand Katara v. Union of India, 1989" },
     { text: "Emergency, anywhere in India: 112.", tel: "112" },
     { text: "If any of this is close to home, Tele-MANAS is free, open all day, in English and 20 other languages: 14416.", tel: "14416" },
   ],
-  // Counted by name in the funnel: the chapter's own choices (CHAPTER1.md H).
+  // Counted by name in the funnel: the chapter's own choices.
   choices: [
     "did:answered-raju",
     "did:declined-raju",
-    "did:raju-told-truth",
-    "did:raju-lied",
+    "did:raju-first-denial",
+    "did:raju-first-finding",
+    "did:raju-first-whos",
     "did:mummy-stranger",
-    "did:mummy-as-sameer",
-    "did:sameer-not-m",
-    "did:sameer-as-m",
-    "did:sameer-where",
-    "did:told-sameer-shot",
-    "did:gave-sameer-kunal",
-    "did:asked-sameer-after",
-    "did:raju-trusts",
+    "did:mummy-fine",
+    "did:mummy-none",
+    "did:early-reveal",
+    "did:promise-p1",
+    "did:promise-p2",
+    "did:promise-p3",
     "did:raju-told-shot",
     "did:raju-told-kunal",
-    "did:protect-nitin",
-    "did:nitin-pressed",
-    "did:confronted-kunal",
-    "did:exposed-nitin",
-    "did:gave-rescuer",
-    "did:confronted-sameer",
+    "did:nitin-stranger",
+    "did:nitin-care",
+    "did:nitin-blame",
+    "did:kunal-denial",
+    "did:kunal-frame",
+    "did:nitin-exposed",
+    "did:anita-care",
+    "did:camera-open",
+    "did:camera-photo",
+    "did:facedown",
+    "did:sent-m",
+    "did:deleted-perm",
     "did:airplane",
-    "did:meera-called",
-    "did:meera-preserved",
-    "did:passed-as-m",
-    "did:caught-as-m",
-    "did:caught-khaali",
     "did:detective",
-  ],
-  /* Look again (CHAPTER1.md K1): what was on the phone from the first minute,
-     and what it meant, for a player who's finished and wants to go back. */
-  lookAgain: [
-    { what: "The phone opens with no passcode.", where: "settings", meant: "He turned it off on Thursday night, so M could read it in his order." },
-    { what: "One grey tick under every voice note.", where: "whatsapp", meant: "M had blocked him. That's why he sent the phone, and didn't just talk." },
-    { what: "“Kunal firing kar raha tha. Ek ladka gir gaya.”", where: "whatsapp", meant: "Two sentences, two moments, forty minutes and a lawn apart." },
-    { what: "His archived post: Kunal at 12:22, a revolver by his face.", where: "instagram", meant: "True, and it points away from Sameer, so he kept it where M could find it. The gun changed hands ten minutes later." },
-    { what: "“12:15 — SK reel w/ Kunal… D — light (N sick)”.", where: "notes", meant: "His own reel, with Kunal in it, and Dilip on the light because Nitin had a fever." },
-    { what: "The boy smiling over a tray, in Favorites.", where: "photos", meant: "A portrait he'd planned (“Dilip portrait!!”), of someone he'd promised Mumbai to." },
-    { what: "The fire clip starts mid-movement.", where: "photos", meant: "He trimmed it to its last nine seconds. The rest, with his hands in it, he locked away." },
-    { what: "“For M”, stopping at “4. Nitin —”.", where: "notes", meant: "The whole chapter: he started to tell M, and didn't." },
-    {
-      what: "Thursday, 11:06 to 11:26 PM.",
-      where: "phone",
-      meant: "Twenty minutes: he looks up how to hide chats, locks Nitin's and Dilip's, records the code for M and deletes it, writes “For M”, rings Nitin once at 11:24 and hangs up, and cuts the list at “4. Nitin —”.",
-    },
-    { what: "Safari: “private ambulance chhattarpur 24 hours”.", where: "safari", meant: "1:56: four minutes after he'd told Nitin help had come." },
-    { what: "Mummy: “Bhasin uncle phir aaye the.”", where: "whatsapp", meant: "The family's man, at his mother's door, all week." },
-    { what: "The title cards: 12:32 AM and 1:52 AM.", where: "casefile", meant: "The shot, and the lie." },
+    "did:realtime",
   ],
 };

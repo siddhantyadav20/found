@@ -144,3 +144,8 @@
     animation: lift 0.3s 0.3s forwards;
   }
 }
+
+/* Raakh's pages: no series line (RAAKH-V3 §20). */
+:global(html[data-chapter="raakh"]) .line {
+  visibility: hidden;
+}

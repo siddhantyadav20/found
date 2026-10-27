@@ -85,6 +85,7 @@ export default function Phone({
   overlay,
   airplane,
   onAirplane,
+  airplaneToggles = false,
 }: {
   time: string;
   day: string;
@@ -109,9 +110,11 @@ export default function Phone({
   onNotice: (n: Notice) => void;
   /** Drawn over everything on the screen. */
   overlay?: ReactNode;
-  /** Airplane mode, and turning it on by hand in Control Centre. It doesn't go back off. */
+  /** Airplane mode, and turning it on by hand in Control Centre. It doesn't go back off, unless `airplaneToggles`. */
   airplane?: boolean;
   onAirplane?: () => void;
+  /** It goes back off (RAAKH-V3 §17): what was sent meanwhile arrives then. */
+  airplaneToggles?: boolean;
 }) {
   const [control, setControl] = useState(false);
   const screenRef = useRef<HTMLDivElement>(null);
@@ -364,7 +367,7 @@ export default function Phone({
                     className={styles.ccRound}
                     data-on={airplane || undefined}
                     data-tone="orange"
-                    onClick={() => !airplane && onAirplane?.()}
+                    onClick={() => (airplaneToggles || !airplane) && onAirplane?.()}
                   >
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                       <path d={PLANE} />
@@ -443,7 +446,9 @@ export default function Phone({
                   </span>
                 ))}
               </div>
-              <p className={styles.controlNote}>{airplane ? "Airplane Mode. Nothing can reach this phone." : "Tap outside to close."}</p>
+              <p className={styles.controlNote}>
+                {airplane ? (airplaneToggles ? "Airplane Mode. Whatever's sent waits until it's off." : "Airplane Mode. Nothing can reach this phone.") : "Tap outside to close."}
+              </p>
             </div>
             <div
               ref={shadeRef}

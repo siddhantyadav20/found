@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, type CSSProperties } from "react";
 
 import type { Note, Photo, Story } from "@/content/types";
-import { all, has, type CaseState } from "@/lib/game/engine";
+import { all, goneOf, has, type CaseState } from "@/lib/game/engine";
 import { calendarOf, unlocked } from "@/lib/game/phone";
 import { Page, SearchField } from "../AppView";
 import app from "../ios/App.module.css";
@@ -108,6 +108,10 @@ function Open({
   onOpened,
   onSeen,
   voices,
+  downloading = false,
+  gone,
+  onDelete,
+  canDelete,
 }: {
   note: Note;
   day: string;
@@ -116,6 +120,13 @@ function Open({
   opened: boolean;
   onOpened: (id: string) => void;
   onSeen: (ids: readonly string[]) => void;
+  /** Still coming down from iCloud: it won't open yet. */
+  downloading?: boolean;
+  /** Whether an attachment has been deleted (to Recently Deleted, or for good). */
+  gone?: (id: string) => boolean;
+  /** Delete an attachment the phone lets go of, to Recently Deleted (RAAKH-V3 §17). */
+  onDelete?: (attachment: Photo) => void;
+  canDelete?: (attachment: Photo) => boolean;
 }) {
   const [typed, setTyped] = useState("");
   const [open, setOpen] = useState(!note.locked || opened);
@@ -131,9 +142,10 @@ function Open({
     return () => window.clearTimeout(t);
   }, [shaking]);
 
+  const kept = (note.attachments ?? []).filter((a) => !gone?.(a.id));
   // What's in it is seen the moment it opens.
   const inside = open
-    ? (note.attachments ?? [])
+    ? kept
         .map((a) => a.evidence)
         .filter((id): id is string => Boolean(id))
         .join(",")
@@ -143,6 +155,17 @@ function Open({
   }, [inside, onSeen]);
 
   const numeric = /^\d+$/.test(note.password ?? "");
+  // On the day's spent data, iCloud hasn't brought it all down (RAAKH-V3 §7.8).
+  if (downloading)
+    return (
+      <div className={styles.locked}>
+        <svg viewBox="0 0 24 24" className={styles.lock} aria-hidden="true">
+          <path d="M7 18.5h10.5a4 4 0 0 0 .4-8 6 6 0 0 0-11.6 1.3A3.4 3.4 0 0 0 7 18.5ZM12 10v6m-2.4-2.4L12 16l2.4-2.4" />
+        </svg>
+        <p className={styles.lockTitle}>This note hasn&apos;t finished downloading.</p>
+        <p className={styles.lockHint}>“{note.title}” will open once it&apos;s downloaded from iCloud.</p>
+      </div>
+    );
   if (!open)
     return (
       <div className={styles.locked}>
@@ -229,12 +252,15 @@ function Open({
           {line}
         </p>
       ))}
-      {note.attachments?.map((a) => (
-        <Attachment
-          key={a.id}
-          photo={a}
-          voice={voices?.[`clip:${a.id}`]?.src}
-        />
+      {kept.map((a) => (
+        <div key={a.id}>
+          <Attachment photo={a} voice={voices?.[`clip:${a.id}`]?.src} />
+          {onDelete && canDelete?.(a) && (
+            <button type="button" className={styles.deleteAttachment} onClick={() => onDelete(a)}>
+              Delete
+            </button>
+          )}
+        </div>
       ))}
     </article>
   );
@@ -246,6 +272,9 @@ export default function Notes({
   onRead,
   onPassword,
   onHome,
+  onCaseFile,
+  onDelete,
+  onRecover,
 }: {
   story: Story;
   state: CaseState;
@@ -253,7 +282,13 @@ export default function Notes({
   /** Opening a locked note is a thing the player did, and the save keeps it. */
   onPassword: (id: string) => void;
   onHome?: () => void;
+  /** The case file is a note on this iPhone too (RAAKH-V3 §17, IC4): opening it from here opens it. */
+  onCaseFile?: () => void;
+  /** Delete an attachment: to Recently Deleted, or from there for good. */
+  onDelete?: (id: string, how: "soft" | "perm") => void;
+  onRecover?: (id: string) => void;
 }) {
+  const [bin, setBin] = useState(false);
   const cal = calendarOf(story, state);
   const [open, setOpen] = useState<string | null>(null);
   const notes = story.notes.filter((n) => all(state, n.requires));
@@ -284,12 +319,44 @@ export default function Notes({
           note={here}
           day={cal.label(here.day)}
           opened={has(state, unlocked(here.id))}
+          downloading={!all(state, here.downloadsAfter)}
+          gone={(id) => Boolean(goneOf(state, id))}
+          onDelete={onDelete ? (a) => onDelete(a.id, "soft") : undefined}
+          canDelete={(a) => Boolean(a.evidence && story.evidence.find((e) => e.id === a.evidence)?.deletable)}
           onSeen={onRead}
           onOpened={() => {
             onPassword(here.id);
             if (here.evidence) onRead([here.evidence]);
           }}
         />
+      </Page>
+    );
+
+  /* Notes' own Recently Deleted: attachments the player deleted, with
+     Recover and Delete (RAAKH-V3 §17). */
+  const binned = story.notes.flatMap((n) => n.attachments ?? []).filter((a) => goneOf(state, a.id) === "soft");
+  if (bin)
+    return (
+      <Page title="Recently Deleted" onBack={() => setBin(false)} backLabel="Notes" tint={YELLOW}>
+        {binned.length === 0 ? (
+          <p className={app.empty}>No deleted attachments.</p>
+        ) : (
+          <ul className={styles.list}>
+            {binned.map((a) => (
+              <li key={a.id} className={styles.binRow}>
+                <span className={styles.rowTitle}>{a.title}</span>
+                <span className={styles.binActs}>
+                  <button type="button" onClick={() => onRecover?.(a.id)}>
+                    Recover
+                  </button>
+                  <button type="button" data-danger onClick={() => onDelete?.(a.id, "perm")}>
+                    Delete
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Page>
     );
 
@@ -318,6 +385,23 @@ export default function Notes({
       tabbed
     >
       <SearchField />
+      {/* The case file: a note made on this iPhone tonight (IC4). */}
+      {story.caseNote && onCaseFile && all(state, story.caseNote.when) && (
+        <div>
+          <h3 className={styles.section}>Today</h3>
+          <ul className={styles.list}>
+            <li>
+              <button type="button" className={styles.row} onClick={onCaseFile}>
+                <span className={styles.rowTitle}>{story.caseNote.title}</span>
+                <span className={styles.rowSub}>
+                  <span className={styles.rowWhen}>{stamp(story.caseNote.created)}</span>
+                  <span className={styles.rowPreview}>On this iPhone</span>
+                </span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
       {sections.map((s) => (
         <div key={s.title}>
           <h3 className={styles.section}>{s.title}</h3>
@@ -359,6 +443,12 @@ export default function Notes({
           </ul>
         </div>
       ))}
+
+      {binned.length > 0 && (
+        <button type="button" className={styles.binLink} onClick={() => setBin(true)}>
+          Recently Deleted ({binned.length})
+        </button>
+      )}
 
       {/* Notes' toolbar: how many, and a new one. */}
       <div className={styles.toolbar} aria-hidden="true">

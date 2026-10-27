@@ -32,6 +32,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, installed } from "@/lib/game/phone";
+import { offline } from "@/lib/game/engine";
 import RealClock from "./RealClock";
 import { DETECTIVE } from "@/lib/game/scene";
 import { newsOnYours, yourMessages, yourUnread } from "@/lib/game/yours";
@@ -42,7 +43,7 @@ import { boundCase, readProgress } from "@/lib/found/progress";
 import { noteBattery } from "@/lib/found/shelf";
 import AppBody, { preloadApps } from "./AppBody";
 import CaseFile from "./CaseFile";
-import { flag, nudged, save } from "./playthrough";
+import { flag, nudged, save, toggleAirplane } from "./playthrough";
 import styles from "./Stage.module.css";
 
 /* ===========================================================================
@@ -76,6 +77,14 @@ const NOTEBOOK = "(min-width: 1100px) and (min-height: 640px)";
 /* What was open on his phone, kept across a call that takes the screen (the
    table comes back when it ends, and iOS goes back to the app you were in). */
 let lastOpen: AppId | null = null;
+/**
+ * Back to the home screen when the table returns: after a dark screen the
+ * night moves on, and nothing arrives while the case file is open
+ * (RAAKH-V3 §6, PG-DARK).
+ */
+export function putAppsAway(): void {
+  lastOpen = null;
+}
 /** Your phone's news already said at its edge, kept across a call or a reload of the table, so it's said once. */
 let lastTold: string | undefined;
 let lastFired = 0;
@@ -294,7 +303,7 @@ export default function Table({
   return (
     <div className={phoneStyles.surface}>
       {!review && <RealClock story={story} state={state} />}
-      {replay && (
+      {replay && story.chain.length > 0 && (
         <p className={phoneStyles.chainCount} aria-live="polite">
           {traced(story, state).length} of {story.chain.length} links
         </p>
@@ -324,7 +333,7 @@ export default function Table({
                 // Every app but the case file draws its own screens, each with its own bar.
                 whole={openApp !== "casefile"}
               >
-                <AppBody app={openApp} story={story} state={state} onHome={() => setOpenApp(null)} />
+                <AppBody app={openApp} story={story} state={state} onHome={() => setOpenApp(null)} onOpen={(app) => onOpenApp(app)} />
               </AppView>
             ) : undefined
           }
@@ -337,8 +346,9 @@ export default function Table({
           onDismissBanner={dismissBanner}
           notices={notices}
           onNotice={(n) => onOpenApp(n.app)}
-          airplane={has(state, AIRPLANE)}
-          onAirplane={() => flag(AIRPLANE)}
+          airplane={offline(story, state)}
+          airplaneToggles={story.airplaneToggles}
+          onAirplane={() => (story.airplaneToggles ? toggleAirplane() : flag(AIRPLANE))}
         />
 
         {hasYours && (

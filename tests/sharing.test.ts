@@ -18,41 +18,30 @@ import { MIN_ANSWERS, fasterThan, percentages } from "@/lib/found/store";
 const ep = STORIES.raakh;
 const start = () => newCase("test", 0);
 
-/** A playthrough that traced two links, and then chose an ending. */
-function tracedTwo(): CaseState {
-  const s = add(start(), "link:shot", "link:reel", "did:chose");
+/** A playthrough that went to Room 6, promised two things and kept one, and took 42 minutes. */
+function finished(): CaseState {
+  const s = add(start(), "did:promise-p1", "did:promise-p3", "claim:q6:truth", "did:end-room6", "did:chose");
   return { ...s, at: { whatsapp: 42 * 60_000 } };
 }
 
 describe("the shared result", () => {
-  it("counts the links traced, in the chain's own order", () => {
-    expect(resultOf(ep, start()).traced).toEqual([]);
-    expect(resultOf(ep, tracedTwo()).traced).toEqual(["reel", "shot"]);
-    expect(resultOf(ep, tracedTwo()).links).toBe(12);
-  });
-
-  it("says it in a line that gives nothing away", () => {
-    expect(resultLine(resultOf(ep, start()))).toBe("I traced 0 of 12 links.");
-    expect(resultLine(resultOf(ep, tracedTwo()))).toBe("I traced 2 of 12 links.");
-    // What seven o'clock decided goes first, and names nothing.
-    expect(resultLine(resultOf(ep, add(tracedTwo(), "did:saved")))).toBe("I got there before seven. I traced 2 of 12 links.");
+  it("says the ending and the promises kept, in the chapter's own words (RAAKH-V3 §11)", () => {
+    // P1 to Nitin broke in Room 6 with 1:52 named; P3 to Meera held.
+    expect(resultLine(resultOf(ep, finished()))).toBe("Raakh · Ending: Room 6 · Promises kept: 1 of 2.");
+    expect(resultOf(ep, start()).line).toBeUndefined();
   });
 
   it("times the chapter, and only once it has ended", () => {
-    expect(resultOf(ep, tracedTwo()).minutes).toBe(42);
+    expect(resultOf(ep, finished()).minutes).toBe(42);
     expect(resultOf(ep, start()).minutes).toBeNull();
   });
 
-  it("carries the case's own question, and names no answer", () => {
-    const text = shareText(ep.title, resultOf(ep, tracedTwo()), "https://found.test/d/Abcd2345", CASES.raakh.ask, CASES.raakh.hook);
-    expect(text).toContain("I traced 2 of 12 links.");
-    expect(text).toContain("A wedding planner's phone. A missing waiter. Did you get there before seven?");
+  it("carries the case's own question, and names nothing that happens", () => {
+    const text = shareText(ep.title, resultOf(ep, finished()), "https://found.test/d/Abcd2345", CASES.raakh.ask, CASES.raakh.hook);
+    expect(text).toContain("Raakh · Ending: Room 6");
+    expect(text).toContain(`${CASES.raakh.hook} ${CASES.raakh.ask}`);
     expect(text).toContain("https://found.test/d/Abcd2345");
-    // Nothing from the chain itself: not a label, not a line, not his words.
-    for (const l of ep.chain) {
-      expect(text).not.toContain(l.truth);
-      if (l.version) expect(text).not.toContain(l.version);
-    }
+    for (const name of ["Dilip", "alive", "Sameer", "Bhasin", "Kunal", "Nitin", "me,"]) expect(text).not.toContain(name);
   });
 });
 

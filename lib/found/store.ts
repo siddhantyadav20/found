@@ -29,6 +29,9 @@ const PER_HOUR = 400;
 /** Below this many answers, a percentage is one friend's opinion. Hidden. */
 export const MIN_ANSWERS = 50;
 
+/** Raakh's ending split appears only after this many finishes (RAAKH-V3 §11). */
+export const ENDING_SPLIT_AFTER = 500;
+
 const validSeconds = (x: unknown): number | undefined => {
   const s = Number(x);
   // A day is the ceiling: someone who left it on a tab for a week didn't take
@@ -117,9 +120,9 @@ export type Choices = {
 };
 
 /** Whole percentages of `counts`, or null under `MIN_ANSWERS`. */
-export function percentages<K extends string>(counts: Record<K, number>): Record<K, number> | null {
+export function percentages<K extends string>(counts: Record<K, number>, min = MIN_ANSWERS): Record<K, number> | null {
   const total = Object.values<number>(counts).reduce((n, c) => n + c, 0);
-  if (total < MIN_ANSWERS) return null;
+  if (total < min) return null;
   return Object.fromEntries(Object.entries<number>(counts).map(([k, c]) => [k, Math.round((c / total) * 100)])) as Record<K, number>;
 }
 
@@ -137,5 +140,7 @@ export async function readChoices(caseId: CaseId, seconds: unknown): Promise<Cho
   const results = await redis(...[...ends.map((e) => `end:${e}`), ...fated].map((k) => ["GET", `${prefix(caseId)}:${k}`]));
   const end = Object.fromEntries(ends.map((e, i) => [e, asCount(results[i])]));
   const fate = fated.length ? percentages({ yes: asCount(results[ends.length]), no: asCount(results[ends.length + 1]) }) : null;
-  return { end: percentages(end), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)), fate };
+  // A chapter that reads its endings back as a split waits for more of them (RAAKH-V3 §11: 500).
+  const min = STORIES[caseId].endCopy ? ENDING_SPLIT_AFTER : MIN_ANSWERS;
+  return { end: percentages(end, min), fasterThan: fasterThan(await readTimes(caseId), validSeconds(seconds)), fate };
 }

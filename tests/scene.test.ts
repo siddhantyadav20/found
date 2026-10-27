@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { STORIES } from "@/content/stories";
 import type { Story } from "@/content/types";
-import { add, battery, clockNow, dayNow, minutesSince, newCase, stamp, type CaseState } from "@/lib/game/engine";
+import { add, battery, clockNow, dayNow, fire, minutesSince, newCase, type CaseState } from "@/lib/game/engine";
 import { ENDING_SEEN, finish } from "@/lib/game/endings";
-import { NEEDS_CHARGE, openerShown, PLUGGED_IN, sceneOf, titleShown, recapShown } from "@/lib/game/scene";
+import { darkDone, DEATH_SEEN, NEEDS_CHARGE, openerShown, PLUGGED_IN, recapShown, sceneOf, teaserShown, titleShown } from "@/lib/game/scene";
 
 /**
  * Where the player is, decided by the save alone, so a reload always lands
@@ -27,10 +27,14 @@ describe("the way in", () => {
 describe("between episodes", () => {
   const unlocked = () => add(opened(), "did:unlock");
 
-  it("closes each episode on its recap, waits on the charger, then opens each new one on Previously and its title, once", () => {
+  it("dies, says Found so far, plays Next, waits on the charger, then Previously and the title, once (RAAKH-V3 §7.12, §8)", () => {
     let s = add(unlocked(), NEEDS_CHARGE);
+    expect(sceneOf(ep, s)).toEqual({ kind: "death" });
+    s = add(s, DEATH_SEEN);
     expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 1 });
     s = add(s, recapShown(1));
+    expect(sceneOf(ep, s)).toEqual({ kind: "next", episode: 1 });
+    s = add(s, teaserShown(1));
     expect(sceneOf(ep, s).kind).toBe("charge");
     s = add(s, ...PLUGGED_IN);
     expect(sceneOf(ep, s)).toEqual({ kind: "opener", episode: 2 });
@@ -38,41 +42,47 @@ describe("between episodes", () => {
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 2 });
     s = add(s, titleShown(2));
     expect(sceneOf(ep, s).kind).toBe("table");
-    s = add(s, "ep:3");
+    // Episode 2 ends on the 1:52 bubble, held on black; the freeze is what sets Episode 3.
+    s = add(s, "did:freeze-2");
+    expect(sceneOf(ep, s)).toMatchObject({ kind: "dark", dark: { id: "freeze-2" } });
+    s = add(s, darkDone("freeze-2"), "ep:3");
     expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 2 });
     s = add(s, recapShown(2));
+    expect(sceneOf(ep, s)).toEqual({ kind: "next", episode: 2 });
+    s = add(s, teaserShown(2));
     expect(sceneOf(ep, s)).toEqual({ kind: "opener", episode: 3 });
     s = add(s, openerShown(3));
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 3 });
     expect(sceneOf(ep, add(s, titleShown(3))).kind).toBe("table");
   });
 
-  it("opens each episode on its own clock, however long the last one took", () => {
-    const s = add(unlocked(), NEEDS_CHARGE, ...PLUGGED_IN);
-    const two = stamp(s, 90 * MIN);
+  it("moves the clock only at beats, never by the wall (RAAKH-V3 §17)", () => {
+    const s = unlocked();
+    expect(clockNow(ep, s, 0)).toBe("23:40");
+    expect(clockNow(ep, s, 500 * MIN)).toBe("23:40");
+    expect(clockNow(ep, add(s, "did:past-lock"), 0)).toBe("23:44");
+    expect(clockNow(ep, add(s, "did:past-lock", "ask:q1"), 0)).toBe("23:52");
+    // Past midnight the day turns, in Episode 1 itself.
+    const late = add(s, "did:past-lock", "ask:q1", "ask:q2");
+    expect(clockNow(ep, late, 0)).toBe("00:00");
+    expect(dayNow(ep, late)).toBe("Sunday");
+    expect(dayNow(ep, s)).toBe("Saturday");
+    const two = add(unlocked(), NEEDS_CHARGE, ...PLUGGED_IN);
     expect(clockNow(ep, two, 90 * MIN)).toBe("00:32");
-    expect(clockNow(ep, two, 100 * MIN)).toBe("00:42");
-    expect(dayNow(ep, two)).toBe("Sunday");
-    expect(clockNow(ep, unlocked(), 5 * MIN)).toBe("23:45");
   });
 
-  it("counts how long ago a notification came on the story's clock, across an episode's jump", () => {
-    // Sameer writes at 23:53 in Episode 1; Episode 2 opens at 00:32.
-    const one: CaseState = { ...unlocked(), at: { "event:sameer-writes": 13 * MIN } };
-    expect(minutesSince(ep, one, "sameer-writes", 13 * MIN)).toBe(0);
-    expect(minutesSince(ep, one, "sameer-writes", 18 * MIN)).toBe(5);
-    const two = stamp(add(one, NEEDS_CHARGE, ...PLUGGED_IN), 90 * MIN);
-    expect(minutesSince(ep, two, "sameer-writes", 90 * MIN)).toBe(39);
-    expect(minutesSince(ep, two, "never-came", 90 * MIN)).toBeUndefined();
+  it("counts how long ago a notification came on the story's clock", () => {
+    const one = fire(ep, add(unlocked(), "did:past-lock"), "raju-rings", 0);
+    expect(minutesSince(ep, one, "raju-rings", 0)).toBe(3);
+    expect(minutesSince(ep, one, "never-came", 0)).toBeUndefined();
   });
 
-  it("runs the battery down off the charger and up on it", () => {
-    const drained: Story = { ...ep, clocks: [{ ...ep.clocks[0], drain: [{ after: "did:low", battery: 2 }] }, ep.clocks[1], ep.clocks[2]] };
-    expect(battery(drained, unlocked(), 0)).toBe(9);
-    expect(battery(drained, add(unlocked(), "did:low"), 0)).toBe(2);
-    const charging = stamp(add(unlocked(), NEEDS_CHARGE, ...PLUGGED_IN), 0);
-    expect(battery(ep, charging, 10 * MIN)).toBe(12);
-    expect(battery(ep, charging, 500 * MIN)).toBe(100);
+  it("runs the battery down with the beats, and up on the charger with the story's clock", () => {
+    expect(battery(ep, unlocked(), 0)).toBe(9);
+    expect(battery(ep, add(unlocked(), "ask:q1", "ask:q2", "ask:q3", "fired:dying"), 0)).toBe(2);
+    const charging = add(unlocked(), NEEDS_CHARGE, ...PLUGGED_IN);
+    expect(battery(ep, charging, 999 * MIN)).toBe(2);
+    expect(battery(ep, add(charging, "ask:q4"), 0)).toBe(2 + Math.floor(16 * 0.78));
   });
 });
 

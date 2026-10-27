@@ -1,4 +1,5 @@
-import type { AppId, EpisodeNo, Evidence, FileClaim, Flag, Hints, Link, LiveEvent, Question, Story } from "@/content/types";
+import type { AppId, EpisodeNo, Evidence, FileClaim, Flag, Hints, Link, LiveEvent, Message, Question, Reply, ReplyOption, Story } from "@/content/types";
+import { nightly } from "@/lib/found/time";
 
 /* ===========================================================================
    The engine: one playthrough, as data.
@@ -34,6 +35,14 @@ export type CaseState = {
    * flags, it can be changed back.
    */
   readonly record?: Readonly<Record<string, RecordChoice>>;
+  /**
+   * What the player has deleted on the phone, by the item's id (a photo, a
+   * memo, a message, a note's attachment): in Recently Deleted, or gone for
+   * good. Recovering takes an item off this list, so it can change back.
+   */
+  readonly deleted?: Readonly<Record<string, "soft" | "perm">>;
+  /** Airplane mode, where a story lets it go back off (`Story.airplaneToggles`). */
+  readonly airplane?: boolean;
 };
 
 /**
@@ -96,6 +105,54 @@ export const unseenIn = (story: Story, s: CaseState, app: AppId): number =>
 export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
   story.evidence.filter((e) => e.app === app && !e.manual && !e.within).reduce((acc, e) => see(story, acc, e.id), s);
 
+/* --- deleting (RAAKH-V3 §17) --------------------------------------------- */
+
+/** Deleted to Recently Deleted, the first time: what the tally counts. */
+export const deletedFlag = (item: string): Flag => `did:deleted-${item}`;
+/** Deleted for good. */
+export const goneFlag = (item: string): Flag => `did:deleted-perm-${item}`;
+/** Anything at all deleted for good: what breaks a promise to keep everything. */
+export const ANY_GONE: Flag = "did:deleted-perm";
+
+/** Where an item stands: here, in Recently Deleted, or gone. */
+export const goneOf = (s: CaseState, item: string): "soft" | "perm" | undefined => s.deleted?.[item];
+
+/** Every piece of evidence an item on the phone carries: a photo and the lines in it, a memo, a message, an attachment. */
+export function evidenceIn(story: Story, item: string): string[] {
+  const photo = [...story.photos, ...story.notes.flatMap((n) => n.attachments ?? [])].find((p) => p.id === item);
+  if (photo) return [photo.evidence, photo.original?.evidence, ...(photo.chat?.lines.map((l) => l.evidence) ?? [])].filter((x): x is string => Boolean(x));
+  const memo = story.memos.find((m) => m.id === item);
+  if (memo) return memo.evidence ? [memo.evidence] : [];
+  const message = [
+    ...story.threads.flatMap((t) => [...t.messages, ...(t.replies ?? []).flatMap((r) => r.options.flatMap((o) => o.then ?? []))]),
+  ].find((m) => m.id === item);
+  return message?.evidence ? [message.evidence] : [];
+}
+
+/** Evidence whose every source has gone for good: it was seen, and it can't be put on the table any more. */
+export function lost(story: Story, s: CaseState, id: string): boolean {
+  const gone = Object.entries(s.deleted ?? {}).filter(([, how]) => how === "perm");
+  return gone.some(([item]) => evidenceIn(story, item).includes(id));
+}
+
+/** Seen, and still on the phone: what can go on the table. */
+export const usable = (story: Story, s: CaseState, id: string): boolean => seen(s, id) && !lost(story, s, id);
+
+/** Delete an item: to Recently Deleted, or (from there, or at once) for good. Nothing gone comes back. */
+export function remove(s: CaseState, item: string, how: "soft" | "perm"): CaseState {
+  if (goneOf(s, item) === "perm") return s;
+  const next = add(s, ...(how === "soft" ? [deletedFlag(item)] : [goneFlag(item), ANY_GONE]));
+  return { ...next, deleted: { ...next.deleted, [item]: how } };
+}
+
+/** Put back from Recently Deleted. */
+export function recover(s: CaseState, item: string): CaseState {
+  if (goneOf(s, item) !== "soft") return s;
+  const { [item]: _was, ...rest } = s.deleted ?? {};
+  void _was;
+  return { ...add(s, `did:recovered-${item}`), deleted: rest };
+}
+
 /** Every icon on the found phone's home screen, pages and dock together. */
 export const homeIcons = (story: Story) => [...story.home.pages.flat(), ...story.home.dock];
 
@@ -139,11 +196,32 @@ export const blanksOf = (line: string): string[] => [...line.matchAll(/\{(\w+)\}
 export function claimFor(q: Question, words: Readonly<Record<string, string>>): { claim?: FileClaim; close: boolean } {
   if (q.kind !== "file" || !q.say) return { close: false };
   const names = blanksOf(q.say.line);
-  const fits = (c: FileClaim) => names.filter((n) => c.words?.[n] === words[n]).length;
+  const fits = (c: FileClaim) => names.filter((n) => fitsWord(c, n, words[n])).length;
   const claim = q.claims.find((c) => c.words && fits(c) === names.length);
   if (claim) return { claim, close: false };
   const best = Math.max(0, ...q.claims.filter((c) => c.words && !c.refuse).map(fits));
   return { close: names.length > 1 && best === names.length - 1 };
+}
+
+/** A claim's word for a blank: the word itself, or "*", any word at all (a near miss that turns on one blank). */
+const fitsWord = (c: FileClaim, blank: string, word: string | undefined): boolean =>
+  c.words?.[blank] === "*" || (Boolean(word) && c.words?.[blank] === word);
+
+/** A refusal that has been lifted by what the player has found: the words now mean the next claim. */
+const lifted = (s: CaseState, c: FileClaim): boolean => Boolean(c.liftedBy?.some((r) => r.every((id) => seen(s, id))));
+
+/**
+ * Every claim these words could file, in the order the question gives
+ * them (the first that fits is the one: a refusal written before a claim
+ * with the same words stands in front of it until it's lifted), a refusal
+ * the player's finds have lifted left out, and none that's closed (`unless`).
+ */
+export function claimsFor(q: Question, s: CaseState, words: Readonly<Record<string, string>>): FileClaim[] {
+  if (q.kind !== "file" || !q.say) return [];
+  const names = blanksOf(q.say.line);
+  return q.claims
+    .filter((c) => c.words && names.every((n) => fitsWord(c, n, words[n])))
+    .filter((c) => !lifted(s, c) && !(c.unless ?? []).some((f) => has(s, f)));
 }
 
 /**
@@ -172,13 +250,16 @@ export function wordsFor(q: Question, blank: string): string[] {
 export function readSentence(
   q: Question,
   words: Readonly<Record<string, string>>,
+  s?: CaseState,
 ): { claim?: FileClaim; wrong: string[]; why?: string; whole: boolean } {
   if (q.kind !== "file" || !q.say) return { wrong: [], whole: false };
   const names = blanksOf(q.say.line);
   const whole = names.every((n) => words[n]);
-  const real = q.claims.filter((c) => c.words && !c.refuse);
-  const exact = q.claims.find((c) => c.words && names.every((n) => c.words?.[n] === words[n]));
-  if (exact && !exact.refuse) return { claim: exact, wrong: [], whole };
+  const real = q.claims.filter((c) => c.words && !c.refuse && !Object.values(c.words).includes("*"));
+  // With a save, refusals the player's finds have lifted and claims that are closed are skipped (`claimsFor`).
+  const exact = s ? claimsFor(q, s, words)[0] : q.claims.find((c) => c.words && names.every((n) => fitsWord(c, n, words[n])));
+  // A claim filed on its words alone needs no more of them ("Sameer Khurrana", in the last question).
+  if (exact && !exact.refuse) return { claim: exact, wrong: [], whole: whole || Boolean(exact.free) };
   // The nearest real answer: the most blanks in common, and the truth before a version or a hunch on a tie.
   const fits = (c: FileClaim) => names.filter((n) => words[n] && c.words?.[n] === words[n]).length;
   const rank = (c: FileClaim) => fits(c) * 4 + (c.version ? 0 : c.hunch ? 1 : 2);
@@ -215,7 +296,7 @@ export function bearsOn(q: Question): string[] {
  */
 export function proofChoices(story: Story, s: CaseState, q: Question, decoys = 3): Evidence[] {
   const near = new Set(bearsOn(q));
-  const found = caseFile(story, s);
+  const found = caseFile(story, s).filter((e) => !lost(story, s, e.id));
   const relevant = found.filter((e) => near.has(e.id));
   const apps = new Set(q.whereToLook);
   const others = found.filter((e) => !near.has(e.id) && apps.has(e.app)).slice(-decoys);
@@ -291,6 +372,7 @@ export function calledIt(story: Story, s: CaseState, c: FileClaim): string | und
   for (const ref of c.pays ?? []) {
     const [q, id] = ref.split(":");
     if (!has(s, `claim:${q}:${id}`)) continue;
+    if (story.beats) return clockOf(s, FILED_AT(q, id)) ?? "";
     const when = s.at[FILED_AT(q, id)];
     return when === undefined ? "" : clockAt(story, s, when);
   }
@@ -312,7 +394,16 @@ export const offeredClaims = (q: Question, s: CaseState): FileClaim[] =>
  * chose it, and isn't asked again: that would be a buzzer by another name.
  */
 export function needsRevisit(q: Question, s: CaseState): boolean {
-  if (q.kind !== "file" || !answered(s, q.id) || !q.reopenWhen?.length || !all(s, q.reopenWhen)) return false;
+  if (q.kind !== "file" || !answered(s, q.id)) return false;
+  /* A contested question (RAAKH-V3 §12): his version, or a hunch, holds
+     until the truth is filed over it, and can be the moment the player can
+     show the truth. Never once it's been struck by what came after. */
+  if (q.contestable) {
+    const on = filedClaim(q, s);
+    if (!on || !(on.version || on.hunch) || struckOut(q, s)) return false;
+    return q.claims.some((c) => !c.version && !c.hunch && !c.refuse && !c.free && [c.proof, ...(c.orProof ?? [])].some((r) => r.every((id) => seen(s, id))));
+  }
+  if (!q.reopenWhen?.length || !all(s, q.reopenWhen)) return false;
   const c = filedClaim(q, s);
   if (!c?.version) return false;
   const filedAt = s.flags.indexOf(`claim:${q.id}:${c.id}`);
@@ -337,7 +428,8 @@ export const sideQuestions = (story: Story, s: CaseState): Question[] =>
   story.questions.filter(
     (q) =>
       (q.optional && q.episode <= episodeOf(s) && all(s, q.requires) && !answered(s, q.id)) ||
-      (q.kind === "file" && !q.mustRevisit && needsRevisit(q, s)),
+      (q.kind === "file" && !q.mustRevisit && needsRevisit(q, s)) ||
+      editable(q, s),
   );
 
 export const normalise = (t: string): string =>
@@ -386,13 +478,14 @@ export const boardReady = (q: Question, s: CaseState): boolean =>
  * come off the table.
  */
 function judgeProof(
+  story: Story,
   s: CaseState,
   routes: readonly (readonly string[])[],
   picked: readonly string[],
   also: readonly string[] = [],
 ): { ok: boolean; reply: string } {
-  // You cannot put something on the table that you have not found.
-  if (!picked.length || !picked.every((id) => seen(s, id))) return { ok: false, reply: WRONG };
+  // You cannot put something on the table that you have not found, or that's been deleted for good.
+  if (!picked.length || !picked.every((id) => usable(story, s, id))) return { ok: false, reply: WRONG };
   const proves = (id: string) => also.includes(id) || routes.some((route) => route.includes(id));
   const stray = picked.filter((p) => !proves(p)).length;
   if (!stray && routes.some((route) => route.every((id) => picked.includes(id)))) return { ok: true, reply: "" };
@@ -407,9 +500,13 @@ function judgeProof(
  * Judge an answer. Getting it wrong costs nothing but the truth of having
  * been wrong. Filing the owner's version is not getting it wrong.
  */
+/** Filed, and still open to filing again (`Question.editable`): Q1, until the reveal. */
+export const editable = (q: Question, s: CaseState): boolean =>
+  Boolean(q.editable) && answered(s, q.id) && !(q.editable ?? []).some((f) => has(s, f));
+
 export function answer(story: Story, s: CaseState, id: string, given: Given): Answer {
   const q = story.questions.find((x) => x.id === id);
-  const revisiting = q ? needsRevisit(q, s) : false;
+  const revisiting = q ? needsRevisit(q, s) || editable(q, s) : false;
   if (!q || (answered(s, id) && !revisiting)) return { state: s, ok: false, reply: WRONG };
 
   const picked = Array.isArray(given) ? (given as readonly string[]) : [];
@@ -419,7 +516,7 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
 
   switch (q.kind) {
     case "pick":
-      ({ ok, reply } = judgeProof(s, [q.proof, ...(q.orProof ?? [])], picked));
+      ({ ok, reply } = judgeProof(story, s, [q.proof, ...(q.orProof ?? [])], picked));
       break;
     case "type":
       ok = q.accepts.some((a) => normalise(a) === text);
@@ -480,7 +577,10 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
       if (c.refuse) return { state: s, ok: false, reply: c.refuse };
       // A Revisit moves on from the version on file; it can't file a version again.
       if (revisiting && c.version) return { state: s, ok: false, reply: STRUCK };
-      ({ ok, reply } = judgeProof(s, [c.proof, ...(c.orProof ?? [])], proof, c.also));
+      if ((c.unless ?? []).some((f) => has(s, f))) return { state: s, ok: false, reply: WRONG };
+      // Said on its words alone: nothing to table.
+      if (c.free) ({ ok, reply } = { ok: true, reply: "" });
+      else ({ ok, reply } = judgeProof(story, s, [c.proof, ...(c.orProof ?? [])], proof, c.also));
       // The words are right; say so, so the player looks again at the table and not the sentence.
       if (!ok) return { state: s, ok, reply: reply === WRONG && proof.length ? UNPROVED : reply };
       return {
@@ -493,6 +593,29 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
 
   if (!ok) return { state: s, ok: false, reply };
   return { state: add(s, `ask:${id}`, ...(q.sets ?? [])), ok: true, reply: q.reply };
+}
+
+/**
+ * File a finished sentence with what's on the table. The same words can be
+ * more than one claim (the truth, and a hunch that rests on less), so each
+ * is tried in order and the first the table bears out is filed; otherwise
+ * the first one's answer says why not.
+ */
+export function fileSentence(story: Story, s: CaseState, id: string, words: Readonly<Record<string, string>>, proof: readonly string[]): Answer & { claim?: FileClaim } {
+  const q = story.questions.find((x) => x.id === id);
+  if (!q) return { state: s, ok: false, reply: WRONG };
+  const options = claimsFor(q, s, words);
+  if (!options.length) return { state: s, ok: false, reply: readSentence(q, words, s).why ?? UNSAID };
+  // A refusal in front is the answer, whatever else the words could have meant.
+  if (options[0].refuse) return { state: s, ok: false, reply: options[0].refuse, claim: options[0] };
+  const real = options.filter((c) => !c.refuse);
+  let first: Answer | undefined;
+  for (const c of real) {
+    const r = answer(story, s, id, { claim: c.id, proof });
+    if (r.ok) return { ...r, claim: c };
+    first ??= r;
+  }
+  return { ...first!, claim: real[0] };
 }
 
 /* --- the chain ---------------------------------------------------------- */
@@ -523,19 +646,43 @@ export const whereToLook = (story: Story, id: string): readonly AppId[] =>
 
 export const fired = (s: CaseState, id: string): boolean => has(s, `fired:${id}`);
 
+/** Control Centre's airplane mode, turned on by hand. */
+export const AIRPLANE: Flag = "did:airplane";
+
+/** Is the found phone offline now? Where airplane mode goes back off, it's the switch; elsewhere, once on, it stays. */
+export const offline = (story: Story, s: CaseState): boolean => (story.airplaneToggles ? Boolean(s.airplane) : has(s, AIRPLANE));
+
+/**
+ * What the story says should happen now. Where airplane mode can go back
+ * off, anything that has to reach the phone waits for it to (RAAKH-V3 §17:
+ * no beat is ever lost); what happens on the phone itself doesn't.
+ */
 export const dueEvents = (story: Story, s: CaseState): LiveEvent[] =>
-  story.events.filter((e) => !fired(s, e.id) && all(s, e.after) && !(e.unless ?? []).some((f) => has(s, f)));
+  story.events.filter(
+    (e) =>
+      !fired(s, e.id) &&
+      all(s, e.after) &&
+      !(e.unless ?? []).some((f) => has(s, f)) &&
+      !(story.airplaneToggles && s.airplane && e.device === "owner" && !e.local),
+  );
 
 /** Play a live event, once; given `now`, it also remembers when, for what arrives with it. */
 export const fire = (story: Story, s: CaseState, id: string, now?: number): CaseState => {
   const e = story.events.find((x) => x.id === id);
   if (!e) return s;
   const next = add(s, `fired:${id}`, ...(e.sets ?? []));
-  return now === undefined ? next : { ...next, at: { ...next.at, [`event:${id}`]: now } };
+  const at = now === undefined ? next : { ...next, at: { ...next.at, [`event:${id}`]: now } };
+  // With beats, when on the story's clock: an event without a clock of its own lands at the minute it fired.
+  return story.beats ? keepClock(story, at, `event:${id}`, now ?? 0) : at;
 };
 
-/** When something arriving with a live event (or a reply, by its id) arrived, on the story's clock; else its own time. */
+/**
+ * When something arriving with a live event (or a reply, by its id) arrived,
+ * on the story's clock; else its own time. With beats, everything is
+ * stamped as written: the clock was made to agree with it.
+ */
 export const arrivedAt = (story: Story, s: CaseState, m: { readonly at: string; readonly with?: string }): string => {
+  if (story.beats) return m.at;
   const when = m.with ? s.at[`event:${m.with}`] : undefined;
   return when === undefined ? m.at : clockAt(story, s, when);
 };
@@ -571,12 +718,81 @@ export function storySeconds(story: Story, s: CaseState, now: number): number {
 
 const hhmm = (t: number): string => `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
 
-/** The story's own clock: this episode's base time plus how long it has run. */
+/**
+ * The story's own clock: this episode's base time plus how long it has run;
+ * or, where the story has beats, the latest beat or event that has happened,
+ * and never earlier than anything already delivered (RAAKH-V3 §17).
+ */
 export function clockNow(story: Story, s: CaseState, now: number): string {
+  if (story.beats) return beatClock(story, s);
   const base = minutesOf(story.clocks[episodeOf(s) - 1].base);
   const minutes = Math.max(0, Math.floor((now - episodeStart(s)) / 60_000));
   return hhmm((base + minutes) % (24 * 60));
 }
+
+/** The latest of some times, by the night's order (the small hours after the evening). */
+const latest = (times: readonly string[]): string => times.reduce((a, b) => (nightly(b) > nightly(a) ? b : a));
+
+/**
+ * The option picked in an exchange, if one was. Options can share a flag
+ * (Nitin's "for Raju" and "promise" both protect him), so the pick is the
+ * option whose flags are all set, the most specific of them first, and only
+ * then one that merely shares a flag (PLAYTEST-SHAGUN.md #52).
+ */
+export function chosenIn(s: CaseState, r: Reply): ReplyOption | undefined {
+  const set = (o: ReplyOption) => (o.sets ?? []).filter((f) => s.flags.includes(f)).length;
+  const whole = r.options.filter((o) => o.sets?.length && set(o) === o.sets.length);
+  if (whole.length) return whole.reduce((a, b) => (b.sets!.length > a.sets!.length ? b : a));
+  return r.options.find((o) => set(o) > 0);
+}
+
+/** What has arrived in a chat during the player's night, at the times it's stamped with. */
+function delivered(story: Story, s: CaseState): string[] {
+  const out: string[] = [];
+  const keep = (m: Message) => m.at && out.push(m.at);
+  for (const t of story.threads) {
+    for (const m of t.messages) if (m.with && all(s, m.requires) && !(m.unless ?? []).some((f) => has(s, f))) keep(m);
+    for (const r of t.replies ?? []) {
+      if (!all(s, r.requires)) continue;
+      for (const m of chosenIn(s, r)?.then ?? []) keep(m);
+    }
+  }
+  return out;
+}
+
+/** The clock by beats: where the episode opened, every beat and timed event since, and what's been delivered. */
+export function beatClock(story: Story, s: CaseState): string {
+  const ep = episodeOf(s);
+  const base = story.clocks[ep - 1].base;
+  const floor = nightly(base);
+  const times = [
+    base,
+    ...(story.beats ?? []).filter((b) => all(s, b.after)).map((b) => b.at),
+    ...story.events.filter((e) => e.clock && fired(s, e.id)).map((e) => e.clock!),
+    ...delivered(story, s),
+  ];
+  // Nothing from before the episode opened can pull its clock back, and nothing can set it before its base.
+  return latest(times.filter((t) => nightly(t) >= floor));
+}
+
+/** The story clock's minutes into the night (`nightly`), for keeping when something happened. */
+export const clockMinutes = (story: Story, s: CaseState, now: number): number => nightly(clockNow(story, s, now));
+
+/** "00:51" from minutes into the night. */
+export const fromMinutes = (m: number): string => hhmm(((m % 1440) + 1440) % 1440);
+
+/** Keep when, on the story's clock, something happened ("said:<flag>", "filed:<q>:<c>"): for timestamps read back later. */
+export const CLOCK = (key: string) => `clock:${key}`;
+export const keepClock = (story: Story, s: CaseState, key: string, now: number): CaseState => ({
+  ...s,
+  at: { ...s.at, [CLOCK(key)]: clockMinutes(story, s, now) },
+});
+
+/** When, on the story's clock, something kept with `keepClock` happened, as "00:51". */
+export const clockOf = (s: CaseState, key: string): string | undefined => {
+  const m = s.at[CLOCK(key)];
+  return m === undefined ? undefined : fromMinutes(m);
+};
 
 /**
  * What the story's clock said at a moment already past: by the clock of the
@@ -597,20 +813,46 @@ export function clockAt(story: Story, s: CaseState, when: number): string {
 export function minutesSince(story: Story, s: CaseState, id: string, now: number): number | undefined {
   const when = s.at[`event:${id}`];
   if (when === undefined) return undefined;
+  if (story.beats) {
+    const at = eventClock(story, s, id);
+    return at === undefined ? undefined : Math.max(0, nightly(clockNow(story, s, now)) - nightly(at));
+  }
   return (minutesOf(clockNow(story, s, now)) - minutesOf(clockAt(story, s, when)) + 24 * 60) % (24 * 60);
 }
 
-export const dayNow = (story: Story, s: CaseState): string => story.clocks[episodeOf(s) - 1].day;
+/** When a live event happened on a story with beats: its own clock, or the clock kept when it fired. */
+export function eventClock(story: Story, s: CaseState, id: string): string | undefined {
+  return story.events.find((e) => e.id === id)?.clock ?? clockOf(s, `event:${id}`);
+}
+
+/** Past midnight on an episode that opened before it (Episode 1, 11:40 PM to 12:13 AM). */
+const pastMidnight = (story: Story, s: CaseState): boolean => {
+  const c = story.clocks[episodeOf(s) - 1];
+  return Boolean(story.beats && c.after) && nightly(c.base) < 1440 && nightly(beatClock(story, s)) >= 1440;
+};
+
+export const dayNow = (story: Story, s: CaseState): string => {
+  const c = story.clocks[episodeOf(s) - 1];
+  return pastMidnight(story, s) && c.after ? c.after.day : c.day;
+};
 
 /** Today's date on the story's calendar, "30/11". */
-export const dateNow = (story: Story, s: CaseState): string => story.clocks[episodeOf(s) - 1].date;
+export const dateNow = (story: Story, s: CaseState): string => {
+  const c = story.clocks[episodeOf(s) - 1];
+  return pastMidnight(story, s) && c.after ? c.after.date : c.date;
+};
 
 /**
  * The found phone's battery. Off the charger it falls with the beats, not
- * with a timer (the clock's `drain`); on it, it climbs a point a minute.
+ * with a timer (the clock's `drain`); on it, it climbs a point a minute, or
+ * with the story's own clock where it has beats.
  */
 export function battery(story: Story, s: CaseState, now: number): number {
   const clock = story.clocks[episodeOf(s) - 1];
+  if (clock.charging && story.beats) {
+    const minutes = Math.max(0, nightly(beatClock(story, s)) - nightly(clock.base));
+    return Math.min(100, clock.battery + Math.floor(minutes * (clock.rate ?? 1)));
+  }
   if (clock.charging) return Math.min(100, clock.battery + Math.max(0, Math.floor((now - episodeStart(s)) / 60_000)));
   const steps = (clock.drain ?? []).filter((d) => has(s, d.after));
   return steps.length ? steps[steps.length - 1].battery : clock.battery;

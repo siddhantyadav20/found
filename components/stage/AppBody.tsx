@@ -5,9 +5,10 @@ import { useCallback } from "react";
 
 import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
+import { goneOf } from "@/lib/game/engine";
 import { CHATS_UNLOCKED, restored, reverted, unlocked } from "@/lib/game/phone";
 import CaseFile from "./CaseFile";
-import { flag, markRead, read, save, say } from "./playthrough";
+import { deleteItem, flag, markRead, read, recoverItem, save, say, sendToM } from "./playthrough";
 
 /* Each app's code arrives when it's first opened, and all of it is fetched
    while the phone sits idle (`preloadApps`), so opening one is still instant
@@ -25,6 +26,7 @@ const load = {
   recents: () => import("@/components/owner/apps/Recents"),
   safari: () => import("@/components/owner/apps/Safari"),
   settings: () => import("@/components/owner/apps/Settings"),
+  camera: () => import("@/components/owner/apps/Camera"),
 };
 
 const Chat = dynamic(load.chat, { ssr: false });
@@ -39,6 +41,7 @@ const Photos = dynamic(load.photos, { ssr: false });
 const Recents = dynamic(load.recents, { ssr: false });
 const Safari = dynamic(load.safari, { ssr: false });
 const Settings = dynamic(load.settings, { ssr: false });
+const Camera = dynamic(load.camera, { ssr: false });
 
 /** Fetch every app's code ahead of its first opening. */
 export function preloadApps() {
@@ -56,12 +59,19 @@ export default function AppBody({
   story,
   state,
   onHome,
+  onOpen,
 }: {
   app: AppId;
   story: Story;
   state: CaseState;
   onHome: () => void;
+  /** Open another app from this one (the case file, from its note in Notes). */
+  onOpen?: (app: AppId) => void;
 }) {
+  /* Put back from Recently Deleted: what was there before the phone reached
+     the player comes back by iOS's own Recover; what the player deleted, the
+     same way, from the save's list of what they deleted (RAAKH-V3 §17). */
+  const putBack = (id: string) => (goneOf(state, id) === "soft" ? recoverItem(id) : flag(restored(id)));
   // Stable, because the apps mark things read from effects that depend on them.
   const onRead = useCallback((ids: readonly string[]) => read(story, ids), [story]);
   const onSay = useCallback((option: Parameters<typeof say>[0], replyId?: string) => say(option, replyId), []);
@@ -74,7 +84,19 @@ export default function AppBody({
     case "messages":
       return <Messages story={story} state={state} onRead={onRead} onHome={onHome} onMark={markRead} />;
     case "whatsapp":
-      return <Chat story={story} state={state} app={app} onHome={onHome} onRead={onRead} onSay={onSay} onMark={markRead} onUnlock={() => flag(CHATS_UNLOCKED)} />;
+      return (
+        <Chat
+          story={story}
+          state={state}
+          app={app}
+          onHome={onHome}
+          onRead={onRead}
+          onSay={onSay}
+          onMark={markRead}
+          onUnlock={() => flag(CHATS_UNLOCKED)}
+          onDelete={(id) => deleteItem(id, "perm")}
+        />
+      );
     case "phone":
       return <Recents story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "photos":
@@ -84,8 +106,10 @@ export default function AppBody({
           state={state}
           onBack={onHome}
           onRead={onRead}
-          onRestore={(id) => flag(restored(id))}
+          onRestore={putBack}
           onRevert={(id) => flag(reverted(id))}
+          onDelete={deleteItem}
+          onSend={sendToM}
         />
       );
     case "notes":
@@ -96,12 +120,15 @@ export default function AppBody({
           onRead={onRead}
           onHome={onHome}
           onPassword={(id) => flag(unlocked(id))}
+          onCaseFile={onOpen ? () => onOpen("casefile") : undefined}
+          onDelete={deleteItem}
+          onRecover={recoverItem}
         />
       );
     case "settings":
       return <Settings story={story} state={state} onAct={(sets) => flag(...sets)} onRead={onRead} onHome={onHome} />;
     case "voicememos":
-      return <VoiceMemos story={story} state={state} onRead={onRead} onHome={onHome} onRestore={(id) => flag(restored(id))} />;
+      return <VoiceMemos story={story} state={state} onRead={onRead} onHome={onHome} onRestore={putBack} onDelete={deleteItem} />;
     case "mail":
       return <Mail story={story} state={state} onRead={onRead} onHome={onHome} />;
     case "paytap":
@@ -111,6 +138,8 @@ export default function AppBody({
       return <FindMy story={story} state={state} onHome={onHome} onStop={(sets) => flag(...sets)} />;
     case "safari":
       return <Safari story={story} state={state} onRead={onRead} onHome={onHome} />;
+    case "camera":
+      return <Camera story={story} state={state} onHome={onHome} onPhoto={() => flag("did:camera-photo")} />;
     default:
       // Not on this phone. Nothing on the home screen opens this.
       return null;

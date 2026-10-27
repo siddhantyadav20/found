@@ -346,3 +346,37 @@
   opacity: 0.01;
   cursor: text;
 }
+
+/* Deleting what was put in a note, and Notes' Recently Deleted (RAAKH-V3 §17). */
+.deleteAttachment {
+  display: block;
+  margin: 4px 0 14px auto;
+  font-size: 14px;
+  color: #ff453a;
+}
+
+.binLink {
+  display: block;
+  margin: 18px auto 70px;
+  font-size: 15px;
+  color: #ffd60a;
+}
+
+.binRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.binActs {
+  display: flex;
+  gap: 14px;
+  font-size: 15px;
+  color: #ffd60a;
+}
+
+.binActs [data-danger] {
+  color: #ff453a;
+}
