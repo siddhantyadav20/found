@@ -67,9 +67,11 @@ export default function ColdOpen({
   }, [heard, step, cold.lines, voices]);
 
   useEffect(() => {
-    const t = window.setTimeout(() => (step < last ? setStep(step + 1) : onDone()), step === last ? AFTER_MS : step === 0 ? 1400 : LINE_MS);
+    // A voiced line holds until it has been said: a recording is never cut off by the next.
+    const said = step >= 1 && step <= cold.lines.length ? (voices?.[`cold:${step - 1}`]?.seconds ?? 0) * 1000 + 250 : 0;
+    const t = window.setTimeout(() => (step < last ? setStep(step + 1) : onDone()), step === last ? AFTER_MS : step === 0 ? 1400 : Math.max(LINE_MS, said));
     return () => window.clearTimeout(t);
-  }, [step, last, onDone]);
+  }, [step, last, onDone, voices, cold.lines.length]);
 
   useEffect(() => {
     if (!flash) return undefined;

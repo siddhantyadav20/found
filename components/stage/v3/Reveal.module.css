@@ -196,14 +196,16 @@
 }
 
 /* The kada at the lower edge, as his hand steadies the phone. */
+/* The hand steadying the phone, lit only by its screen like the face above
+   it: cold and dim, with the kada just in frame above the shutter. */
 .kada {
   position: absolute;
-  left: -6%;
-  bottom: -14%;
-  width: 52%;
+  left: -8%;
+  bottom: 6%;
+  width: 46%;
   rotate: 18deg;
-  opacity: 0.85;
-  filter: brightness(0.55) contrast(1.1);
+  opacity: 0.8;
+  filter: grayscale(0.75) brightness(0.42) contrast(1.15);
 }
 
 .flash {

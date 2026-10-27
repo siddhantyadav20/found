@@ -21,6 +21,7 @@ import {
   dateNow,
   dayNow,
   dueEvents,
+  eventClock,
   episodeOf,
   fire,
   has,
@@ -269,7 +270,10 @@ export default function Table({
     const ago = minutesSince(story, state, id, now);
     const when = state.at[`event:${id}`];
     if (ago === undefined || when === undefined || ago < 1) return "now";
-    return ago < 60 ? `${ago}m ago` : stamp(clockAt(story, state, when));
+    if (ago < 60) return `${ago}m ago`;
+    // On a chapter whose clock moves by beats, the time it came is its own clock, never wall time.
+    const at = story.beats ? eventClock(story, state, id) : undefined;
+    return stamp(at ?? clockAt(story, state, when));
   };
 
   /* Everything that has arrived since the phone was opened, newest first,

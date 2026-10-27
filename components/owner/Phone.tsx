@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { drag } from "@/components/stage/drag";
 import type { AppId } from "@/content/types";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
+import { noted } from "@/lib/found/tones";
 import { useWakeLock } from "@/lib/found/wakeLock";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Screen.module.css";
@@ -131,9 +132,13 @@ export default function Phone({
 
   /* A banner arriving is a motor against a table before it is anything else. */
   const bannerKey = banner?.key;
+  const bannerApp = banner?.app;
   useEffect(() => {
-    if (bannerKey) buzz();
-  }, [bannerKey]);
+    if (!bannerKey) return;
+    // The case file noting what was found is the game talking, not a text arriving.
+    if (bannerApp === "casefile") noted();
+    else buzz();
+  }, [bannerKey, bannerApp]);
 
   /* And then it goes, the way iOS banners do, unless it's being held open. */
   useEffect(() => {

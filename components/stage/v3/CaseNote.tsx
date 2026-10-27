@@ -54,7 +54,7 @@ export function Asides({ story, state }: { story: Story; state: CaseState }) {
       <p className={styles.group}>Before you choose</p>
       <ul className={styles.list}>
         {asides.map((a) => (
-          <PreStepView key={a.id} step={a} state={state} />
+          <PreStepView key={a.id} step={a} state={state} voices={story.voices} />
         ))}
       </ul>
     </section>
@@ -111,7 +111,7 @@ export function FoundList({ story, state }: { story: Story; state: CaseState }) 
                 <span>
                   {e.label}
                   <small>
-                    {e.app === "casefile" ? "From the parcel" : appLabel(story, e.app)}
+                    {e.from ?? (e.app === "casefile" ? "Case file" : appLabel(story, e.app))}
                     {gone && " · source deleted"}
                   </small>
                 </span>

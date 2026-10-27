@@ -72,7 +72,9 @@ export function threadsIn(story: Story, s: CaseState, app: Thread["app"]): Threa
           ? { ...x, avatar: x.avatar ?? t.avatar, unread: (x.unread ?? 0) + (t.unread ?? 0), messages: [...x.messages, ...t.messages], replies: [...(x.replies ?? []), ...(t.replies ?? [])] }
           : x,
       );
-    }, []);
+    }, [])
+    // A block hides the photo, as WhatsApp does, until it's lifted.
+    .map((t) => (t.avatarAfter && !all(s, t.avatarAfter) ? { ...t, avatar: undefined } : t));
 }
 
 /** Where the player has read a chat up to: how many of its messages have been on screen. */
@@ -102,6 +104,6 @@ export function badgeFor(story: Story, s: CaseState, app: AppId): number {
     return threadsIn(story, s, app)
       .filter((t) => !t.archived && !t.locked)
       .reduce((n, t) => n + unreadCount(s, t, today), 0);
-  if (app === "phone") return s.at[`opened:${app}`] ? 0 : story.calls.filter((c) => c.kind === "missed" && all(s, c.requires)).reduce((n, c) => n + (c.count ?? 1), 0);
+  if (app === "phone") return s.at[`opened:${app}`] ? 0 : story.calls.filter((c) => c.kind === "missed" && !c.seen && all(s, c.requires)).reduce((n, c) => n + (c.count ?? 1), 0);
   return 0;
 }

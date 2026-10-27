@@ -34,6 +34,7 @@ CAST = {
     "Meera": ("hi-IN-SwaraNeural", "+0%", "+0Hz"),
     "Anita": ("hi-IN-SwaraNeural", "-8%", "-10Hz"),
     "Dilip-weak": ("hi-IN-MadhurNeural", "-32%", "+16Hz"),
+    "Boy": ("hi-IN-MadhurNeural", "+6%", "+30Hz"),
 }
 
 
@@ -126,6 +127,9 @@ def build(entry):
     track = treat(track, entry["style"])
     key = entry["key"]
     name = key.replace(":", "-")
+    # A key that is a line itself (said:…, statement:…) gets a short, safe file name.
+    if not all(c.isascii() and (c.isalnum() or c == "-") for c in name):
+        name = key.split(":")[0] + "-" + hashlib.sha1(key.encode()).hexdigest()[:10]
     wav_ = os.path.join(WORK, name + ".out.wav")
     with wave.open(wav_, "wb") as w:
         w.setnchannels(1)
@@ -151,6 +155,6 @@ rows = []
 for k, path in out.items():
     info = subprocess.run(["afinfo", os.path.join(ROOT, "public") + path], capture_output=True, text=True).stdout
     secs = float(re.search(r"estimated duration: ([\d.]+)", info).group(1))
-    rows.append(f'  "{k}": {{ src: "{path}", seconds: {secs:.1f} }},')
+    rows.append(f'  {json.dumps(k, ensure_ascii=False)}: {{ src: "{path}", seconds: {secs:.1f} }},')
 head = open(os.path.join(ROOT, "content", "raakh", "voices.ts")).read().split("export const voices: Voices = {")[0]
 open(os.path.join(ROOT, "content", "raakh", "voices.ts"), "w").write(head + "export const voices: Voices = {\n" + "\n".join(rows) + "\n};\n")

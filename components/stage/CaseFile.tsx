@@ -381,7 +381,7 @@ export default function CaseFile({
     if (!saying || detective || !read?.wrong.length) return undefined;
     const b = read.wrong[0];
     const apps = whereWordsAre(story, q, b);
-    return `“${words[b]}” isn't what the phone shows.${apps.length ? ` The right word is on his phone: look in ${apps.map((a) => appLabel(story, a)).join(" or ")}.` : " Try another word."}`;
+    return `“${words[b]}” isn't what the phone shows.${apps.length ? ` The right word is on the phone: look in ${apps.map((a) => appLabel(story, a)).join(" or ")}.` : " Try another word."}`;
   };
 
   const fileSaid = () => {
@@ -465,7 +465,7 @@ export default function CaseFile({
               setWords={setWords}
               typed={typed}
               setTyped={setTyped}
-              labelOf={(app) => (app === "casefile" ? "From the parcel" : appLabel(story, app))}
+              labelOf={(app) => (app === "casefile" ? "Case file" : appLabel(story, app))}
               first={detective ? [] : whereToLook(story, q.id)}
               marking={Boolean(said && !said.ok && said.text.startsWith(PLACED)) || picked.some((p) => p.startsWith("odd:"))}
               offRows={offRows}
@@ -820,7 +820,7 @@ function Board({
         {ok && !read?.claim?.free && (
           <div className={styles.step} aria-label="Proof">
             <p className={styles.stepHead}>
-              <span className={styles.stepNo}>2</span> Show it: tap {need === 1 ? "the thing on his phone that proves it" : `the ${need} things on his phone that prove it`}
+              <span className={styles.stepNo}>2</span> Show it: tap {need === 1 ? "the thing on the phone that proves it" : `the ${need} things on the phone that prove it`}
             </p>
             {shown.length ? (
               <ul className={note.pickList}>
@@ -837,7 +837,7 @@ function Board({
                       <span className={note.check} aria-hidden="true" />
                       <span className={styles.proofText}>
                         {e.label}
-                        <span className={styles.proofApp}>{labelOf(e.app)}</span>
+                        <span className={styles.proofApp}>{e.from ?? labelOf(e.app)}</span>
                       </span>
                     </button>
                   </li>
@@ -848,7 +848,7 @@ function Board({
             )}
             {toCome > 0 && (
               <p className={styles.toCome}>
-                {toCome === 1 ? "One more thing" : `${toCome} more things`} on his phone {toCome === 1 ? "bears" : "bear"} on this, not found yet.
+                {toCome === 1 ? "One more thing" : `${toCome} more things`} on the phone {toCome === 1 ? "bears" : "bear"} on this, not found yet.
               </p>
             )}
           </div>

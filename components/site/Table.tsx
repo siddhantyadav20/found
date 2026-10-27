@@ -97,10 +97,10 @@ export default function Table() {
         <div className={styles.mailer} aria-hidden="true">
           <div className={styles.waybill}>
             <span className={styles.barcode} />
-            <span className={styles.courier}>DakRoute Express · Surface · 1 of 1</span>
+            <span className={styles.courier}>{label.courier ?? "DakRoute Express"}</span>
             <span className={styles.to}>TO {label.to.toUpperCase()}</span>
             <span className={styles.line}>{label.address}</span>
-            <span className={styles.line}>Mob: {label.phone}</span>
+            {label.phone && <span className={styles.line}>Mob: {label.phone}</span>}
             <span className={styles.line}>From: {label.from}</span>
             <span className={styles.decl}>
               <b>Contains</b> 1 mobile phone, used

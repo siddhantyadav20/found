@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import type { IncomingCall, Reply, ReplyOption, Voices } from "@/content/types";
 import { has, type CaseState } from "@/lib/game/engine";
@@ -129,16 +129,26 @@ export default function Ringing({
 
   /* They talk; the player listens, a line at a time, with no way to hurry
      them: each line is heard (where it's recorded) and the next waits. */
+  // Said once, when it comes up: an answer picked later never makes them say it again.
+  const current = lines[shown - 1];
+  const sayNow = current && !current.mine ? current.voice?.src : undefined;
   useEffect(() => {
-    if (!answered || shown === 0) return undefined;
-    const l = lines[shown - 1];
-    return l?.mine ? undefined : say(l?.voice?.src);
-  }, [answered, shown, lines]);
+    if (!answered || !sayNow) return undefined;
+    return say(sayNow);
+  }, [answered, shown, sayNow]);
+  // When the line that's up was heard: a reply picked after it doesn't start its clock again.
+  const upAt = useRef<{ key?: string; at: number }>({ at: 0 });
+  const upKey = current?.key;
+  useEffect(() => {
+    if (upAt.current.key !== upKey) upAt.current = { key: upKey, at: Date.now() };
+  }, [upKey]);
   useEffect(() => {
     if (!answered || shown >= lines.length) return undefined;
     const prev = lines[shown - 1];
     const heard = prev?.voice ? prev.voice.seconds * 1000 + 450 : 0;
-    const wait = shown === 0 ? 900 : prev?.mine ? 700 : Math.max(readMs({ text: prev?.line, english: prev?.english }), heard);
+    const full = shown === 0 ? 900 : prev?.mine ? 700 : Math.max(readMs({ text: prev?.line, english: prev?.english }), heard);
+    // The player's own answer goes up the moment it's picked; anyone else waits out what came before.
+    const wait = lines[shown]?.mine ? 250 : Math.max(0, full - (Date.now() - upAt.current.at));
     const t = window.setTimeout(() => setShown((n) => n + 1), wait);
     return () => window.clearTimeout(t);
   }, [answered, shown, lines]);

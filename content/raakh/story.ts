@@ -29,7 +29,7 @@ import { calls, mail, memos, notes, payments, photos, searches, settings, thread
    `beats`, and events with a `clock`).
    =========================================================================== */
 
-const VIEWFINDER = "/found/raakh/viewfinder.jpg";
+const VIEWFINDER = "/found/raakh/viewfinder-2.jpg";
 
 export const story: Story = {
   id: "raakh",

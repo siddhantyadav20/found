@@ -161,6 +161,16 @@ const mmss = (s: number) =>
   `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 /** What the list says a chat's last message was. */
+/**
+ * The message a chat list shows for a chat: its last one, except that in a
+ * one-to-one chat WhatsApp never previews its own info lines ("Read Tue 24
+ * Nov, 3:12 AM" is in Message info, not in the list). A group's are shown.
+ */
+function listed(shown: readonly Message[], t: Thread): Message | undefined {
+  if (isGroup(t)) return shown.at(-1);
+  return shown.findLast((m) => m.from !== "system") ?? shown.at(-1);
+}
+
 function preview(m: Message | undefined): React.ReactNode {
   if (!m) return "";
   if (m.deleted) return "This message was deleted";
@@ -1097,7 +1107,7 @@ export default function Chat({
         // Pinned first, then newest first, as WhatsApp keeps its list.
         .sort((a, b) => {
           if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
-          const last = (t: Thread) => conversation(state, t, today).at(-1);
+          const last = (t: Thread) => listed(conversation(state, t, today), t);
           const la = last(a);
           const lb = last(b);
           return (
@@ -1106,8 +1116,7 @@ export default function Chat({
           );
         })
         .map((t) => {
-          const shown = conversation(state, t, today);
-          const last = shown[shown.length - 1];
+          const last = listed(conversation(state, t, today), t);
           // Unread, as WhatsApp counts it: what came from them and hasn't been on screen.
           const unread = unreadCount(state, t, today);
           return (

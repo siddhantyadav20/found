@@ -132,7 +132,7 @@ export const questions: readonly Question[] = [
       "Thursday night, and it stops at Nitin. Table “For M”.",
     ],
     say: {
-      line: "It was got ready on {when}: the passcode off, and a list for M that stops at {name}.",
+      line: "He got it ready on {when}: the passcode off, and a list for M that stops at {name}.",
       blanks: {
         when: ["Thursday night", "the wedding night", "Saturday morning"],
         name: ["Nitin", "Bhasin", "Kunal", "Dilip"],
@@ -143,7 +143,7 @@ export const questions: readonly Question[] = [
       {
         id: "ready",
         words: { when: "Thursday night", name: "Nitin" },
-        text: "It was got ready on Thursday night: the passcode off, and a list for M that stops at Nitin.",
+        text: "He got it ready on Thursday night: the passcode off, and a list for M that stops at Nitin.",
         proof: ["for-m"],
         also: ["passcode-off", "note", "call-thu"],
         reply: "Thursday night, 11:20: a reading order for M, and a phone anyone can open. The list stops mid-line, at a name.",

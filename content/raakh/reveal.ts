@@ -18,10 +18,10 @@ export const reveal: Reveal = {
   voice: {
     who: "Bhasin Uncle",
     key: "voice:b-gate",
-    seconds: 8,
+    seconds: 10,
     lines: [
-      { at: 0.4, who: "Bhasin", line: "Sameer." },
-      { at: 4, who: "Bhasin", line: "Gate do pe hoon. Neeche aa. Baat karni hai.", english: "I'm at Gate 2. Come down. We need to talk." },
+      { at: 0.6, who: "Bhasin", line: "Sameer." },
+      { at: 4.2, who: "Bhasin", line: "Gate do pe hoon. Neeche aa. Baat karni hai.", english: "I'm at Gate 2. Come down. We need to talk." },
     ],
   },
   yours: {
@@ -97,7 +97,7 @@ export const reveal: Reveal = {
     // Her "don't look", against Bhasin's at the fire.
     awayLine: { who: "Meera", text: "Theek hai, Sameer. Mat dekh.", english: "All right, Sameer. Don't look." },
   },
-  camera: { src: "/found/raakh/viewfinder.jpg", alt: "The front camera: an unshaven man, red-eyed, lit only by the screen, a silver kada on the hand holding the phone" },
+  camera: { src: "/found/raakh/viewfinder-2.jpg", alt: "The front camera: an unshaven man, red-eyed, lit only by the screen, a silver kada on the hand holding the phone" },
   info: {
     lines: ["Case file", "Notes", "Created Sat 28 Nov 2026, 11:44 PM", "On this iPhone", "Last edited 4:01 AM"],
     question: "q1",
@@ -123,7 +123,7 @@ export const reveal: Reveal = {
       { said: "did:deleted-perm", answering: { text: "Kuch delete mat karna.", english: "Don't delete anything." } },
     ],
     cuts: [
-      { text: "“Pakki.”", sub: "The reel take, 12:31 AM", src: "/found/raakh/reel-take.jpg" },
+      { text: "“Pakki.”", sub: "The reel take, 12:31 AM", src: "/found/raakh/reel-take-2.jpg" },
       { text: "The same kada", sub: "The parcel, tonight · the fire, a week ago", src: "/found/raakh/jerrycan.jpg" },
       { text: "12:29 AM", sub: "Kunal's shared album, at the wrist", src: "/found/raakh/bts.jpg" },
     ],
@@ -150,8 +150,6 @@ export const reveal: Reveal = {
 
 /* --- Before you choose (scene 3.12), and before each ending (§10) ---------- */
 
-/** Whether Raju still trusts the voice on this phone (RAAKH-V3 §14, `raju_trust`). */
-const RAJU_MED_HIGH = ["did:raju-first-finding", "did:raju-told-shot", "did:promise-p2"] as const;
 const BROKEN = "did:raju-withdrew" as const;
 
 /** The breaking items still on the phone, each with a Delete (the 4:55 and Return to Origin). */
@@ -188,6 +186,7 @@ export const final: Final = {
       lines: [
         {
           who: "Dilip",
+          voice: "voice:an-4",
           text: "Bhaiya… aap aa rahe ho na? Unhone bola hai agar main kuch nahi bolunga toh ghar bhej denge. Main kuch nahi bolunga. Maa ko mat batana ki goli lagi thi. Bas… aap aa jao.",
           english: "Bhaiya… you're coming, right? They said if I don't say anything, they'll send me home. I won't say anything. Don't tell Maa I was shot. Just… come.",
         },
@@ -212,8 +211,9 @@ export const final: Final = {
           unless: [BROKEN],
           lines: [
             { who: "Raju", text: "Aap… aap hi ho na?", english: "It's you, isn't it?" },
-            { who: "Raju", text: "Aapne kaha tha aap Sameer nahi ho.", english: "You said you weren't Sameer.", needs: ["did:raju-first-denial"], unless: [...RAJU_MED_HIGH] },
-            { who: "You", text: "Jhooth tha.", english: "That was a lie.", needs: ["did:raju-first-denial"], unless: [...RAJU_MED_HIGH] },
+            // Told "Main Sameer nahi hoon" at 11:41, he says so, whatever was promised him since.
+            { who: "Raju", text: "Aapne kaha tha aap Sameer nahi ho.", english: "You said you weren't Sameer.", needs: ["did:raju-first-denial"] },
+            { who: "You", text: "Jhooth tha.", english: "That was a lie.", needs: ["did:raju-first-denial"] },
             { who: "You", text: "Haan. Main Sameer hoon. Dilip zinda hai. Bedi Nursing Home, Fatehpur Beri. Room 6.", english: "Yes. I'm Sameer. Dilip's alive. Bedi Nursing Home, Fatehpur Beri. Room 6." },
             { who: "Raju", text: "…Main nikal raha hoon.", english: "…I'm leaving now." },
           ],

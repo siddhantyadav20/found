@@ -30,6 +30,7 @@ const HELLO: EndingLine = {
   text: "Dilip, 18 November, on his front camera",
   src: `${R}/dp-dilip.jpg`,
   seconds: 9,
+  voice: "clip:d-2v",
   captions: [
     { at: 0.5, who: "Dilip", line: "Hello sir, my name is Dilip Kumar Mahto." },
     { at: 3.5, who: "Dilip", line: "I am from Samastipur." },
@@ -49,13 +50,14 @@ export const endings: readonly Ending[] = [
     lines: [
       { at: "4:52 AM", who: "Bhasin Uncle", text: "Sameer. Gaadi dikh rahi hai. Kahan ja raha hai?", english: "I can see the car. Where are you going?" },
       { at: "5:01 AM", who: "Bhasin Uncle", text: "Theek hai. Jaa. Dekhte hain kaun pehle pahunchta hai.", english: "Fine. Go. Let's see who gets there first." },
-      { at: "5:18 AM", who: "Dilip", text: "Side door khula hai. Main yahin hoon.", english: "The side door's open. I'm here." },
+      { at: "5:18 AM", who: "Dilip", text: "Main Anita. Side door khula hai. Main yahin hoon.", english: "It's Anita. The side door's open. I'm here." },
       NITIN_AGAIN,
       {
         at: "5:31 AM",
         kind: "media",
         text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
         seconds: 14,
+        voice: "media:corridor-alone",
         captions: [
           { at: 1, line: "[his breathing, close to the phone]" },
           { at: 5, line: "[a tube light flickers once]" },
@@ -82,6 +84,7 @@ export const endings: readonly Ending[] = [
         text: "Room 6, the phone held low: the edge of a bed, a boy, a bandaged shoulder. His eyes open.",
         src: `${R}/room6.jpg`,
         seconds: 10,
+        voice: "media:room6",
         captions: [
           { at: 3, who: "Dilip", line: "…Bhaiya. Aap aa gaye.", english: "…Bhaiya. You came." },
           { at: 7, who: "Dilip", line: "Light ready hai.", english: "The light's ready." },
@@ -210,10 +213,11 @@ export const endings: readonly Ending[] = [
       { at: "4:41 AM", who: "Bhasin Uncle", text: "Neeche nahi aayega? …Theek hai.", english: "Not coming down? …Fine." },
       NITIN_AGAIN,
       { at: "6:30 AM", who: "Bhasin Uncle", text: "Jaa. Mumbai mein humare log hain. Phone sambhaal ke rakhna. Ladka hum sambhaal ke rakhenge.", english: "Go. We have people in Mumbai. Look after the phone. We'll look after the boy." },
-      { at: "6:58 AM", who: "Dilip", text: "Le gaye. White Innova. Kahan, nahi bataya.", english: "They took him. White Innova. Didn't say where." },
+      { at: "6:58 AM", who: "Dilip", text: "Main Anita. Le gaye. White Innova. Kahan, nahi bataya.", english: "It's Anita. They took him. White Innova. Didn't say where." },
       { at: "7:02 AM", who: "Dilip", text: "Woh pooch raha tha aap aaye kyun nahi.", english: "He was asking why you didn't come." },
       { at: "7:03 AM", who: "Dilip", text: "Uska phone mere paas hai. Main rakh lungi. Shayad koi aaye.", english: "I have his phone. I'll keep it. Maybe someone will come." },
-      { at: "8:00 AM", who: "Phone", text: `Missed call: +91 62••• •4417 (48)` },
+      // Unless he was lied to and went to the Sehgals': then he doesn't call this number again (RAAKH-V3 §9.4).
+      { at: "8:00 AM", who: "Phone", text: `Missed call: +91 62••• •4417 (48)`, unless: ["did:raju-withdrew"] },
       { at: "4:55 PM", who: "Kunal", text: "Safe journey bhai. Papa ne bola tension mat lena.", english: "Dad said don't worry." },
       { at: "11:40 PM", who: "Mail · Rangmanch Weddings", text: "Welcome aboard, Sameer! (cc: Sehgal Enterprises)" },
       {
@@ -248,6 +252,7 @@ export const endings: readonly Ending[] = [
         text: "A Rangmanch reel at a Mumbai wedding: fairy lights, and a new boy, about eighteen, behind an LED panel",
         src: `${R}/key-lawn.jpg`,
         seconds: 10,
+        voice: "media:rangmanch",
         captions: [
           { at: 1.5, who: "A boy, behind the light", line: "Sir, light yahan theek hai?", english: "Sir, is the light okay here?" },
           { at: 5, who: "Sameer, off camera", line: "Haan. Wahin. Ab hilna mat.", english: "Yes. There. Now don't move." },
@@ -273,7 +278,7 @@ export const endings: readonly Ending[] = [
       { at: "4:58 AM", who: "Your phone · Ram Kishan ji", text: "Gate pe rakh diya, sahab. Courier subah aayega.", english: "Left it at the gate. Courier comes in the morning." },
       { at: "5:10 AM", who: "Bhasin Uncle", text: "Phir bhej raha hai? Theek hai. Hum bhi intezaar kar lete hain. Ladka bhi.", english: "Sending it again? Fine. We'll wait too. So will the boy." },
       NITIN_AGAIN,
-      { at: "6:58 AM", who: "Dilip", text: "Le gaye.", english: "They took him." },
+      { at: "6:58 AM", who: "Dilip", text: "Main Anita. Le gaye.", english: "It's Anita. They took him." },
       // The last image: the sealed envelope on the guard's counter, the phone lighting up through it.
       { kind: "final", text: "The sealed envelope on the guard's counter, in early light." },
       { kind: "glow", who: "Phone", text: "48 missed calls" },

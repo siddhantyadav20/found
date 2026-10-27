@@ -146,7 +146,7 @@ function Meera({ story, state, onCamera, onAway }: { story: Story; state: CaseSt
   const early = has(state, "did:early-reveal");
   // After an early reveal she doesn't ask who it is: she tells him to look.
   const call = early
-    ? { ...r.call, lines: [{ who: r.early.who ?? "Meera", line: r.early.text, english: r.early.english }], reply: undefined }
+    ? { ...r.call, id: `${r.call.id}-early`, lines: [{ who: r.early.who ?? "Meera", line: r.early.text, english: r.early.english }], reply: undefined }
     : r.call;
   return (
     <Ringing
@@ -172,7 +172,8 @@ function Meera({ story, state, onCamera, onAway }: { story: Story; state: CaseSt
 }
 
 /** Face down: her "don't look", against Bhasin's at the fire, and then it's over. */
-function Away({ line, onDone }: { line: Said; onDone: () => void }) {
+function Away({ line, voice, onDone }: { line: Said; voice?: string; onDone: () => void }) {
+  useEffect(() => say(voice), [voice]);
   useEffect(() => {
     const t = window.setTimeout(onDone, 5200);
     return () => window.clearTimeout(t);
@@ -411,6 +412,7 @@ export default function RevealDirector({ story, state }: { story: Story; state: 
     return (
       <Away
         line={r.look.awayLine}
+        voice={story.voices?.["reveal:away"]?.src}
         onDone={() => flag(done("meera"), FACE_DOWN, REVEAL_DONE)}
       />
     );

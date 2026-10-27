@@ -79,8 +79,10 @@ function holdMs(b: Beat, story: Story): number {
 }
 
 /** Media, full screen, played through once: a still or a film, and its words at their seconds. */
-function Media({ line }: { line: EndingLine }) {
+function Media({ line, story }: { line: EndingLine; story: Story }) {
   const [t, setT] = useState(0);
+  // What's said on it, heard (Room 6's "Aap aa gaye", the coda, the new boy behind the light).
+  useVoice(line.voice ? story.voices?.[line.voice]?.src : undefined, true);
   useEffect(() => {
     const began = performance.now();
     const tick = window.setInterval(() => setT((performance.now() - began) / 1000), 150);
@@ -244,7 +246,7 @@ export default function LockscreenEnding({ story, state, end }: { story: Story; 
         </div>
       );
     case "media":
-      return <Media line={b.lines[0]} />;
+      return <Media line={b.lines[0]} story={story} />;
     case "statement":
       return <Statement lines={b.lines} story={story} />;
     case "cold":

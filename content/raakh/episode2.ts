@@ -212,14 +212,14 @@ const bhasin: Thread = {
   messages: [
     bhasinVoice(
       "b-vn-stranger",
-      14,
+      16,
       "Jiske paas bhi ye phone hai. Neelam ji keh rahi thi koi aur hai. Achha natak hai. Subah saat baje tak phone gate pe chhod dena. Baaki hum dekh lenge.",
       "Whoever has this phone. Neelam ji says someone else has it. Nice act. Leave it at the gate by seven. We'll handle the rest.",
       { requires: ["did:mummy-stranger"] },
     ),
     bhasinVoice(
       "b-vn-fine",
-      9,
+      10,
       "Neelam ji ne bataya tu theek hai. Achha hai. Toh ghar pe hi rehna. Subah baat karte hain.",
       "Neelam ji says you're fine. Good. Then stay home. We'll talk in the morning.",
       { requires: ["did:mummy-fine"] },

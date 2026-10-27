@@ -14,9 +14,14 @@
 import { play, warm } from "@/lib/sfx";
 import { acquire, burst, prefersQuiet, resonator, stage } from "@/lib/sound";
 
-/** Loud for this site, on purpose: it is the one sound the game is built around. */
-const BUZZ_PEAK = 0.16;
-const PULSES = [0, 0.27] as const;
+/** Present, not loud: it lands dozens of times a night (2026-10-28, "irritating at this point"). */
+const BUZZ_PEAK = 0.09;
+const PULSES = [0] as const;
+/** The recording's level under the master: about half what it was. */
+const BUZZ_LEVEL = 0.5;
+/** Texts arriving close together buzz once, as a phone in a pocket feels them. */
+const BUZZ_GAP_MS = 3500;
+let lastBuzz = 0;
 
 /** Call inside a click: the browser only lets audio start after a gesture. */
 export function wakeAudio(): void {
@@ -28,16 +33,17 @@ export function warmBuzz(): void {
   warm("found-buzz");
 }
 
-/** Two pulses, the way a text lands: the recording when it's ready. */
-const SECOND_PULSE_S = 0.45;
-
+/** One pulse, the way a text lands: the recording when it's ready. */
 export function buzz(): void {
+  const now = Date.now();
+  if (now - lastBuzz < BUZZ_GAP_MS) return;
+  lastBuzz = now;
   // Before the visitor's first tap (the canvas card buzzes on its own),
   // Chrome refuses vibrate and logs an error; Safari has no vibrate at all.
   const nav = navigator as Navigator & { userActivation?: { hasBeenActive: boolean } };
   if (nav.userActivation?.hasBeenActive !== false) {
     try {
-      nav.vibrate?.([170, 100, 170]);
+      nav.vibrate?.(140);
     } catch {
       // Some browsers throw on vibrate without a gesture. Sound still plays.
     }
@@ -47,10 +53,7 @@ export function buzz(): void {
   // A real phone on real wood (samples.config.mjs, "found-buzz"). `play`
   // says false until the file is decoded, and the synthesised motor below
   // covers that first moment.
-  if (play("found-buzz")) {
-    play("found-buzz", { delay: SECOND_PULSE_S });
-    return;
-  }
+  if (play("found-buzz", { level: BUZZ_LEVEL })) return;
 
   const voice = acquire();
   if (!voice) return;

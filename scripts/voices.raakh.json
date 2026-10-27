@@ -107,588 +107,6 @@
   ]
  },
  {
-  "key": "memo:memo-code",
-  "style": "memo",
-  "seconds": 16,
-  "lines": [
-   {
-    "who": "Sameer-low",
-    "at": 2,
-    "text": "एम। नितिन और दिलीप की चैट मैंने लॉक कर दी है।"
-   },
-   {
-    "who": "Sameer-low",
-    "at": 7,
-    "text": "कोड वो है… जो वो रोज़ पूछता था। और जो मैंने उससे कहा।"
-   },
-   {
-    "who": "Sameer-low",
-    "at": 13,
-    "text": "नहीं। रहने दे।"
-   }
-  ]
- },
- {
-  "key": "clip:reel-take",
-  "style": "clip",
-  "seconds": 14,
-  "lines": [
-   {
-    "who": "Kunal",
-    "at": 1,
-    "text": "रोलिंग, भाई?"
-   },
-   {
-    "who": "Sameer",
-    "at": 2,
-    "text": "हाँ। लाइट ऊपर, दिलीप।"
-   },
-   {
-    "who": "Dilip",
-    "at": 4,
-    "text": "भैया… मुंबई पक्की ना?"
-   },
-   {
-    "who": "Sameer",
-    "at": 5.5,
-    "text": "पक्की। अब हिलना मत।"
-   },
-   {
-    "who": "Sameer",
-    "at": 11,
-    "text": "एक और, पोज़ में—"
-   }
-  ]
- },
- {
-  "key": "clip:fire",
-  "style": "clip",
-  "seconds": 9,
-  "lines": [
-   {
-    "who": "Bhasin",
-    "at": 6,
-    "text": "जल्दी करो।"
-   }
-  ]
- },
- {
-  "key": "clip:fire-whole",
-  "style": "clip",
-  "seconds": 31,
-  "lines": [
-   {
-    "who": "Sameer-low",
-    "at": 4,
-    "text": "भसीन सर, यहाँ?"
-   },
-   {
-    "who": "Bhasin",
-    "at": 6,
-    "text": "हाँ। सब कुछ। उसके कपड़े भी।"
-   },
-   {
-    "who": "Bhasin",
-    "at": 29,
-    "text": "जल्दी करो।"
-   }
-  ]
- },
- {
-  "key": "clip:k-3",
-  "style": "clip",
-  "seconds": 14,
-  "lines": [
-   {
-    "who": "Kunal",
-    "at": 10,
-    "text": "ओए होए!"
-   }
-  ]
- },
- {
-  "key": "cold:2",
-  "style": "clip",
-  "lines": [
-   {
-    "who": "Dilip",
-    "at": 0,
-    "text": "भैया, लाइट यहाँ ठीक है?"
-   }
-  ]
- },
- {
-  "key": "cold:3",
-  "style": "clip",
-  "lines": [
-   {
-    "who": "Kunal",
-    "at": 0,
-    "text": "रोलिंग, भाई?"
-   }
-  ]
- },
- {
-  "key": "call:raju:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "हेलो? समीर भैया?"
-   }
-  ]
- },
- {
-  "key": "call:raju:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "…आप कौन हो? ये समीर भैया का फ़ोन है ना?"
-   }
-  ]
- },
- {
-  "key": "call:raju:2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "दिलीप कहाँ है?"
-   }
-  ]
- },
- {
-  "key": "msg:rc-1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "मिला है? कहाँ से? …दिलीप का भाई हूँ। राजू।"
-   }
-  ]
- },
- {
-  "key": "msg:rc-2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "मेरा भाई। समीर भैया के साथ काम करता था। सात दिन हो गए।"
-   }
-  ]
- },
- {
-  "key": "msg:rc-3",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "ग़लत नंबर? ये समीर भैया का ही नंबर है…"
-   }
-  ]
- },
- {
-  "key": "call:meera-calls:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "हेलो? …समीर?"
-   }
-  ]
- },
- {
-  "key": "call:meera-calls:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "कौन? ये समीर का फ़ोन है ना?"
-   }
-  ]
- },
- {
-  "key": "call:meera-calls:2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "मैं मीरा। कूरियर वाले ने बोला एक पार्सल वापस चला गया, भेजने वाला एस. खुराना। मैं जयपुर में एक शादी में थी।"
-   }
-  ]
- },
- {
-  "key": "msg:mc-1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "…ठीक है। सुनिए।"
-   }
-  ]
- },
- {
-  "key": "msg:mc-1a",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "समीर डरपोक है। पर झूठ नहीं बोलता। उसने कुछ भेजा है तो सच ही होगा।"
-   }
-  ]
- },
- {
-  "key": "msg:mc-2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "कुछ डिलीट मत करना। मैंने समीर को अनब्लॉक कर दिया है: मैं इसी फ़ोन पे व्हाट्सऐप करती हूँ। जो भी मिले, मुझे भेजना।"
-   }
-  ]
- },
- {
-  "key": "msg:mc-3",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "हाँ। किया था।"
-   }
-  ]
- },
- {
-  "key": "msg:mc-4",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "समीर डरपोक है। पर झूठ नहीं बोलता।"
-   }
-  ]
- },
- {
-  "key": "msg:mc-5",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Meera",
-    "text": "कुछ डिलीट मत करना। मैंने समीर को अनब्लॉक कर दिया है: मैं इसी फ़ोन पे व्हाट्सऐप करती हूँ। जो भी मिले, मुझे भेजना।"
-   }
-  ]
- },
- {
-  "key": "call:raju-alive:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "हेलो?"
-   }
-  ]
- },
- {
-  "key": "call:raju-alive:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "…आप ही हो ना? जिसने पिछली बार फ़ोन उठाया था?"
-   }
-  ]
- },
- {
-  "key": "call:raju-alive:2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "दिलीप के बारे में कुछ पता चला? माँ रोज़ फ़ोन करती है।"
-   }
-  ]
- },
- {
-  "key": "msg:r-6",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "लाइट पकड़ता था। छोटे काम।"
-   }
-  ]
- },
- {
-  "key": "msg:r-6a",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "रोज़ फ़ोन पे पूछता था, भैया, मुंबई पक्की ना? और वो बोलते, पक्की।"
-   }
-  ]
- },
- {
-  "key": "msg:r-7",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "समीर भैया उसको मुंबई ले जाने वाले थे। असिस्टेंट बनाएँगे बोले थे। वो उनको भैया बोलता था।"
-   }
-  ]
- },
- {
-  "key": "msg:r-8",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "उसको भरोसा था। समीर भैया हैं ना, सब संभाल लेंगे।"
-   }
-  ]
- },
- {
-  "key": "msg:r-9",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "गोली??"
-   }
-  ]
- },
- {
-  "key": "msg:r-10",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "किसने चलाई? वो अब कहाँ है? कौन से हॉस्पिटल में?"
-   }
-  ]
- },
- {
-  "key": "msg:r-10a",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "…माँ को अभी कुछ नहीं बोलूँगा। मैं फिर फ़ोन करता हूँ।"
-   }
-  ]
- },
- {
-  "key": "msg:r-11",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "सहगल… शादी वाले? कुणाल सहगल ने?"
-   }
-  ]
- },
- {
-  "key": "msg:r-12",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "ठीक है। मैं उनके घर जाता हूँ।"
-   }
-  ]
- },
- {
-  "key": "call:bhasin-calls:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "हेलो।"
-   }
-  ]
- },
- {
-  "key": "call:bhasin-calls:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "आप समीर नहीं हो। नीलम जी ने बता दिया था।"
-   }
-  ]
- },
- {
-  "key": "call:bhasin-calls:2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "उसके फ़ोन की लोकेशन उसकी माँ के फ़ोन पे दिखती है। मुझे भी।"
-   }
-  ]
- },
- {
-  "key": "call:bhasin-calls:3",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "सुबह तक कूरियर वाले को वापस दे देना। बाक़ी हम देख लेंगे।"
-   }
-  ]
- },
- {
-  "key": "msg:bc-1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "समझदार हो।"
-   }
-  ]
- },
- {
-  "key": "msg:bc-2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "कौन सी पुलिस? साकेत वाली?"
-   }
-  ]
- },
- {
-  "key": "msg:bc-3",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "ठीक है। लोकेशन हमारे पास है।"
-   }
-  ]
- },
- {
-  "key": "msg:bc-4",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "आपको नहीं पता उस रात क्या था।"
-   }
-  ]
- },
- {
-  "key": "msg:bc-5",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Bhasin",
-    "text": "फ़ोन वापस कर दो। आपके लिए अच्छा होगा।"
-   }
-  ]
- },
- {
-  "key": "call:guard-calls:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "हेलो? जी, माफ़ करना, इतनी रात को।"
-   }
-  ]
- },
- {
-  "key": "call:guard-calls:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "गेट पे एक आदमी आया है। सफ़ारी सूट में। आपका फ़्लैट नंबर पूछ रहा है।"
-   }
-  ]
- },
- {
-  "key": "call:guard-calls:2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "बोल रहा है कूरियर से है, किसी पार्सल के बारे में।"
-   }
-  ]
- },
- {
-  "key": "call:guard-calls:3",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "ऊपर भेज दूँ?"
-   }
-  ]
- },
- {
-  "key": "msg:g-1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "ठीक है जी।"
-   }
-  ]
- },
- {
-  "key": "msg:g-2",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "…चला गया। जाते जाते बोला, सुबह सात बजे फिर आएगा।"
-   }
-  ]
- },
- {
-  "key": "msg:g-3",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "नाम नहीं बता रहा, जी। बस बोल रहा है, भसीन साहब ने भेजा है। वो समझ जाएँगे।"
-   }
-  ]
- },
- {
-  "key": "msg:g-4",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "मैं गेट बंद कर रहा हूँ।"
-   }
-  ]
- },
- {
-  "key": "msg:g-5",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "जी… वो आपका नाम ले रहा है। पूरा नाम।"
-   }
-  ]
- },
- {
-  "key": "msg:g-6",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Guard",
-    "text": "ठीक है। बोल देता हूँ।"
-   }
-  ]
- },
- {
   "key": "voice:d-2c",
   "style": "note",
   "seconds": 11,
@@ -706,164 +124,1101 @@
   ]
  },
  {
-  "key": "voice:nu-6",
-  "style": "note",
+  "key": "clip:k-3",
+  "style": "clip",
+  "seconds": 14,
+  "lines": [
+   {
+    "who": "Kunal",
+    "at": 10,
+    "text": "ओए होए!"
+   }
+  ]
+ },
+ {
+  "key": "call:raju:0",
+  "style": "call",
+  "lines": [
+   {
+    "who": "Raju",
+    "text": "हेलो? समीर भैया?"
+   }
+  ]
+ },
+ {
+  "key": "call:raju:2",
+  "style": "call",
+  "lines": [
+   {
+    "who": "Raju",
+    "text": "दिलीप कहाँ है?"
+   }
+  ]
+ },
+ {
+  "key": "cold:1",
+  "style": "clip",
+  "seconds": 2.4,
+  "lines": [
+   {
+    "who": "Dilip",
+    "at": 0.1,
+    "text": "भैया, लाइट यहाँ ठीक है?"
+   }
+  ]
+ },
+ {
+  "key": "cold:2",
+  "style": "clip",
+  "seconds": 2.4,
+  "lines": [
+   {
+    "who": "Sameer",
+    "at": 0.1,
+    "text": "हाँ, वहीं। रोलिंग, भाई?"
+   }
+  ]
+ },
+ {
+  "key": "cold:3",
+  "style": "clip",
+  "seconds": 1.2,
+  "lines": [
+   {
+    "who": "Kunal",
+    "at": 0.1,
+    "text": "रोलिंग।"
+   }
+  ]
+ },
+ {
+  "key": "cold:4",
+  "style": "clip",
+  "seconds": 2.2,
+  "lines": [
+   {
+    "who": "Dilip",
+    "at": 0.1,
+    "text": "भैया… मुंबई पक्की ना?"
+   }
+  ]
+ },
+ {
+  "key": "cold:5",
+  "style": "clip",
+  "seconds": 2.2,
+  "lines": [
+   {
+    "who": "Sameer",
+    "at": 0.1,
+    "text": "पक्की। अब हिलना मत।"
+   }
+  ]
+ },
+ {
+  "key": "cold:8",
+  "style": "clip",
+  "seconds": 1.8,
+  "lines": [
+   {
+    "who": "Sameer",
+    "at": 0.1,
+    "text": "एक और, पोज़ में—"
+   }
+  ]
+ },
+ {
+  "key": "prev:rolling",
+  "style": "clip",
+  "seconds": 1.4,
+  "lines": [
+   {
+    "who": "Sameer",
+    "at": 0.1,
+    "text": "रोलिंग, भाई?"
+   }
+  ]
+ },
+ {
+  "key": "prev:meera-delete",
+  "style": "call",
+  "seconds": 2.2,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0.1,
+    "text": "कुछ डिलीट मत करना।"
+   }
+  ]
+ },
+ {
+  "key": "memo:memo-code",
+  "style": "memo",
+  "seconds": 14,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 2,
+    "text": "एम। कोड वो है… जो वो रोज़ पूछता था।"
+   },
+   {
+    "who": "Sameer-low",
+    "at": 11,
+    "text": "नहीं। रहने दे।"
+   }
+  ]
+ },
+ {
+  "key": "clip:reel-take",
+  "style": "clip",
+  "seconds": 18,
+  "lines": [
+   {
+    "who": "Dilip",
+    "at": 0.5,
+    "text": "भैया, लाइट यहाँ ठीक है?"
+   },
+   {
+    "who": "Dilip",
+    "at": 3.2,
+    "text": "भैया… मुंबई पक्की ना?"
+   },
+   {
+    "who": "Sameer",
+    "at": 4.6,
+    "text": "पक्की। अब हिलना मत।"
+   },
+   {
+    "who": "Sameer",
+    "at": 10,
+    "text": "एक और, पोज़ में—"
+   },
+   {
+    "who": "Sameer-low",
+    "at": 15,
+    "text": "दिलीप?"
+   }
+  ]
+ },
+ {
+  "key": "clip:reel-pakki",
+  "style": "clip",
+  "seconds": 2,
+  "lines": [
+   {
+    "who": "Sameer",
+    "at": 0.1,
+    "text": "पक्की।"
+   }
+  ]
+ },
+ {
+  "key": "clip:fire",
+  "style": "clip",
+  "seconds": 9,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 6,
+    "text": "उसके कपड़े भी।"
+   }
+  ]
+ },
+ {
+  "key": "clip:fire-whole",
+  "style": "clip",
+  "seconds": 31,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 6,
+    "text": "उसके कपड़े भी।"
+   }
+  ]
+ },
+ {
+  "key": "clip:d-2v",
+  "style": "memo",
+  "seconds": 9,
+  "lines": [
+   {
+    "who": "Dilip",
+    "at": 0.5,
+    "text": "Hello sir, my name is Dilip Kumar Mahto."
+   },
+   {
+    "who": "Dilip",
+    "at": 3.5,
+    "text": "I am from Samastipur."
+   },
+   {
+    "who": "Dilip",
+    "at": 5.5,
+    "text": "I can hold light, I can do anything."
+   }
+  ]
+ },
+ {
+  "key": "call:raju:1",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "…हेलो? आप कौन? ये समीर भैया का फ़ोन है ना?"
+   }
+  ]
+ },
+ {
+  "key": "msg:rc-1",
+  "style": "call",
   "seconds": 5,
   "lines": [
    {
-    "who": "Dilip-weak",
+    "who": "Raju",
+    "at": 0,
+    "text": "तो समीर भैया कहाँ हैं? सात दिन से फ़ोन कर रहा हूँ।"
+   }
+  ]
+ },
+ {
+  "key": "msg:rc-2",
+  "style": "call",
+  "seconds": 5,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "वक़्त? सात दिन हो गए… ठीक है। मैं फिर करूँगा।"
+   }
+  ]
+ },
+ {
+  "key": "msg:rc-3",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "दिलीप कौन? दिलीप कौन?!"
+   }
+  ]
+ },
+ {
+  "key": "call:raju-2:0",
+  "style": "call",
+  "seconds": 1.2,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "हेलो?"
+   }
+  ]
+ },
+ {
+  "key": "call:raju-2:1",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "आप ही हो ना? जिसने पिछली बार फ़ोन उठाया था?"
+   }
+  ]
+ },
+ {
+  "key": "call:raju-2:2",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "दिलीप के बारे में कुछ पता चला? माँ रोज़ फ़ोन करती है।"
+   }
+  ]
+ },
+ {
+  "key": "msg:r-9",
+  "style": "call",
+  "seconds": 2,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0.8,
+    "text": "…ज़िंदा है?"
+   }
+  ]
+ },
+ {
+  "key": "msg:r-10",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "पक्की? …वो भी यही बोलता था।"
+   }
+  ]
+ },
+ {
+  "key": "msg:r-code",
+  "style": "call",
+  "seconds": 6,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "वो रोज़ पूछता था, मुंबई पक्की ना? हर बार। पक्की, पक्की।"
+   }
+  ]
+ },
+ {
+  "key": "msg:r-11",
+  "style": "call",
+  "seconds": 2,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "सहगल? शादी वाले?"
+   }
+  ]
+ },
+ {
+  "key": "call:meera:0",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "समीर—"
+   }
+  ]
+ },
+ {
+  "key": "call:meera:1",
+  "style": "call",
+  "seconds": 1.2,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "…हेलो?"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-1",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Meera",
     "at": 0.6,
-    "text": "…भैया… लाइट… रेडी…"
+    "text": "…ठीक है। आप जो भी हो।"
    }
   ]
  },
  {
-  "key": "moment:first-call:1",
+  "key": "msg:mc-2",
   "style": "call",
+  "seconds": 2,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0.6,
+    "text": "…हाँ। पता है।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-3",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "क्योंकि मैं उसका कन्फ़ेशन बॉक्स नहीं हूँ।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-3a",
+  "style": "call",
+  "seconds": 1.6,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0.4,
+    "text": "आप जो भी हो।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-4",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 1.5,
+    "text": "पता है। पहले शब्द से।"
+   }
+  ]
+ },
+ {
+  "key": "call:meera:meera-keep:0",
+  "style": "call",
+  "seconds": 12,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "मैंने आज सुबह ये लेने से मना किया था। उसने मुझे भेजा था, और मैं अब उसका बोझ नहीं उठाती।"
+   },
+   {
+    "who": "Meera",
+    "at": 6.5,
+    "text": "लेकिन अगर ये आपके हाथ में है, तो एक काम करना। कुछ डिलीट मत करना। कुछ भी।"
+   }
+  ]
+ },
+ {
+  "key": "call:meera:meera-keep-early:0",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "तो सुन। कुछ डिलीट मत करना। कुछ भी।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-why",
+  "style": "call",
+  "seconds": 5,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "क्योंकि जो इसे भेजता है, वो सबसे पहले वही मिटाता है जो उसे फँसाता है।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-close",
+  "style": "call",
+  "seconds": 7,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "उसके पासवर्ड्स उसकी बर्थडे होते हैं। हमेशा।"
+   },
+   {
+    "who": "Meera",
+    "at": 3.4,
+    "text": "और ऑर्डर में देखना। उसने ऑर्डर में रखा है।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mc-close-early",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "और ऑर्डर में देख। तूने ऑर्डर में रखा है।"
+   }
+  ]
+ },
+ {
+  "key": "voice:b-vn-stranger",
+  "style": "note",
+  "seconds": 14,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 0.5,
+    "text": "जिसके पास भी ये फ़ोन है।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 3,
+    "text": "नीलम जी कह रही थी कोई और है। अच्छा नाटक है।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 8,
+    "text": "सुबह सात बजे तक फ़ोन गेट पे छोड़ देना। बाक़ी हम देख लेंगे।"
+   }
+  ]
+ },
+ {
+  "key": "voice:b-vn-fine",
+  "style": "note",
+  "seconds": 9,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 0.5,
+    "text": "नीलम जी ने बताया तू ठीक है। अच्छा है।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 4.5,
+    "text": "तो घर पे ही रहना। सुबह बात करते हैं।"
+   }
+  ]
+ },
+ {
+  "key": "voice:b-vn-none",
+  "style": "note",
+  "seconds": 7,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 0.5,
+    "text": "जिसके पास भी ये फ़ोन है।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 3,
+    "text": "सुबह सात बजे तक गेट पे छोड़ देना।"
+   }
+  ]
+ },
+ {
+  "key": "voice:b-gate",
+  "style": "note",
+  "seconds": 8,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 0.4,
+    "text": "समीर।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 4,
+    "text": "गेट दो पे हूँ। नीचे आ। बात करनी है।"
+   }
+  ]
+ },
+ {
+  "key": "voice:b-terms",
+  "style": "note",
+  "seconds": 34,
+  "lines": [
+   {
+    "who": "Bhasin",
+    "at": 0.5,
+    "text": "समीर। अब तुझे पता है लड़का ज़िंदा है। तो सीधी बात।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 6,
+    "text": "फ़ोन गार्ड के हाथ नीचे भेज दे। सात बजे लड़का समस्तीपुर की बस में होगा। ज़िंदा, दवाई के साथ, पैसे के साथ।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 15,
+    "text": "तू चार पचपन की ट्रेन पकड़। रंगमंच में मैंने बात कर ली है, वहाँ सब ठीक रहेगा।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 21,
+    "text": "कुणाल वाला वीडियो मेरे पास रहेगा। बस मेरे पास रहेगा।"
+   },
+   {
+    "who": "Bhasin",
+    "at": 26,
+    "text": "और अगर फ़ोन नीचे नहीं आया… तो लड़का भी कहीं नहीं जाएगा। आधा घंटा है।"
+   }
+  ]
+ },
+ {
+  "key": "voice:an-v",
+  "style": "whisper",
+  "seconds": 26,
   "lines": [
    {
     "who": "Anita",
-    "text": "दो लोग चाहिए। एक जो इन्हें पहचाने। और एक जिससे भसीन साहब डरते हों।"
-   }
-  ]
- },
- {
-  "key": "moment:after-meera:0",
-  "style": "call",
-  "lines": [
+    "at": 0.5,
+    "text": "एक लड़का है। एक हफ़्ते से।"
+   },
    {
-    "who": "Meera",
-    "text": "ज़िंदा है? …ठीक है। मैं डीसीपी साकेत को जानती हूँ। वो भसीन का आदमी नहीं है।"
-   }
-  ]
- },
- {
-  "key": "moment:after-meera:1",
-  "style": "call",
-  "lines": [
+    "who": "Anita",
+    "at": 3.5,
+    "text": "रजिस्टर में दीपक, उन्नीस साल, रोड एक्सीडेंट लिखा है।"
+   },
    {
-    "who": "Meera",
-    "text": "पर फ़ाइल में नाम दीपक है। मुझे वहाँ कोई चाहिए जो उसको पहचाने। अभी।"
-   }
-  ]
- },
- {
-  "key": "moment:after-raju:0",
-  "style": "call",
-  "lines": [
+    "who": "Anita",
+    "at": 8,
+    "text": "रोड एक्सीडेंट नहीं है। गोली का घाव है, कंधे में।"
+   },
    {
-    "who": "Raju",
-    "text": "फ़तेहपुर बेरी? मैं निकल रहा हूँ। बाइक पे चालीस मिनट।"
-   }
-  ]
- },
- {
-  "key": "moment:after-raju:1",
-  "style": "call",
-  "lines": [
+    "who": "Anita",
+    "at": 12.5,
+    "text": "जो लोग लाए थे, रोज़ आते हैं। आज रात बोले सात बजे ले जाएँगे। कहाँ, नहीं बताया।"
+   },
    {
-    "who": "Raju",
-    "text": "पर अकेले मुझे अंदर नहीं जाने देंगे। मैं डिलीवरी वाला हूँ। कोई और चाहिए।"
+    "who": "Anita",
+    "at": 20,
+    "text": "वो रोज़ एक ही नाम लेता है। समीर भैया।"
    }
   ]
  },
  {
-  "key": "moment:after-sameer-faced:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Sameer-low",
-    "text": "…ज़िंदा है?"
-   }
-  ]
- },
- {
-  "key": "moment:after-sameer-faced:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Sameer",
-    "text": "मैं जाता हूँ। अभी। इस बार मैं जाता हूँ।"
-   }
-  ]
- },
- {
-  "key": "moment:after-sameer:0",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Sameer-low",
-    "text": "…ज़िंदा है?"
-   }
-  ]
- },
- {
-  "key": "moment:after-sameer:1",
-  "style": "call",
-  "lines": [
-   {
-    "who": "Sameer",
-    "text": "मैं नहीं आ सकता। मेरा ट्रेन है। तू समझ ना। भसीन देख लेगा।"
-   }
-  ]
- },
- {
-  "key": "moment:found:2",
-  "style": "memo",
-  "lines": [
-   {
-    "who": "Raju",
-    "text": "दिलीप।"
-   }
-  ]
- },
- {
-  "key": "moment:found:4",
-  "style": "memo",
+  "key": "voice:an-4",
+  "style": "whisper",
+  "seconds": 17,
   "lines": [
    {
     "who": "Dilip-weak",
-    "text": "…भैया। लाइट रेडी है।"
+    "at": 0.5,
+    "text": "भैया… आप आ रहे हो ना?"
+   },
+   {
+    "who": "Dilip-weak",
+    "at": 3.5,
+    "text": "उन्होंने बोला है अगर मैं कुछ नहीं बोलूँगा तो घर भेज देंगे। मैं कुछ नहीं बोलूँगा।"
+   },
+   {
+    "who": "Dilip-weak",
+    "at": 10.5,
+    "text": "माँ को मत बताना कि गोली लगी थी।"
+   },
+   {
+    "who": "Dilip-weak",
+    "at": 14,
+    "text": "बस… आप आ जाओ।"
    }
   ]
  },
  {
-  "key": "moment:late-police:1",
+  "key": "call:guard:0",
   "style": "call",
+  "seconds": 8,
   "lines": [
    {
-    "who": "SHO",
-    "text": "हम देख लेंगे। आप फ़ोन रखिए।"
+    "who": "Guard",
+    "at": 0,
+    "text": "खुराना साहब, माफ़ करना, इतनी रात को। भसीन साहब नीचे गाड़ी में बैठे हैं। कह रहे हैं आपको बुला दूँ।"
    }
   ]
  },
  {
-  "key": "moment:late-meera:1",
+  "key": "msg:g-1",
   "style": "call",
+  "seconds": 5,
   "lines": [
    {
-    "who": "Anita",
-    "text": "दीपक नाम का पेशेंट है। कोई इन्हें पहचानने वाला है?"
+    "who": "Guard",
+    "at": 0.6,
+    "text": "साहब… बी चौदह आप ही का है ना? तीन साल से आपके लिए गेट खोल रहा हूँ।"
    }
   ]
  },
  {
-  "key": "moment:late-raju:2",
+  "key": "msg:g-2",
   "style": "call",
+  "seconds": 1.2,
+  "lines": [
+   {
+    "who": "Guard",
+    "at": 0,
+    "text": "जी साहब।"
+   }
+  ]
+ },
+ {
+  "key": "call:meera-reveal:0",
+  "style": "call",
+  "seconds": 2.4,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "समीर। अब बस।"
+   }
+  ]
+ },
+ {
+  "key": "call:meera-reveal-early:0",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "अब देख ले ख़ुद को। एक बार।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mr-1",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "तो फ़्रंट कैमरा खोल। और मुझे बता कौन दिख रहा है।"
+   }
+  ]
+ },
+ {
+  "key": "msg:mr-2",
+  "style": "call",
+  "seconds": 4,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "फ़्रंट कैमरा खोल, समीर। एक बार देख ले।"
+   }
+  ]
+ },
+ {
+  "key": "reveal:away",
+  "style": "call",
+  "seconds": 3,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0.6,
+    "text": "ठीक है, समीर। मत देख।"
+   }
+  ]
+ },
+ {
+  "key": "reveal:meera-confessor",
+  "style": "call",
+  "seconds": 12,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "मैं पहली कॉल से जानती थी। मैं देखना चाहती थी तू ख़ुद पढ़ेगा तो क्या करेगा।"
+   },
+   {
+    "who": "Meera",
+    "at": 6.5,
+    "text": "…तू चाहता था कोई तुझे पकड़े, समीर। इसलिए तूने ये फ़ोन खोला।"
+   }
+  ]
+ },
+ {
+  "key": "reveal:meera-auditor",
+  "style": "call",
+  "seconds": 11,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "मैं पहली कॉल से जानती थी। मैं देखना चाहती थी तू ख़ुद पढ़ेगा तो क्या करेगा।"
+   },
+   {
+    "who": "Meera",
+    "at": 6.5,
+    "text": "…तू देख रहा था तेरा झूठ कितना टिकता है।"
+   }
+  ]
+ },
+ {
+  "key": "reveal:meera-early",
+  "style": "call",
+  "seconds": 2,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "तुझे कब पता चला?"
+   }
+  ]
+ },
+ {
+  "key": "said:Sameer?",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "समीर?"
+   }
+  ]
+ },
+ {
+  "key": "said:…Kahan hai tu?",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "…कहाँ है तू?"
+   }
+  ]
+ },
+ {
+  "key": "said:Main tujhe nahi bataungi kya karna hai. Bas itna: agar tu Bedi jaata hai, main DCP ko bula sakti hoon, Bhasin ka aadmi nahi.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "मैं तुझे नहीं बताऊँगी क्या करना है। बस इतना: अगर तू बेदी जाता है, मैं डीसीपी को बुला सकती हूँ, भसीन का आदमी नहीं।"
+   }
+  ]
+ },
+ {
+  "key": "said:Agar nahi jaata, toh jo mere paas hai, mere paas rahega.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "अगर नहीं जाता, तो जो मेरे पास है, मेरे पास रहेगा।"
+   }
+  ]
+ },
+ {
+  "key": "said:Agar nahi jaata, toh mere paas kuch nahi hai. Sab tere haath mein hai.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "अगर नहीं जाता, तो मेरे पास कुछ नहीं है। सब तेरे हाथ में है।"
+   }
+  ]
+ },
+ {
+  "key": "said:Aa raha hai? …Theek hai. DCP ko main bulaati hoon. Andar akele mat jaana jab tak woh na aaye.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Meera",
+    "at": 0,
+    "text": "आ रहा है? …ठीक है। डीसीपी को मैं बुलाती हूँ। अंदर अकेले मत जाना जब तक वो न आए।"
+   }
+  ]
+ },
+ {
+  "key": "said:Aap… aap hi ho na?",
+  "style": "call",
+  "seconds": 1,
   "lines": [
    {
     "who": "Raju",
-    "text": "भैया, वो अंदर है। मैं जानता हूँ वो अंदर है।"
+    "at": 0,
+    "text": "आप… आप ही हो ना?"
+   }
+  ]
+ },
+ {
+  "key": "said:Aapne kaha tha aap Sameer nahi ho.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0,
+    "text": "आपने कहा था आप समीर नहीं हो।"
+   }
+  ]
+ },
+ {
+  "key": "said:…Main nikal raha hoon.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0.8,
+    "text": "…मैं निकल रहा हूँ।"
+   }
+  ]
+ },
+ {
+  "key": "said:…Agar ye bhi jhooth hua—",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Raju",
+    "at": 0.8,
+    "text": "…अगर ये भी झूठ हुआ—"
+   }
+  ]
+ },
+ {
+  "key": "said:Gate 1 khol deta hoon, sahab. Bhasin sahab Gate 2 pe hain.",
+  "style": "call",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Guard",
+    "at": 0,
+    "text": "गेट एक खोल देता हूँ, साहब। भसीन साहब गेट दो पे हैं।"
+   }
+  ]
+ },
+ {
+  "key": "media:corridor-alone",
+  "style": "clip",
+  "seconds": 14,
+  "lines": [
+   {
+    "who": "Anita",
+    "at": 10,
+    "text": "आप अकेले आए हो? …आप ही दोनों हो।"
+   }
+  ]
+ },
+ {
+  "key": "media:room6",
+  "style": "clip",
+  "seconds": 10,
+  "lines": [
+   {
+    "who": "Dilip-weak",
+    "at": 3,
+    "text": "…भैया। आप आ गए।"
+   },
+   {
+    "who": "Dilip-weak",
+    "at": 7,
+    "text": "लाइट रेडी है।"
+   }
+  ]
+ },
+ {
+  "key": "media:rangmanch",
+  "style": "clip",
+  "seconds": 10,
+  "lines": [
+   {
+    "who": "Boy",
+    "at": 1.5,
+    "text": "सर, लाइट यहाँ ठीक है?"
+   },
+   {
+    "who": "Sameer",
+    "at": 5,
+    "text": "हाँ। वहीं। अब हिलना मत।"
+   }
+  ]
+ },
+ {
+  "key": "statement:Main Sameer Khurrana hoon.",
+  "style": "memo",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 0.2,
+    "text": "मैं समीर खुराना हूँ।"
+   }
+  ]
+ },
+ {
+  "key": "statement:Doosri goli maine chalayi thi.",
+  "style": "memo",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 0.2,
+    "text": "दूसरी गोली मैंने चलाई थी।"
+   }
+  ]
+ },
+ {
+  "key": "statement:Us raat goli chali thi. Main wahan tha.",
+  "style": "memo",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 0.2,
+    "text": "उस रात गोली चली थी। मैं वहाँ था।"
+   }
+  ]
+ },
+ {
+  "key": "statement:1:52 pe maine Nitin ko jhooth bola. Gaadi meri wajah se khaali gayi.",
+  "style": "memo",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 0.2,
+    "text": "एक बजकर बावन मिनट पे मैंने नितिन को झूठ बोला। गाड़ी मेरी वजह से ख़ाली गई।"
+   }
+  ]
+ },
+ {
+  "key": "statement:4:47 pe aag maine lagayi thi, Bhasin sir ke kehne pe.",
+  "style": "memo",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 0.2,
+    "text": "चार सैंतालीस पे आग मैंने लगाई थी, भसीन सर के कहने पे।"
+   }
+  ]
+ },
+ {
+  "key": "statement:Ye Dilip hai. Dilip Kumar Mahto. Zinda hai.",
+  "style": "memo",
+  "seconds": 1,
+  "lines": [
+   {
+    "who": "Sameer-low",
+    "at": 0.2,
+    "text": "ये दिलीप है। दिलीप कुमार महतो। ज़िंदा है।"
    }
   ]
  },
  {
   "key": "ending:dilip-thanks",
   "style": "note",
+  "seconds": 16,
   "lines": [
    {
-    "who": "Dilip-weak",
-    "text": "जो भी ये फ़ोन रखता है… शुक्रिया। सच में।"
+    "who": "Dilip",
+    "at": 0.4,
+    "text": "भैया, मैं दिलीप। भसीन सर ने आपका नया नंबर दिया। बोले आपने ही मुझे घर भिजवाया।"
+   },
+   {
+    "who": "Dilip",
+    "at": 7,
+    "text": "शुक्रिया भैया। सच में। माँ को कुछ नहीं बताया।"
+   },
+   {
+    "who": "Dilip",
+    "at": 12,
+    "text": "…मुंबई में लाइट का काम हो तो बुला लेना।"
    }
   ]
  }

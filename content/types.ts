@@ -66,6 +66,8 @@ export type Evidence = {
   readonly app: AppId;
   /** What the case file calls it once it's found. */
   readonly label: string;
+  /** Where it came from, when that isn't an app on the phone ("From the parcel"). */
+  readonly from?: string;
   /** Reachable only once these are true. Badges count reachable-but-unseen. */
   readonly requires?: readonly Flag[];
   /**
@@ -745,6 +747,8 @@ export type Thread = {
   readonly sub?: string;
   /** The header's line once the story says otherwise: the number that was "last seen Tuesday" is online tonight. */
   readonly subLater?: { readonly after: readonly Flag[]; readonly sub: string };
+  /** Somebody who blocked the owner: WhatsApp hides their photo until these hold (the block lifted). */
+  readonly avatarAfter?: readonly Flag[];
   readonly group?: boolean;
   readonly pinned?: boolean;
   /** Unsaved numbers show as numbers, which is how two of them get confused. */
@@ -1025,6 +1029,8 @@ export type CallEntry = {
   readonly seconds?: number;
   /** One row for several calls in a row, as Recents shows it: "(47)". */
   readonly count?: number;
+  /** Missed, and already seen by the owner before tonight: in Recents, not on the badge. */
+  readonly seen?: boolean;
   /** Still connected: Recents shows it as live, not as a length. */
   readonly ongoing?: boolean;
   /** iOS records calls now, for anyone who turns it on. */
@@ -1196,6 +1202,8 @@ export type Said = {
   readonly who?: string;
   readonly text: string;
   readonly english?: string;
+  /** Its recording, where it isn't keyed by the line itself (`said:<text>` in `Story.voices`). */
+  readonly voice?: string;
   readonly needs?: readonly Flag[];
   readonly any?: readonly Flag[];
   readonly unless?: readonly Flag[];

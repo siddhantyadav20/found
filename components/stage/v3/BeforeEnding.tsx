@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import type { PreStep, Said, Story } from "@/content/types";
+import type { PreStep, Said, Story, Voices } from "@/content/types";
 import { goneOf, has, type CaseState } from "@/lib/game/engine";
 import { finish } from "@/lib/game/endings";
 import { saidNow } from "@/lib/game/reading";
 import { sent } from "@/lib/found/tones";
+import { say } from "@/lib/found/voice";
 import { deleteItem, flag } from "../playthrough";
 import styles from "./Final.module.css";
 
@@ -23,9 +24,37 @@ import styles from "./Final.module.css";
 /** The lines an exchange shows now, read off the save. */
 const linesOf = (s: CaseState, lines: readonly Said[] = []) => lines.filter((l) => saidNow(s, l));
 
+/** Heard, one after another, as a call would be: whatever the others say back, never the player's own lines. */
+function useSaid(lines: readonly Said[], voices: Voices | undefined, on: boolean) {
+  // What will be heard, as one key: a re-render with the same lines never plays them again.
+  const heard = lines
+    .filter((l) => l.who !== "You")
+    .map((l) => voices?.[l.voice ?? `said:${l.text}`])
+    .filter((v): v is NonNullable<typeof v> => Boolean(v))
+    .map((v) => `${v.src}#${v.seconds}`)
+    .join("|");
+  useEffect(() => {
+    if (!on || !heard) return undefined;
+    let stop = () => {};
+    const timers: number[] = [];
+    let at = 0;
+    for (const part of heard.split("|")) {
+      const [src, seconds] = part.split("#");
+      timers.push(window.setTimeout(() => (stop = say(src)), at));
+      at += Number(seconds) * 1000 + 450;
+    }
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+      stop();
+    };
+  }, [on, heard]);
+}
+
 /** One thing to do before an ending, or while choosing one (the last question's asides). */
-export function PreStepView({ step, state }: { step: PreStep; state: CaseState }) {
+export function PreStepView({ step, state, voices }: { step: PreStep; state: CaseState; voices?: Voices }) {
   const [open, setOpen] = useState(false);
+  const heard = linesOf(state, step.lines);
+  useSaid(heard, voices, open);
   const did = step.sets?.length ? step.sets.every((f) => has(state, f)) : step.choose?.some((c) => c.sets.every((f) => has(state, f)));
   if ((step.requires ?? []).some((f) => !has(state, f)) || (step.unless ?? []).some((f) => has(state, f))) return null;
 
@@ -62,7 +91,7 @@ export function PreStepView({ step, state }: { step: PreStep; state: CaseState }
       </button>
       {show && (
         <div className={styles.exchange}>
-          {linesOf(state, step.lines).map((l, i) => (
+          {heard.map((l, i) => (
             <p key={i} className={styles.said} data-you={l.who === "You" || undefined}>
               {l.who && <b>{l.who}</b>}
               <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
@@ -97,6 +126,9 @@ export function PreStepView({ step, state }: { step: PreStep; state: CaseState }
           )}
           {/* Raju, lied to, hears it: and comes. */}
           {step.id === "raju-broken" && has(state, "did:raju-repaired") && (
+            <RajuHears voices={voices} />
+          )}
+          {step.id === "raju-broken" && has(state, "did:raju-repaired") && (
             <p className={styles.said}>
               <b>Raju</b>
               <span lang="hi-Latn">…Agar ye bhi jhooth hua—</span>
@@ -107,6 +139,12 @@ export function PreStepView({ step, state }: { step: PreStep; state: CaseState }
       )}
     </li>
   );
+}
+
+/** "…Agar ye bhi jhooth hua—", said once, when the truth has been told him. */
+function RajuHears({ voices }: { voices?: Voices }) {
+  useEffect(() => say(voices?.["said:…Agar ye bhi jhooth hua—"]?.src), [voices]);
+  return null;
 }
 
 export default function BeforeEnding({ story, state, ending }: { story: Story; state: CaseState; ending: string }) {
@@ -139,7 +177,7 @@ export default function BeforeEnding({ story, state, ending }: { story: Story; s
         <p className={styles.lede}>All of it optional. None of it can be undone.</p>
         <ul className={styles.steps}>
           {before.steps.map((s) => (
-            <PreStepView key={s.id} step={s} state={state} />
+            <PreStepView key={s.id} step={s} state={state} voices={story.voices} />
           ))}
         </ul>
         {/* A promise to keep everything, said again, faintly, over the clean-up. */}

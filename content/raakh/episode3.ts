@@ -143,13 +143,13 @@ const nitin: Thread = {
 
 /** Her voice note, as it's heard on black and then kept in the chat (E47). */
 export const ANITA_VOICE = {
-  seconds: 26,
+  seconds: 28,
   lines: [
-    { at: 0.5, who: "Sister Anita", line: "Ek ladka hai. Ek hafte se.", english: "There's a boy. For a week." },
-    { at: 3.5, who: "Sister Anita", line: "Register mein “Deepak, unnees saal, road accident” likha hai.", english: "The register says “Deepak, nineteen, road accident.”" },
-    { at: 8, who: "Sister Anita", line: "Road accident nahi hai. Goli ka ghaav hai, kandhe mein.", english: "It isn't a road accident. It's a bullet wound, in the shoulder." },
-    { at: 12.5, who: "Sister Anita", line: "Jo log laaye the, roz aate hain. Aaj raat bole saat baje le jaayenge. Kahan, nahi bataya.", english: "The men who brought him come every day. Tonight they said they'll take him at seven. Where, they didn't say." },
-    { at: 20, who: "Sister Anita", line: "Woh roz ek hi naam leta hai. Sameer bhaiya.", english: "Every day he says one name. Sameer bhaiya." },
+    { at: 0.7, who: "Sister Anita", line: "Ek ladka hai. Ek hafte se.", english: "There's a boy. For a week." },
+    { at: 3.8, who: "Sister Anita", line: "Register mein “Deepak, unnees saal, road accident” likha hai.", english: "The register says “Deepak, nineteen, road accident.”" },
+    { at: 8.6, who: "Sister Anita", line: "Road accident nahi hai. Goli ka ghaav hai, kandhe mein.", english: "It isn't a road accident. It's a bullet wound, in the shoulder." },
+    { at: 13.6, who: "Sister Anita", line: "Jo log laaye the, roz aate hain. Aaj raat bole saat baje le jaayenge. Kahan, nahi bataya.", english: "The men who brought him come every day. Tonight they said they'll take him at seven. Where, they didn't say." },
+    { at: 22.6, who: "Sister Anita", line: "Woh roz ek hi naam leta hai. Sameer bhaiya.", english: "Every day he says one name. Sameer bhaiya." },
   ],
 } as const;
 
@@ -186,7 +186,7 @@ const dilip: Thread = {
       evidence: "anita-voice",
     }),
     afterVoice("an-p1", "03:23", {
-      attachment: { kind: "photo", label: "A patient's belongings in a plastic bag: a maroon waistcoat with a dried stain, and a name badge, DILIP", src: "/found/raakh/nurse-bag.jpg" },
+      attachment: { kind: "photo", label: "A patient's belongings in a plastic bag: a maroon waistcoat with a dried stain, and a name badge, DILIP", src: "/found/raakh/nurse-bag-2.jpg" },
       evidence: "belongings",
     }),
     afterVoice("an-p2", "03:23", {
@@ -221,7 +221,7 @@ const dilip: Thread = {
       requires: ["fired:dilip-plea"],
       attachment: {
         kind: "voice",
-        seconds: 17,
+        seconds: 21,
         transcript: "Bhaiya… aap aa rahe ho na? Unhone bola hai agar main kuch nahi bolunga toh ghar bhej denge. Main kuch nahi bolunga. Maa ko mat batana ki goli lagi thi. Bas… aap aa jao.",
         english: "Bhaiya… you're coming, right? They said if I don't say anything, they'll send me home. I won't say anything. Don't tell Maa I was shot. Just… come.",
       },
@@ -262,7 +262,7 @@ const dilip: Thread = {
 /* --- Bhasin: his terms at 4:06 (scene 3.11, E50), and, on a real clock, his leaving */
 
 export const TERMS = {
-  seconds: 34,
+  seconds: 43,
   transcript:
     "Sameer. Ab tujhe pata hai ladka zinda hai. Toh seedhi baat. Phone guard ke haath neeche bhej de. Saat baje ladka Samastipur ki bus mein hoga. Zinda, dawai ke saath, paise ke saath. Tu 4:55 ki train pakad. Rangmanch mein maine baat kar li hai, wahan sab theek rahega. Kunal wala video mere paas rahega. Bas mere paas rahega. Aur agar phone neeche nahi aaya… toh ladka bhi kahin nahi jaayega. Aadha ghanta hai.",
   english:
@@ -302,7 +302,7 @@ export const events: readonly LiveEvent[] = [
   { id: "dilip-plea", device: "owner", after: ["ask:q8"], delay: 8, clock: "03:40", app: "whatsapp", banner: "Dilip · 🎤 Voice message" },
   /* The reveal begins once his voice has been heard, or soon after it's
      arrived (RAAKH-V3 §9, scene 3.10). Nothing else lands while it plays. */
-  { id: "reveal-heard", device: "owner", after: ["saw:dilip-plea"], delay: 9, local: true, app: "casefile", sets: ["did:reveal-start"] },
+  { id: "reveal-heard", device: "owner", after: ["saw:dilip-plea"], delay: 25, local: true, app: "casefile", sets: ["did:reveal-start"] },
   { id: "reveal-late", device: "owner", after: ["fired:dilip-plea"], unless: ["fired:reveal-heard"], delay: 60, quiet: true, local: true, app: "casefile", sets: ["did:reveal-start"] },
   { id: "bhasin-terms", device: "owner", after: ["did:reveal-done"], unless: ["did:facedown"], delay: 3, clock: "04:06", app: "whatsapp", banner: "Bhasin Uncle · 🎤 Voice message" },
   // Real time, run out (story.realtime): his car leaves, and the Trade with it.

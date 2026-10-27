@@ -39,32 +39,28 @@ function voice(): Voice | null {
   return v;
 }
 
-/** A struck bar: the note, and a quieter overtone that dies first. */
-const bar = (f: number, at: number, peak = 0.07): Note[] => [
-  { f, at, len: 0.55, peak },
-  { f: f * 4, at, len: 0.12, peak: peak * 0.25 },
+/** A soft struck bar: the note, and an octave above it that dies first. */
+const bar = (f: number, at: number, peak = 0.035): Note[] => [
+  { f, at, len: 0.7, peak },
+  { f: f * 2, at, len: 0.18, peak: peak * 0.12 },
 ];
 
-/* E5 B4 E5 F#5 · B5 A5 F#5: a phrase in the family of every phone's
-   default, not a copy of any of them. */
-const PHRASE: readonly Note[] = [
-  ...bar(659.3, 0),
-  ...bar(493.9, 0.16),
-  ...bar(659.3, 0.32),
-  ...bar(740.0, 0.48),
-  ...bar(987.8, 0.8),
-  ...bar(880.0, 0.96),
-  ...bar(740.0, 1.12),
-];
-const RING_EVERY_MS = 2600;
+/* E4 B3 E4 F#4: four low notes, a phone ringing in the next room rather
+   than in your ear (2026-10-28: the seven-note phrase an octave up, every
+   2.6 s, grated). In the family of every phone's default, a copy of none. */
+const PHRASE: readonly Note[] = [...bar(329.6, 0), ...bar(246.9, 0.2), ...bar(329.6, 0.4), ...bar(370.0, 0.6)];
+const RING_EVERY_MS = 3400;
+/** After this many rings it goes on buzzing, silently, until it's answered or declined. */
+const AUDIBLE_RINGS = 4;
 
 /**
  * Start ringing. Returns the function that stops it. Where a phone can buzz
  * (Android), it buzzes in step.
  */
 export function ringtone(): () => void {
+  let rings = 0;
   const ring = () => {
-    const v = voice();
+    const v = rings++ < AUDIBLE_RINGS ? voice() : null;
     if (v) play(v, PHRASE);
     try {
       navigator.vibrate?.([400, 200, 400]);
@@ -115,6 +111,12 @@ export function sent(): void {
   o.connect(g).connect(v.out);
   o.start(t);
   o.stop(t + 0.2);
+}
+
+/** The case file noting something: one quiet tick of glass, not the phone buzzing. */
+export function noted(): void {
+  const v = voice();
+  if (v) play(v, [{ f: 1568, at: 0, len: 0.14, peak: 0.012 }]);
 }
 
 /** A message arriving in an open chat: two soft notes. */

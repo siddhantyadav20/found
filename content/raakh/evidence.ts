@@ -18,9 +18,9 @@ import type { Evidence } from "../types";
 
 export const evidence: readonly Evidence[] = [
   // From the parcel, before the phone is turned over.
-  { code: "E01", id: "lock-screen", device: "owner", app: "casefile", label: "The lock screen: 47 missed calls, Mummy, Bhasin Uncle", manual: true, foundBy: ["did:past-lock"] },
-  { code: "E02", id: "waybill", device: "owner", app: "casefile", label: "The waybill: refused by M, returned to S. Khurrana, B-14 Navjeevan Apartments, Malviya Nagar", manual: true, foundBy: ["did:opened"] },
-  { code: "E03", id: "note", device: "owner", app: "casefile", label: "The envelope: “M — Sab isme hai. Local thane mat le jaana.”", manual: true, foundBy: ["did:unlock"] },
+  { code: "E01", id: "lock-screen", device: "owner", app: "casefile", from: "Lock screen", label: "The lock screen: 47 missed calls, Mummy, Bhasin Uncle", manual: true, foundBy: ["did:past-lock"] },
+  { code: "E02", id: "waybill", device: "owner", app: "casefile", from: "From the parcel", label: "The waybill: refused by M, returned to S. Khurrana, B-14 Navjeevan Apartments, Malviya Nagar", manual: true, foundBy: ["did:opened"] },
+  { code: "E03", id: "note", device: "owner", app: "casefile", from: "From the parcel", label: "The envelope: “M — Sab isme hai. Local thane mat le jaana.”", manual: true, foundBy: ["did:unlock"] },
 
   // His account (Q1).
   { code: "E04", id: "vn-kunal", device: "owner", app: "whatsapp", label: "Voice note 1 to M: “Kunal firing kar raha tha. Ek ladka gir gaya.”", within: true },

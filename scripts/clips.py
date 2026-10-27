@@ -101,13 +101,16 @@ def silent(seconds):
 dhol, shot, laugh, fire = sfx("dhol"), sfx("shot"), sfx("laugh"), sfx("fire")
 clips = []
 
-# The reel take, 12:31 AM: the wedding far off, one shot up, laughter, "Ek aur, pose mein—", and the recording stops.
-t = silent(14)
-bed(t, dhol, 0.18, until=13.2)
-lay(t, shot, 7.0, 0.95)
-lay(t, laugh, 8.5, 0.55)
+# The reel take, 12:31 AM (RAAKH-V3 §16): the wedding far off, one shot up, laughter, "Ek aur, pose mein—",
+# the second shot, nobody speaking, "Dilip?", footsteps toward the tripod, and the recording stops.
+t = silent(18)
+bed(t, dhol, 0.18, until=17.6)
+lay(t, shot, 8.6, 0.95)
+lay(t, laugh, 9.0, 0.55, until=10.1)
+lay(t, shot, 13.0, 0.95)
+steps(t, 16.2, 17.6, every=0.32, gain=0.5)
 lay(t, voice("clip-reel-take"), 0, 1.0)
-clips.append(("reel-take", write(t, "reel-take", cut=13.2), 14, 13.2))
+clips.append(("reel-take", write(t, "reel-take", cut=17.6), 18, 17.6))
 
 # Kunal's clip, 11:52 PM: the dance floor at full volume, two shots, cheering, "Oye hoye!".
 t = silent(14)
@@ -118,16 +121,16 @@ lay(t, laugh, 7.0, 0.8)
 lay(t, voice("clip-k-3"), 0, 1.0)
 clips.append(("k-3", write(t, "k-3"), 14, None))
 
-# The fire, trimmed: nine seconds of crackle and wind, "Jaldi karo."
+# The fire, trimmed to its first nine seconds: nothing lit yet. Footsteps, something heavy set down, "Uske kapde bhi."
 t = silent(9)
-bed(t, fire, 0.85)
+steps(t, 0.4, 2.2)
 lay(t, voice("clip-fire"), 0, 1.0)
 clips.append(("fire", write(t, "fire"), 9, None))
 
-# The whole fire, in his locked note: gravel underfoot, "Bhasin sir, yahan?", "Uske kapde bhi.", the fire taking.
+# The whole fire, in his locked note: footsteps, the jerrycan set down, "Uske kapde bhi.", and from 13 s the fire taking.
 t = silent(31)
-steps(t, 0.6, 9.0)
-bed(t, fire, 0.8, start=19.0, fade_in=3.0)
+steps(t, 0.4, 2.2)
+bed(t, fire, 0.8, start=13.0, fade_in=2.5)
 lay(t, voice("clip-fire-whole"), 0, 1.0)
 clips.append(("fire-whole", write(t, "fire-whole"), 31, None))
 
@@ -136,7 +139,7 @@ print("mixed", [c[0] for c in clips])
 
 # The picture: each clip's frames and moves, then the mp4.
 SHOTS = json.load(open(os.path.join(ROOT, "scripts", "clips.raakh.json")))
-STAND_IN = {"reel-1.jpg": "reel-take.jpg", "reel-2.jpg": "reel-take.jpg", "reel-3.jpg": "reel-take.jpg", "kunal-fire.jpg": "kunal-frame.jpg", "gravel.jpg": "w-blur.jpg", "jerrycan.jpg": "fire-mattress.jpg"}
+STAND_IN = {"reel-1.jpg": "reel-take-2.jpg", "reel-2.jpg": "reel-take-2.jpg", "reel-3.jpg": "reel-take-2.jpg", "kunal-fire.jpg": "kunal-frame.jpg", "gravel.jpg": "w-blur.jpg", "jerrycan.jpg": "fire-mattress.jpg"}
 for key, audio, seconds, black in clips:
     spec = dict(SHOTS[key])
     spec.update({"out": os.path.join(R, f"clip-{key}.mp4"), "width": 540, "height": 960, "fps": 24, "seconds": seconds, "audio": audio})
