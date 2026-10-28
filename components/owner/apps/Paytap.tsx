@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { useKeptScroll } from "@/lib/found/keptScroll";
+
 import type { Story } from "@/content/types";
 import { all, type CaseState } from "@/lib/game/engine";
 import { calendarOf, rupees } from "@/lib/game/phone";
@@ -57,6 +59,8 @@ export default function Paytap({
   onHome?: () => void;
 }) {
   const [open, setOpen] = useState<string | null>(null);
+  // Back from a receipt, the history is where it was left.
+  const listScroll = useKeptScroll<HTMLDivElement>("paytap:history");
   const cal = calendarOf(story, state);
   const history = story.payments.filter((p) => all(state, p.requires)).sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const receipt = history.find((p) => p.id === open);
@@ -122,7 +126,7 @@ export default function Paytap({
         <Face name={story.owner.name} />
       </header>
 
-      <div className={styles.body}>
+      <div ref={listScroll} className={styles.body}>
         <div className={styles.bank}>
           <span className={styles.bankName}>Savings account ••2931</span>
           <span className={styles.bankBalance}>₹ ••••••</span>

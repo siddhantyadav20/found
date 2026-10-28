@@ -28,34 +28,31 @@ export default function FoundSoFar({ story, state, episode, onDone }: { story: S
   const now = useSyncExternalStore(at ? subscribeTick : () => () => {}, () => Math.floor(Date.now() / 1000), () => 0);
   const left = at && now && waitsForRelease() ? at - now * 1000 : 0;
   if (!recap) return null;
-  const filed = (recap.filed ?? []).flatMap((qid) => {
-    const q = story.questions.find((x) => x.id === qid);
-    const c = q && filedClaim(q, state);
-    return c ? [{ id: qid, text: c.text, tag: c.version ? "Sameer's version" : c.hunch ? "Your hunch" : "Filed" }] : [];
-  });
+  /* Only what the player answered, in their words (2026-10-28: no "still
+     open", no closing line, no "Next on"). A version or a hunch says so. */
+  // Everything answered up to here, this episode's and the ones before it.
+  const filed = story.questions
+    .filter((q) => !q.final && !q.optional && (q.episode ?? 1) <= episode)
+    .flatMap((q) => {
+      const c = filedClaim(q, state);
+      return c ? [{ id: q.id, text: c.text, tag: c.version ? "Sameer's version" : c.hunch ? "Your hunch" : undefined }] : [];
+    });
 
   return (
-    <div className={styles.recap} role="dialog" aria-label={`Episode ${episode}: found so far`}>
+    <div className={styles.recap} role="dialog" aria-label={`End of episode ${episode}`}>
       <div className={styles.recapInner}>
         <p className={styles.eyebrow}>
-          Episode {episode} · {story.episodes[episode - 1]}
+          End of episode {episode} · {story.episodes[episode - 1]}
         </p>
-        <h2 className={styles.recapTitle}>Found so far</h2>
+        <h2 className={styles.recapTitle}>What you&apos;ve answered</h2>
         <ol className={styles.filed}>
-          {filed.map((f, i) => (
-            <li key={f.id} style={{ animationDelay: `${0.3 + i * 0.35}s` }}>
+          {filed.map((f) => (
+            <li key={f.id}>
               {f.text}
-              <small>{f.tag}</small>
+              {f.tag && <small>{f.tag}</small>}
             </li>
           ))}
         </ol>
-        {recap.open.map((q) => (
-          <p key={q} className={styles.openQ}>
-            <small>Still open</small>
-            {q}
-          </p>
-        ))}
-        {recap.last && <p className={styles.last}>{recap.last}</p>}
         {left > 0 && at ? (
           <div>
             <p className={styles.openQ}>
@@ -68,7 +65,7 @@ export default function FoundSoFar({ story, state, episode, onDone }: { story: S
           </div>
         ) : (
           <button type="button" className={styles.go} onClick={onDone}>
-            Go on <span aria-hidden="true">→</span>
+            Episode {episode + 1} <span aria-hidden="true">→</span>
           </button>
         )}
       </div>

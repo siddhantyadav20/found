@@ -44,6 +44,8 @@ export type Notice = {
   time?: string;
   /** Whose icon it wears, when that isn't the app it opens. */
   icon?: AppId;
+  /** The chat it opens on, for a message. */
+  thread?: string;
   /** On a replay, its icon can be held and looked at closely (PLAYER-JOURNEY Stage 11). */
   look?: boolean;
 };

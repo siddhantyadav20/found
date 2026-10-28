@@ -1,13 +1,11 @@
-import type { NightBeat, Shot } from "../types";
+import type { NightBeat } from "../types";
 
 /* ===========================================================================
-   Your night (the end card's timeline), and the shots that open and close
-   the episodes (RAAKH-V3 §6: PG-PREV, PG-NEXT).
+   Your night (the end card's timeline). "Previously" and "Next" were cut
+   on 2026-10-28: an episode ends on what was answered, and the next begins.
 
    The night's beats say what this player did, at the hour they did it, and
-   a version of each for the share that spoils nothing. "Previously" is
-   assembled from the save: the player's filed sentences being typed, what
-   they said, and the line the last episode ended on.
+   a version of each for the share that spoils nothing.
    =========================================================================== */
 
 export const night: readonly NightBeat[] = [
@@ -51,42 +49,3 @@ export const night: readonly NightBeat[] = [
   { at: "4:40 AM", text: "Kept the phone, and took the 4:55.", share: "Took the train.", needs: ["did:end-train"] },
   { at: "4:40 AM", text: "Sent it back to M.", share: "Sent it back.", needs: ["did:end-origin"] },
 ];
-
-/** "Previously on Raakh", before Episodes 2 and 3 (PG-PREV). */
-export const previously: Readonly<Record<2 | 3, readonly Shot[]>> = {
-  2: [
-    { kind: "card", text: "Seven days later, a parcel comes back to your door." },
-    { kind: "filed", question: "q1" },
-    { kind: "voice", who: "Sameer, to M", text: "Kunal firing kar raha tha.", english: "Kunal was firing.", voice: "voice:m-1" },
-    { kind: "said", reply: "raju-call", to: "Raju" },
-    { kind: "banner", from: "Bhasin Uncle", text: "Ghar pe hi hai. Achha hai.", english: "It's at home. Good.", unless: ["did:went-dark"] },
-    { kind: "banner", from: "Bhasin Uncle", text: "Phone band kar diya? Koi baat nahi. Ghar ka pata hai.", english: "Switched it off? Doesn't matter. I know the house.", needs: ["did:went-dark"] },
-    { kind: "battery", from: 9, to: 2 },
-  ],
-  3: [
-    { kind: "filed", question: "q4" },
-    { kind: "filed", question: "q5" },
-    { kind: "voice", who: "Meera", text: "Kuch delete mat karna.", english: "Don't delete anything.", voice: "prev:meera-delete" },
-    { kind: "said", reply: "nitin-open", to: "Nitin" },
-    { kind: "bubble", who: "Sameer Bhai", text: "Dilip ko le gaye. Bhasin sir ki gaadi mein, hospital. Tu Vicky ko wapas bula aur so ja.", english: "They've taken Dilip. In Bhasin sir's car, to hospital. Call Vicky back and sleep.", at: "01:52" },
-  ],
-};
-
-/** "Next on Raakh", after Episodes 1 and 2 (PG-NEXT): nothing in it answers a question. */
-export const teasers: Readonly<Record<1 | 2, readonly Shot[]>> = {
-  1: [
-    { kind: "black", seconds: 1.2 },
-    { kind: "voice", who: "", text: "Rolling, bhai?", voice: "prev:rolling" },
-    { kind: "image", src: "/found/raakh/bts.jpg", blur: true },
-    { kind: "ring", from: "M" },
-    { kind: "voice", who: "", text: "Kuch delete mat karna.", english: "Don't delete anything.", voice: "prev:meera-delete" },
-    { kind: "card", text: "Episode 2 · The Second Shot" },
-  ],
-  2: [
-    { kind: "sound", text: "[a jerrycan, set down]" },
-    { kind: "lock", digits: 4 },
-    { kind: "banner", from: "Dilip", text: "" },
-    { kind: "sound", text: "[a whisper you can't make out]" },
-    { kind: "card", text: "Episode 3 · Return to Origin" },
-  ],
-};

@@ -159,6 +159,14 @@
   line-height: 1.5;
 }
 
+/* The English under a Hinglish line, as everywhere else on the phone. */
+.lineEnglish {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgb(235 235 245 / 55%);
+}
+
 .locked {
   display: flex;
   flex-direction: column;

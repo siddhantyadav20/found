@@ -879,6 +879,8 @@ export type Mail = {
   readonly id: string;
   readonly from: string;
   readonly address?: string;
+  /** Who it went to, when it isn't the owner: a mail he sent himself, kept in his inbox. */
+  readonly to?: string;
   readonly subject: string;
   readonly at: string;
   readonly day: string;
@@ -965,6 +967,8 @@ export type Note = {
   readonly downloadsAfter?: readonly Flag[];
   /** What is inside once it opens. */
   readonly inside?: readonly string[];
+  /** The English under each Hinglish line shown, by position (null where it's English already). */
+  readonly english?: readonly (string | null)[];
   /** Photos and videos put in the note, shown under its text once it opens. */
   readonly attachments?: readonly Photo[];
   readonly evidence?: string;
@@ -1185,6 +1189,8 @@ export type Shot = (
  * times), or freezes on one bubble before an episode cuts to black.
  */
 export type Dark = {
+  /** Where the phone is when it lifts: this chat, rather than the home screen. */
+  readonly returnTo?: { readonly app: AppId; readonly thread: string };
   readonly id: string;
   readonly after: readonly Flag[];
   readonly unless?: readonly Flag[];

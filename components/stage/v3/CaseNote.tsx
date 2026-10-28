@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { Story } from "@/content/types";
-import { appLabel, caseFile, has, lost, type CaseState } from "@/lib/game/engine";
+import { appLabel, caseFile, dateNow, has, lost, type CaseState } from "@/lib/game/engine";
 import { sentFlag } from "@/lib/game/reading";
 import { REVEAL_DONE, REVEAL_START, UNOPENED } from "@/lib/game/scene";
 import { sent } from "@/lib/found/tones";
@@ -27,7 +27,8 @@ export function NoteHead({ story, state }: { story: Story; state: CaseState }) {
   const turned = has(state, REVEAL_DONE);
   return (
     <header className={styles.head}>
-      <p className={styles.meta}>{note.header}</p>
+      {/* Its header says "Today" as Notes does, until midnight makes it yesterday. */}
+      <p className={styles.meta}>{dateNow(story, state) === story.clocks[0].date ? note.header : note.header.replace("Today", "Yesterday")}</p>
       {/* The info panel: there all along, out of reach until the reveal turned it over. */}
       {turned && (
         <button type="button" className={styles.info} aria-expanded={info} aria-label="Info" onClick={() => setInfo((v) => !v)}>

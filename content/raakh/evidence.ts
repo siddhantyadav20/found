@@ -31,7 +31,7 @@ export const evidence: readonly Evidence[] = [
 
   // The boy (Q2).
   { code: "E08", id: "poster", device: "owner", app: "whatsapp", label: "LAPATA: Dilip Kumar Mahto, 19, last seen at Banyan Farms", within: true },
-  { code: "E09", id: "sethi-shoot", device: "owner", app: "whatsapp", label: "Sethi Caterers, Saturday 2:10 PM: “Dilip ko aapke shoot ke liye 12 baje chhod dunga.”", within: true },
+  { code: "E09", id: "sethi-shoot", device: "owner", app: "whatsapp", label: "Sethi Caterers, 21 Nov, 2:10 PM: “Dilip ko aapke shoot ke liye 12 baje chhod dunga.”", within: true },
   { code: "E09", id: "sethi-dilip", device: "owner", app: "whatsapp", label: "Sethi Caterers, Monday: Dilip hasn't come in since Saturday", within: true },
   { code: "E09", id: "sethi-list", device: "owner", app: "whatsapp", label: "Sethi Caterers: “Dilip ka hisaab Bhasin sir ne kar diya.”", within: true },
   { code: "E10", id: "portrait", device: "owner", app: "photos", label: "9:48 PM, in Favorites: a catering boy with a tray", within: true },
@@ -48,8 +48,8 @@ export const evidence: readonly Evidence[] = [
   { id: "sk-films", device: "owner", app: "instagram", label: "@sk.weddings: Delhi weddings, planned like films" },
 
   // The gun, and the dance floor.
-  { code: "E16", id: "kunal-papa", device: "owner", app: "whatsapp", label: "Kunal, Thursday: “Bhai reel mein Papa wali le aaunga.”", within: true },
-  { code: "E17", id: "kunal-clip", device: "owner", app: "whatsapp", label: "Kunal's clip: two shots on the dance floor, 11:52 PM", within: true },
+  { code: "E16", id: "kunal-papa", device: "owner", app: "whatsapp", label: "Kunal, 19 Nov: “Bhai reel mein Papa wali le aaunga.”", within: true },
+  { code: "E17", id: "kunal-clip", device: "owner", app: "whatsapp", label: "Kunal's clip: the dance floor, 11:52 PM", within: true },
   { code: "E18", id: "kunal-story", device: "owner", app: "instagram", label: "Kunal's story, 12:22 AM, by DM: a revolver, “Papa ki hai, asli wali”", within: true },
 
   // His life, and the money.
@@ -67,11 +67,11 @@ export const evidence: readonly Evidence[] = [
   { code: "E27", id: "mummy-visit", device: "owner", app: "whatsapp", label: "Mummy, Tuesday: Bhasin uncle asked when he leaves for Mumbai", within: true },
 
   // The fire, in Episode 1: the first nine seconds.
-  { code: "E28", id: "fire-clip", device: "owner", app: "photos", label: "Nine seconds, 4:47 AM: a rolled mattress, sheets, “Uske kapde bhi”", within: true },
+  { code: "E28", id: "fire-clip", device: "owner", app: "photos", label: "The fire clip: 9 seconds, 4:47 AM, a rolled mattress and sheets", within: true },
 
   // What iCloud and the bin bring down (Episode 2's doors).
-  { code: "E29", id: "bts", device: "owner", app: "photos", label: "12:29 AM, Kunal's shared album: Sameer with the revolver raised, Dilip on the light", within: true },
-  { code: "E30", id: "reel-take", device: "owner", app: "photos", label: "The reel take, 12:31 AM, in Recently Deleted: two shots, the second at 0:13", manual: true, deletable: true },
+  { code: "E29", id: "bts", device: "owner", app: "photos", label: "Kunal's shared album, 12:29 AM: the revolver raised, the tripod, Dilip beside the light", within: true },
+  { code: "E30", id: "reel-take", device: "owner", app: "photos", label: "The reel take: a deleted video, 12:31 AM, 18 seconds", manual: true, deletable: true },
   { code: "E31", id: "memo", device: "owner", app: "voicememos", label: "A deleted memo: “Pehli camera ke liye thi. Doosri… main pose kar raha tha.”", manual: true, deletable: true },
   { code: "E32", id: "memo-code", device: "owner", app: "voicememos", label: "A deleted memo: “Code woh hai… jo woh roz poochta tha.”", manual: true },
   { code: "E33", id: "no-112", device: "owner", app: "photos", label: "Screenshot: Bhasin, 12:38 AM, “Koi 112 nahi karega. Ladke ko service room le jao.”", within: true },
@@ -92,8 +92,8 @@ export const evidence: readonly Evidence[] = [
   { code: "E36", id: "dilip-video", device: "owner", app: "whatsapp", label: "Dilip, front camera: “Hello sir, my name is Dilip Kumar Mahto.”", manual: true },
   { code: "E36", id: "promise", device: "owner", app: "whatsapp", label: "Dilip, 7:10 PM: “Bhaiya Mumbai wali baat pakki na?” Sameer: “pakki.”", manual: true },
   { code: "E36", id: "dilip-107", device: "owner", app: "whatsapp", label: "Dilip, 1:07 AM: “Bhaiya dard ho raha hai. Aap aa rahe ho na?”", manual: true },
-  { code: "E36", id: "dilip-read", device: "owner", app: "whatsapp", label: "“maaf kar de”, Monday 1:10 AM: read on Tuesday at 3:12 AM", manual: true },
-  { code: "E37", id: "nitin-sick", device: "owner", app: "whatsapp", label: "Nitin, Friday: 102° fever. Sameer: “Dilip light sambhaal lega.”", manual: true },
+  { code: "E36", id: "dilip-read", device: "owner", app: "whatsapp", label: "Sameer to Dilip, Monday 1:10 AM: “Dilip?” “maaf kar de”", manual: true },
+  { code: "E37", id: "nitin-sick", device: "owner", app: "whatsapp", label: "Nitin, 20 Nov: 102° fever. Sameer: “Dilip light sambhaal lega.”", manual: true },
   { code: "E37", id: "nitin-car", device: "owner", app: "whatsapp", label: "Nitin, 1:22 AM: “Vicky ki Swift bhej raha hoon… Dilip ko service gate pe le aao.”", manual: true },
   { code: "E37", id: "nitin-gate", device: "owner", app: "whatsapp", label: "Nitin, 1:40 AM: “Service gate — Mandi Road wala na?”", manual: true },
   { code: "E37", id: "nitin-reply", device: "owner", app: "whatsapp", label: "Nitin, 1:53 AM: “agar le gaye hain toh main Vicky ko wapas bula leta hoon.”", manual: true },
@@ -114,7 +114,7 @@ export const evidence: readonly Evidence[] = [
   { code: "E43", id: "kunal-frame", device: "owner", app: "whatsapp", label: "Kunal sends it again: the frame, “Humare paas bhi hai. Soch samajh ke.”", within: true },
   { code: "E44", id: "kunal-jerrycan", device: "owner", app: "whatsapp", label: "Kunal: “Aur jerrycan tu khud uthake le gaya tha. Papa ne bas bola tha.”", within: true },
   { code: "E45", id: "kunal-rangmanch", device: "owner", app: "whatsapp", label: "Kunal: “Rangmanch mein Papa ne baat kar li hai.”", within: true },
-  { code: "E46a", id: "fire-original", device: "owner", app: "notes", label: "The whole fire, 31 seconds, in the locked note: the kada hand, the jerrycan, an empty mattress", manual: true, deletable: true },
+  { code: "E46a", id: "fire-original", device: "owner", app: "notes", label: "The whole fire clip: 31 seconds, 4:47 AM, in the locked note", manual: true, deletable: true },
   { code: "E46b", id: "note-text", device: "owner", app: "notes", label: "“Agar kuch hua”: “3:31 — B: Body gadde mein lapet di hai. Tu bas aag laga. Dekhna mat.”", manual: true },
 
   // From Dilip's number.
@@ -130,5 +130,5 @@ export const evidence: readonly Evidence[] = [
   { code: "E54", id: "case-meta", device: "owner", app: "casefile", label: "The case file's info: created on this iPhone, Saturday 11:44 PM", manual: true, foundBy: ["did:rv-casefile"] },
 
   // What the player filed, as proof of what comes after it (Q8's second way in).
-  { id: "lie-proved", device: "owner", app: "casefile", label: "Filed: at 1:52 he told Nitin Dilip had gone, knowing he hadn't", manual: true, foundBy: ["claim:q6:truth"] },
+  { id: "lie-proved", device: "owner", app: "casefile", label: "Your answer: why the car left empty", manual: true, foundBy: ["claim:q6:truth"] },
 ];

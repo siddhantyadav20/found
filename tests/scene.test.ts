@@ -4,7 +4,7 @@ import { STORIES } from "@/content/stories";
 import type { Story } from "@/content/types";
 import { add, battery, clockNow, dayNow, fire, minutesSince, newCase, type CaseState } from "@/lib/game/engine";
 import { ENDING_SEEN, finish } from "@/lib/game/endings";
-import { darkDone, DEATH_SEEN, NEEDS_CHARGE, openerShown, PLUGGED_IN, recapShown, sceneOf, teaserShown, titleShown } from "@/lib/game/scene";
+import { darkDone, DEATH_SEEN, NEEDS_CHARGE, PLUGGED_IN, recapShown, sceneOf, titleShown } from "@/lib/game/scene";
 
 /**
  * Where the player is, decided by the save alone, so a reload always lands
@@ -27,18 +27,14 @@ describe("the way in", () => {
 describe("between episodes", () => {
   const unlocked = () => add(opened(), "did:unlock");
 
-  it("dies, says Found so far, plays Next, waits on the charger, then Previously and the title, once (RAAKH-V3 §7.12, §8)", () => {
+  it("dies, says what was answered, waits on the charger, then the title: no Next, no Previously (2026-10-28)", () => {
     let s = add(unlocked(), NEEDS_CHARGE);
     expect(sceneOf(ep, s)).toEqual({ kind: "death" });
     s = add(s, DEATH_SEEN);
     expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 1 });
     s = add(s, recapShown(1));
-    expect(sceneOf(ep, s)).toEqual({ kind: "next", episode: 1 });
-    s = add(s, teaserShown(1));
     expect(sceneOf(ep, s).kind).toBe("charge");
     s = add(s, ...PLUGGED_IN);
-    expect(sceneOf(ep, s)).toEqual({ kind: "opener", episode: 2 });
-    s = add(s, openerShown(2));
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 2 });
     s = add(s, titleShown(2));
     expect(sceneOf(ep, s).kind).toBe("table");
@@ -48,10 +44,6 @@ describe("between episodes", () => {
     s = add(s, darkDone("freeze-2"), "ep:3");
     expect(sceneOf(ep, s)).toEqual({ kind: "recap", episode: 2 });
     s = add(s, recapShown(2));
-    expect(sceneOf(ep, s)).toEqual({ kind: "next", episode: 2 });
-    s = add(s, teaserShown(2));
-    expect(sceneOf(ep, s)).toEqual({ kind: "opener", episode: 3 });
-    s = add(s, openerShown(3));
     expect(sceneOf(ep, s)).toEqual({ kind: "title", episode: 3 });
     expect(sceneOf(ep, add(s, titleShown(3))).kind).toBe("table");
   });

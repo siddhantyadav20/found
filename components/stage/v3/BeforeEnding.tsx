@@ -25,7 +25,7 @@ import styles from "./Final.module.css";
 const linesOf = (s: CaseState, lines: readonly Said[] = []) => lines.filter((l) => saidNow(s, l));
 
 /** Heard, one after another, as a call would be: whatever the others say back, never the player's own lines. */
-function useSaid(lines: readonly Said[], voices: Voices | undefined, on: boolean) {
+function useSaid(lines: readonly Said[], voices: Voices | undefined, plays: number) {
   // What will be heard, as one key: a re-render with the same lines never plays them again.
   const heard = lines
     .filter((l) => l.who !== "You")
@@ -33,8 +33,9 @@ function useSaid(lines: readonly Said[], voices: Voices | undefined, on: boolean
     .filter((v): v is NonNullable<typeof v> => Boolean(v))
     .map((v) => `${v.src}#${v.seconds}`)
     .join("|");
+  // Each tap is a play from the top (2026-10-28: a second tap did nothing).
   useEffect(() => {
-    if (!on || !heard) return undefined;
+    if (!plays || !heard) return undefined;
     let stop = () => {};
     const timers: number[] = [];
     let at = 0;
@@ -47,14 +48,15 @@ function useSaid(lines: readonly Said[], voices: Voices | undefined, on: boolean
       timers.forEach((t) => window.clearTimeout(t));
       stop();
     };
-  }, [on, heard]);
+  }, [plays, heard]);
 }
 
 /** One thing to do before an ending, or while choosing one (the last question's asides). */
 export function PreStepView({ step, state, voices }: { step: PreStep; state: CaseState; voices?: Voices }) {
-  const [open, setOpen] = useState(false);
+  const [plays, setPlays] = useState(0);
+  const open = plays > 0;
   const heard = linesOf(state, step.lines);
-  useSaid(heard, voices, open);
+  useSaid(heard, voices, plays);
   const did = step.sets?.length ? step.sets.every((f) => has(state, f)) : step.choose?.some((c) => c.sets.every((f) => has(state, f)));
   if ((step.requires ?? []).some((f) => !has(state, f)) || (step.unless ?? []).some((f) => has(state, f))) return null;
 
@@ -79,7 +81,7 @@ export function PreStepView({ step, state, voices }: { step: PreStep; state: Cas
         className={styles.stepButton}
         aria-expanded={show}
         onClick={() => {
-          setOpen(true);
+          setPlays((n) => n + 1);
           if (step.sets?.length && !did) {
             sent();
             flag(...step.sets);

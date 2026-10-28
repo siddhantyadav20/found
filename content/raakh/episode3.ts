@@ -192,16 +192,8 @@ const dilip: Thread = {
     afterVoice("an-p2", "03:23", {
       attachment: {
         kind: "photo",
-        label: "An admission slip: Deepak · 19 · M · RTA · Adm 22/11 3:20 AM · Room 6",
-        shot: {
-          name: "Bedi Nursing Home · Admission",
-          sub: "Fatehpur Beri",
-          lines: [
-            { text: "Name: Deepak · Age: 19 · Sex: M", at: "03:20" },
-            { text: "Cause: RTA (road traffic accident)", at: "03:20" },
-            { text: "Admitted 22/11, 3:20 AM · Room 6", at: "03:20" },
-          ],
-        },
+        label: "An admission slip, Bedi Nursing Home: Deepak · 19 · M · brought by Ramesh · RTA · 22/11/26, 3:20 AM · Room 6 · Sister on duty: Anita",
+        src: "/found/raakh/slip.jpg",
       },
       evidence: "slip",
     }),
@@ -291,7 +283,9 @@ const bhasin: Thread = {
 export const threads: readonly Thread[] = [meera, kunal, raju, nitin, dilip, bhasin];
 
 export const events: readonly LiveEvent[] = [
-  { id: "meera-wrong", device: "owner", after: ["claim:q6:truth", "did:meera-contact"], delay: 6, clock: "02:02", app: "whatsapp", banner: "M · Maine galat kiya. Parcel le lena chahiye tha." },
+  /* Once she's seen the lie for herself: Nitin's copy of 1:52, sent to her (2026-10-28: she used to
+     say it on the case file's word, which she can't see). And once the lie is filed, at its 2:02. */
+  { id: "meera-wrong", device: "owner", after: ["claim:q6:truth", "did:sent-m-nitin-152"], delay: 6, clock: "02:02", app: "whatsapp", banner: "M · Maine galat kiya. Parcel le lena chahiye tha." },
   { id: "kunal-writes", device: "owner", after: ["ask:q6"], delay: 14, clock: "02:10", app: "whatsapp", banner: "Kunal · Bhai. Online dikh raha hai." },
   { id: "raju-withdraws", device: "owner", after: ["did:raju-told-kunal", "fired:kunal-writes"], delay: 24, clock: "02:30", app: "whatsapp", banner: `${RAJU} · Sehgal ke ghar gaya tha.`, sets: ["did:raju-withdrew"] },
   { id: "kunal-papa", device: "owner", after: ["did:nitin-exposed"], delay: 20, clock: "02:40", app: "whatsapp", banner: "Kunal · Papa ko bata diya. Handle ho jayega." },
@@ -302,7 +296,7 @@ export const events: readonly LiveEvent[] = [
   { id: "dilip-plea", device: "owner", after: ["ask:q8"], delay: 8, clock: "03:40", app: "whatsapp", banner: "Dilip · 🎤 Voice message" },
   /* The reveal begins once his voice has been heard, or soon after it's
      arrived (RAAKH-V3 §9, scene 3.10). Nothing else lands while it plays. */
-  { id: "reveal-heard", device: "owner", after: ["saw:dilip-plea"], delay: 25, local: true, app: "casefile", sets: ["did:reveal-start"] },
+  { id: "reveal-heard", device: "owner", after: ["saw:dilip-plea"], delay: 32, local: true, app: "casefile", sets: ["did:reveal-start"] },
   { id: "reveal-late", device: "owner", after: ["fired:dilip-plea"], unless: ["fired:reveal-heard"], delay: 60, quiet: true, local: true, app: "casefile", sets: ["did:reveal-start"] },
   { id: "bhasin-terms", device: "owner", after: ["did:reveal-done"], unless: ["did:facedown"], delay: 3, clock: "04:06", app: "whatsapp", banner: "Bhasin Uncle · 🎤 Voice message" },
   // Real time, run out (story.realtime): his car leaves, and the Trade with it.
@@ -318,6 +312,8 @@ export const dark: readonly Dark[] = [
     // Whatever was said back: her voice note plays on black.
     after: ["did:anita-replied"],
     voice: { who: "Sister Anita", key: "voice:an-v", seconds: ANITA_VOICE.seconds, lines: ANITA_VOICE.lines },
+    // Back in the chat it came from, where her photos land next.
+    returnTo: { app: "whatsapp", thread: "dilip" },
     sets: ["did:dark-anita"],
   },
 ];

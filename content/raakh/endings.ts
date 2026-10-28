@@ -99,7 +99,7 @@ export const endings: readonly Ending[] = [
       { kind: "statement", who: "Sameer", text: "Us raat goli chali thi. Main wahan tha.", english: "A shot was fired that night. I was there.", unless: ["claim:q4:truth", "claim:q4:hunch"] },
       { kind: "statement", who: "Sameer", text: "1:52 pe maine Nitin ko jhooth bola. Gaadi meri wajah se khaali gayi.", english: "At 1:52 I lied to Nitin. The car left empty because of me.", needs: ["claim:q6:truth"] },
       { kind: "statement", who: "Sameer", text: "4:47 pe aag maine lagayi thi, Bhasin sir ke kehne pe.", english: "At 4:47 I lit the fire, on Bhasin sir's word.", needs: ["claim:q7:truth"] },
-      { kind: "statement", who: "Sameer", text: "Ye Dilip hai. Dilip Kumar Mahto. Zinda hai.", english: "This is Dilip. He's alive." },
+      { kind: "statement", who: "Sameer", text: "Ye Dilip hai. Dilip Kumar Mahto. Zinda hai.", english: "This is Dilip. Dilip Kumar Mahto. He's alive." },
       { at: "6:20 AM", text: "DCP South arrives. The admission record is copied in front of her.", needs: ["did:dcp-route"] },
       { at: "6:20 AM", text: "The SHO from Fatehpur Beri arrives, after making one call before he comes in.", unless: ["did:dcp-route"] },
       { at: "6:58 AM", text: "A white Innova waits at the back gate for a patient called Deepak. Nobody comes out." },
@@ -174,9 +174,11 @@ export const endings: readonly Ending[] = [
       { at: "5:02 AM", who: "Bhasin Uncle", text: "Shabaash beta. Saat baje bus.", english: "Well done. Bus at seven." },
       NITIN_AGAIN,
       { at: "6:50 AM", who: "+91 98••• •5512", text: "Main Anita. Discharge ho gaya. Woh chal ke gaya.", english: "It's Anita. He's discharged. He walked out." },
-      { at: "7:20 AM", who: "Bhasin Uncle", text: "📷 Dilip in a bus seat at Anand Vihar ISBT, his arm in a sling, looking at the camera, not smiling", english: "" },
+      // A photo, previewed as a phone previews one; what's in it goes underneath (2026-10-28: the description read as his text).
+      { at: "7:20 AM", who: "Bhasin Uncle", text: "📷 Photo", english: "Dilip in a bus seat at Anand Vihar ISBT, his arm in a sling, looking at the camera, not smiling." },
       { who: "Bhasin Uncle", text: "Zinda. Jaisa kaha tha.", english: "Alive. As I said." },
-      { at: "9:30 AM", who: "Meera", text: "Bhasin ka phone aaya tha mere senior ko. Maine copy delete nahi ki. Dilip ghar pahunch jaaye, phir baat karenge.", english: "Bhasin called my senior. I haven't deleted the copy. Once Dilip's home, we'll talk.", needs: ["did:sent-m"] },
+      // By mail: the old phone is Bhasin's now, and his new number is nobody's she knows (2026-10-28).
+      { at: "9:30 AM", who: "Mail · Meera Arora", text: "Bhasin ka phone aaya tha mere senior ko. Maine copy delete nahi ki. Dilip ghar pahunch jaaye, phir baat karenge.", english: "Bhasin called my senior. I haven't deleted the copy. Once Dilip's home, we'll talk.", needs: ["did:sent-m"] },
       { at: "4:55 PM", who: "RailBook", text: "Train 12952 has departed New Delhi. Coach B3, seat 41." },
       { at: "11:02 PM", who: "Mail · Rangmanch Weddings", text: "Welcome aboard, Sameer! Mr Sehgal speaks very highly of you. (cc: Sehgal Enterprises)" },
       { kind: "card", text: "Three weeks later." },
@@ -189,7 +191,8 @@ export const endings: readonly Ending[] = [
         text: "Bhaiya, main Dilip. Bhasin sir ne aapka naya number diya. Bole aapne hi mujhe ghar bhijwaya. Shukriya bhaiya. Sach mein. Maa ko kuch nahi bataya. …Mumbai mein light ka kaam ho toh bula lena.",
         english: "It's Dilip. Bhasin sir gave me your new number. Said you're the one who sent me home. Thank you. Really. I didn't tell Maa anything. …If there's light work in Mumbai, call me.",
       },
-      { kind: "final", src: `${R}/dilip-chhath.jpg`, text: "From Dilip: Chhath at a Samastipur ghat, evening lamps on the water, his mother beside him." },
+      // An old one (2026-10-28): Chhath was in November, and the photo has no sling in it.
+      { kind: "final", src: `${R}/dilip-chhath.jpg`, text: "From Dilip, an old one: last year's Chhath at the Samastipur ghat, before Delhi." },
       { kind: "card", text: "Dilip Kumar Mahto, 19. He thinks you saved him." },
     ],
     last: [],
@@ -218,7 +221,7 @@ export const endings: readonly Ending[] = [
       { at: "7:03 AM", who: "Dilip", text: "Uska phone mere paas hai. Main rakh lungi. Shayad koi aaye.", english: "I have his phone. I'll keep it. Maybe someone will come." },
       // Unless he was lied to and went to the Sehgals': then he doesn't call this number again (RAAKH-V3 §9.4).
       { at: "8:00 AM", who: "Phone", text: `Missed call: +91 62••• •4417 (48)`, unless: ["did:raju-withdrew"] },
-      { at: "4:55 PM", who: "Kunal", text: "Safe journey bhai. Papa ne bola tension mat lena.", english: "Dad said don't worry." },
+      { at: "4:55 PM", who: "Kunal", text: "Safe journey bhai. Papa ne bola tension mat lena.", english: "Safe journey, bhai. Dad says don't worry." },
       { at: "11:40 PM", who: "Mail · Rangmanch Weddings", text: "Welcome aboard, Sameer! (cc: Sehgal Enterprises)" },
       {
         kind: "final",
@@ -275,7 +278,8 @@ export const endings: readonly Ending[] = [
     day: { day: "Sunday", date: "29/11" },
     notes: [{ text: "You didn't look.", needs: ["did:facedown"] }],
     lines: [
-      { at: "4:58 AM", who: "Your phone · Ram Kishan ji", text: "Gate pe rakh diya, sahab. Courier subah aayega.", english: "Left it at the gate. Courier comes in the morning." },
+      // Said under the clock, not texted (2026-10-28): the phone this plays on is the one in the envelope.
+      { at: "4:58 AM", text: "Ram Kishan ji puts the envelope on the counter at Gate 2. The courier comes in the morning." },
       { at: "5:10 AM", who: "Bhasin Uncle", text: "Phir bhej raha hai? Theek hai. Hum bhi intezaar kar lete hain. Ladka bhi.", english: "Sending it again? Fine. We'll wait too. So will the boy." },
       NITIN_AGAIN,
       { at: "6:58 AM", who: "Dilip", text: "Main Anita. Le gaye.", english: "It's Anita. They took him." },

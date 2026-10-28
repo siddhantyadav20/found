@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import type { CallEntry, Story } from "@/content/types";
-import { all, type CaseState } from "@/lib/game/engine";
+import { all, has, type CaseState } from "@/lib/game/engine";
 import { calendarOf } from "@/lib/game/phone";
 import { Page, TabBar } from "../AppView";
 import Avatar from "../ios/Avatar";
@@ -83,7 +83,22 @@ export default function Recents({
       </Page>
     );
 
-  const calls = story.calls.filter((c) => all(state, c.requires)).sort((a, b) => when(b) - when(a));
+  /* Tonight's calls on this phone, once they've rung: answered, or let go
+     (2026-10-28: Raju and M called, and Recents never showed it). Before
+     noon is past midnight, on the night's second date. */
+  const first = story.clocks[0];
+  const tonight = (at: string) => (Number(at.slice(0, 2)) >= 12 ? first.day : (first.after?.date ?? first.day));
+  const live: CallEntry[] = story.incoming
+    .filter((c) => c.device === "owner" && (has(state, `did:answered-${c.id}`) || has(state, `did:declined-${c.id}`)))
+    .map((c) => ({
+      id: `live-${c.id}`,
+      name: c.from,
+      number: c.from,
+      kind: has(state, `did:answered-${c.id}`) ? ("in" as const) : ("missed" as const),
+      at: c.at,
+      day: tonight(c.at),
+    }));
+  const calls = [...story.calls.filter((c) => all(state, c.requires)), ...live].sort((a, b) => when(b) - when(a));
 
   return (
     <Page
@@ -120,7 +135,7 @@ export default function Recents({
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d={kind.d} />
                   </svg>
-                  {c.ongoing ? "On call" : c.kind === "missed" ? "Missed" : c.seconds ? `Mobile · ${length(c.seconds)}` : "Mobile · Cancelled"}
+                  {c.ongoing ? "On call" : c.kind === "missed" ? "Missed" : c.seconds ? `Mobile · ${length(c.seconds)}` : c.kind === "in" ? "Mobile" : "Mobile · Cancelled"}
                 </span>
               </span>
             </>

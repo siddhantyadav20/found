@@ -211,14 +211,18 @@
   color: rgb(235 235 245 / 70%);
 }
 
-.deathAlert i {
+.deathAlert button {
   display: block;
+  width: 100%;
   margin-top: 16px;
   padding: 12px 0;
+  border: 0;
   border-top: 1px solid rgb(84 84 88 / 65%);
-  font-style: normal;
+  background: none;
+  font: inherit;
   font-size: 17px;
   color: #0a84ff;
+  cursor: pointer;
 }
 
 .screenOn {
@@ -682,4 +686,33 @@
 .tableSub {
   font-size: 14px;
   color: var(--muted);
+}
+
+/* Long words on a short phone (2026-10-28): it scrolls, and centring by
+   margins never pushes the top out of reach the way grid centring does. */
+.black {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  place-items: normal;
+  justify-items: center;
+}
+
+.black > * {
+  margin-block: auto;
+}
+
+/* The alert comes up over whatever was on his phone, as iOS's does, and only
+   then does the screen go (2026-10-28: it used to come up on a blank screen). */
+.death[data-over] {
+  background: transparent;
+}
+
+.alertOver {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 38%);
+  backdrop-filter: blur(2px);
 }

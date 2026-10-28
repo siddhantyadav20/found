@@ -460,3 +460,17 @@
   color: #d1d1d6;
   animation: rise 0.8s 1.6s ease-out both;
 }
+
+/* Long words on a short phone (2026-10-28): it scrolls, and centring by
+   margins never pushes the top out of reach the way grid centring does. */
+.stage {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  place-items: normal;
+  justify-items: center;
+}
+
+.stage > * {
+  margin-block: auto;
+}

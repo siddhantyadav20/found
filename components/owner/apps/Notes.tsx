@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, type CSSProperties } from "react";
 
 import type { Note, Photo, Story } from "@/content/types";
-import { all, goneOf, has, type CaseState } from "@/lib/game/engine";
+import { all, dateNow, goneOf, has, type CaseState } from "@/lib/game/engine";
 import { calendarOf, unlocked } from "@/lib/game/phone";
 import { Page, SearchField } from "../AppView";
 import app from "../ios/App.module.css";
@@ -225,10 +225,13 @@ function Open({
             aria-invalid={shaking || undefined}
           />
         </span>
-        <p className={styles.lockHint}>
-          {numeric
-            ? `Enter the ${note.password!.length}-digit password for “${note.title}”.`
-            : `Enter the password for “${note.title}”.`}
+        <p className={styles.lockHint} aria-live="polite">
+          {/* Said, not only shaken: a cleared field alone reads as a tap that didn't take (2026-10-28). */}
+          {missed
+            ? "Wrong password. Try again."
+            : numeric
+              ? `Enter the ${note.password!.length}-digit password for “${note.title}”.`
+              : `Enter the password for “${note.title}”.`}
         </p>
         {/* A number's hint is there from the start: a four-digit guess isn't a puzzle, it's a wall. */}
         {(missed || numeric) && note.hint && (
@@ -250,6 +253,7 @@ function Open({
       {(note.inside ?? note.body).map((line, i) => (
         <p key={i} className={styles.line}>
           {line}
+          {note.english?.[i] && <small className={styles.lineEnglish}>{note.english[i]}</small>}
         </p>
       ))}
       {kept.map((a) => (
@@ -388,7 +392,8 @@ export default function Notes({
       {/* The case file: a note made on this iPhone tonight (IC4). */}
       {story.caseNote && onCaseFile && all(state, story.caseNote.when) && (
         <div>
-          <h3 className={styles.section}>Today</h3>
+          {/* Made at 11:44 PM: past midnight, that's yesterday. */}
+          <h3 className={styles.section}>{dateNow(story, state) === story.clocks[0].date ? "Today" : "Yesterday"}</h3>
           <ul className={styles.list}>
             <li>
               <button type="button" className={styles.row} onClick={onCaseFile}>

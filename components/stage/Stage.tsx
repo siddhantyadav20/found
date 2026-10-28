@@ -42,7 +42,7 @@ import Ringing from "./Ringing";
 import TitleCard from "./TitleCard";
 import Previously from "./Previously";
 import styles from "./v3/Screens.module.css";
-import Table, { putAppsAway } from "./Table";
+import Table, { backToChat, putAppsAway } from "./Table";
 import BeforeEnding from "./v3/BeforeEnding";
 import DarkScreen from "./v3/DarkScreen";
 import FoundSoFar from "./v3/FoundSoFar";
@@ -124,6 +124,7 @@ export default function Stage() {
         cold={story.coldOpen}
         voices={story.voices}
         replay={replay}
+        warning={story.warning}
         onDone={() => {
           try {
             sessionStorage.setItem(coldKey(id), "1");
@@ -157,7 +158,8 @@ export default function Stage() {
           minutes={minutes}
           replay={replay}
           realtime={story.realtime?.offer}
-          warning={story.warning}
+          // Said once, before the night is heard: not again over the parcel.
+          warning={story.coldOpen ? undefined : story.warning}
           onOpen={(detective, real) =>
             save(
               add(
@@ -188,7 +190,13 @@ export default function Stage() {
 
     /* The phone dying: an alert, two flickers, a shape in the glass (PG-DEATH). */
     case "death":
-      return <PhoneDeath alert={story.death?.alert ?? ""} onDone={() => flag(DEATH_SEEN)} />;
+      // Over the phone as it was, nothing on it moving (`review`), until the screen goes.
+      return (
+        <>
+          <Table story={story} meta={meta} state={state} replay={replay} review />
+          <PhoneDeath alert={story.death?.alert ?? ""} onDone={() => flag(DEATH_SEEN)} />
+        </>
+      );
 
     /* "Next on…", after an episode (PG-NEXT). */
     case "next":
@@ -212,7 +220,8 @@ export default function Stage() {
           dark={dark}
           voices={story.voices}
           onDone={() => {
-            putAppsAway();
+            if (dark.returnTo) backToChat(dark.returnTo.app, dark.returnTo.thread);
+            else putAppsAway();
             flag(darkDone(dark.id), ...(dark.sets ?? []));
           }}
         />

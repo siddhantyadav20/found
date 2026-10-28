@@ -7,7 +7,7 @@ import { episode2 } from "./episode2";
 import { episode3 } from "./episode3";
 import { evidence } from "./evidence";
 import * as instagram from "./instagram";
-import { night, previously, teasers } from "./night";
+import { night } from "./night";
 import { questions } from "./questions";
 import { final, reveal } from "./reveal";
 import { voices } from "./voices";
@@ -98,6 +98,8 @@ export const story: Story = {
   lockScreen: [
     { key: "calls", app: "phone", from: "Phone", text: "47 Missed Calls", time: "11:38 PM" },
     { key: "mummy", app: "whatsapp", from: "Mummy", text: "Beta, phone kyun nahi utha raha? Khana khaya?", english: "Why aren't you picking up? Have you eaten?", time: "10:52 PM" },
+    // Her six calls, as Recents and the badge count them (55 = 47 + 6 + 2).
+    { key: "mummy-calls", app: "phone", from: "Mummy", text: "6 missed calls", time: "10:50 PM" },
     { key: "bhasin", app: "phone", from: "Bhasin Uncle", text: "2 missed calls", time: "9:40 PM" },
   ],
   /* Dilip's and Nitin's chats, locked and hidden on Thursday with the word of
@@ -205,8 +207,8 @@ export const story: Story = {
     alert: "Low Battery · 2% of battery remaining",
     cliff: { who: "Bhasin Uncle", text: "Ghar pe hi hai. Achha hai.", english: "It's at home. Good.", unless: ["did:went-dark"] },
   },
-  previously,
-  teasers,
+  /* No "Previously" and no "Next" between episodes (2026-10-28): the recap
+     says what was answered, and the next episode begins. */
   vows: [
     { id: "P1", to: "Nitin", text: "“Tera naam kahin nahi aayega. Pakki.”", made: "did:promise-p1", broken: [["did:end-room6", "claim:q6:truth"]] },
     { id: "P2", to: "Raju", text: "“Main usse dhoondh lunga. Pakki.”", made: "did:promise-p2", broken: [["did:end-train"], ["did:end-origin"]] },

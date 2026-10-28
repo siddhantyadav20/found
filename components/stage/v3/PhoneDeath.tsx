@@ -26,10 +26,8 @@ export default function PhoneDeath({ alert, onDone }: { alert: string; onDone: (
   const [title, line] = alert.split(" · ");
 
   useEffect(() => {
-    if (step === "alert") {
-      const t = window.setTimeout(() => setStep("off"), 2600);
-      return () => window.clearTimeout(t);
-    }
+    // The alert waits for its OK: the player ends the episode, it isn't snatched away (2026-10-28).
+    if (step === "alert") return undefined;
     if (step === "off") {
       try {
         navigator.vibrate?.(30);
@@ -44,13 +42,15 @@ export default function PhoneDeath({ alert, onDone }: { alert: string; onDone: (
   }, [step, onDone]);
 
   return (
-    <div className={styles.death} role="dialog" aria-label="The phone dies">
+    <div className={styles.death} data-over={step === "alert" || undefined} role="dialog" aria-label="The phone dies">
       {step === "alert" && (
-        <div className={styles.screenOn}>
+        <div className={styles.alertOver}>
           <div className={styles.deathAlert} role="alert">
             <b>{title}</b>
             <span>{line}</span>
-            <i>OK</i>
+            <button type="button" onClick={() => setStep("off")} autoFocus>
+              OK
+            </button>
           </div>
         </div>
       )}

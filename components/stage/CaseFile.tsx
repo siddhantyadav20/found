@@ -20,13 +20,11 @@ import {
   proofToCome,
   readProof,
   readSentence,
-  traced,
   whereMissing,
   FILED_AT,
   filedClaim,
   filedClaims,
   hint,
-  isTraced,
   offeredClaims,
   needsRevisit,
   boardReady,
@@ -50,7 +48,6 @@ import { Asides, CloseTheCase, FoundList, NoteHead } from "./v3/CaseNote";
 import { nightly, stamp } from "@/lib/found/time";
 import { moment as momentTone } from "@/lib/found/tones";
 import CloseCase from "./CloseCase";
-import NightStrip from "./NightStrip";
 import { holding } from "@/lib/game/hold";
 
 /** When something was filed: read in the click that files it, never in a render. */
@@ -184,8 +181,10 @@ export default function CaseFile({
 
   /* The last question, answered: one plain line that says what it means,
      and a yes (RAAKH-V3 §10). Nothing after this can be taken back. */
+  // Both inside the file, where its colours are set (2026-10-28: outside it, the buttons lost their fill).
   if (confirming)
     return (
+      <div className={styles.file}>
       <div className={note.card}>
         <p className={note.eyebrow}>{confirming.claim.text}</p>
         <h3 className={note.question}>{confirming.claim.confirm}</h3>
@@ -205,6 +204,7 @@ export default function CaseFile({
           </button>
         </div>
       </div>
+      </div>
     );
 
   /* An answered question stays on screen with its reply. The reply is the
@@ -212,6 +212,7 @@ export default function CaseFile({
      by the next question, which threw it away. */
   if (said?.ok)
     return (
+      <div className={styles.file}>
       <div className={note.card} data-moment={said.moment ? "" : undefined}>
         {said.moment && <p className={styles.moment}>{said.moment}</p>}
         <div className={said.moment ? styles.afterMoment : undefined}>
@@ -245,29 +246,24 @@ export default function CaseFile({
         </button>
         </div>
       </div>
+      </div>
     );
 
-  const record = <Record story={story} state={state} />;
+  /* What's been answered, as one plain list (2026-10-28: "the record" with
+     every proof under every line, and a separate "Also open", read like
+     homework). A line that can be changed says so, and opens on a tap. */
   const offered = side.filter((x) => x.id !== q?.id);
-  const others = offered.length > 0 && (
-    <div className={styles.side}>
-      <p className={styles.groupHead}>Also open</p>
-      {offered.map((x) => (
-        <button
-          key={x.id}
-          type="button"
-          className={styles.lane}
-          onClick={() => {
-            reset();
-            setAside(x.id);
-            setPickedHere(onTable.get(x.id) ?? []);
-          }}
-        >
-          <span className={styles.laneText}>{x.ask}</span>
-          <span className={styles.tag}>{needsRevisit(x, state) ? "Revisit" : editable(x, state) ? "Edit" : "Open"}</span>
-        </button>
-      ))}
-    </div>
+  const answeredList = (
+    <Answered
+      story={story}
+      state={state}
+      open={offered.map((x) => x.id)}
+      onOpen={(id) => {
+        reset();
+        setAside(id);
+        setPickedHere(onTable.get(id) ?? []);
+      }}
+    />
   );
 
   if (!q)
@@ -275,8 +271,6 @@ export default function CaseFile({
       <div className={styles.file}>
         <NoteHead story={story} state={state} />
         <div className={note.card}>
-          <Progress story={story} state={state} />
-          <NightStrip story={story} state={state} />
           <p className={styles.done}>
             {holding(story, state)
               ? story.hold?.note
@@ -287,9 +281,8 @@ export default function CaseFile({
                 : "Nothing else to answer yet. Keep looking through his phone: the night isn't over."}
           </p>
         </div>
-        {others}
         {story.close && !holding(story, state) && <CloseCase story={story} state={state} open={episodeOf(state) === 3} />}
-        {record}
+        {answeredList}
         {story.caseNote ? <FoundList story={story} state={state} /> : <Found found={found} story={story} />}
         <CloseTheCase story={story} state={state} />
       </div>
@@ -398,15 +391,13 @@ export default function CaseFile({
       : q.kind === "timeline"
         ? "Put each row in a lane."
         : saying && !whole
-          ? "Finish the sentence: tap each blank."
+          ? "Fill in the blanks."
           : saying && !filable
-            ? "Change the word marked in red."
+            ? "Change the word in red."
           : q.kind === "file" && !saying && !chosen
             ? "Choose what you think happened."
             : picked.length === 0
-              ? saying
-                ? "Now show it: tap what proves it, below."
-                : "Put the proof on the table to file it: tap what shows it, below."
+              ? "Pick the proof below."
               : "";
 
   // Until the first answer is filed, what the player is doing here, said plainly.
@@ -427,13 +418,11 @@ export default function CaseFile({
         </section>
       )}
       <div className={note.card}>
-        <Progress story={story} state={state} now={q.id} />
-        <NightStrip story={story} state={state} />
-        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : (q.eyebrow ?? "Open question")}</p>
+        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : (q.eyebrow ?? questionNo(story, state, q.id))}</p>
         <h3 className={note.question}>{q.ask}</h3>
         {!detective && (
           <p className={note.ask}>
-            Where to look: {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}
+            Look in {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(" · ")}
           </p>
         )}
 
@@ -521,39 +510,10 @@ export default function CaseFile({
         )}
       </div>
 
-      {others}
       {story.close && !holding(story, state) && <CloseCase story={story} state={state} />}
-      {record}
+      {answeredList}
       {story.caseNote && <FoundList story={story} state={state} />}
       <CloseTheCase story={story} state={state} />
-    </div>
-  );
-}
-
-/**
- * Where the player is in the chapter, at a glance: the episode, a dot per
- * question (filed, open, to come), and the links traced so far. The game's
- * score, kept in view (2026-10-23: "gamify the experience").
- */
-function Progress({ story, state, now }: { story: Story; state: CaseState; now?: string }) {
-  const ep = episodeOf(state);
-  const qs = story.questions.filter((x) => x.episode === ep && !x.optional);
-  const done = qs.filter((x) => answered(state, x.id)).length;
-  return (
-    <div className={styles.progress}>
-      <span className={styles.progressEp}>
-        Episode {ep} · {story.episodes[ep - 1]}
-      </span>
-      <span className={styles.progressDots} role="img" aria-label={`${done} of ${qs.length} questions filed`}>
-        {qs.map((x) => (
-          <i key={x.id} data-done={answered(state, x.id) || undefined} data-now={x.id === now || undefined} />
-        ))}
-      </span>
-      {story.chain.length > 0 && (
-        <span className={styles.progressLinks}>
-          {traced(story, state).length}/{story.chain.length} links
-        </span>
-      )}
     </div>
   );
 }
@@ -564,62 +524,50 @@ function stillOffered(q: Question, s: CaseState) {
   return offeredClaims(q, s).filter((c) => !struck.has(c.id));
 }
 
-/** Where a claim's sources come from: the first of its routes the player has all of. */
-function sourcesOf(routes: readonly (readonly string[])[], s: CaseState): string[] {
-  return [...(routes.find((r) => r.every((id) => seen(s, id))) ?? [])];
-}
-
-/** What stands behind a filed answer, as evidence ids. */
-function sources(q: Question, s: CaseState): string[] {
-  switch (q.kind) {
-    case "pick":
-      return sourcesOf([q.proof, ...(q.orProof ?? [])], s);
-    case "file": {
-      const c = filedClaim(q, s);
-      return c ? sourcesOf([c.proof, ...(c.orProof ?? [])], s) : [];
-    }
-    case "timeline":
-      return q.rows.filter((r) => seen(s, r.evidence)).map((r) => r.evidence);
-    case "claims":
-      return q.claims.map((c) => c.proof).filter((id) => seen(s, id));
-    case "type":
-      return [];
-  }
+/** "Question 2 of 3": where this one sits in its episode. */
+function questionNo(story: Story, s: CaseState, id: string): string {
+  const q = story.questions.find((x) => x.id === id);
+  if (q?.final) return "The last question";
+  const ep = q?.episode ?? episodeOf(s);
+  const qs = story.questions.filter((x) => x.episode === ep && !x.optional && !x.final);
+  const n = qs.findIndex((x) => x.id === id) + 1;
+  return n > 0 ? `Episode ${ep} · Question ${n} of ${qs.length}` : "Open question";
 }
 
 /**
- * The record: every answer so far, in the order the chapter asks them, each
- * with what it stands on. A line that was struck stays, struck: the record
- * remembers what the player believed before.
+ * What's been answered, in the order the chapter asks it: the sentence as
+ * filed, and nothing else (2026-10-28). A version proved wrong since stays,
+ * struck. One that can be changed opens on a tap.
  */
-function Record({ story, state }: { story: Story; state: CaseState }) {
+function Answered({ story, state, open, onOpen }: { story: Story; state: CaseState; open: readonly string[]; onOpen: (id: string) => void }) {
   const lines = story.questions.filter((q) => answered(state, q.id));
-  if (!lines.length) return null;
-  const label = (id: string) => story.evidence.find((e) => e.id === id)?.label ?? id;
+  const extra = story.questions.filter((q) => open.includes(q.id) && !answered(state, q.id));
+  if (!lines.length && !extra.length) return null;
   return (
-    <section className={styles.record} aria-label="The record">
-      <p className={styles.groupHead}>The record</p>
+    <section className={styles.record} aria-label="Answered">
+      <p className={styles.groupHead}>Answered</p>
       <ol className={styles.lines}>
-        {lines.map((q) => {
-          const filed = filedClaims(q, state);
-          const now = filed.at(-1);
-          const from = [...new Set(sources(q, state))];
-          // His version, crossed out by what was proved since; a hunch, borne out.
+        {[...lines, ...extra].map((q) => {
+          const now = filedClaims(q, state).at(-1);
           const out = struckOut(q, state);
-          const borne = now?.hunch ? story.chain.find((l) => l.id === now.hunch && isTraced(state, l)) : undefined;
+          const tag = open.includes(q.id) ? (needsRevisit(q, state) ? "Revisit" : editable(q, state) ? "Change" : "Open") : undefined;
+          const text = now ? now.text : answered(state, q.id) ? q.reply : q.ask;
           return (
             <li key={q.id} className={styles.entry}>
-              {filed.slice(0, -1).map((c, i) => (
-                <p key={`${c.id}-${i}`} className={styles.fileLine} data-struck>
-                  {c.text}
+              {tag ? (
+                <button type="button" className={styles.entryButton} onClick={() => onOpen(q.id)}>
+                  <span className={styles.fileLine} data-struck={out || undefined}>
+                    {text}
+                  </span>
+                  <span className={styles.tag}>{tag}</span>
+                </button>
+              ) : (
+                <p className={styles.fileLine} data-struck={out || undefined}>
+                  {text}
                 </p>
-              ))}
-              <p className={styles.fileLine} data-struck={out || undefined}>
-                {now ? now.text : q.reply}
-              </p>
-              {out && <p className={styles.sources}>Struck by what you proved since.</p>}
-              {borne && <p className={styles.sources}>Your hunch. Proved since.</p>}
-              {from.length > 0 && <p className={styles.sources}>{from.map(label).join(" · ")}</p>}
+              )}
+              {now?.version && !out && <p className={styles.sources}>Sameer&apos;s version</p>}
+              {now?.hunch && <p className={styles.sources}>Your hunch</p>}
             </li>
           );
         })}
@@ -808,20 +756,18 @@ function Board({
           <p className={styles.verdict} data-ok={ok || undefined} role="status">
             {ok
               ? q.final
-                ? "Now show it."
+                ? "Now pick the proof."
                 : read.claim!.version
-                  ? "That's how Sameer tells it. You can file it, if you can show it."
+                  ? "That's how Sameer tells it. You can still file it, with proof."
                   : read.claim!.hunch
-                    ? "That's a hunch, and you can file it as one. Show what it rests on."
-                    : "That's what the phone shows. Now show it."
+                    ? "A hunch. You can file it as one."
+                    : "Right. Now pick the proof."
               : why}
           </p>
         )}
         {ok && !read?.claim?.free && (
           <div className={styles.step} aria-label="Proof">
-            <p className={styles.stepHead}>
-              <span className={styles.stepNo}>2</span> Show it: tap {need === 1 ? "the thing on the phone that proves it" : `the ${need} things on the phone that prove it`}
-            </p>
+            <p className={styles.stepHead}>{need === 1 ? "Pick 1 proof" : `Pick ${need} proofs`}</p>
             {shown.length ? (
               <ul className={note.pickList}>
                 {shown.map((e) => (
@@ -836,7 +782,7 @@ function Board({
                     >
                       <span className={note.check} aria-hidden="true" />
                       <span className={styles.proofText}>
-                        {e.label}
+                        <span className={styles.proofLabel}>{e.label}</span>
                         <span className={styles.proofApp}>{e.from ?? labelOf(e.app)}</span>
                       </span>
                     </button>
@@ -848,7 +794,7 @@ function Board({
             )}
             {toCome > 0 && (
               <p className={styles.toCome}>
-                {toCome === 1 ? "One more thing" : `${toCome} more things`} on the phone {toCome === 1 ? "bears" : "bear"} on this, not found yet.
+                {toCome === 1 ? "1 more" : `${toCome} more`} on the phone, not found yet.
               </p>
             )}
           </div>
@@ -1017,9 +963,6 @@ function SayLine({
     );
   return (
     <div className={styles.saying}>
-      <p className={styles.stepHead}>
-        <span className={styles.stepNo}>1</span> Say what happened: tap each blank
-      </p>
       <p className={styles.sentence}>
         {parts.map((part, i) => {
           const name = part.match(/^\{(\w+)\}$/)?.[1];

@@ -410,7 +410,8 @@ export const events: readonly LiveEvent[] = [
   { id: "nitin-online", device: "owner", after: ["ask:q5"], delay: 6, clock: "01:25", app: "whatsapp", banner: "Nitin · Bhai? Online dikh raha hai." },
   { id: "nitin-copy", device: "owner", after: [READY], delay: 8, clock: "01:52", app: "whatsapp", banner: "Nitin · 📷 Photo" },
   // The bubble seen, or left a while: the episode freezes on it, and cuts to black.
-  { id: "ep2-end", device: "owner", after: ["saw:nitin-152"], delay: 2, local: true, app: "whatsapp", sets: ["did:freeze-2"] },
+  // Long enough for his typed line (7 s) to land and be read beside the screenshot, then held (2026-10-28).
+  { id: "ep2-end", device: "owner", after: ["saw:nitin-152"], delay: 14, local: true, app: "whatsapp", sets: ["did:freeze-2"] },
   { id: "ep2-end-late", device: "owner", after: ["fired:nitin-copy"], unless: ["fired:ep2-end"], delay: 45, quiet: true, local: true, app: "whatsapp", sets: ["did:freeze-2"] },
 ];
 

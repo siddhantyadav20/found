@@ -103,11 +103,12 @@ export default function Ringing({
     call.lines.forEach((l, i) => {
       if (!l.when || has(state, l.when)) out.push({ key: `c${i}`, who: l.who, line: l.line, english: l.english, voice: voices?.[`call:${call.id}:${i}`] });
     });
-    for (const o of path) {
-      out.push({ key: `me-${o.id}`, who: "You", line: o.text, english: o.english, mine: true });
+    path.forEach((o, n) => {
+      // Keyed by where in the call it was said: two exchanges can each have a "why".
+      out.push({ key: `me-${n}-${o.id}`, who: "You", line: o.text, english: o.english, mine: true });
       for (const m of o.then ?? []) out.push({ key: m.id, who: speaker, line: m.text ?? "", english: m.english, voice: voices?.[`msg:${m.id}`] });
       o.next?.before?.forEach((l, i) => out.push({ key: `${o.next!.id}-${i}`, who: l.who, line: l.line, english: l.english, voice: voices?.[`call:${call.id}:${o.next!.id}:${i}`] }));
-    }
+    });
     return out;
   }, [call, path, state, voices, speaker]);
 
@@ -154,11 +155,30 @@ export default function Ringing({
   }, [answered, shown, lines]);
 
   const listening = answered && shown < lines.length;
+  // The newest line, and the answers under it, are always in view.
+  const linesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = linesRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [shown, path.length, listening]);
   const over = answered && !listening && (!exchange || options.length === 0);
   const hangUp = () => {
     ended();
     onSay(path);
   };
+  /* They had the last word and nothing's left to say: they hang up, as a
+     caller does (2026-10-28: the call sat open until the player pressed End). */
+  const last = lines.at(-1);
+  const theirsLast = Boolean(last && !last.mine);
+  useEffect(() => {
+    if (!over || finale || !theirsLast || !last) return undefined;
+    // After their last line has been heard and read.
+    const wait = Math.max(readMs({ text: last.line, english: last.english }), (last.voice?.seconds ?? 0) * 1000) + 1500;
+    const t = window.setTimeout(hangUp, wait);
+    return () => window.clearTimeout(t);
+    // Once, when it's over.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [over]);
   // With a finale, what was said is kept the moment the talking stops.
   useEffect(() => {
     if (over && finale) onSay(path);
@@ -187,10 +207,11 @@ export default function Ringing({
       </div>
 
       {answered ? (
-        <div className={styles.lines} aria-live="polite">
+        <div className={styles.lines} aria-live="polite" ref={linesRef}>
           {lines.slice(0, shown).map((l) => (
             <p key={l.key} className={styles.line} data-mine={l.mine || undefined}>
-              <span className={styles.speaker}>{l.who}</span>
+              {/* An unsaved number has no name on this phone: the caller is only the caller. */}
+              <span className={styles.speaker}>{!l.mine && call.from.startsWith("+") ? "Caller" : l.who}</span>
               <span lang={l.english ? "hi-Latn" : undefined}>{l.line}</span>
               {l.english && <span className={styles.english}>{l.english}</span>}
             </p>

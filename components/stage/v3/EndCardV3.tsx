@@ -138,7 +138,7 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
 
       <section className={ending.section}>
         {copy && <p className={styles.stat}>{copy.held.replace("{n}", String(held.n)).replace("{of}", String(held.of))}</p>}
-        {copy && (
+        {copy && vows.length > 0 && (
           <p className={styles.stat}>
             {copy.promises.replace("{made}", String(vows.length)).replace("{kept}", String(vows.filter((v) => v.state === "kept").length))}
           </p>

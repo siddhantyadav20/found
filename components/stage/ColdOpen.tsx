@@ -29,10 +29,13 @@ export default function ColdOpen({
   onDone,
   voices,
   replay = false,
+  warning,
 }: {
   cold: Cold;
   onDone: () => void;
   voices?: Voices;
+  /** Said before a sound is played (2026-10-28: it used to come after the shots). */
+  warning?: string;
   /**
    * Played before (PG-COLD, RAAKH-V3 §6): the words show, and it can be
    * skipped. The first time it's sound on true black, if every voice in it
@@ -40,8 +43,9 @@ export default function ColdOpen({
    */
   replay?: boolean;
 }) {
-  const voiced = cold.lines.every((l, i) => !l.who || Boolean(voices?.[`cold:${i}`]));
-  const captions = replay || !voiced;
+  /* The words are always on screen, as they are in every other scene that
+     plays a voice (2026-10-28: heard-only, the night opened on a black
+     screen for anyone with the sound low, and read as broken). */
   // 0: the place; 1..n: lines; n + 1: "Seven days later".
   const [step, setStep] = useState(0);
   const last = cold.lines.length + 1;
@@ -57,21 +61,24 @@ export default function ColdOpen({
     const nav = navigator as Navigator & { userActivation?: { hasBeenActive: boolean } };
     return nav.userActivation?.hasBeenActive === true;
   });
+  // The content note first, and a tap to begin: nothing plays before it.
+  const [begun, setBegun] = useState(!warning || replay);
   useEffect(() => warmNight(), []);
-  useBed(cold.bed === "train" ? TRAIN : FAR_DHOL, heard && step <= cold.lines.length);
+  useBed(cold.bed === "train" ? TRAIN : FAR_DHOL, begun && heard && step <= cold.lines.length);
   useEffect(() => {
-    if (!heard || step < 1 || step > cold.lines.length) return;
+    if (!begun || !heard || step < 1 || step > cold.lines.length) return;
     sound(cold.lines[step - 1].line);
     // A line somebody says, said (2026-10-23: the cast is voiced).
     say(voices?.[`cold:${step - 1}`]?.src);
-  }, [heard, step, cold.lines, voices]);
+  }, [begun, heard, step, cold.lines, voices]);
 
   useEffect(() => {
+    if (!begun) return undefined;
     // A voiced line holds until it has been said: a recording is never cut off by the next.
     const said = step >= 1 && step <= cold.lines.length ? (voices?.[`cold:${step - 1}`]?.seconds ?? 0) * 1000 + 250 : 0;
     const t = window.setTimeout(() => (step < last ? setStep(step + 1) : onDone()), step === last ? AFTER_MS : step === 0 ? 1400 : Math.max(LINE_MS, said));
     return () => window.clearTimeout(t);
-  }, [step, last, onDone, voices, cold.lines.length]);
+  }, [begun, step, last, onDone, voices, cold.lines.length]);
 
   useEffect(() => {
     if (!flash) return undefined;
@@ -91,6 +98,27 @@ export default function ColdOpen({
   }, [flash, step]);
 
   const shown = cold.lines.slice(0, Math.min(step, cold.lines.length));
+
+  if (!begun)
+    return (
+      <div className={styles.cold}>
+        <div className={styles.gate}>
+          <p className={styles.where}>Before you begin</p>
+          <p className={styles.gateNote}>{warning}</p>
+          <p className={styles.gateSmall}>Best with sound on.</p>
+          <button
+            type="button"
+            className={styles.begin}
+            onClick={() => {
+              setHeard(true);
+              setBegun(true);
+            }}
+          >
+            Begin
+          </button>
+        </div>
+      </div>
+    );
 
   return (
     <div
@@ -116,7 +144,7 @@ export default function ColdOpen({
         </button>
       )}
       {step < last ? (
-        <div className={styles.captions} aria-live="polite" data-hidden={captions ? undefined : ""}>
+        <div className={styles.captions} aria-live="polite">
           <p className={styles.where}>{cold.where}</p>
           {shown.map((l, i) => (
             <p key={i} className={l.who ? styles.said : styles.sound} data-old={i < shown.length - 3 || undefined}>

@@ -85,7 +85,15 @@ let lastOpen: AppId | null = null;
  */
 export function putAppsAway(): void {
   lastOpen = null;
+  lastThread = null;
 }
+
+/** After a dark screen, back on the chat it came from (Anita's voice note → Dilip's chat), not the home screen. */
+export function backToChat(app: AppId, thread: string): void {
+  lastOpen = app;
+  lastThread = thread;
+}
+let lastThread: string | null = null;
 /** Your phone's news already said at its edge, kept across a call or a reload of the table, so it's said once. */
 let lastTold: string | undefined;
 let lastFired = 0;
@@ -103,7 +111,8 @@ function useWide(): boolean {
   return wide;
 }
 
-type Banner = { app: AppId; from: string; text: string; icon?: AppId };
+/** `thread`: the chat a message banner opens on, as a phone's notification does. */
+type Banner = { app: AppId; from: string; text: string; icon?: AppId; thread?: string };
 
 export default function Table({
   story,
@@ -122,9 +131,26 @@ export default function Table({
 }) {
   const now = useNow(60_000);
   const [openApp, setOpenAppHere] = useState<AppId | null>(() => lastOpen);
+  /* The app this one was opened from (Notes → the case file): back goes there,
+     not home (2026-10-28: back left the app you came from). */
+  const [cameFrom, setCameFrom] = useState<AppId | null>(null);
+  // A chat to open on, from a tapped banner; cleared whenever an app is opened another way.
+  const [openThread, setOpenThread] = useState<string | null>(() => {
+    const t = lastThread;
+    lastThread = null;
+    return t;
+  });
   const setOpenApp = (app: AppId | null) => {
     lastOpen = app;
     setOpenAppHere(app);
+    setCameFrom(null);
+    setOpenThread(null);
+  };
+  const goBack = () => {
+    const to = cameFrom;
+    lastOpen = to;
+    setOpenAppHere(to);
+    setCameFrom(null);
   };
   const wide = useWide();
   const detective = has(state, DETECTIVE);
@@ -188,7 +214,9 @@ export default function Table({
         // On the lock screen it lands in the list; it doesn't pop again after unlocking.
         // Your own phone's news is said at its edge (`yoursNews`), never on his screen.
         if (next.banner && !next.at && next.device === "owner" && s.flags.includes("did:past-lock")) {
-          setBanner({ app: next.app, from: bannerFrom(next.banner), text: bannerText(next.banner), icon: next.icon });
+          // The chat the message landed in, so a tap opens it there and not on the list.
+          const thread = story.threads.find((t) => t.app === next.app && t.messages.some((m) => m.with === next.id))?.id;
+          setBanner({ app: next.app, from: bannerFrom(next.banner), text: bannerText(next.banner), icon: next.icon, thread });
         }
       },
       wait,
@@ -203,7 +231,8 @@ export default function Table({
   const qid = q?.id;
   // A detective asked to be left alone.
   const nudgeDone = !q || detective || review || has(state, `fired:nudge-${q.id}`);
-  const nudgeText = q ? `${q.ask} Look in ${whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}.` : "";
+  // Short, as a banner is read: where to look, not the question again.
+  const nudgeText = q ? `Stuck? Try ${whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}.` : "";
   const progress = state.flags.length;
   // Never inside the case file itself: the question there already says where to look.
   const inCaseFile = openApp === "casefile";
@@ -240,7 +269,16 @@ export default function Table({
        nothing said so, so players couldn't tell what to put on the table). */
     const fresh = story.evidence.filter((e) => ids.split(",").includes(e.id) && !before.has(e.id));
     if (!fresh.length) return undefined;
-    const text = fresh.length === 1 ? `Noted: ${fresh[0].label}` : `Noted ${fresh.length}: ${fresh.map((e) => e.label).join(" · ")}`;
+    /* Said as a phone says it: what was added, by name, and never what it
+       means (2026-10-28: the whole label, read out, answered questions the
+       player hadn't worked out yet). The full line is in the case file. */
+    // Up to its first ": ", never inside a time ("12:22 AM").
+    const name = (label: string) => {
+      const head = label.split(": ")[0].trim();
+      // Too short or too alike to say which one ("M", "Proof", "1:15 AM", "Screenshot"): the whole line.
+      return head.length < 9 || /screenshot|deleted memo/i.test(head) ? label : head;
+    };
+    const text = fresh.length === 1 ? `Added: ${name(fresh[0].label)}` : `Added ${fresh.length} things`;
     const t = window.setTimeout(() => setBanner({ app: "casefile", from: "Case file", text }), 350);
     return () => window.clearTimeout(t);
   }, [manual, story]);
@@ -287,6 +325,7 @@ export default function Table({
       icon: e.icon,
       from: bannerFrom(e.banner!),
       text: bannerText(e.banner!),
+      thread: story.threads.find((t) => t.app === e.app && t.messages.some((m) => m.with === e.id))?.id,
       time: e.at ? stamp(e.at) : cameAt(e.id),
     }))
     .reverse();
@@ -333,11 +372,23 @@ export default function Table({
             openApp ? (
               <AppView
                 title={appLabel(story, openApp)}
-                onBack={() => setOpenApp(null)}
+                onBack={goBack}
                 // Every app but the case file draws its own screens, each with its own bar.
                 whole={openApp !== "casefile"}
               >
-                <AppBody app={openApp} story={story} state={state} onHome={() => setOpenApp(null)} onOpen={(app) => onOpenApp(app)} />
+                <AppBody
+                  key={`${openApp}-${openThread ?? ""}`}
+                  thread={openThread ?? undefined}
+                  app={openApp}
+                  story={story}
+                  state={state}
+                  onHome={goBack}
+                  onOpen={(app) => {
+                    const from = openApp;
+                    onOpenApp(app);
+                    setCameFrom(from);
+                  }}
+                />
               </AppView>
             ) : undefined
           }
@@ -346,10 +397,17 @@ export default function Table({
           onCloseApp={() => setOpenApp(null)}
           // On the lock screen a notification lands in the list, never as a banner over it.
           banner={!banner || !has(state, "did:past-lock") ? null : { key: `${banner.app}-${banner.text}`, ...banner }}
-          onBanner={() => banner && onOpenApp(banner.app)}
+          onBanner={() => {
+            if (!banner) return;
+            onOpenApp(banner.app);
+            setOpenThread(banner.thread ?? null);
+          }}
           onDismissBanner={dismissBanner}
           notices={notices}
-          onNotice={(n) => onOpenApp(n.app)}
+          onNotice={(n) => {
+            onOpenApp(n.app);
+            setOpenThread(n.thread ?? null);
+          }}
           airplane={offline(story, state)}
           airplaneToggles={story.airplaneToggles}
           onAirplane={() => (story.airplaneToggles ? toggleAirplane() : flag(AIRPLANE))}

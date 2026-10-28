@@ -848,3 +848,27 @@
   color: var(--cf-dim);
   font-style: italic;
 }
+
+/* 2026-10-28, the simpler case file: an answered line that can be changed is
+   one tap, and a proof reads in two lines at most. */
+.entryButton {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.proofLabel {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}

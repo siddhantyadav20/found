@@ -88,11 +88,13 @@ function DarkVoice({ voice, voices, onDone }: { voice: NonNullable<Dark["voice"]
 }
 
 function DarkBubble({ bubble, onDone }: { bubble: NonNullable<Dark["bubble"]>; onDone: () => void }) {
-  // Held for a second and a half, then black: it goes on by itself.
+  /* Held, and then the episode is said to be over; the player goes on when
+     they're ready (2026-10-28: it used to cut away by itself, abruptly). */
+  const [over, setOver] = useState(false);
   useEffect(() => {
-    const t = window.setTimeout(onDone, 3600);
+    const t = window.setTimeout(() => setOver(true), 1800);
     return () => window.clearTimeout(t);
-  }, [onDone]);
+  }, []);
   return (
     <div className={styles.black} role="dialog" aria-label={`${bubble.who}, ${stamp(bubble.at)}: ${bubble.text}`}>
       <div className={styles.bubbleWrap}>
@@ -103,6 +105,11 @@ function DarkBubble({ bubble, onDone }: { bubble: NonNullable<Dark["bubble"]>; o
           <time>{stamp(bubble.at)}</time>
         </p>
       </div>
+      {over && (
+        <button type="button" className={styles.quiet} onClick={onDone}>
+          Go on
+        </button>
+      )}
     </div>
   );
 }

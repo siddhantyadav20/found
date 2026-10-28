@@ -60,7 +60,10 @@ export default function AppBody({
   state,
   onHome,
   onOpen,
+  thread,
 }: {
+  /** A chat to open on (a tapped banner). */
+  thread?: string;
   app: AppId;
   story: Story;
   state: CaseState;
@@ -89,6 +92,7 @@ export default function AppBody({
           story={story}
           state={state}
           app={app}
+          opened={thread}
           onHome={onHome}
           onRead={onRead}
           onSay={onSay}

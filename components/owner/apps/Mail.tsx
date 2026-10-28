@@ -84,7 +84,7 @@ export default function Mail({
               {letter.address && details === letter.id ? (
                 <span className={styles.to}>{letter.address}</span>
               ) : (
-                <span className={styles.to}>To: {story.owner.name.split(" ")[0]}</span>
+                <span className={styles.to}>To: {letter.to ?? story.owner.name.split(" ")[0]}</span>
               )}
             </span>
             <span className={styles.date}>{when(letter)}</span>

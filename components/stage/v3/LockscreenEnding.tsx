@@ -73,7 +73,9 @@ function holdMs(b: Beat, story: Story): number {
       return 0;
     default: {
       const v = l.voice ? story.voices?.[l.voice] : undefined;
-      return Math.max(l.poster ? 6400 : 3800, v ? v.seconds * 1000 + 1200 : 0);
+      // Long enough to read it and its English (2026-10-28: long messages went by before they could be).
+      const read = Math.min(10_000, 1500 + 45 * (l.text.length + (l.english?.length ?? 0)));
+      return Math.max(l.poster ? 6400 : 3800, read, v ? v.seconds * 1000 + 1200 : 0);
     }
   }
 }

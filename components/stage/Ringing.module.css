@@ -33,7 +33,7 @@
 .extras { display: flex; justify-content: center; gap: 5.5rem; width: 100%; margin-top: auto; margin-bottom: 1.6rem; }
 .extra { position: relative; display: grid; place-items: center; width: 4.6rem; height: 4.6rem; padding: 0; border: 0; border-radius: 50%; background: none; color: #fff; font: inherit; cursor: pointer; }
 .extra svg { width: 1.7rem; height: 1.7rem; }
-.screen[data-answered] { justify-content: flex-start; padding-top: 3.5rem; }
+.screen[data-answered] { justify-content: flex-start; padding-top: 3.5rem; padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
 
 .head { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .yours { margin-bottom: 0.3rem; font-family: var(--font-ui); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #9fb2dc; }
@@ -65,7 +65,26 @@
 
 .line[data-mine] { align-self: flex-end; text-align: right; color: #cfe3ff; }
 
-.lines { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 24rem; margin-top: 1rem; text-align: left; }
+/* What's been said scrolls under the caller's name, so a long call never
+   pushes the answers off the screen (2026-10-28: a long call couldn't be
+   scrolled, and the player was stuck). */
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 24rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  text-align: left;
+  touch-action: pan-y;
+}
+.lines > * { flex-shrink: 0; }
 
 .line { display: flex; flex-direction: column; gap: 0.15rem; font-family: var(--font-ios); font-size: 1rem; line-height: 1.4; }
 .speaker { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a857e; }

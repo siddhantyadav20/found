@@ -37,7 +37,9 @@ export function endLine(story: Story, s: CaseState): string | undefined {
   const ending = chosen(story, s);
   if (!story.endCopy || !ending) return undefined;
   const vows = vowsOf(story, s);
-  return story.endCopy.share
+  // No promises made: the line stops at the ending, never "0 of 0" (2026-10-28).
+  const line = vows.length ? story.endCopy.share : story.endCopy.share.replace(/ · [^·]*\{kept\}[^·]*$/, ".");
+  return line
     .replace("{ending}", ending.row)
     .replace("{kept}", String(vows.filter((v) => v.state === "kept").length))
     .replace("{made}", String(vows.length));

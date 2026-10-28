@@ -114,7 +114,7 @@ export const questions: readonly Question[] = [
         proof: ["poster", "badge", "shot-list"],
         orProof: [["sethi-shoot", "badge", "shot-list"]],
         also: ["portrait", "sethi-dilip", "sethi-list", "promise", "nitin-sick"],
-        reply: "Dilip Kumar Mahto, nineteen, Sethi Caterers. At 9:48 Sameer photographed him smiling over a tray. At 12:15 he was holding Sameer's light. Nobody has seen him since.",
+        reply: "Dilip Kumar Mahto, nineteen, Sethi Caterers. At 9:48 Sameer photographed him smiling over a tray. At 12:15 he was holding Sameer's light. His family hasn't seen him since.",
       },
       refuse("tray", { role: "*", where: "*", what: "a tray" }, "That was 9:48. Where was he at 12:15?"),
     ],
@@ -163,7 +163,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Kunal's clip is on the dance floor. What happened on the back lawn, forty minutes later?",
       "Photos › Recently Deleted has the reel take, and Kunal's shared album has 12:29. Voice Memos can come back down now.",
-      "Sameer, and the second shot. Table Kunal's 11:52 clip with the reel take (or the deleted memo, or Kunal's frame, or the 12:29 photo with Kunal's “Papa wali”).",
+      "Sameer fired the second shot. Table Kunal's 11:52 clip and the reel take.",
     ],
     say: {
       line: "Kunal fired on the {place} at 11:52. Forty minutes later on the back lawn, {who} fired twice, and the {which} shot hit Dilip.",
@@ -217,7 +217,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Bhasin's group screenshots run on past 1 AM. One of the two chats Sameer locked is Dilip's own.",
       "Nitin's locked chat has a car in it, and when it came back. The screenshots saw it too.",
-      "1:14, awake; Nitin's car; and at 2:04 it left without him. Table Pappu's 1:14 (or Dilip's 1:07) with Nitin's 1:22, and Nitin's or Pappu's 2:04.",
+      "1:14, awake; Nitin sent the car; at 2:04 it left without him. Table Pappu's 1:14, Nitin's 1:22 and Nitin's 2:04.",
     ],
     say: {
       line: "At {time} Dilip was {state}. {who} sent a car to the service gate, and at 2:04 it left {how}.",
@@ -257,7 +257,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Nitin answered someone at 1:53. Where was Sameer at 1:49?",
       "Nitin sent you what he kept. Or set Ramesh's 1:49 beside Nitin's 1:53 and what Safari searched at 1:56.",
-      "Sameer told Nitin Dilip had already gone, knowing he hadn't. Table Nitin's copy of 1:52 with the 1:49 screenshot (or 1:49, Nitin's 1:53 and the 1:56 search).",
+      "He told Nitin Dilip had gone, knowing he hadn't. Table Nitin's copy of 1:52 and Ramesh's 1:49.",
     ],
     say: {
       line: "The car left empty because {cause}.",
@@ -351,7 +351,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Dilip's own number has written to this phone. Read what the nurse sent.",
       "The badge on the waistcoat in the bag: you've seen it before, in Favorites. And item 4 of “For M” is Nitin's chat. What does only Nitin still have?",
-      "Dilip, alive; and Nitin's chat is the one place 1:52 still exists. Table the nurse's photo with the 9:48 portrait or its badge, and Nitin's copy of 1:52 (or “For M”, once you've filed the lie).",
+      "Dilip, alive; Nitin's chat is the one place 1:52 still exists. Table the bag photo, the badge, and Nitin's copy of 1:52.",
     ],
     say: {
       line: "The patient is {who}, alive. “For M” stops at Nitin because {why}.",
@@ -400,7 +400,7 @@ export const questions: readonly Question[] = [
     whereToLook: ["camera", "whatsapp", "mail"],
     hints: [
       "You've seen who S is. Where will you be at seven?",
-      "Room 6 needs Sister Anita's slip or Dilip's voice. Gate 2 needs Bhasin's terms. The 4:55 needs the ticket. “Me” needs the photo you took, the case file's info, or the waybill with his account.",
+      "Room 6 needs Sister Anita, her slip, or Dilip's voice. Gate 2 needs Bhasin's terms. The 4:55 needs the ticket. “Me” needs the photo you took, the case file's info, or the waybill with his account.",
       "There's no right answer here. There is only what you do.",
     ],
     say: {
@@ -426,7 +426,8 @@ export const questions: readonly Question[] = [
         words: { who: "me", where: "at Fatehpur Beri" },
         text: "S is me, and at seven I'll be at Fatehpur Beri.",
         proof: ["camera-photo", "slip"],
-        orProof: each(ME, [["slip"], ["belongings"], ["dilip-plea"]]),
+        // Anita's own words name the place (2026-10-28: they were turned away, though they're what says Fatehpur Beri).
+        orProof: each(ME, [["slip"], ["belongings"], ["dilip-plea"], ["anita"], ["anita-voice"]]),
         ending: "room6",
         confirm: "You go to him. Whatever you say there goes on the record.",
         reply: "",

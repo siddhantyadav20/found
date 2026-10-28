@@ -104,38 +104,13 @@ export const profiles: readonly Profile[] = [
 /** Fine print for the feed's own accounts: a face is an avatar, and anything else is its initial. */
 export const feed: readonly FeedPost[] = [
   /* --- the night, in public, once the player knows its thread ----------- */
-  {
-    id: "f-family",
-    who: "Dilli Dhamaka",
-    handle: "dilli.dhamaka",
-    when: "12m",
-    card: "#7a1f1f",
-    text: "Sehgal parivar ke kareebi sources: “Goli wedding planner ne chalayi thi. Parivar ka koi lena dena nahi.”",
-    english: "Sources close to the Sehgal family: “The wedding planner fired. The family has nothing to do with it.”",
-    shares: [0, 0, 9700],
-    requires: ["ask:q6"],
-  },
-  {
-    id: "f-ritika-2",
-    who: "Ritika",
-    handle: "ritika.kapoor_",
-    when: "40m",
-    card: "#2d2340",
-    text: "Ok so now they're blaming the wedding planner?? Someone who was actually there needs to say what happened.",
-    shares: [0, 0, 1800],
-    requires: ["ask:q6"],
-  },
-  {
-    id: "f-proof",
-    who: "Justice for Dilip",
-    handle: "justice4dilip",
-    when: "1h",
-    card: "#111111",
-    text: "Kisi ke paas proof hai toh daalo. Chup rehna bhi gunah hai. #JusticeForDilip",
-    english: "If anyone has proof, post it. Staying quiet is a crime too.",
-    shares: [0, 4300, 19800],
-    requires: ["ep:2"],
-  },
+  /* What the public can know before the end (2026-10-28): Kunal's firing on
+     the dance floor, which guests filmed, the family denying it, a guest who
+     saw waiters vanish, and Raju's poster. Nobody outside knows a boy was
+     shot, or who fired: the posts that said so were cut. */
+
+
+
   {
     id: "f-lawyers",
     who: "Dilli Dhamaka",
@@ -147,17 +122,7 @@ export const feed: readonly FeedPost[] = [
     shares: [0, 6100, 14200],
     requires: ["ep:2"],
   },
-  {
-    id: "f-rumour",
-    who: "sach ka saath",
-    handle: "sach.ka.saath",
-    when: "Thursday",
-    card: "#1d1d1d",
-    text: "Waiter ko Kunal Sehgal ne goli maari. Paisa hai toh sab maaf? #JusticeForDilip",
-    english: "Kunal Sehgal shot the waiter. If you've got money, all's forgiven?",
-    shares: [1200, 8400, 31000],
-    requires: ["ask:q2"],
-  },
+
   {
     id: "f-poster",
     who: "Samastipur Samachar",
@@ -183,7 +148,7 @@ export const feed: readonly FeedPost[] = [
     handle: "ritika.kapoor_",
     when: "Wednesday",
     card: "#1f2b3a",
-    text: "Was at this wedding. The bride's brother was literally firing in the air like it's a film, the planner even posted him with the gun. Then the waiters vanished from the back lawn and nobody would say why 😶",
+    text: "Was at this wedding. The bride's brother was literally firing in the air like it's a film, and the planner's team was filming him for a reel. Then the waiters vanished from the back lawn and nobody would say why 😶",
     shares: [340, 1200, 2900],
     requires: ["ask:q2"],
   },

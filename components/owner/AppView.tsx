@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 
+import { useKeptScroll } from "@/lib/found/keptScroll";
 import styles from "./ios/App.module.css";
 import AppBar, { Chevron } from "./ios/AppBar";
 
@@ -72,9 +73,12 @@ export function Page({
   tabbed = false,
   onTitle,
   tint,
+  keep,
   children,
 }: {
   title: string;
+  /** Where its scroll is kept: by default its title. A list comes back where it was left. */
+  keep?: string;
   large?: boolean;
   onBack?: () => void;
   backLabel?: string;
@@ -89,6 +93,7 @@ export function Page({
   children: ReactNode;
 }) {
   const [under, setUnder] = useState(false);
+  const body = useKeptScroll<HTMLDivElement>(keep ?? (title ? `page:${title}` : undefined));
   return (
     <section
       className={styles.view}
@@ -97,7 +102,7 @@ export function Page({
       style={tint ? ({ "--tint": tint } as React.CSSProperties) : undefined}
     >
       <AppBar title={title} hideTitle={large && !under} onBack={onBack} backLabel={backLabel} end={end} onTitle={onTitle} />
-      <div className={styles.body} data-tabbed={tabbed || undefined} onScroll={(e) => setUnder(e.currentTarget.scrollTop > 38)}>
+      <div ref={body} className={styles.body} data-tabbed={tabbed || undefined} onScroll={(e) => setUnder(e.currentTarget.scrollTop > 38)}>
         {large && <h2 className={styles.big}>{title}</h2>}
         {children}
       </div>

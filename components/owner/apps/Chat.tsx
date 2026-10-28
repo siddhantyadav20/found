@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+import { useKeptScroll } from "@/lib/found/keptScroll";
 
 import type { Message, ReplyOption, Story, Thread } from "@/content/types";
 import {
@@ -716,13 +718,38 @@ function Conversation({
     return () => window.clearTimeout(t);
   }, [pending, nextFromThem, shown, typingMs]);
 
-  // New messages scroll into view, the way a chat does.
-  useEffect(() => {
-    body.current?.scrollTo({
-      top: body.current.scrollHeight,
-      behavior: "smooth",
-    });
+  /* A chat opens on its newest message, at once; what arrives after slides
+     into view. Photos that finish loading later keep it pinned to the bottom,
+     unless the player has scrolled up to read (2026-10-28: it opened at the
+     top, or short of the newest, once its pictures came in). */
+  const pinned = useRef(true);
+  const opened = useRef(false);
+  useLayoutEffect(() => {
+    const el = body.current;
+    if (!el) return;
+    if (!opened.current) {
+      opened.current = true;
+      el.scrollTop = el.scrollHeight;
+      return;
+    }
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [shown]);
+  useEffect(() => {
+    const el = body.current;
+    if (!el) return undefined;
+    const onScroll = () => {
+      pinned.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    const grow = new ResizeObserver(() => {
+      if (pinned.current) el.scrollTop = el.scrollHeight;
+    });
+    for (const child of Array.from(el.children)) grow.observe(child);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      grow.disconnect();
+    };
+  }, []);
 
   /* Anything on screen counts as found, including what arrives while the
      player is still sitting in the chat. Nothing counts before it has been
@@ -1013,6 +1040,8 @@ export default function Chat({
     "chats" | "archived" | "locked" | "settings" | "privacy" | "lock"
   >("chats");
   const [query, setQuery] = useState("");
+  // Back from a chat, the list is where it was left (2026-10-28).
+  const listScroll = useKeptScroll<HTMLDivElement>(`chats:${app}:${view}`);
   const archive = view === "archived";
   // Two entries with the same name are one chat: a later episode adds to a thread rather than opening a second.
   const threads = threadsIn(story, state, app);
@@ -1023,7 +1052,9 @@ export default function Chat({
     (app !== "yours:chats" || Boolean(t.number)) &&
     t.messages.some((m) => m.with && due.has(m.with));
 
-  const here = threads.find((t) => t.id === open);
+  // A chat asked for by any of its parts' ids: a later episode's part is merged into the first by name.
+  const asked = story.threads.find((t) => t.id === open && t.app === app);
+  const here = threads.find((t) => t.id === open) ?? (asked ? threads.find((t) => t.name === asked.name) : undefined);
   if (here)
     return (
       <Conversation
@@ -1218,7 +1249,7 @@ export default function Chat({
           </span>
         )}
       </header>
-      <div className={styles.listBody}>
+      <div ref={listScroll} className={styles.listBody}>
         {view === "settings" || view === "privacy" || view === "lock" ? (
           <WhatsAppSettings
             view={view}
