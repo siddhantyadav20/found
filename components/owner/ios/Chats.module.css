@@ -446,7 +446,7 @@
   flex-direction: column;
   max-width: 80%;
   padding: 6px 10px 5px;
-  border-radius: 16px 16px 16px 5px;
+  border-radius: 12px;
   background: var(--chat-in);
   font-size: 17px;
   line-height: 1.3;
@@ -456,7 +456,7 @@
 
 .bubble[data-out] {
   align-self: flex-end;
-  border-radius: 16px 16px 5px 16px;
+  border-radius: 12px;
   background: var(--chat-out);
 }
 
@@ -958,6 +958,10 @@
 .replyOption:active { background: rgba(120, 120, 128, 0.42); }
 
 /* Instagram's Direct: black, grey bubbles in, blue bubbles out. */
+.chats[data-app="instagram"] .bubble {
+  border-radius: 20px;
+}
+
 .chats[data-app="instagram"] {
   --chat-bg: #000;
   --chat-wall: #000;

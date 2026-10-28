@@ -175,6 +175,17 @@ function listed(shown: readonly Message[], t: Thread): Message | undefined {
 
 function preview(m: Message | undefined): React.ReactNode {
   if (!m) return "";
+  // Your own last message: its ticks first, as the chat list shows them.
+  if (m.from === "owner" && !m.deleted)
+    return (
+      <>
+        <Ticks state={m.ticks ?? "read"} /> {said(m)}
+      </>
+    );
+  return said(m);
+}
+
+function said(m: Message): React.ReactNode {
   if (m.deleted) return "This message was deleted";
   if (m.text) return m.who ? `${m.who}: ${m.text}` : m.text;
   switch (m.attachment?.kind) {
@@ -444,12 +455,15 @@ function Bubble({
   at,
   onLink,
   voices,
+  tail,
 }: {
   m: Message;
   at: string;
   onLink?: (to: NonNullable<Message["link"]>["to"]) => void;
   /** The story's recordings, for a voice note or a clip in this message. */
   voices?: Story["voices"];
+  /** The first of a run from one sender: the bubble's tail, as WhatsApp draws it. */
+  tail?: boolean;
 }) {
   if (m.from === "system") return <p className={styles.service}>{m.text}</p>;
 
@@ -466,6 +480,7 @@ function Bubble({
       className={styles.bubble}
       data-out={out || undefined}
       data-media={media || undefined}
+      data-tail={tail || undefined}
     >
       {!out && m.who && <span className={local.who}>{m.who}</span>}
       {m.forwarded && (
@@ -605,22 +620,25 @@ function Bubble({
       <span className={styles.stamp}>
         {stamp(at)}
         {out && !m.deleted && (
-          <span
-            className={styles.ticks}
-            data-read={ticks === "read" || undefined}
-            aria-label={
-              ticks === "sent"
-                ? "Sent"
-                : ticks === "delivered"
-                  ? "Delivered"
-                  : "Read"
-            }
-          >
-            {ticks === "sent" ? "✓" : "✓✓"}
-          </span>
+          <Ticks state={ticks} />
         )}
       </span>
     </div>
+  );
+}
+
+/** WhatsApp's ticks, drawn: one grey (sent), two grey (delivered), two blue (read). */
+function Ticks({ state }: { state: "sent" | "delivered" | "read" }) {
+  return (
+    <svg
+      viewBox="0 0 18 11"
+      className={local.ticks}
+      data-read={state === "read" || undefined}
+      role="img"
+      aria-label={state === "sent" ? "Sent" : state === "delivered" ? "Delivered" : "Read"}
+    >
+      {state === "sent" ? <path d="m3 5.8 2.8 2.7L12 2" /> : <path d="m1 5.8 2.8 2.7L10 2M7.6 8.1l.4.4L14.2 2" />}
+    </svg>
   );
 }
 
@@ -876,25 +894,29 @@ function Conversation({
       </header>
 
       <div ref={body} className={styles.messages}>
-        {messages.slice(0, shown).map((m, i) => (
-          <div key={m.id}>
-            {m.day &&
-              cal.dayOf(m.day) !==
-                cal.dayOf(messages[i - 1]?.day ?? "01/01") && (
-                <p className={styles.day}>{cal.label(m.day)}</p>
+        {messages.slice(0, shown).map((m, i) => {
+          const prev = messages[i - 1];
+          const newDay = Boolean(m.day && cal.dayOf(m.day) !== cal.dayOf(prev?.day ?? "01/01"));
+          /* WhatsApp's runs (2026-10-29): a sender's messages sit close, the
+             first of each run gets the tail and some air above it. */
+          const first = !prev || newDay || prev.from === "system" || prev.from !== m.from || prev.who !== m.who;
+          return (
+            <div key={m.id} className={local.turn} data-out={m.from === "owner" || undefined} data-first={first || undefined}>
+              {newDay && <p className={styles.day}>{cal.label(m.day!)}</p>}
+              <Bubble
+                m={m}
+                at={arrivedAt(story, state, m)}
+                onLink={onLink}
+                voices={story.voices}
+                tail={first}
+              />
+              {/* What the phone lets go of (RAAKH-V3 §17): WhatsApp's "Delete for me", which keeps nothing. */}
+              {onDelete && m.evidence && story.evidence.find((e) => e.id === m.evidence)?.deletable && (
+                <DeleteForMe onDelete={() => onDelete(m.id)} />
               )}
-            <Bubble
-              m={m}
-              at={arrivedAt(story, state, m)}
-              onLink={onLink}
-              voices={story.voices}
-            />
-            {/* What the phone lets go of (RAAKH-V3 §17): WhatsApp's "Delete for me", which keeps nothing. */}
-            {onDelete && m.evidence && story.evidence.find((e) => e.id === m.evidence)?.deletable && (
-              <DeleteForMe onDelete={() => onDelete(m.id)} />
-            )}
-          </div>
-        ))}
+            </div>
+          );
+        })}
         {/* Somebody writing back: said where the player is looking, not only in the header. */}
         {((pending && nextFromThem) || (coming && !pending)) && (
           <p className={local.typing} aria-label="Typing">

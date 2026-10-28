@@ -6,8 +6,10 @@ import type { Flag, Story } from "@/content/types";
    Whether strangers start a case, where they get stuck, whether they finish,
    what they chose, and whether they pass the phone on:
 
-     open → unlock → past-lock → ep2-start → ep3-start →
-       choice → end                                               the chapter
+     open → unlock → past-lock → ep1-end → ep2-start → ep2-end →
+       ep3-start → reveal → reveal-done → end → card               the chapter
+     again                                                        Choose differently
+     left:<scene>                                                 where they put it down
      solved:<id>, wrong:<id>, hint:<id>:<tier>, nudge:<id>        where it's too hard
      claim:<question>:<claim>                                     which reading they filed
      link:<link>                                                  how much of the chain they traced
@@ -33,11 +35,42 @@ const MILESTONES = [
   "resume",
   "unlock",
   "past-lock",
+  "ep1-end",
   "ep2-start",
+  "ep2-end",
   "ep3-start",
+  "reveal",
+  "reveal-done",
   "choice",
   "end",
+  "card",
+  "again",
 ] as const;
+
+/**
+ * Where a player was when they put the phone down (2026-10-29): the scene
+ * on screen when the tab was hidden or closed, once per scene per visit.
+ * The table is split by episode, since that's most of the game.
+ */
+export const LEFT = [
+  "parcel",
+  "note",
+  "ep1",
+  "ep2",
+  "ep3",
+  "ringing",
+  "death",
+  "recap",
+  "charge",
+  "title",
+  "opener",
+  "dark",
+  "reveal",
+  "before",
+  "ending",
+  "end-card",
+  "unopened",
+].map((x) => `left:${x}`);
 
 
 /**
@@ -109,6 +142,7 @@ export function eventsFor(ep: Story): readonly string[] {
       ...ep.endings.map((e) => `end:${e.id}`),
       // What the night decided, where it decides something (Raakh: got there before seven, or not).
       ...(ep.fate ? ["fate:yes", "fate:no"] : []),
+      ...LEFT,
       ...SHARING,
       ...POWER,
       ...KEEPING,
@@ -127,6 +161,11 @@ export const MILESTONE_OF: Partial<Record<Flag, (typeof MILESTONES)[number]>> = 
   "did:past-lock": "past-lock",
   "ep:2": "ep2-start",
   "ep:3": "ep3-start",
+  "did:needs-charge": "ep1-end",
+  "did:freeze-2": "ep2-end",
+  "did:reveal-start": "reveal",
+  "did:reveal-done": "reveal-done",
+  "did:ending-seen": "card",
   // The player has looked at the record they could send or post.
   "did:saw-record": "choice",
   "did:chose": "end",

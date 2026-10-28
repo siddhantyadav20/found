@@ -27,8 +27,9 @@ export function StatusBar({
   /** On the Lock Screen the big clock tells the time, and the corner names the carrier. */
   locked?: boolean;
 }) {
-  // At 4–7% a true-width fill is a hairline, so the low end is drawn generously.
-  const width = Math.max(8, Math.min(100, battery < 20 ? battery * 6 : battery));
+  /* The true level, as iOS draws it (2026-10-29: 9% was drawn at six times its
+     width and read as half full). A sliver still shows at the very bottom. */
+  const width = Math.max(6, Math.min(100, battery));
   return (
     <div className={styles.status} aria-hidden="true">
       {locked && !recording ? (
@@ -53,7 +54,11 @@ export function StatusBar({
         </svg>
           </>
         )}
-        <span className={styles.battery} data-low={(battery <= 7 && !charging) || undefined} data-charging={charging || undefined}>
+        <span
+          className={styles.battery}
+          data-low={(battery <= 7 && !charging) || undefined}
+          data-charging={charging || undefined}
+        >
           <span className={styles.cell}>
             <span className={styles.fill} style={{ width: `${width}%` }} />
             <span className={styles.cellNum} data-dark={width >= 55 || undefined}>

@@ -97,3 +97,45 @@
 .vows li[data-state="broken"] b {
   color: var(--stamp);
 }
+
+/* Endings found, and Choose differently (2026-10-29). */
+.ways {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ways li {
+  padding: 6px 12px;
+  border: 1px dashed var(--line-2);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.ways li[data-found] {
+  border-style: solid;
+  border-color: var(--muted);
+  color: var(--text);
+}
+
+.again {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--paper-ink);
+  font-weight: 600;
+}
+
+.again:hover {
+  background: var(--paper);
+  opacity: 0.9;
+}
+
+.againNote {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}

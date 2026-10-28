@@ -8,7 +8,7 @@ import { useCase } from "@/components/found/StoryContext";
 import type { CaseId } from "@/content/cases";
 import type { EpisodeNo, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
-import { chosen, earned } from "@/lib/game/endings";
+import { chosen, earned, rewindToChoice } from "@/lib/game/endings";
 import { heldOn, impulseOf, topLines, vowsOf, walkedPast } from "@/lib/game/reading";
 import { commit } from "@/lib/found/progress";
 import { resultOf } from "@/lib/found/result";
@@ -25,6 +25,7 @@ import styles from "./EndCard.module.css";
    The end card (RAAKH-V3 §11): every ending but Unopened.
 
      the headline, and the line under it
+     Endings found: N of 4, and Choose differently
      Which Sameer read the phone: two bars, each with its most weighted line
      Your story held on N of 4
      Promises made: N. Kept: N.
@@ -89,6 +90,18 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
     };
   }, [id]);
 
+  // Every ending this browser has reached, kept outside the save so a rewind doesn't forget it.
+  const ways = story.endings.filter((e) => e.id !== "unopened");
+  const [found] = useState(() => (end ? endingsFound(id, end.id) : []));
+  const rewound = rewindToChoice(story, state);
+  const chooseAgain = () => {
+    if (!rewound) return;
+    track({ case: id, event: "again" });
+    // Marked outside the flags, which the rewind cuts: a second go isn't counted as a second player.
+    commit({ ...rewound, at: { ...rewound.at, rewound: Date.now() } });
+    window.scrollTo(0, 0);
+  };
+
   const playAgain = () => {
     track({ case: id, event: "reset:yes" });
     commit(null);
@@ -110,6 +123,26 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
         ))}
         {state.flags.includes(DETECTIVE) && <p className={ending.scoreMode}>Played as a detective</p>}
       </section>
+
+      {/* Choose differently (2026-10-29): back to the last choice, not the start of the night. */}
+      {rewound && ways.length > 1 && (
+        <section className={ending.section} aria-labelledby="ways">
+          <p className={ending.eyebrow} id="ways">
+            Endings found · {found.filter((f) => ways.some((w) => w.id === f)).length} of {ways.length}
+          </p>
+          <ul className={styles.ways}>
+            {ways.map((w) => (
+              <li key={w.id} data-found={found.includes(w.id) || undefined}>
+                {found.includes(w.id) ? w.row : "?"}
+              </li>
+            ))}
+          </ul>
+          <button type="button" className={`${ending.button} ${styles.again}`} onClick={chooseAgain}>
+            Choose differently
+          </button>
+          <p className={styles.againNote}>Back to the last choice of the night. Everything before it stays as you played it.</p>
+        </section>
+      )}
 
       {/* Which Sameer read the phone: the two impulses, and the line each is best known by. */}
       {story.impulse && (
@@ -225,6 +258,20 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
       </aside>
     </div>
   );
+}
+
+/** Remember an ending as found in this browser, and read back every one found. Never throws. */
+function endingsFound(caseId: string, now: string): string[] {
+  const key = `found:${caseId}:endings`;
+  try {
+    const had = JSON.parse(window.localStorage.getItem(key) ?? "[]") as unknown;
+    const list = Array.isArray(had) ? had.filter((x): x is string => typeof x === "string") : [];
+    if (!list.includes(now)) list.push(now);
+    window.localStorage.setItem(key, JSON.stringify(list));
+    return list;
+  } catch {
+    return [now];
+  }
 }
 
 /** Unopened, as a flag: what "Open it again" takes away. */

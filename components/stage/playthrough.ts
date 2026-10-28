@@ -43,7 +43,8 @@ export function save(given: CaseState): void {
   commit(stamped);
 
   const id = boundCase();
-  if (!id || !story) return;
+  // A night gone back to its last choice was counted the first time through.
+  if (!id || !story || stamped.at.rewound) return;
   const had = new Set(before?.flags ?? []);
   for (const f of stamped.flags) {
     if (had.has(f)) continue;

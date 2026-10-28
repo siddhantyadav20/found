@@ -12,6 +12,7 @@ import { DROP_LEGS, eventsFor, isFoundEvent } from "./events";
 
      found:<case>:<event>    a counter per allowlisted event
      found:<case>:times      the last 500 Episode 1 finish times, in seconds
+     found:<case>:day:<date>:<event>   a few events a day (`DAILY`), kept 120 days
      found:rl:<who>          how many events one address sent this hour
 
    Plain counters rather than a hash: one INCR per event, read back with a
@@ -21,6 +22,13 @@ import { DROP_LEGS, eventsFor, isFoundEvent } from "./events";
    =========================================================================== */
 
 const prefix = (c: CaseId) => `found:${c}`;
+
+/** Counted by the day as well, for the insights page's last two weeks. */
+const DAILY = ["open", "unlock", "ep2-start", "ep3-start", "end", "again", "share:open"] as const;
+const DAY_KEEP = 120 * 86_400;
+const DAYS_SHOWN = 14;
+/** A day in India, where nearly everyone plays: midnight is IST's, not UTC's. */
+const dayOf = (ms: number): string => new Date(ms + 5.5 * 3_600_000).toISOString().slice(0, 10);
 const KEEP_TIMES = 500;
 
 /** A whole playthrough sends perhaps 40 events. This leaves a household room. */
@@ -50,6 +58,10 @@ export async function countEvent(caseId: unknown, event: unknown, seconds: unkno
     const commands: (string | number)[][] = [["INCR", `${p}:${event}`]];
     if (event === "end" && secs !== undefined)
       commands.push(["LPUSH", `${p}:times`, secs], ["LTRIM", `${p}:times`, 0, KEEP_TIMES - 1]);
+    if ((DAILY as readonly string[]).includes(event)) {
+      const key = `${p}:day:${dayOf(Date.now())}:${event}`;
+      commands.push(["INCR", key], ["EXPIRE", key, DAY_KEEP]);
+    }
     await redis(...commands);
 
     // Someone who arrived through a drop: tell the drop, and count the loop.
@@ -78,19 +90,32 @@ export type Funnel = {
   finishes: number;
   /** Wall-clock from opening the envelope to the battery dying, breaks included. */
   medianSeconds: number | null;
+  /** The last two weeks, oldest first, IST days. */
+  days: { day: string; counts: Record<string, number> }[];
+  /** Episode 1 times, fastest first, for the spread. */
+  times: number[];
 };
 
 export async function readFunnel(caseId: CaseId): Promise<Funnel> {
-  if (!redisReady()) return { configured: false, counts: {}, finishes: 0, medianSeconds: null };
+  if (!redisReady()) return { configured: false, counts: {}, finishes: 0, medianSeconds: null, days: [], times: [] };
   const events = eventsFor(STORIES[caseId]);
-  const results = await redis(...events.map((e) => ["GET", `${prefix(caseId)}:${e}`]));
+  const p = prefix(caseId);
+  const dates = Array.from({ length: DAYS_SHOWN }, (_, i) => dayOf(Date.now() - (DAYS_SHOWN - 1 - i) * 86_400_000));
+  const daily = dates.flatMap((d) => DAILY.map((e) => `${p}:day:${d}:${e}`));
+  const results = await redis(...[...events.map((e) => `${p}:${e}`), ...daily].map((k) => ["GET", k]));
   const counts = Object.fromEntries(events.map((e, i) => [e, asCount(results[i])]));
+  const days = dates.map((day, d) => ({
+    day,
+    counts: Object.fromEntries(DAILY.map((e, j) => [e, asCount(results[events.length + d * DAILY.length + j])])),
+  }));
   const times = await readTimes(caseId);
   return {
     configured: true,
     counts,
     finishes: times.length,
     medianSeconds: times.length ? times[Math.floor(times.length / 2)] : null,
+    days,
+    times,
   };
 }
 

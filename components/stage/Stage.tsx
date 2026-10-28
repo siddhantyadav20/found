@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
-import { add, has, newCase } from "@/lib/game/engine";
+import { add, episodeOf, has, newCase } from "@/lib/game/engine";
 import { stamp } from "@/lib/found/time";
 import {
   darkDone,
@@ -82,6 +82,32 @@ const LockscreenEnding = dynamic(() => import("./v3/LockscreenEnding"), { ssr: f
 const EndCardV3 = dynamic(() => import("./v3/EndCardV3"), { ssr: false, loading: () => <Loader full label="Closing the file" /> });
 const LookAgainV3 = dynamic(() => import("./v3/LookAgainV3"), { ssr: false });
 
+/**
+ * Where the player put the phone down (2026-10-29): the scene on screen when
+ * the tab is hidden or closed, told to the funnel once per scene per visit,
+ * so the insights page can say where people stop.
+ */
+function usePutDown(id: string, where: string) {
+  const now = useRef(where);
+  useEffect(() => {
+    now.current = where;
+  }, [where]);
+  useEffect(() => {
+    const told = new Set<string>();
+    const tell = () => {
+      if (document.visibilityState !== "hidden" || told.has(now.current)) return;
+      told.add(now.current);
+      track({ case: id, event: `left:${now.current}` });
+    };
+    document.addEventListener("visibilitychange", tell);
+    window.addEventListener("pagehide", tell);
+    return () => {
+      document.removeEventListener("visibilitychange", tell);
+      window.removeEventListener("pagehide", tell);
+    };
+  }, [id]);
+}
+
 export default function Stage() {
   const { id, story, meta, to, minutes, via } = useCase();
   bindProgress(id);
@@ -94,6 +120,7 @@ export default function Stage() {
   const [coldDone, setColdDone] = useState(false);
   // After the end: his phone again, to go back through (script §20). A view, not a step in the save.
   const [looking, setLooking] = useState(false);
+  usePutDown(id, scene.kind === "table" || scene.kind === "moment" || scene.kind === "finale" ? `ep${state ? episodeOf(state) : 1}` : scene.kind);
 
   /* Opened after a real gap: when they were last here, read once per visit. */
   const [away, setAway] = useState<number | null>(() => {
@@ -102,6 +129,8 @@ export default function Stage() {
     const last = Math.max(s.started, ...Object.values(s.at));
     return Date.now() - last >= AWAY_MS ? last : null;
   });
+  // Back from the end card (Choose differently) is a choice made now, not a return after a gap.
+  if (away !== null && (scene.kind === "end-card" || scene.kind === "ending")) setAway(null);
   const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "charge" || scene.kind === "recap";
   if (state && away !== null && midCase)
     return (

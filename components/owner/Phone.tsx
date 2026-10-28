@@ -7,6 +7,7 @@ import type { AppId } from "@/content/types";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
 import { noted } from "@/lib/found/tones";
 import { useWakeLock } from "@/lib/found/wakeLock";
+import Alert from "./ios/Alert";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Screen.module.css";
 import { PLANE, StatusBar, WIFI } from "./ios/StatusBar";
@@ -128,6 +129,8 @@ export default function Phone({
   const [heldOpen, setHeldOpen] = useState<string | null>(null);
   const expanded = Boolean(banner && heldOpen === banner.key);
   const held = useRef(false);
+
+  const lowAlert = useLowBattery(battery, Boolean(charging || lock));
 
   useWakeLock(true);
   useEffect(() => warmBuzz(), []);
@@ -539,7 +542,44 @@ export default function Phone({
         </p>
 
         {overlay}
+        {lowAlert && <Alert title="Low Battery" message={lowAlert.message} button="Close" onClose={lowAlert.close} />}
       </div>
     </div>
   );
+}
+
+/** Where iOS warns that the battery is going: 20%, 10%, and once more near the end. */
+const LOW_AT = [20, 10, 5] as const;
+
+/**
+ * The phone saying it's dying (2026-10-29: a yellow cell alone didn't say so).
+ * The lowest threshold crossed is warned about once, on an unlocked phone off
+ * the charger; what's been warned about is kept for the visit, so a reload
+ * doesn't say it again.
+ */
+function useLowBattery(battery: number, quiet: boolean) {
+  const due = LOW_AT.filter((t) => battery <= t).at(-1);
+  const [closed, setClosed] = useState<number | null>(null);
+  const [said] = useState<number[]>(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("found:low-battery") ?? "[]") as number[];
+    } catch {
+      return [];
+    }
+  });
+  const show = !quiet && due !== undefined && battery > 0 && closed !== due && !said.includes(due);
+  if (!show) return null;
+  return {
+    message: `${battery}% battery remaining. Low Power Mode is on.`,
+    close: () => {
+      try {
+        // Every threshold above this one too: at 9%, 20% isn't news.
+        sessionStorage.setItem("found:low-battery", JSON.stringify([...said, ...LOW_AT.filter((t) => t >= due)]));
+      } catch {
+        // Private browsing: it may say it once more, and that's all.
+      }
+      said.push(...LOW_AT.filter((t) => t >= due));
+      setClosed(due);
+    },
+  };
 }

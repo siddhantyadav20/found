@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Flag } from "@/content/types";
 import { add, claimsFor, clockNow, dueEvents, fileSentence, has, newCase, offline, type CaseState } from "@/lib/game/engine";
-import { chosen, linesFor } from "@/lib/game/endings";
+import { chosen, linesFor, rewindToChoice } from "@/lib/game/endings";
 import { heldOn, impulseOf, leaning, vowsOf } from "@/lib/game/reading";
 import { sceneOf, UNOPENED } from "@/lib/game/scene";
 import { upgrade } from "@/lib/found/progress";
@@ -327,5 +327,35 @@ describe("the content checks (RAAKH-V3 §19)", () => {
       const open = (s: CaseState) => !claimsFor(qf, s, claim.words!)[0]?.refuse;
       expect(open(a), claim.id).toBe(open(c));
     }
+  });
+});
+
+/* Choose differently (2026-10-29): back to the last choice, not the start. */
+describe("choose differently", () => {
+  it("goes back to the last question with the night as it was, and another ending can be filed", () => {
+    const s = play({ say: CONFESSOR, photo: true, ending: "room6" });
+    expect(chosen(raakh, s)?.id).toBe("room6");
+    const back = rewindToChoice(raakh, s)!;
+    expect(back).toBeDefined();
+    expect(has(back, "ask:qf")).toBe(false);
+    expect(has(back, "did:chose")).toBe(false);
+    expect(has(back, "did:reveal-done")).toBe(true);
+    expect(sceneOf(raakh, back).kind).toBe("table");
+    // Everything before the choice is kept: the night's earlier answers still stand.
+    expect(has(back, "ask:q8")).toBe(true);
+    expect(fileSentence(raakh, back, "qf", { who: "me", where: "on my way to the 4:55" }, ["camera-photo", "ticket"]).ok).toBe(true);
+  });
+
+  it("puts a face-down night back at M's call", () => {
+    const s = play({ say: CONFESSOR, facedown: true });
+    const back = rewindToChoice(raakh, s)!;
+    expect(has(back, "did:facedown")).toBe(false);
+    expect(has(back, "did:rv-meera")).toBe(false);
+    expect(has(back, "did:rv-guard")).toBe(true);
+    expect(sceneOf(raakh, back).kind).toBe("reveal");
+  });
+
+  it("has nothing to go back to before the last choice", () => {
+    expect(rewindToChoice(raakh, add(newCase("t", 0), "did:opened", "did:unlock"))).toBeUndefined();
   });
 });

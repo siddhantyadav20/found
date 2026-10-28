@@ -30,3 +30,24 @@ export const linesFor = (s: CaseState, lines: readonly EndingLine[]): EndingLine
 
 /** What finishing sets: the ending, and the chapter's own "it's over". */
 export const finish = (id: EndingId): readonly Flag[] => [endFlag(id), "did:chose"];
+
+/**
+ * Choose differently (2026-10-29): the save as it was just before the last
+ * choice, so a finisher can try another ending without replaying the night.
+ *
+ * Flags are kept in the order they landed, so cutting the list where the
+ * choice was made takes everything after it too: the ending, what came
+ * before it, the card. A night that went face down goes back to M's call,
+ * where looking or not was decided; every other one goes back to the last
+ * question, filed again. Undefined when there's nothing to go back to.
+ */
+export function rewindToChoice(story: Story, s: CaseState): CaseState | undefined {
+  const last = story.questions.find((q) => q.final);
+  const at = has(s, "did:facedown")
+    ? s.flags.indexOf("did:rv-meera")
+    : last
+      ? s.flags.findIndex((f) => f === `ask:${last.id}` || f.startsWith(`claim:${last.id}:`))
+      : -1;
+  if (at < 0) return undefined;
+  return { ...s, flags: s.flags.slice(0, at) };
+}
