@@ -87,8 +87,6 @@ export default function Home({
         key={`${app}-${label}`}
         type="button"
         className={styles.icon}
-        // The case file isn't an app anyone knows: its name stays under it, even in the dock.
-        data-named={app === "casefile" || undefined}
         data-offloaded={where !== "installed" || undefined}
         data-busy={busy ? (fetching?.comes ? "loading" : "waiting") : undefined}
         // The dock draws no labels, as iOS doesn't; a screen reader still gets one.

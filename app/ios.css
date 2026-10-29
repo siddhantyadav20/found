@@ -34,9 +34,17 @@
     rgba(255, 255, 255, 0.26) 100%
   );
 
-  /* The platter: frosted, darker, so white text reads over a bright wallpaper. */
-  --lg-thick-fill: linear-gradient(180deg, rgba(58, 58, 64, 0.5) 0%, rgba(34, 34, 38, 0.46) 100%);
-  --lg-thick-filter: blur(24px) saturate(1.8) brightness(0.96);
+  /* The platter: frosted, darker, so white text reads over a bright wallpaper.
+     Dense enough to read on its own where a browser draws no blur (2026-10-29:
+     notifications and alerts read as see-through at half opacity). */
+  --lg-thick-fill: linear-gradient(180deg, rgba(48, 48, 54, 0.86) 0%, rgba(30, 30, 34, 0.84) 100%);
+  --lg-thick-filter: blur(30px) saturate(1.8) brightness(0.9);
+
+  /* A bar floating over an app's content at the foot of the screen: the tab
+     bar, a toolbar. Frosted and dark enough that the list under it never
+     reads through, the same in every app (2026-10-29). */
+  --lg-bar-fill: linear-gradient(180deg, rgba(44, 44, 50, 0.78) 0%, rgba(28, 28, 32, 0.78) 100%);
+  --lg-bar-filter: blur(22px) saturate(1.8);
   --lg-thick-shadow: 0 10px 34px rgba(0, 0, 0, 0.3), inset 0 0 0 0.5px rgba(255, 255, 255, 0.07);
 }
 
@@ -56,8 +64,35 @@
   box-shadow: var(--lg-thick-shadow);
 }
 
+.lg-bar {
+  isolation: isolate;
+  background: var(--lg-bar-fill);
+  -webkit-backdrop-filter: var(--lg-bar-filter);
+  backdrop-filter: var(--lg-bar-filter);
+  box-shadow: var(--lg-shadow);
+}
+
+/* The foot of an app under its floating bar: the content dims and softens
+   into it, as iOS 26's scroll edge does. Put on the bar's own container. */
+.bar-edge::before {
+  content: "";
+  position: absolute;
+  left: -24px;
+  right: -24px;
+  top: -36px;
+  bottom: -40px;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.8) 100%);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  -webkit-mask: linear-gradient(180deg, transparent 0%, #000 40%);
+  mask: linear-gradient(180deg, transparent 0%, #000 40%);
+  pointer-events: none;
+}
+
 .lg::after,
-.lg-thick::after {
+.lg-thick::after,
+.lg-bar::after {
   content: "";
   position: absolute;
   inset: 0;

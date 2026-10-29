@@ -8,8 +8,9 @@
   display: grid;
   place-items: center;
   padding: 0 44px;
-  background: rgba(0, 0, 0, 0.32);
-  animation: fade 0.2s ease-out both;
+  background: rgba(0, 0, 0, 0.42);
+  /* Not held after it ends: a parent still animating opacity stops the glass under it blurring. */
+  animation: fade 0.2s ease-out backwards;
 }
 
 .box {
@@ -22,7 +23,7 @@
   border-radius: 34px;
   corner-shape: superellipse(1.4);
   /* Thicker than a platter: an alert has to be read over anything. */
-  background: rgba(34, 34, 38, 0.72);
+  background: rgba(36, 36, 40, 0.9);
   font-family: var(--font-ios);
   text-align: center;
   color: var(--os-text);

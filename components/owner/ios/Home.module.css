@@ -289,12 +289,6 @@ p.widget { cursor: default; }
   display: none;
 }
 
-/* Except the case file's: the one icon here no phone has. */
-.dock [data-named] .label {
-  display: block;
-  margin-top: 4px;
-  font-size: 10px;
-}
 
 /* --- An offloaded app ---------------------------------------------------------
    iOS keeps the icon and puts a cloud before the name. Asked for, the icon

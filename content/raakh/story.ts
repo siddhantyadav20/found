@@ -108,24 +108,27 @@ export const story: Story = {
   chatLock: { code: "pakki", requires: ["ep:2"], knownWhen: [["saw:reel-take"], ["saw:memo-code"], ["did:raju-code"]] },
   safariWaits: { until: ["fired:data-renewed"], site: "faq.whatsapp.com", note: "Jio · Daily data used up. Internet speed is 64 Kbps until midnight." },
   home: {
+    /* iOS's own arrangement (2026-10-29): Phone, Safari and Messages in the
+       dock, as every iPhone ships, with the case file in the fourth place;
+       everything else on the page above. */
     pages: [
       [
+        { app: "whatsapp", label: "WhatsApp" },
+        { app: "photos", label: "Photos" },
+        { app: "camera", label: "Camera" },
         { app: "instagram", label: "Instagram" },
-        { app: "messages", label: "Messages" },
-        { app: "notes", label: "Notes" },
         { app: "mail", label: "Mail" },
+        { app: "notes", label: "Notes" },
         { app: "paytap", label: "Paytap" },
         // Offloaded on Thursday night: the app gone, what it kept kept, until the data's back.
         { app: "voicememos", label: "Voice Memos", offloaded: ["fired:data-renewed"] },
-        { app: "safari", label: "Safari" },
-        { app: "camera", label: "Camera" },
         { app: "settings", label: "Settings" },
       ],
     ],
     dock: [
-      { app: "whatsapp", label: "WhatsApp" },
-      { app: "photos", label: "Photos" },
       { app: "phone", label: "Phone" },
+      { app: "safari", label: "Safari" },
+      { app: "messages", label: "Messages" },
       { app: "casefile", label: "Case file" },
     ],
   },

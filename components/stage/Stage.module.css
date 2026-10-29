@@ -130,6 +130,7 @@
    viewport; on a table there are two devices, the found one and yours. */
 
 .table {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,10 +359,14 @@
   --os-danger: #ff6b5b;
   --ios-grey: rgb(244 241 234 / 55%);
 
-  align-self: stretch;
-  width: min(26rem, 32vw);
-  max-height: calc(100cqh - 3rem);
-  margin: 1.5rem 0;
+  /* The phone stays in the middle of the screen; the case file is pinned to
+     the right, 16px from the top, bottom and right (2026-10-29), and never
+     wider than the room the centred phone leaves it (390/844/2 = 0.231). */
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: min(26rem, calc(50cqw - min(860px, 100cqh - 48px) * 0.231 - 40px));
   padding: 0 1rem;
   overflow-y: auto;
   border-radius: 20px;

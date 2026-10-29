@@ -123,10 +123,16 @@ const APPS = (
   </>
 );
 
-/** Which tile leads which row. A row nobody drew a tile for goes without. */
+/**
+ * Which tile leads which row. Every row has one (2026-10-29: Find My and
+ * Camera went without, and their rows sat out of line with the rest); a row
+ * nobody drew a tile for wears General's grey gear.
+ */
 const TILES: Record<string, { bg?: string; glyph?: React.ReactNode; app?: AppId }> = {
   "Face ID & Passcode": { bg: GREEN, glyph: FACE },
+  "Find My": { app: "findmy" },
   Photos: { app: "photos" },
+  Camera: { app: "camera" },
   Apps: { bg: PURPLE, glyph: APPS },
   "Screen Time": { bg: PURPLE, glyph: HOURGLASS },
   "Emergency SOS": { bg: RED, glyph: SOS },
@@ -332,7 +338,7 @@ export default function Settings({
             {g.label && <p className={app.groupLabel}>{g.label}</p>}
             <ul className={app.group}>
               {rows.map((r) => {
-                const tile = TILES[r.title];
+                const tile = TILES[r.title] ?? { bg: GREY, glyph: GEAR };
                 const done = r.action?.sets.every((f) => has(state, f));
                 const offered = Boolean(r.action && all(state, r.action.requires));
                 const inner = (

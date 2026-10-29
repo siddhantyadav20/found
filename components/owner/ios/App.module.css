@@ -261,6 +261,9 @@ button.row:active {
 .rowMeta {
   flex: 0 1 auto;
   min-width: 0;
+  /* Against the right edge with its chevron, whatever the title's width (2026-10-29). */
+  margin-left: auto;
+  text-align: right;
   overflow: hidden;
   font-size: 17px;
   color: var(--ios-grey);

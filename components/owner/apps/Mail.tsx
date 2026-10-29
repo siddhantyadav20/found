@@ -162,15 +162,15 @@ export default function Mail({
       )}
 
       {/* The toolbar floats over the list: filter, the status, compose. */}
-      <div className={styles.toolbar} aria-hidden="true">
-        <span className={`${styles.tool} lg`}>
+      <div className={`${styles.toolbar} bar-edge`} aria-hidden="true">
+        <span className={`${styles.tool} lg-bar`}>
           <svg viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.7" />
             <path d="M8 10h8M9.5 13h5M11 16h2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
           </svg>
         </span>
         <span className={styles.status}>Updated Just Now</span>
-        <span className={`${styles.tool} lg`}>
+        <span className={`${styles.tool} lg-bar`}>
           <svg viewBox="0 0 24 24">
             <path d="M5 19.5h14M14.8 4.6l3.6 3.6-8.6 8.6-4.3.7.7-4.3z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
           </svg>

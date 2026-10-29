@@ -149,8 +149,8 @@ export function TabBar({
   onSelect?: (label: string) => void;
 }) {
   return (
-    <div className={styles.tabBar} aria-hidden={onSelect ? undefined : true}>
-      <span className={`${styles.tabs} lg`} style={{ "--tint": tint } as React.CSSProperties}>
+    <div className={`${styles.tabBar} bar-edge`} aria-hidden={onSelect ? undefined : true}>
+      <span className={`${styles.tabs} lg-bar`} style={{ "--tint": tint } as React.CSSProperties}>
         {tabs.map((t) => {
           const inside = (
             <>
@@ -173,7 +173,7 @@ export function TabBar({
         })}
       </span>
       {search && (
-        <span className={`${styles.tabSearch} lg`}>
+        <span className={`${styles.tabSearch} lg-bar`}>
           <svg viewBox="0 0 24 24">
             <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" strokeWidth="2.1" />
             <path d="m15.5 15.5 5 5" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" />

@@ -456,10 +456,10 @@ export default function Notes({
       )}
 
       {/* Notes' toolbar: how many, and a new one. */}
-      <div className={styles.toolbar} aria-hidden="true">
+      <div className={`${styles.toolbar} bar-edge`} aria-hidden="true">
         <span />
         <span className={styles.count}>{notes.length} Notes</span>
-        <span className={`${styles.compose} lg`}>
+        <span className={`${styles.compose} lg-bar`}>
           <svg viewBox="0 0 24 24">
             <path d="M12.5 5.5h-6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6M16.8 4.2l3 3-7.6 7.6-3.7.7.7-3.7Z" />
           </svg>
