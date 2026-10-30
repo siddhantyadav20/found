@@ -1,14 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import type { AppId, Story } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { goneOf } from "@/lib/game/engine";
 import { CHATS_UNLOCKED, restored, reverted, unlocked } from "@/lib/game/phone";
+import { onHeard } from "@/lib/found/heard";
 import CaseFile from "./CaseFile";
-import { deleteItem, flag, markRead, read, recoverItem, save, say, sendToM } from "./playthrough";
+import { deleteItem, flag, heardIt, markRead, read, recoverItem, save, say, sendToM } from "./playthrough";
 
 /* Each app's code arrives when it's first opened, and all of it is fetched
    while the phone sits idle (`preloadApps`), so opening one is still instant
@@ -77,6 +78,8 @@ export default function AppBody({
   const putBack = (id: string) => (goneOf(state, id) === "soft" ? recoverItem(id) : flag(restored(id)));
   // Stable, because the apps mark things read from effects that depend on them.
   const onRead = useCallback((ids: readonly string[]) => read(story, ids), [story]);
+  // A clip or memo played past its moment (fix brief H-23).
+  useEffect(() => onHeard((id) => heardIt(story, id)), [story]);
   const onSay = useCallback((option: Parameters<typeof say>[0], replyId?: string) => say(option, replyId), []);
 
   switch (app) {

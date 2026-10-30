@@ -1,4 +1,4 @@
-import type { AppId, EpisodeNo, Evidence, FileClaim, Flag, Hints, Link, LiveEvent, Message, Question, Reply, ReplyOption, Story } from "@/content/types";
+import type { AppId, EpisodeNo, Evidence, Fact, FileClaim, Flag, Hints, Link, LiveEvent, Message, Question, Reply, ReplyOption, Story } from "@/content/types";
 import { nightly } from "@/lib/found/time";
 
 /* ===========================================================================
@@ -42,6 +42,16 @@ export type CaseState = {
    */
   readonly deleted?: Readonly<Record<string, "soft" | "perm">>;
   /** Airplane mode, where a story lets it go back off (`Story.airplaneToggles`). */
+  readonly airplane?: boolean;
+  /** The night as it stood when Episodes 2 and 3 began: what "Restart this episode" goes back to (fix brief §8.8). */
+  readonly starts?: Readonly<Record<string, EpisodeStart>>;
+};
+
+/** A save, as an episode began. */
+export type EpisodeStart = {
+  readonly flags: readonly Flag[];
+  readonly at: Readonly<Record<string, number>>;
+  readonly deleted?: CaseState["deleted"];
   readonly airplane?: boolean;
 };
 
@@ -276,7 +286,7 @@ export function readSentence(
 export function bearsOn(q: Question): string[] {
   switch (q.kind) {
     case "file":
-      return [...new Set(q.claims.flatMap((c) => [...c.proof, ...(c.orProof ?? []).flat(), ...(c.also ?? [])]))];
+      return [...new Set(q.claims.flatMap((c) => [...c.proof, ...(c.orProof ?? []).flat(), ...(c.facts ?? []).flatMap(factRoutes).flat(), ...(c.also ?? [])]))];
     case "pick":
       return [...new Set([...q.proof, ...(q.orProof ?? []).flat()])];
     case "timeline":
@@ -313,6 +323,43 @@ export const proofToCome = (story: Story, s: CaseState, q: Question): number =>
 /** The routes a claim can be proved by, shortest first. */
 const routesOf = (c: FileClaim): (readonly string[])[] => [c.proof, ...(c.orProof ?? [])].toSorted((a, b) => a.length - b.length);
 
+/* --- facts (fix brief §8.1) ---------------------------------------------- */
+
+/** A fact's routes, each a set of evidence that has to go together. */
+export const factRoutes = (f: Fact): (readonly string[])[] => f.by.map((r) => (typeof r === "string" ? [r] : r));
+
+/** A fact the table proves: one of its routes, all there. */
+export const factProven = (f: Fact, picked: readonly string[]): boolean => factRoutes(f).some((r) => r.every((id) => picked.includes(id)));
+
+/** Could the player prove this claim with what they've found? Every fact, or one whole route. */
+export function provable(c: FileClaim, s: CaseState): boolean {
+  if (c.facts?.length) return c.facts.every((f) => factRoutes(f).some((r) => r.every((id) => seen(s, id))));
+  return [c.proof, ...(c.orProof ?? [])].some((r) => r.every((id) => seen(s, id)));
+}
+
+/** How many things a claim asks the player to prove: its facts, or its shortest route. */
+export const toProve = (c: FileClaim): number => c.facts?.length ?? Math.min(...routesOf(c).map((r) => r.length));
+
+/** The facts a table proves and doesn't, in the sentence's order. */
+export function readFacts(c: FileClaim, picked: readonly string[]): { proven: Fact[]; unproven: Fact[] } {
+  const facts = c.facts ?? [];
+  return { proven: facts.filter((f) => factProven(f, picked)), unproven: facts.filter((f) => !factProven(f, picked)) };
+}
+
+/** "where Kunal fired first", "who fired, and which shot hit Dilip": a list, as said aloud. */
+const listed = (xs: readonly string[]): string => (xs.length < 2 ? (xs[0] ?? "") : `${xs.slice(0, -1).join(", ")} and ${xs.at(-1)}`);
+
+/**
+ * Said when the table doesn't prove the sentence (fix brief §8.1): which
+ * fact still has nothing behind it, never "one more thing" with no subject.
+ */
+export function factsReply(c: FileClaim, picked: readonly string[]): string {
+  const { proven, unproven } = readFacts(c, picked);
+  if (!unproven.length) return "";
+  if (!proven.length) return `Nothing on the table shows ${unproven[0].what} yet.`;
+  return `You've shown ${listed(proven.map((f) => f.what))}. Nothing yet shows ${unproven[0].what}.`;
+}
+
 /**
  * The proof on the table, read back against a claim: what doesn't belong,
  * and what the nearest way of proving it still needs (2026-10-23: say what's
@@ -325,6 +372,14 @@ export function readProof(
   picked: readonly string[],
 ): { ok: boolean; stray: string[]; missing: string[]; need: number } {
   const routes = routesOf(c);
+  if (c.facts?.length) {
+    const proves = (id: string) => (c.also ?? []).includes(id) || c.facts!.some((f) => factRoutes(f).some((r) => r.includes(id)));
+    const stray = picked.filter((p) => !proves(p));
+    const first = readFacts(c, picked).unproven[0];
+    const near = first ? (factRoutes(first).toSorted((a, b) => a.length - b.length)[0] ?? []) : [];
+    const missing = near.filter((id) => !picked.includes(id));
+    return { ok: !stray.length && !first && picked.length > 0, stray, missing, need: c.facts.length };
+  }
   const proves = (id: string) => (c.also ?? []).includes(id) || routes.some((r) => r.includes(id));
   const stray = picked.filter((p) => !proves(p));
   const nearest =
@@ -334,11 +389,11 @@ export function readProof(
 }
 
 /** Where a missing piece of proof lives, said plainly, and whether it's been found yet. */
-export function whereMissing(story: Story, s: CaseState, ids: readonly string[]): { app: AppId; found: boolean }[] {
+export function whereMissing(story: Story, s: CaseState, ids: readonly string[]): { app: AppId; found: boolean; from?: string }[] {
   return ids
     .map((id) => story.evidence.find((e) => e.id === id))
     .filter((e): e is Evidence => Boolean(e))
-    .map((e) => ({ app: e.app, found: seen(s, e.id) }));
+    .map((e) => ({ app: e.app, found: seen(s, e.id), from: e.from }));
 }
 
 /**
@@ -385,8 +440,7 @@ export function calledIt(story: Story, s: CaseState, c: FileClaim): string | und
  * them, because its words alone would give the next episode away. What they
  * can say grows with what they've found.
  */
-export const offeredClaims = (q: Question, s: CaseState): FileClaim[] =>
-  q.kind === "file" ? q.claims.filter((c) => [c.proof, ...(c.orProof ?? [])].some((r) => r.every((id) => seen(s, id)))) : [];
+export const offeredClaims = (q: Question, s: CaseState): FileClaim[] => (q.kind === "file" ? q.claims.filter((c) => provable(c, s)) : []);
 
 /**
  * Filed as the owner's version, and something found *since* says otherwise.
@@ -401,7 +455,7 @@ export function needsRevisit(q: Question, s: CaseState): boolean {
   if (q.contestable) {
     const on = filedClaim(q, s);
     if (!on || !(on.version || on.hunch) || struckOut(q, s)) return false;
-    return q.claims.some((c) => !c.version && !c.hunch && !c.refuse && !c.free && [c.proof, ...(c.orProof ?? [])].some((r) => r.every((id) => seen(s, id))));
+    return q.claims.some((c) => !c.version && !c.hunch && !c.refuse && !c.free && provable(c, s));
   }
   if (!q.reopenWhen?.length || !all(s, q.reopenWhen)) return false;
   const c = filedClaim(q, s);
@@ -497,6 +551,20 @@ function judgeProof(
 }
 
 /**
+ * A sentence's proof, fact by fact (fix brief §8.1): every fact has one of
+ * its routes on the table, and nothing on it proves none of them. Two
+ * things proving the same fact never fail it.
+ */
+function judgeFacts(story: Story, s: CaseState, c: FileClaim, picked: readonly string[]): { ok: boolean; reply: string } {
+  if (!picked.length || !picked.every((id) => usable(story, s, id))) return { ok: false, reply: WRONG };
+  const proves = (id: string) => (c.also ?? []).includes(id) || (c.facts ?? []).some((f) => factRoutes(f).some((r) => r.includes(id)));
+  const stray = picked.filter((p) => !proves(p)).length;
+  if (stray) return { ok: false, reply: stray < picked.length ? tooMuch(stray) : WRONG };
+  const why = factsReply(c, picked);
+  return why ? { ok: false, reply: why } : { ok: true, reply: "" };
+}
+
+/**
  * Judge an answer. Getting it wrong costs nothing but the truth of having
  * been wrong. Filing the owner's version is not getting it wrong.
  */
@@ -580,6 +648,7 @@ export function answer(story: Story, s: CaseState, id: string, given: Given): An
       if ((c.unless ?? []).some((f) => has(s, f))) return { state: s, ok: false, reply: WRONG };
       // Said on its words alone: nothing to table.
       if (c.free) ({ ok, reply } = { ok: true, reply: "" });
+      else if (c.facts?.length) ({ ok, reply } = judgeFacts(story, s, c, proof));
       else ({ ok, reply } = judgeProof(story, s, [c.proof, ...(c.orProof ?? [])], proof, c.also));
       // The words are right; say so, so the player looks again at the table and not the sentence.
       if (!ok) return { state: s, ok, reply: reply === WRONG && proof.length ? UNPROVED : reply };
@@ -697,7 +766,33 @@ export const arrivedAt = (story: Story, s: CaseState, m: { readonly at: string; 
 export function stamp(s: CaseState, now: number): CaseState {
   const ep = episodeOf(s);
   if (ep === 1 || s.began?.[ep] !== undefined) return s;
-  return { ...s, began: { ...s.began, [ep]: now } };
+  const start: EpisodeStart = { flags: s.flags, at: s.at, deleted: s.deleted, airplane: s.airplane };
+  return { ...s, began: { ...s.began, [ep]: now }, starts: { ...s.starts, [ep]: start } };
+}
+
+/** How the player chose to play, carried across a restart: a detective who switched to help stays switched. */
+const MODE_FLAGS: readonly Flag[] = ["did:detective", "did:switched-help", "did:realtime"];
+
+/**
+ * Back to the start of this episode (fix brief §8.8), as the night stood
+ * then; Episode 1 goes back to the opened parcel. The way they chose to
+ * play goes with them as it is now.
+ */
+export function restartEpisode(s: CaseState, now: number): CaseState {
+  const ep = episodeOf(s);
+  const mode = s.flags.filter((f) => MODE_FLAGS.includes(f));
+  const snap = ep === 1 ? undefined : s.starts?.[ep];
+  const flags: Flag[] = snap ? snap.flags.filter((f) => !MODE_FLAGS.includes(f)) : ["did:opened", "did:unlock", "saw:note"];
+  return {
+    ...s,
+    flags: [...flags, ...mode],
+    at: snap?.at ?? {},
+    deleted: snap?.deleted,
+    airplane: snap?.airplane ?? false,
+    began: ep === 1 ? undefined : { ...s.began, [ep]: now },
+    starts: ep === 1 ? undefined : s.starts,
+    started: ep === 1 ? now : s.started,
+  };
 }
 
 /** When this episode began. Saves from before `began` fall back to the start. */

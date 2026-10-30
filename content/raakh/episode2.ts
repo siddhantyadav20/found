@@ -10,12 +10,13 @@ import { RAJU } from "./phone";
    could only see the edges of. Bhasin sends a voice note whose words follow
    what Mummy was told. Meera rings at 12:51 and knows the voice from the
    first word. Raju rings again at 1:05. Nitin writes at 1:25, and at 1:52,
-   a week to the minute, sends back what Sameer deleted.
+   at the minute he has remembered all week, sends back what Sameer deleted.
    =========================================================================== */
 
 export const beats: readonly Beat[] = [
   { at: "00:48", after: ["ask:q4"] },
   { at: "01:20", after: ["ask:q5"] },
+  { at: "01:23", after: ["ask:q5b"] },
 ];
 
 /* --- Meera, 12:51 (scene 2.7) ---------------------------------------------
@@ -63,8 +64,26 @@ const middle = keepIt(
   [
     {
       who: "Meera",
-      line: "Maine aaj subah ye lene se mana kiya tha. Usne mujhe bheja tha, aur main ab uska bojh nahi uthaati. Lekin agar ye aapke haath mein hai, toh ek kaam karna. Kuch delete mat karna. Kuch bhi.",
-      english: "I refused this this morning. He sent it to me, and I don't carry his weight anymore. But if it's in your hands, do one thing. Don't delete anything. Anything.",
+      // Why she rings at all (fix brief H-14): his mother rang her, after Find My.
+      line: "Uski maa ka phone aaya tha. Phone ghar pe hai, aur woh utha nahi raha.",
+      english: "His mother rang me. The phone's at home, and he isn't picking up.",
+    },
+    {
+      who: "Meera",
+      line: "Maine aaj subah ye lene se mana kiya tha. Do mahine se baat nahi ki, aur aaj ye bhej diya. Main ab uska bojh nahi uthaati.",
+      english: "I refused this this morning. Two months without a word, and today he sends this. I don't carry his weight anymore.",
+    },
+    /* His habit, named (fix brief H-02), about him, to whoever this is: said
+       to his face it would spend the reveal at 12:52. */
+    {
+      who: "Meera",
+      line: "Woh hamesha yahi karta hai. Jab kuch sambhalta nahi, toh “main nahi tha”.",
+      english: "He always does this. When he can't handle something, it's “it wasn't me”.",
+    },
+    {
+      who: "Meera",
+      line: "Lekin agar ye aapke haath mein hai, toh ek kaam karna. Kuch delete mat karna. Kuch bhi.",
+      english: "But if it's in your hands, do one thing. Don't delete anything. Anything.",
     },
   ],
   PASSWORDS,
@@ -203,6 +222,7 @@ const bhasinVoice = (id: string, seconds: number, transcript: string, english: s
   ...when,
   requires: ["fired:bhasin-vn", ...(when.requires ?? [])],
   attachment: { kind: "voice", seconds, transcript, english },
+  evidence: "bhasin-vn",
 });
 
 const bhasin: Thread = {
@@ -213,8 +233,8 @@ const bhasin: Thread = {
     bhasinVoice(
       "b-vn-stranger",
       16,
-      "Jiske paas bhi ye phone hai. Neelam ji keh rahi thi koi aur hai. Achha natak hai. Subah saat baje tak phone gate pe chhod dena. Baaki hum dekh lenge.",
-      "Whoever has this phone. Neelam ji says someone else has it. Nice act. Leave it at the gate by seven. We'll handle the rest.",
+      "Jiske paas bhi ye phone hai. Neelam ji keh rahi thi koi aur hai. Achha natak hai. Subah saat baje tak phone Gate 2 pe chhod dena. Baaki hum dekh lenge.",
+      "Whoever has this phone. Neelam ji says someone else has it. Nice act. Leave it at Gate 2 by seven. We'll handle the rest.",
       { requires: ["did:mummy-stranger"] },
     ),
     bhasinVoice(
@@ -226,9 +246,9 @@ const bhasin: Thread = {
     ),
     bhasinVoice(
       "b-vn-none",
-      7,
-      "Jiske paas bhi ye phone hai. Subah saat baje tak gate pe chhod dena.",
-      "Whoever has this phone. Leave it at the gate by seven.",
+      13,
+      "Jiske paas bhi ye phone hai. Neelam ji ka phone location dikha raha hai. B-14. Subah saat baje tak Gate 2 pe chhod dena.",
+      "Whoever has this phone. Neelam ji's phone is showing the location. B-14. Leave it at Gate 2 by seven.",
       { unless: ["did:mummy-stranger", "did:mummy-fine"] },
     ),
   ],
@@ -266,7 +286,19 @@ const nitin: Thread = {
   messages: [
     { id: "n-o1", from: "them", at: "01:25", day: "29/11", with: "nitin-online", requires: ["fired:nitin-online"], text: "Bhai? Online dikh raha hai.", english: "Bro? You're showing online." },
     { id: "n-o2", from: "them", at: "01:25", day: "29/11", with: "nitin-online", requires: ["fired:nitin-online"], typing: 6, text: "Us raat ke baad se neend nahi aayi.", english: "I haven't slept since that night." },
-    /* 1:52, a week to the minute (scene 2.11, E42): what he kept, and how he says it. */
+    /* 1:52 (scene 2.11, E42): what he kept, and how he says it. Not a
+       coincidence (fix brief H-04): he waited for the minute, and says so. */
+    {
+      id: "n-copy-time",
+      from: "them",
+      at: "01:52",
+      day: "29/11",
+      with: "nitin-copy",
+      requires: ["fired:nitin-copy"],
+      typing: 5,
+      text: "1:52. Ek hafte se ye time yaad hai mujhe.",
+      english: "1:52. I've remembered this time all week.",
+    },
     {
       id: "n-copy-line-stranger",
       from: "them",
@@ -396,7 +428,28 @@ const nitin: Thread = {
   ],
 };
 
-export const threads: readonly Thread[] = [bhasin, meera, nitin];
+/* --- Raju, told his brother was shot (fix brief H-17): he goes looking ---- */
+
+const raju: Thread = {
+  id: "raju",
+  app: "whatsapp",
+  name: RAJU,
+  messages: [
+    {
+      id: "r-s1",
+      from: "them",
+      at: "01:31",
+      day: "29/11",
+      with: "raju-searching",
+      requires: ["fired:raju-searching"],
+      typing: 8,
+      text: "Chhattarpur ke aas paas ke saare hospital dekh raha hoon. Kahin uska naam nahi hai. Phone on rakhna.",
+      english: "I'm going round every hospital near Chhattarpur. His name isn't anywhere. Keep the phone on.",
+    },
+  ],
+};
+
+export const threads: readonly Thread[] = [bhasin, meera, nitin, raju];
 
 export const events: readonly LiveEvent[] = [
   // 12:33: the day's data renews. iCloud, the App Store and Safari can reach the phone again.
@@ -406,8 +459,10 @@ export const events: readonly LiveEvent[] = [
   { id: "meera-rings", device: "owner", after: ["ask:q4"], delay: 6, clock: "00:51", app: "phone" },
   { id: "meera-unblocks", device: "owner", after: ["did:done-meera"], delay: 4, clock: "00:55", app: "whatsapp", banner: "M · Block hata diya hai. Kuch bhejna ho toh yahan bhejna.", sets: ["did:meera-contact"] },
   { id: "raju-rings-2", device: "owner", after: ["fired:meera-unblocks"], delay: 14, clock: "01:05", app: "phone" },
-  // Once Q5 is filed: Nitin, seeing the phone online.
-  { id: "nitin-online", device: "owner", after: ["ask:q5"], delay: 6, clock: "01:25", app: "whatsapp", banner: "Nitin · Bhai? Online dikh raha hai." },
+  // Told it was a bullet, Raju goes looking, and stays near (fix brief H-17).
+  { id: "raju-searching", device: "owner", after: ["did:raju-told-shot", "did:done-raju-2"], delay: 40, app: "whatsapp", banner: `${RAJU} · Chhattarpur ke aas paas ke saare hospital dekh raha hoon.` },
+  // Once Episode 2's last question is filed: Nitin, seeing the phone online.
+  { id: "nitin-online", device: "owner", after: ["ask:q5b"], delay: 6, clock: "01:25", app: "whatsapp", banner: "Nitin · Bhai? Online dikh raha hai." },
   { id: "nitin-copy", device: "owner", after: [READY], delay: 8, clock: "01:52", app: "whatsapp", banner: "Nitin · 📷 Photo" },
   // The bubble seen, or left a while: the episode freezes on it, and cuts to black.
   // Long enough for his typed line (7 s) to land and be read beside the screenshot, then held (2026-10-28).

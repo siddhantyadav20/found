@@ -87,7 +87,7 @@
 .lines > * { flex-shrink: 0; }
 
 .line { display: flex; flex-direction: column; gap: 0.15rem; font-family: var(--font-ios); font-size: 1rem; line-height: 1.4; }
-.speaker { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a857e; }
+.speaker { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: #8a857e; }
 .english { font-size: 0.75rem; color: #8a857e; }
 
 .say { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem; }

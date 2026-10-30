@@ -38,6 +38,8 @@ import RealClock from "./RealClock";
 import { DETECTIVE } from "@/lib/game/scene";
 import { newsOnYours, yourMessages, yourUnread } from "@/lib/game/yours";
 import { TRAIN_UNDER, useBed } from "@/lib/found/nightSound";
+import { useFilling } from "@/lib/found/filling";
+import { onOpenOnPhone } from "@/lib/found/heard";
 import { useNow } from "@/lib/found/now";
 import { longDay, phoneClock, stamp } from "@/lib/found/time";
 import { boundCase, readProgress } from "@/lib/found/progress";
@@ -153,6 +155,7 @@ export default function Table({
     setCameFrom(null);
   };
   const wide = useWide();
+  const filling = useFilling();
   const detective = has(state, DETECTIVE);
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [banner, setBanner] = useState<Banner | null>(null);
@@ -199,7 +202,11 @@ export default function Table({
   /* A quiet event waits while the player is reading something. Every turn of
      the night waits while they're writing in the case file: nobody files and
      reads a banner at once, and nothing ends an episode under someone filing. */
-  const held = review || Boolean(next && ((next.quiet && (openApp || holding)) || openApp === "casefile"));
+  /* On a wide table the notebook is always open: a sentence half-said there
+     holds a call until it's filed, or the phone is picked up again (H-26).
+     Only calls: a message can wait in a banner, and the last question's
+     terms must still arrive while it's being answered. */
+  const held = review || Boolean(next && ((next.quiet && (openApp || holding)) || openApp === "casefile" || (filling && wide && !openApp && next.app === "phone")));
   useEffect(() => {
     if (!next || held) return undefined;
     // One at a time: never two of the night's turns on top of each other.
@@ -284,6 +291,15 @@ export default function Table({
   }, [manual, story]);
 
   const onOpenApp = (app: AppId, from?: DOMRect) => {
+    /* On a wide table the case file is the notebook beside the phone: its
+       icon takes you there instead of opening a second copy (fix brief §10). */
+    if (app === "casefile" && wide) {
+      const book = document.getElementById("notebook");
+      book?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      book?.focus({ preventScroll: true });
+      setBanner(null);
+      return;
+    }
     // Where the tap landed, relative to the screen, so the app zooms out of it.
     const screen = document.querySelector(`.${phoneStyles.screen}`)?.getBoundingClientRect();
     setOrigin(from && screen ? { x: from.left - screen.left, y: from.top - screen.top, w: from.width, h: from.height } : null);
@@ -298,6 +314,10 @@ export default function Table({
       save(found.at[`opened:${app}`] ? found : { ...found, at: { ...found.at, [`opened:${app}`]: Date.now() } });
     }
   };
+
+  // Opened from somewhere other than its icon (the case file's "Look at yourself").
+  // Subscribed afresh each render, so it always opens with this render's state.
+  useEffect(() => onOpenOnPhone((app) => onOpenApp(app as AppId)));
 
   // An offloaded app, downloaded again from its icon. Stable, as Home waits on it.
   const onInstall = useCallback((app: AppId) => flag(installed(app)), []);
@@ -425,7 +445,7 @@ export default function Table({
         {/* On a wide table, the case file lies beside the phones as a notebook:
             the evidence on his screen and the sentence in front of you at once. */}
         {wide && (
-          <section className={styles.notebook} aria-label="Case file">
+          <section className={styles.notebook} aria-label="Case file" id="notebook" tabIndex={-1}>
             <p className={styles.notebookHead}>Case file</p>
             <CaseFile story={story} state={state} save={save} />
           </section>

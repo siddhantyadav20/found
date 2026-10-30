@@ -126,3 +126,9 @@
   font-weight: 600;
   backdrop-filter: blur(12px);
 }
+
+/* A call on it needs the room (fix brief §10): the guard's lines and the replies, all on screen at once. */
+.phone:has([data-answered]) {
+  height: min(88dvh, 720px);
+  transition: height 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+}

@@ -98,6 +98,12 @@ export type Evidence = {
    * from there for good. Every question still has a way in that can't be.
    */
   readonly deletable?: boolean;
+  /**
+   * A clip or a recording that counts once it has been heard, not opened
+   * (fix brief §8.3, H-23): played past its caption marked `reveals`, or to
+   * its end. Opening it files nothing.
+   */
+  readonly heard?: boolean;
 };
 
 /**
@@ -185,6 +191,12 @@ export type FileClaim = {
   readonly liftedBy?: readonly (readonly string[])[];
   /** Filed on the words alone: nothing to table (the last question's "Sameer Khurrana"). */
   readonly free?: boolean;
+  /**
+   * A refusal that is the story speaking, not a check on the sentence: said
+   * even to a detective (Q1's "Not yet", Bhasin's car gone). Every other
+   * refusal is folded into the detective's one reply (fix brief §8.2).
+   */
+  readonly aloud?: boolean;
   /** Filing it leans one way (RAAKH-V3 §14); a story-wide rule may add to it. */
   readonly impulse?: Impulse;
   /** The last question: the ending this files, and the one line that says what it means before it's done. */
@@ -192,6 +204,26 @@ export type FileClaim = {
   readonly confirm?: string;
   /** Not offered once any of these holds (the Trade, once Bhasin's car has gone). */
   readonly unless?: readonly Flag[];
+  /**
+   * What the sentence claims, fact by fact, and what proves each (fix brief
+   * §8.1). When given, it is what filing is judged on: every fact needs one
+   * of its routes on the table, and nothing on the table proves none of them
+   * (or sits in `also`). A refusal names the first fact still unproved.
+   * `proof` and `orProof` stay as the shortest whole sets, for the solver.
+   */
+  readonly facts?: readonly Fact[];
+};
+
+/**
+ * One thing a sentence claims (fix brief §8.1): said whole for the help
+ * list ("Kunal fired on the dance floor at 11:52"), as a noun phrase for a
+ * refusal ("where Kunal fired first"), and proved by any one route, each a
+ * piece of evidence or a set that has to go together.
+ */
+export type Fact = {
+  readonly fact: string;
+  readonly what: string;
+  readonly by: readonly (string | readonly string[])[];
 };
 
 /**
@@ -484,6 +516,12 @@ export type Ending = {
   readonly on?: "his" | "yours";
   /** The ending's own day and date on the lock screen, before any line moves it. */
   readonly day?: { readonly day: string; readonly date: string };
+  /**
+   * What became of everyone (fix brief §7, H-18, H-20): one line per person,
+   * shown on the end card under every ending, the night's choices picking
+   * the variant (`needs`, `any`, `unless`). `who` names them.
+   */
+  readonly epilogue?: readonly EndingLine[];
 };
 
 export type Clock = {
@@ -574,6 +612,8 @@ export type Caption = {
   /** "[dhol]" for a sound: shown as a sound, not as words. */
   readonly line: string;
   readonly english?: string;
+  /** The moment the recording proves what it proves: its `heard` evidence counts once this caption has played (fix brief §8.3). */
+  readonly reveals?: boolean;
 };
 
 export type Attachment =
@@ -589,7 +629,17 @@ export type Attachment =
         readonly lines: readonly { readonly who?: string; readonly text: string; readonly english?: string; readonly at: string; readonly out?: boolean }[];
       };
       /** A screenshot of a live location on a map: who, when, where it stopped (2026-10-24). */
-      readonly map?: { readonly title: string; readonly sub: string; readonly stop: string; readonly ended: string };
+      readonly map?: {
+        readonly title: string;
+        readonly sub: string;
+        readonly stop: string;
+        readonly ended: string;
+        /** The block and the road the map names (Banyan Farms and Mandi Rd unless said). */
+        readonly area?: string;
+        readonly road?: string;
+        /** Just where it is now: a pin, no route (Find My on Mummy's phone). */
+        readonly pin?: boolean;
+      };
     }
   | { readonly kind: "voice"; readonly seconds: number; readonly transcript: string; readonly english?: string }
   | {
@@ -945,6 +995,8 @@ export type Profile = {
   readonly posts: readonly ProfilePost[];
   readonly evidence?: string;
   readonly requires?: readonly Flag[];
+  /** They asked to follow the owner: shown in his Activity, once these hold (fix brief H-10). */
+  readonly request?: { readonly when: string; readonly note: string; readonly requires?: readonly Flag[] };
 };
 
 export type Note = {
@@ -1231,7 +1283,12 @@ export type Reveal = {
   /** The call's opening line instead, after an early reveal. */
   readonly early: Said;
   /** 4: his own face, from the front camera. */
-  readonly camera: { readonly src: string; readonly alt: string };
+  readonly camera: {
+    readonly src: string;
+    readonly alt: string;
+    /** Pinned beside the viewfinder once the photo is taken (fix brief §6, beat 4): the same kada, a week ago. */
+    readonly pin?: { readonly src: string; readonly label: string };
+  };
   /** 5: the case file turns over: its info panel, and the line it lights. */
   readonly info: { readonly lines: readonly string[]; readonly question: string; readonly called: string };
   /** 6: the montage, from the player's own lines; at most `limit` of them, in this order of priority. */
@@ -1281,6 +1338,12 @@ export type Clue = {
   /** Seen once any one of these sets of flags all hold. */
   readonly seen: readonly (readonly Flag[])[];
   readonly meant: string;
+  /**
+   * One of the three door clues (fix brief §6): the episode whose last
+   * question can't be filed without it, in either mode. The rest are
+   * optional, and feed "Clues you walked past".
+   */
+  readonly door?: 1 | 2 | 3;
 };
 
 /** A promise the player can make (RAAKH-V3 §14), and what breaks it. */

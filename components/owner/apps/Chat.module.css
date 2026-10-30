@@ -688,3 +688,10 @@ button.setRow {
 .ticks[data-read] {
   stroke: var(--chat-tick);
 }
+
+/* The typing bubble is a button: a tap skips the wait (fix brief §8.7). */
+button.typing {
+  align-self: flex-start;
+  border: 0;
+  cursor: pointer;
+}

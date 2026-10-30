@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import type { AppId, Evidence, FileClaim, Question, Say, Story } from "@/content/types";
 import {
   editable,
+  factProven,
   fileSentence,
+  toProve,
   has,
   keepClock,
   type Answer,
@@ -49,6 +51,17 @@ import { nightly, stamp } from "@/lib/found/time";
 import { moment as momentTone } from "@/lib/found/tones";
 import CloseCase from "./CloseCase";
 import { holding } from "@/lib/game/hold";
+import { markFilling } from "@/lib/found/filling";
+
+/**
+ * A detective's one reply to anything that didn't file (fix brief §8.2): a
+ * wrong word and a missing proof sound the same, so the sentence can't be
+ * found by trying words.
+ */
+const DETECTIVE_NO = "Not filed. Either a word isn't what the phone shows, or the proof on the table doesn't show all of it.";
+
+/** How far a detective's hints go: a nudge, then the app; never the place (fix brief §8.4). */
+const DETECTIVE_HINTS = 2;
 
 /** When something was filed: read in the click that files it, never in a render. */
 const filedNow = () => Date.now();
@@ -160,6 +173,13 @@ export default function CaseFile({
   useEffect(() => {
     if (refused && !state.flags.includes(refused)) flag(refused);
   }, [refused, state.flags]);
+  /* Mid-sentence: the night's turns wait until it's filed, or the player
+     goes back to the phone (fix brief H-26). */
+  const midway = Boolean(q) && !said?.ok && (Object.values(words).some(Boolean) || picked.length > 0);
+  useEffect(() => {
+    markFilling(midway);
+    return () => markFilling(false);
+  }, [midway]);
   const readQ = said?.ok ? said.q : undefined;
   useEffect(() => {
     if (!readQ) return undefined;
@@ -319,20 +339,29 @@ export default function CaseFile({
        or what's still missing and where it lives (2026-10-23). */
     if (!r.ok && c && !c.refuse && q.kind === "file" && q.say) {
       const p = readProof(story, state, c, (given as { proof: readonly string[] }).proof);
-      setStray(p.stray);
+      // A detective isn't shown which proof was beside the point: that would say the sentence was right.
+      setStray(detective ? [] : p.stray);
       if (!detective) {
         const label = (id: string) => story.evidence.find((e) => e.id === id)?.label ?? id;
         const where = whereMissing(story, state, p.missing);
+        // "in Settings", or where it isn't an app: "on the parcel", "on your phone".
+        const place = (w: (typeof where)[number]) => (w.from ? `on ${w.from.replace(/^From the /, "the ").replace(/^Your /, "your ").replace(/^Lock screen$/, "the lock screen")}` : `in ${appLabel(story, w.app)}`);
+        const apps = [...new Set(where.map(place))].join(" and ");
+        const found = where.some((w) => !w.found) ? " You haven't found it yet." : " You've found it: it's in the list.";
         const text = p.stray.length
           ? p.stray.length === 1
             ? `“${label(p.stray[0])}” doesn't show this. Take it off.`
             : `${p.stray.length} things on the table don't show this. They're marked: take them off.`
-          : where.length
-            ? `The sentence is right. ${p.missing.length === 1 ? "One more thing" : `${p.missing.length} more things`} would prove it: ${[...new Set(where.map((w) => appLabel(story, w.app)))].join(" and ")}.${where.some((w) => !w.found) ? " You haven't found it yet." : " You've found it: it's in the list."}`
-            : r.reply;
+          : c.facts?.length
+            ? // Which claim has nothing behind it, and where it is (fix brief §8.1, H-21).
+              `${r.reply}${where.length ? ` It's ${apps}.${found}` : ""}`
+            : where.length
+              ? `The sentence is right. ${p.missing.length === 1 ? "One more thing" : `${p.missing.length} more things`} would prove it, ${apps}.${found}`
+              : r.reply;
         setSaid({ text, ok: false, ask: q.ask, filed: true });
       }
     } else setStray([]);
+    if (!r.ok && detective && q.kind === "file" && q.say && !(c?.refuse && c.aloud)) setSaid({ text: DETECTIVE_NO, ok: false, ask: q.ask, filed: true });
     // Which rows were off, for a player who asked for help: the count alone was a guessing game.
     if (q.kind === "timeline" && !r.ok && !detective && Array.isArray(given)) {
       const at = Object.fromEntries((given as string[]).filter((p) => p.includes("@")).map((p) => p.split("@") as [string, string]));
@@ -362,7 +391,10 @@ export default function CaseFile({
     q.kind === "type"
       ? typed.trim().length > 0
       : saying
-        ? Boolean(filable) && (picked.length > 0 || Boolean(filable?.free))
+        ? // A detective files sentence and proof together, right or not (fix brief §8.2).
+          detective
+          ? whole && (picked.length > 0 || Boolean(filable?.free))
+          : Boolean(filable) && (picked.length > 0 || Boolean(filable?.free))
         : q.kind === "file"
           ? Boolean(chosen) && picked.length > 0
           : picked.length > 0;
@@ -378,11 +410,11 @@ export default function CaseFile({
   };
 
   const fileSaid = () => {
-    if (!filable) return;
+    if (!filable && !(detective && whole)) return;
     const r = fileSentence(story, state, q.id, words, picked);
     // The last question says what it means first, and waits for a yes (RAAKH-V3 §10).
     if (q.final && r.ok && r.claim?.confirm) return setConfirming({ answer: r, claim: r.claim });
-    give({ claim: r.claim?.id ?? filable.id, proof: picked }, r);
+    give({ claim: r.claim?.id ?? filable?.id ?? "", proof: picked }, r);
   };
 
   const whyNot =
@@ -392,7 +424,7 @@ export default function CaseFile({
         ? "Put each row in a lane."
         : saying && !whole
           ? "Fill in the blanks."
-          : saying && !filable
+          : saying && !filable && !detective
             ? "Change the word in red."
           : q.kind === "file" && !saying && !chosen
             ? "Choose what you think happened."
@@ -493,6 +525,8 @@ export default function CaseFile({
                     // A word on the line that no answer uses: point at that first, and it costs no hint.
                     const off = offWord();
                     if (off && helped !== off) return setHelped(off);
+                    const taken = state.flags.filter((f) => f.startsWith(`hint:${q.id}:`)).length;
+                    if (detective && taken >= DETECTIVE_HINTS) return setHelped(`${q.hints[DETECTIVE_HINTS - 1]} A detective's hints stop there.`);
                     const h = hint(story, state, q.id);
                     if (!h) return;
                     setHelped(h.text);
@@ -746,13 +780,18 @@ function Board({
   if (q.kind === "file" && q.say) {
     const ok = read?.claim && !read.claim.refuse;
     const choices = proofChoices(story, state, q, detective ? 6 : 3);
-    const shown = choices;
     const toCome = detective ? 0 : proofToCome(story, state, q);
-    const need = ok ? Math.min(...[read!.claim!.proof, ...(read!.claim!.orProof ?? [])].map((r) => r.length)) : 0;
+    /* What there is to prove (fix brief §8.1): the sentence's own claims, or,
+       for a detective whose sentence may not be right yet, the truth's count
+       and nothing more. */
+    const target = ok ? read!.claim! : q.claims.find((c) => !c.refuse && !c.version && !c.hunch && !c.free);
+    const need = target ? toProve(target) : 1;
+    // A detective's sentence and proof are checked together, so the proof opens on any whole sentence (§8.2).
+    const proving = detective ? Boolean(read?.whole) && !read?.claim?.free : ok && !read?.claim?.free;
     return (
       <>
-        <SayLine q={q} say={q.say} words={words} setWords={setWords} wrong={read?.wrong ?? []} morph={ok && read?.claim?.free ? read.claim.text : undefined} />
-        {read?.whole && !read.claim?.free && (
+        <SayLine q={q} say={q.say} words={words} setWords={setWords} wrong={detective ? [] : (read?.wrong ?? [])} morph={ok && read?.claim?.free ? read.claim.text : undefined} />
+        {!detective && read?.whole && !read.claim?.free && (
           <p className={styles.verdict} data-ok={ok || undefined} role="status">
             {ok
               ? q.final
@@ -765,30 +804,21 @@ function Board({
               : why}
           </p>
         )}
-        {ok && !read?.claim?.free && (
+        {proving && (
           <div className={styles.step} aria-label="Proof">
-            <p className={styles.stepHead}>{need === 1 ? "Pick 1 proof" : `Pick ${need} proofs`}</p>
-            {shown.length ? (
-              <ul className={note.pickList}>
-                {shown.map((e) => (
-                  <li key={e.id}>
-                    <button
-                      type="button"
-                      className={note.pickRow}
-                      data-on={picked.includes(e.id) || undefined}
-                      data-stray={stray.includes(e.id) && picked.includes(e.id) ? "" : undefined}
-                      aria-pressed={picked.includes(e.id)}
-                      onClick={() => toggle(e.id)}
-                    >
-                      <span className={note.check} aria-hidden="true" />
-                      <span className={styles.proofText}>
-                        <span className={styles.proofLabel}>{e.label}</span>
-                        <span className={styles.proofApp}>{e.from ?? labelOf(e.app)}</span>
-                      </span>
-                    </button>
+            <p className={styles.stepHead}>{need === 1 ? "Prove 1 thing" : `Prove ${need} things`}</p>
+            {/* With help, the claims by name, ticked as the table proves them; a detective gets the count. */}
+            {!detective && target?.facts && (
+              <ul className={styles.facts} aria-label="What the sentence claims">
+                {target.facts.map((f) => (
+                  <li key={f.fact} data-done={factProven(f, picked) || undefined}>
+                    {f.fact}
                   </li>
                 ))}
               </ul>
+            )}
+            {choices.length ? (
+              <ProofPick choices={choices} picked={picked} stray={stray} toggle={toggle} labelOf={labelOf} first={first} />
             ) : (
               <p className={styles.empty}>Nothing you&apos;ve found shows this yet. Look in {first.map(labelOf).join(", ") || "his apps"}.</p>
             )}
@@ -1019,5 +1049,74 @@ function Morph({ from, to }: { from: string; to: string }) {
       {to.slice(0, n)}
       <span style={{ opacity: 0.4 }}>{from.slice(n)}</span>
     </p>
+  );
+}
+
+/**
+ * The proof to pick from (fix brief §8.6): grouped by the app it's in, where
+ * to look first for a player with help, and searchable once it's long.
+ */
+function ProofPick({
+  choices,
+  picked,
+  stray,
+  toggle,
+  labelOf,
+  first,
+}: {
+  choices: readonly Evidence[];
+  picked: readonly string[];
+  stray: readonly string[];
+  toggle: (id: string) => void;
+  labelOf: (app: AppId) => string;
+  first: readonly AppId[];
+}) {
+  const [query, setQuery] = useState("");
+  const wanted = query.trim().toLowerCase();
+  const shown = wanted ? choices.filter((e) => `${e.label} ${e.from ?? labelOf(e.app)}`.toLowerCase().includes(wanted)) : choices;
+  const where = (e: Evidence) => e.from ?? labelOf(e.app);
+  const groups = [...new Set(shown.map(where))].toSorted(
+    (a, b) => Number(first.some((x) => labelOf(x) === b)) - Number(first.some((x) => labelOf(x) === a)),
+  );
+  return (
+    <>
+      {choices.length > 8 && (
+        <input
+          className={styles.search}
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={`Search ${choices.length} things`}
+          aria-label="Search the proof"
+        />
+      )}
+      {wanted && !shown.length && <p className={styles.empty}>Nothing here says “{query.trim()}”.</p>}
+      {groups.map((g) => (
+        <div key={g}>
+          <p className={styles.groupHead}>{g}</p>
+          <ul className={note.pickList}>
+            {shown
+              .filter((e) => where(e) === g)
+              .map((e) => (
+                <li key={e.id}>
+                  <button
+                    type="button"
+                    className={note.pickRow}
+                    data-on={picked.includes(e.id) || undefined}
+                    data-stray={stray.includes(e.id) && picked.includes(e.id) ? "" : undefined}
+                    aria-pressed={picked.includes(e.id)}
+                    onClick={() => toggle(e.id)}
+                  >
+                    <span className={note.check} aria-hidden="true" />
+                    <span className={styles.proofText}>
+                      <span className={styles.proofLabel}>{e.label}</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
+    </>
   );
 }

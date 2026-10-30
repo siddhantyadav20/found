@@ -26,6 +26,7 @@ import { clockOf, goneOf, offline as isOffline } from "@/lib/game/engine";
 import { sentFlag } from "@/lib/game/reading";
 import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
+import { paceFactor, usePace } from "@/lib/found/pace";
 import { useVoice } from "@/lib/found/voice";
 import { TabBar } from "../AppView";
 import { Chevron } from "../ios/AppBar";
@@ -361,12 +362,14 @@ function MapShot({
           stroke="#34404c"
         />
         <text x="119" y="86" textAnchor="middle" fontSize="7" fill="#7d8b99">
-          Banyan Farms
+          {map.area ?? "Banyan Farms"}
         </text>
         <text x="200" y="45" fontSize="7" fill="#7d8b99">
-          Mandi Rd
+          {map.road ?? "Mandi Rd"}
         </text>
-        {/* The route: in from the south, the stop at the service gate, out again. */}
+        {/* The route: in from the south, the stop at the service gate, out again. A pin alone has none. */}
+        {!map.pin && (
+          <>
         <path
           d="M70 200 L66 124 L150 113 L152 104"
           stroke="#0a84ff"
@@ -384,6 +387,8 @@ function MapShot({
           strokeLinecap="round"
         />
         <circle cx="70" cy="196" r="4" fill="#0a84ff" />
+          </>
+        )}
         <circle cx="152" cy="104" r="9" fill="rgb(255 69 58 / 25%)" />
         <circle
           cx="152"
@@ -576,6 +581,7 @@ function Bubble({
                   captions={a.captions}
                   voice={voices?.[`clip:${m.id}`]?.src}
                   film={a.film}
+                  evidence={m.evidence}
                 />
               ) : null}
             </span>
@@ -721,8 +727,9 @@ function Conversation({
   const body = useRef<HTMLDivElement>(null);
   const pending = shown < messages.length;
   const nextFromThem = pending && messages[shown]?.from !== "owner";
-  // Some things take someone longer to write.
-  const typingMs = (messages[shown]?.typing ?? TYPING_MS / 1000) * 1000;
+  // Some things take someone longer to write; the player's message speed scales it (fix brief §8.7).
+  const pace = paceFactor(usePace());
+  const typingMs = (messages[shown]?.typing ?? TYPING_MS / 1000) * 1000 * pace;
 
   useEffect(() => {
     if (!pending) return undefined;
@@ -919,11 +926,12 @@ function Conversation({
         })}
         {/* Somebody writing back: said where the player is looking, not only in the header. */}
         {((pending && nextFromThem) || (coming && !pending)) && (
-          <p className={local.typing} aria-label="Typing">
+          // A tap skips the wait (fix brief §8.7).
+          <button type="button" className={local.typing} aria-label="Typing. Tap to skip" onClick={() => pending && nextFromThem && setShown((n) => n + 1)}>
             <span />
             <span />
             <span />
-          </p>
+          </button>
         )}
       </div>
 
@@ -1097,6 +1105,22 @@ export default function Chat({
     );
 
   const archived = threads.filter((t) => t.archived && !t.locked);
+  /* What Search reads in a chat (fix brief §8.9): its name, its members, and
+     every word on screen in it, as WhatsApp searches messages too. */
+  const said = (t: Thread): string =>
+    [
+      t.name,
+      t.sub ?? "",
+      t.contact?.about ?? "",
+      ...conversation(state, t, dateNow(story, state)).flatMap((m) => [
+        m.text ?? "",
+        m.who ?? "",
+        m.attachment?.kind === "voice" ? m.attachment.transcript : "",
+        m.attachment && "label" in m.attachment ? m.attachment.label : "",
+      ]),
+    ]
+      .join(" ")
+      .toLowerCase();
   const locked = threads.filter((t) => t.locked);
   const unlocked = has(state, CHATS_UNLOCKED);
   const today = dateNow(story, state);
@@ -1111,7 +1135,7 @@ export default function Chat({
             (t) =>
               !t.archived &&
               !t.locked &&
-              (!wanted || t.name.toLowerCase().includes(wanted)),
+              (!wanted || said(t).includes(wanted)),
           );
 
   const list = (

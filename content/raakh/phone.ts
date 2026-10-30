@@ -95,8 +95,9 @@ export const threads: readonly Thread[] = [
         attachment: {
           kind: "voice",
           seconds: 9,
-          transcript: "Unhone usko jala diya, M. Main wahan tha. Maine dekha.",
-          english: "They burned him, M. I was there. I saw.",
+          // He didn't look (the locked note: "Maine dekha nahi"). What he can say is who lit it (fix brief H-05).
+          transcript: "Unhone usko jala diya, M. Aag maine lagayi.",
+          english: "They burned him, M. I lit it.",
         },
         evidence: "vn-burned",
       },
@@ -234,7 +235,7 @@ export const threads: readonly Thread[] = [
           film: "/found/raakh/clip-k-3.mp4",
           captions: [
             { at: 1, line: "[dhol]" },
-            { at: 5, line: "[two shots into the air, close]" },
+            { at: 5, line: "[two shots into the air, close]", reveals: true },
             { at: 7, line: "[cheering]" },
             { at: 10, who: "Kunal", line: "Oye hoye!" },
           ],
@@ -554,7 +555,7 @@ export const photos: readonly Photo[] = [
         { at: 8.6, line: "[a shot, straight up; the sound clips]" },
         { at: 9, line: "[laughter]" },
         { at: 10.2, who: "Sameer", line: "Ek aur, pose mein—", english: "One more, posing—" },
-        { at: 13, line: "[a second shot; the light tips out of frame]" },
+        { at: 13, line: "[a second shot; the light tips out of frame]", reveals: true },
         { at: 14, line: "[nobody speaks; a chair scrapes]" },
         { at: 15.2, who: "Sameer, very quietly", line: "Dilip?" },
         { at: 16.5, line: "[legs cross the frame toward the tripod]" },
@@ -579,8 +580,8 @@ export const photos: readonly Photo[] = [
       film: "/found/raakh/clip-fire.mp4",
       captions: [
         { at: 1, line: "[footsteps on gravel; something heavy set down]" },
-        { at: 6, who: "A man, off camera", line: "Uske kapde bhi.", english: "His clothes too." },
-        { at: 7.5, line: "[a bag and a shirt thrown on the pile]" },
+        { at: 6, who: "A man, off camera", line: "Uski shirt bhi.", english: "His shirt too." },
+        { at: 7.5, line: "[a stained catering shirt thrown on the pile]" },
       ],
     },
     trimmed: true,
@@ -622,7 +623,8 @@ export const photos: readonly Photo[] = [
       ...GROUP,
       lines: [
         { who: "Bhasin", at: "00:38", text: "Koi 112 nahi karega. Ladke ko service room le jao.", english: "Nobody calls 112. Take the boy to the service room.", evidence: "no-112" },
-        { who: "Bhasin", at: "00:52", text: "Doctor ka intezaam ho raha hai.", english: "A doctor's being arranged.", evidence: "doctor" },
+        // Why the envelope says "Local thane mat le jaana" (fix brief H-12): the station was spoken to first.
+        { who: "Bhasin", at: "00:52", text: "Thane mein baat ho gayi hai. Doctor ka intezaam ho raha hai.", english: "The police station's been spoken to. A doctor's being arranged.", evidence: "doctor" },
         { who: "Pappu", at: "01:14", text: "Sir ladka hosh mein hai. Paani maang raha hai.", english: "Sir, the boy's conscious. Asking for water.", evidence: "conscious" },
       ],
     },
@@ -661,6 +663,8 @@ export const photos: readonly Photo[] = [
         { who: "Pappu", at: "02:41", text: "Sir ladka bol nahi raha.", english: "Sir, the boy isn't speaking.", evidence: "not-speaking" },
         { who: "Bhasin", at: "02:41", text: "Call karo mujhe.", english: "Call me." },
         { who: "Pappu", at: "02:55", text: "Sir gaadi nikal gayi.", english: "Sir, the car's left.", evidence: "car-255" },
+        // The doctor took it off him to dress the wound; it went with him, his phone in its pocket (fix brief H-06).
+        { who: "Pappu", at: "02:55", text: "Uska waistcoat gaadi mein rakh diya.", english: "Put his waistcoat in the car." },
         { who: "Bhasin", at: "02:55", text: "Baaki back plot pe.", english: "The rest to the back plot." },
       ],
     },
@@ -737,14 +741,14 @@ export const notes: readonly Note[] = [
           film: "/found/raakh/clip-fire-whole.mp4",
           captions: [
             { at: 1, line: "[a hand with a silver kada sets down a jerrycan beside a rolled mattress and a bundle of sheets]" },
-            { at: 6, who: "A man, off camera", line: "Uske kapde bhi.", english: "His clothes too." },
-            { at: 7.5, line: "[a bag and a shirt thrown on the pile]" },
+            { at: 6, who: "A man, off camera", line: "Uski shirt bhi.", english: "His shirt too." },
+            { at: 7.5, line: "[a stained catering shirt thrown on the pile]" },
             { at: 9.5, line: "[pouring]" },
             { at: 11.5, line: "[a breath; the hand waits]" },
             { at: 13, line: "[a lighter catches]" },
             { at: 16, line: "[fire; the camera drifts, stays on the pile]" },
             { at: 24, line: "[the rolled mattress burns open and falls flat]" },
-            { at: 27, line: "[it is empty: foam, springs, nothing else]" },
+            { at: 27, line: "[it is empty: foam, springs, nothing else]", reveals: true },
           ],
         },
         evidence: "fire-original",
@@ -857,6 +861,8 @@ export const mail: readonly Mail[] = [
 export const payments: readonly Payment[] = [
   { id: "p-balance", who: "SEHGAL ENTERPRISES", handle: "sehgalent@paytap", amount: 180000, note: "SK-1127 balance", at: "11:04", day: "Sunday", evidence: "balance" },
   { id: "p-nitin", who: "Nitin Kumar", handle: "nitin.edits@paytap", amount: -5000, note: "Edit advance · Sehgal film", at: "12:30", day: "Sunday", evidence: "nitin-pay" },
+  // The phone beside the parcel tonight (fix brief H-03): a second handset and SIM, for Mumbai.
+  { id: "p-phone", who: "Croma, Saket", handle: "croma.saket@paytap", amount: -11499, note: "Redmi 13C and a new SIM, for Mumbai", at: "18:40", day: "Tuesday", evidence: "new-phone" },
   { id: "p-deposit", who: "Anjali Mehra", handle: "anjali.m@paytap", amount: -35000, note: "Deposit, Andheri 1RK", at: "14:22", day: "Tuesday", evidence: "deposit" },
   { id: "p-emi", who: "ZipEMI", amount: -14200, note: "EMI · Sony A7 IV", at: "09:00", day: "Friday", failed: true },
 ];
@@ -886,7 +892,7 @@ export const memos: readonly Memo[] = [
     lines: [
       { at: 1, line: "[a long breath]" },
       { at: 3, who: "Sameer", line: "Pehli camera ke liye thi.", english: "The first was for the camera." },
-      { at: 7, who: "Sameer", line: "Doosri… main pose kar raha tha.", english: "The second… I was posing." },
+      { at: 7, who: "Sameer", line: "Doosri… main pose kar raha tha.", english: "The second… I was posing.", reveals: true },
       { at: 11, who: "Sameer", line: "Mujhe laga khaali hai.", english: "I thought it was empty." },
     ],
     deletedAt: "22:52",
@@ -901,7 +907,7 @@ export const memos: readonly Memo[] = [
     seconds: 14,
     lines: [
       { at: 1, line: "[a breath]" },
-      { at: 2, who: "Sameer", line: "M. Code woh hai… jo woh roz poochta tha.", english: "M. The code is… what he asked every day." },
+      { at: 2, who: "Sameer", line: "M. Code woh hai… jo woh roz poochta tha.", english: "M. The code is… what he asked every day.", reveals: true },
       { at: 8, line: "[a long pause]" },
       { at: 11, who: "Sameer", line: "Nahi. Rehne de.", english: "No. Leave it." },
     ],
@@ -972,12 +978,31 @@ export const searches: readonly Search[] = [
     day: "Sunday",
     results: ["Lifeline Hospital, Mehrauli · Emergency, 24 hours", "4.2 km from Chhattarpur · about 12 minutes at night", "Emergency department: walk in, no appointment"],
   },
+  /* 1:54 to 1:56, either side of the lie (fix brief H-07): what a hospital
+     would mean, and an ambulance he looked up and never rang. */
+  {
+    id: "q-4a",
+    text: "gunshot hospital police case compulsory",
+    at: "01:54",
+    day: "Sunday",
+    evidence: "search-police",
+    results: ["Gunshot injuries are medico-legal cases: the hospital must inform the police", "Is a police case compulsory for a bullet injury? Yes, an MLC is registered", "Treatment first, then the police: what the law says"],
+  },
+  {
+    id: "q-4b",
+    text: "MLC kya hota hai",
+    at: "01:55",
+    day: "Sunday",
+    evidence: "search-mlc",
+    results: ["MLC (medico-legal case): an injury the police must be told about", "Goli, jalna, accident: MLC kab banta hai", "Who signs an MLC, and what happens next"],
+  },
   {
     id: "q-4",
     text: "private ambulance chhattarpur 24 hours",
     at: "01:56",
     day: "Sunday",
     evidence: "search-156",
+    // The results came up; nothing on them was ever tapped.
     results: ["24-hour private ambulance, South Delhi: at your door in 15–20 minutes", "Ambulance near Chhattarpur, call now", "Or dial 112 for a government ambulance"],
   },
   /* Tuesday, 3:20 AM: eight minutes after somebody read "maaf kar de". */

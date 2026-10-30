@@ -34,7 +34,7 @@ export function DarkLine({ line, sub, onDone }: { line: string; sub?: string; on
         <p className={styles.darkLine}>{line}</p>
         {sub && <p className={styles.darkSub}>{sub}</p>}
       </div>
-      <button type="button" className={styles.quiet} onClick={onDone}>
+      <button type="button" className={styles.quiet} onClick={onDone} autoFocus>
         Go on
       </button>
     </div>
@@ -79,7 +79,7 @@ function DarkVoice({ voice, voices, onDone }: { voice: NonNullable<Dark["voice"]
         </ol>
       </div>
       {over && (
-        <button type="button" className={styles.quiet} onClick={onDone}>
+        <button type="button" className={styles.quiet} onClick={onDone} autoFocus>
           Go on
         </button>
       )}
@@ -106,7 +106,7 @@ function DarkBubble({ bubble, onDone }: { bubble: NonNullable<Dark["bubble"]>; o
         </p>
       </div>
       {over && (
-        <button type="button" className={styles.quiet} onClick={onDone}>
+        <button type="button" className={styles.quiet} onClick={onDone} autoFocus>
           Go on
         </button>
       )}

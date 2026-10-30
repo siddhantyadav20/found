@@ -315,6 +315,22 @@ button.row:active {
   flex: 1;
 }
 
+/* Where the search bar is a real field (fix brief §8.9): no box of its own inside the capsule. */
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  letter-spacing: inherit;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: rgba(235, 235, 245, 0.6);
+}
+
 .searchGlass {
   width: 15px;
   height: 15px;

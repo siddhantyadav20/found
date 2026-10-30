@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Caption } from "@/content/types";
 import { bedFor, sound, useBed, warmNight } from "@/lib/found/nightSound";
 import { mmss } from "@/lib/game/phone";
+import { heard } from "@/lib/found/heard";
 import { useVoice } from "@/lib/found/voice";
 import { soundOn } from "@/lib/sound";
 import styles from "./PhotoFrame.module.css";
@@ -25,7 +26,10 @@ export default function Clip({
   onPlayed,
   voice,
   film,
+  evidence,
 }: {
+  /** What this clip proves, filed once it has played past its `reveals` caption, or to its end (fix brief H-23). */
+  evidence?: string;
   seconds: number;
   captions: readonly Caption[];
   /** The recording under the captions, where there is one (`Story.voices`). */
@@ -98,6 +102,11 @@ export default function Clip({
   useEffect(() => {
     if (ended) onPlayed?.();
   }, [ended, onPlayed]);
+  const revealAt = captions.find((c) => c.reveals)?.at ?? seconds;
+  const revealed = elapsed >= revealAt;
+  useEffect(() => {
+    if (revealed && evidence) heard(evidence);
+  }, [revealed, evidence]);
 
   // The newest line stays in view.
   useEffect(() => {

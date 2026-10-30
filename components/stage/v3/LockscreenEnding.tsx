@@ -329,7 +329,9 @@ export default function LockscreenEnding({ story, state, end }: { story: Story; 
       </div>
       <button
         type="button"
-        className={ending.quiet}
+        className={ending.goOn}
+        // eslint-disable-next-line jsx-a11y/no-autofocus -- the only control on a full-screen beat: Enter and Space go on (fix brief §10)
+        autoFocus
         onClick={(e) => {
           e.stopPropagation();
           next();

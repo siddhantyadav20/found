@@ -85,10 +85,20 @@ export function sayAll(options: readonly Pick<ReplyOption, "sets">[], replyId?: 
   save(replyId ? { ...said, at: { ...said.at, [`event:${replyId}`]: now } } : said);
 }
 
-/** Having looked at something: it goes into the case file, if it can. */
+/**
+ * Having looked at something: it goes into the case file, if it can. What
+ * has to be heard (a clip, a memo) waits for its player to say so (`heard`).
+ */
 export function read(story: Story, ids: readonly string[]): void {
   const s = readProgress();
-  if (s) save(ids.reduce((acc, id) => see(story, acc, id), s));
+  const looked = ids.filter((id) => !story.evidence.find((e) => e.id === id)?.heard);
+  if (s && looked.length) save(looked.reduce((acc, id) => see(story, acc, id), s));
+}
+
+/** Played past the moment that makes it evidence (lib/found/heard.ts). */
+export function heardIt(story: Story, id: string): void {
+  const s = readProgress();
+  if (s) save(see(story, s, id));
 }
 
 /** A wrong answer costs nothing in the game. The funnel still wants to know. */

@@ -199,7 +199,8 @@ function revealStep(s: CaseState, policy: Policy): CaseState {
     const x = has(s, "did:early-reveal") ? s : talk(s, r.call, policy);
     return policy.facedown ? add(x, "did:rv-meera", FACE_DOWN, REVEAL_DONE) : add(x, "did:camera-open", "did:rv-meera");
   }
-  if (!has(s, "did:rv-camera")) return add(s, ...(policy.photo ? (["did:camera-photo"] as const) : []), "did:rv-camera");
+  // The shutter has to be pressed before the camera is done (fix brief §6: the kada is the proof).
+  if (!has(s, "did:rv-camera")) return add(s, "did:camera-photo", "did:rv-camera");
   for (const step of ["casefile", "montage", "line", "dark", "card"] as const) if (!has(s, `did:rv-${step}`)) return add(s, `did:rv-${step}`, ...(step === "card" ? [REVEAL_DONE] : []));
   return s;
 }

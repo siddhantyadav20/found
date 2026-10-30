@@ -14,7 +14,7 @@ import { commit } from "@/lib/found/progress";
 import { resultOf } from "@/lib/found/result";
 import { markSolved } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
-import { DETECTIVE, UNOPENED } from "@/lib/game/scene";
+import { DETECTIVE, SWITCHED, UNOPENED } from "@/lib/game/scene";
 import PassItOn from "../PassItOn";
 import Night from "../ending/Night";
 import Notify from "../ending/Notify";
@@ -73,6 +73,10 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
   const clues = walkedPast(story, state);
   const of = story.clues?.length ?? 0;
   const notes = (end?.notes ?? []).filter((l) => earned(state, l));
+  // What became of everyone (fix brief §7): one line each, by how the night went.
+  const after = (end?.epilogue ?? []).filter((l) => earned(state, l));
+  // A detective's hints are counted on the card (fix brief §8.4).
+  const hints = state.flags.filter((f) => f.startsWith("hint:")).length;
 
   useEffect(() => {
     markSolved(id as CaseId, { episode: episodes, minutes: result.minutes, traced: 0, of: 0, at: Date.now() });
@@ -121,8 +125,28 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
             {l.text}
           </p>
         ))}
-        {state.flags.includes(DETECTIVE) && <p className={ending.scoreMode}>Played as a detective</p>}
+        {state.flags.includes(DETECTIVE) && (
+          <p className={ending.scoreMode}>
+            Played as a detective · {hints === 0 ? "no hints" : hints === 1 ? "1 hint" : `${hints} hints`}
+          </p>
+        )}
+        {state.flags.includes(SWITCHED) && <p className={ending.scoreMode}>Switched to help on the way</p>}
       </section>
+
+      {after.length > 0 && (
+        <section className={ending.section} aria-labelledby="after">
+          <p className={ending.eyebrow} id="after">
+            Afterwards
+          </p>
+          <ul className={styles.after}>
+            {after.map((l) => (
+              <li key={`${l.who}:${l.text}`}>
+                <b>{l.who}</b> <span>{l.text}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Choose differently (2026-10-29): back to the last choice, not the start of the night. */}
       {rewound && ways.length > 1 && (
@@ -186,7 +210,8 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
           </ul>
         )}
         {copy && of > 0 && <p className={styles.stat}>{copy.clues.replace("{n}", String(clues.length)).replace("{of}", String(of))}</p>}
-        {onLookAgain && of > 0 && (
+        {/* Face down, and nothing else yet: the twist isn't laid out for a player who didn't look (fix brief H-25). */}
+        {onLookAgain && of > 0 && !(state.flags.includes("did:facedown") && !found.some((f) => f !== end?.id && f !== "unopened")) && (
           <button type="button" className={ending.button} onClick={onLookAgain}>
             Look again
           </button>

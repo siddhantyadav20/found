@@ -38,6 +38,12 @@ export const reveal: Reveal = {
           line: "Khurrana sahab, maaf karna, itni raat ko. Bhasin sahab neeche gaadi mein baithe hain. Keh rahe hain aapko bula doon.",
           english: "Khurrana sahab, sorry, so late. Bhasin sahab is downstairs in his car. Asking me to call you.",
         },
+        // Fix brief §6, beat 2: said to everyone who picks up, and never cut off (§10).
+        {
+          who: "Ram Kishan ji",
+          line: "Sahab… B-14 aapka hi hai na? Teen saal se gate khol raha hoon aapke liye.",
+          english: "Sahab… B-14 is yours, isn't it? I've opened the gate for you for three years.",
+        },
       ],
       reply: {
         id: "guard-call",
@@ -46,17 +52,20 @@ export const reveal: Reveal = {
             id: "denial",
             text: "Main Khurrana nahi hoon.",
             english: "I'm not Khurrana.",
+            // The reveal's choices count too (fix brief §6: every denial, and every answer that isn't one).
+            impulse: { side: "auditor", weight: 1 },
             sets: ["did:guard-denial"],
-            then: [{ id: "g-1", from: "them", at: "03:59", typing: 4, text: "Sahab… B-14 aap hi ka hai na? Teen saal se aapke liye gate khol raha hoon.", english: "Sahab… B-14 is yours, isn't it? I've opened the gate for you for three years." }],
+            then: [{ id: "g-1", from: "them", at: "03:59", typing: 4, text: "Sahab, main awaaz pehchaanta hoon.", english: "Sahab, I know the voice." }],
           },
           {
             id: "wait",
             text: "Unse kaho intezaar karein.",
             english: "Tell him to wait.",
+            impulse: { side: "confessor", weight: 1 },
             sets: ["did:guard-wait"],
             then: [{ id: "g-2", from: "them", at: "03:59", text: "Ji sahab.", english: "Yes, sahab." }],
           },
-          { id: "hang", text: "[Hang up]", sets: ["did:guard-hung"] },
+          { id: "hang", text: "[Hang up]", impulse: { side: "auditor", weight: 1 }, sets: ["did:guard-hung"] },
         ],
       },
     },
@@ -77,6 +86,7 @@ export const reveal: Reveal = {
           id: "denial",
           text: "Main Sameer nahi hoon.",
           english: "I'm not Sameer.",
+          impulse: { side: "auditor", weight: 1 },
           sets: ["did:rv-meera-denial"],
           then: [{ id: "mr-1", from: "them", at: "04:00", typing: 4, text: "Toh front camera khol. Aur mujhe bata kaun dikh raha hai.", english: "Then open the front camera. And tell me who you see." }],
         },
@@ -84,6 +94,7 @@ export const reveal: Reveal = {
           id: "name",
           text: "Meera…",
           english: "Meera…",
+          impulse: { side: "confessor", weight: 1 },
           sets: ["did:rv-meera-name"],
           then: [{ id: "mr-2", from: "them", at: "04:00", typing: 4, text: "Front camera khol, Sameer. Ek baar dekh le.", english: "Open the front camera. Look, once." }],
         },
@@ -97,7 +108,11 @@ export const reveal: Reveal = {
     // Her "don't look", against Bhasin's at the fire.
     awayLine: { who: "Meera", text: "Theek hai, Sameer. Mat dekh.", english: "All right, Sameer. Don't look." },
   },
-  camera: { src: "/found/raakh/viewfinder-2.jpg", alt: "The front camera: an unshaven man, red-eyed, lit only by the screen, a silver kada on the hand holding the phone" },
+  camera: {
+    src: "/found/raakh/viewfinder-2.jpg",
+    alt: "The front camera: an unshaven man, red-eyed, lit only by the screen, a silver kada on the hand holding the phone",
+    pin: { src: "/found/raakh/jerrycan.jpg", label: "4:47 AM, a week ago: the hand at the fire, the same kada" },
+  },
   info: {
     lines: ["Case file", "Notes", "Created Sat 28 Nov 2026, 11:44 PM", "On this iPhone", "Last edited 4:01 AM"],
     question: "q1",
@@ -215,7 +230,9 @@ export const final: Final = {
             { who: "Raju", text: "Aapne kaha tha aap Sameer nahi ho.", english: "You said you weren't Sameer.", needs: ["did:raju-first-denial"] },
             { who: "You", text: "Jhooth tha.", english: "That was a lie.", needs: ["did:raju-first-denial"] },
             { who: "You", text: "Haan. Main Sameer hoon. Dilip zinda hai. Bedi Nursing Home, Fatehpur Beri. Room 6.", english: "Yes. I'm Sameer. Dilip's alive. Bedi Nursing Home, Fatehpur Beri. Room 6." },
-            { who: "Raju", text: "…Main nikal raha hoon.", english: "…I'm leaving now." },
+            { who: "Raju", text: "…Main nikal raha hoon.", english: "…I'm leaving now.", unless: ["did:raju-told-shot"] },
+            // Told it was a bullet, he'd been going round the hospitals near Chhattarpur all night (fix brief H-17).
+            { who: "Raju", text: "…Main paas hi hoon. Chhattarpur mein. Aadha ghanta.", english: "…I'm close. In Chhattarpur. Half an hour.", needs: ["did:raju-told-shot"] },
           ],
           sets: ["did:raju-called"],
         },

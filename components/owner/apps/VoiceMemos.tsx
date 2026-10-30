@@ -8,6 +8,7 @@ import { calendarOf, memos, mmss } from "@/lib/game/phone";
 import { Page } from "../AppView";
 import app from "../ios/App.module.css";
 import { Chevron } from "../ios/AppBar";
+import { heard } from "@/lib/found/heard";
 import { useVoice } from "@/lib/found/voice";
 import styles from "./VoiceMemos.module.css";
 import { stamp } from "@/lib/found/time";
@@ -52,6 +53,11 @@ function Skip({ back }: { back?: boolean }) {
 
 function Player({ memo, voice }: { memo: Memo; voice?: string }) {
   const [elapsed, setElapsed] = useState(0);
+  // Its evidence counts once it has been heard past its revealing line (fix brief H-23).
+  const revealed = elapsed >= (memo.lines.find((l) => l.reveals)?.at ?? memo.seconds);
+  useEffect(() => {
+    if (revealed && memo.evidence) heard(memo.evidence);
+  }, [revealed, memo.evidence]);
   const [playing, setPlaying] = useState(false);
   useVoice(voice, playing, elapsed);
   const words = useRef<HTMLOListElement>(null);

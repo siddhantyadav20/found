@@ -52,7 +52,14 @@ export type CaseMeta = {
     readonly courier?: string;
     /** What the waybill declares is inside. */
     readonly contains?: string;
+    /** The courier's tracking, printed on the return label: pickup, refusal, back at the door (fix brief H-01). */
+    readonly track?: readonly string[];
   };
+  /**
+   * The player's own phone, face down beside the parcel, lighting once with
+   * the message that sent it up (fix brief H-03).
+   */
+  readonly door?: { readonly from: string; readonly text: string; readonly english: string; readonly at: string };
   /**
    * Something besides the phone in the parcel, drawn on the passed-on
    * parcel's share image: Raakh's wedding envelope.

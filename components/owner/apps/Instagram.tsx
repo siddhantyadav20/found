@@ -413,7 +413,11 @@ export default function Instagram({
 
   // Explore: search for anyone by name, and a grid of everything public.
   const wanted = query.trim().toLowerCase().replace(/^@/, "");
-  const found = wanted ? profiles.filter((p) => p.handle.includes(wanted) || p.name.toLowerCase().includes(wanted)) : [];
+  // Anyone the player could know of, by handle, name or what their bio says (fix brief §8.9: "bedi" finds the nurse).
+  const found = wanted
+    ? profiles.filter((p) => p.handle.includes(wanted) || p.name.toLowerCase().includes(wanted) || (p.bio ?? "").toLowerCase().includes(wanted))
+    : [];
+  const requests = profiles.filter((p) => p.request && all(state, p.request.requires));
   const tiles: Shown[] = [...night, ...world, ...profiles.filter((p) => !p.private && !p.own).flatMap((p) => p.posts.filter((x) => !x.archived).map((post) => fromProfile(p, post)))];
   const exploredPost = tiles.find((t) => t.key === explored);
 
@@ -538,6 +542,18 @@ export default function Instagram({
       </header>
 
       <div className={styles.body}>
+        {/* Activity: who asked to follow him (fix brief H-10). */}
+        {requests.map((p) => (
+          <button key={p.handle} type="button" className={styles.result} onClick={() => visit(p)} aria-label={`Follow request from ${p.handle}`}>
+            <Avatar who={p} size="row" ring={false} />
+            <span>
+              <b>Follow request</b>
+              <span>
+                {p.handle} {p.request!.note} · {p.request!.when}
+              </span>
+            </span>
+          </button>
+        ))}
         <ul className={styles.rings} aria-label="Stories">
           {profiles
             .filter((p) => !p.private)

@@ -102,10 +102,23 @@ describe("picking the proof", () => {
       return add(start(), "ep:2", "ep:3", ...ids.map((id) => `saw:${id}` as const));
     };
 
-    it("takes his Instagram, the invoice and his Apple Account for whose phone it is", () => {
-      const s = has("apple-account", "sk-films", "invoice", "poster");
-      expect(answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "invoice"] }).ok).toBe(true);
-      expect(answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster"] }).reply).toContain(TOO_MUCH);
+    it("takes his Instagram, the invoice, his Apple Account and the ticket for whose phone it is", () => {
+      const s = has("apple-account", "sk-films", "invoice", "poster", "ticket");
+      expect(answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "invoice", "ticket"] }).ok).toBe(true);
+      expect(answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "sk-films", "poster", "ticket"] }).reply).toContain(TOO_MUCH);
+    });
+
+    // Fix brief §8.1: the sentence claims a train, so something has to show the train, and the refusal says so.
+    it("names the claim nothing on the table proves yet", () => {
+      const s = has("apple-account", "sk-films", "invoice", "ticket", "kunal-clip", "reel-take", "memo");
+      const r = answer(raakh, s, "q1", { claim: "him", proof: ["apple-account", "invoice"] });
+      expect(r.ok).toBe(false);
+      expect(r.reply).toBe("You've shown who S is and what he does. Nothing yet shows where he's going, and when.");
+      // Two things proving the same fact never fail a filing.
+      expect(answer(raakh, s, "q4", { claim: "truth", proof: ["reel-take", "memo"] }).reply).toBe(
+        "You've shown who fired on the back lawn and which shot hit Dilip. Nothing yet shows where Kunal fired first.",
+      );
+      expect(answer(raakh, s, "q4", { claim: "truth", proof: ["kunal-clip", "reel-take", "memo"] }).ok).toBe(true);
     });
 
     it("takes the reel take with the 12:29 photo and the run sheet for who fired", () => {

@@ -548,8 +548,9 @@ export default function Phone({
   );
 }
 
-/** Where iOS warns that the battery is going: 20%, 10%, and once more near the end. */
-const LOW_AT = [20, 10, 5] as const;
+/** Where iOS warns that the battery is going: 20% and 10%. The story says the last one itself (the dying event). */
+// Said once on the way down, never again before the story's own last warning (fix brief §8.7: once at the start, once as the end).
+const LOW_AT = [20, 10] as const;
 
 /**
  * The phone saying it's dying (2026-10-29: a yellow cell alone didn't say so).

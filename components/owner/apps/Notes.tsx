@@ -79,6 +79,7 @@ function Attachment({ photo, voice }: { photo: Photo; voice?: string }) {
           captions={photo.video.captions}
           voice={voice}
           film={photo.video.film}
+          evidence={photo.evidence}
         />
       )}
       {photo.src && photo.caption && (
@@ -295,6 +296,7 @@ export default function Notes({
   const [bin, setBin] = useState(false);
   const cal = calendarOf(story, state);
   const [open, setOpen] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const notes = story.notes.filter((n) => all(state, n.requires));
   const here = notes.find((n) => n.id === open);
 
@@ -366,9 +368,11 @@ export default function Notes({
 
   // Newest first, under the heading Notes gives how long ago they were touched.
   const today = cal.dayOf(undefined);
-  const sorted = [...notes].sort(
-    (a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at),
-  );
+  // Searched by title and by what's written in it (a locked note shows only its title).
+  const wanted = query.trim().toLowerCase();
+  const sorted = [...notes]
+    .filter((n) => !wanted || [n.title, ...(n.locked ? [] : n.body)].join(" ").toLowerCase().includes(wanted))
+    .sort((a, b) => cal.when(b.day, b.at) - cal.when(a.day, a.at));
   const sections: { title: string; notes: Note[] }[] = [];
   for (const n of sorted) {
     const title = section(today - cal.dayOf(n.day));
@@ -388,7 +392,7 @@ export default function Notes({
       end={more}
       tabbed
     >
-      <SearchField />
+      <SearchField value={query} onChange={setQuery} />
       {/* The case file: a note made on this iPhone tonight (IC4). */}
       {story.caseNote && onCaseFile && all(state, story.caseNote.when) && (
         <div>

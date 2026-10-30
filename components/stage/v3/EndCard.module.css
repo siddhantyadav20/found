@@ -139,3 +139,18 @@
   line-height: 1.45;
   color: var(--muted);
 }
+
+/* Afterwards (fix brief §7): one line per person, the name first. */
+.after {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.after b {
+  font-weight: 600;
+}

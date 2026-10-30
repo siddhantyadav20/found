@@ -33,7 +33,7 @@ export const profiles: readonly Profile[] = [
       { id: "i-family", when: "6 days ago", src: `${R}/w-family.jpg`, title: "The Sehgals on the stage: Bhasin Sehgal on the left, the couple, Kunal at the end", caption: "Sehgal parivar 🙏 Thank you Bhasin uncle for trusting us with Ishita's big day. @kunal.sehgal bhai, you're next 😄", likes: 1213 },
       { id: "i-pheras", when: "6 days ago", src: `${R}/w-pheras.jpg`, title: "Pheras at night, the fire in the middle", caption: "Pheras at 1:20 AM. Worth every minute. 🔥", likes: 2106 },
       { id: "i-baraat", when: "6 days ago", src: `${R}/w-baraat.jpg`, title: "The baraat at the gate, dhol and marigolds", caption: "Baraat aa gayi 🥁🥁", likes: 977 },
-      { id: "i-selfie", when: "2 weeks ago", src: `${R}/ig-selfie.jpg`, title: "A selfie, camera up, a silver kada on his right wrist", caption: "New gimbal day 🎥 (and yes, the kada stays on)", likes: 642 },
+      { id: "i-selfie", when: "2 weeks ago", src: `${R}/ig-selfie.jpg`, title: "A selfie, camera up, a silver kada on his right wrist", caption: "New gimbal day 🎥 (and yes, the kada stays on)", likes: 642, evidence: "kada-selfie" },
       { id: "i-crew", when: "3 weeks ago", src: `${R}/ig-crew.jpg`, title: "Sameer with his crew, arms round Nitin and a boy in a maroon waistcoat", caption: "The team that makes it happen 🤍 @nitin.edits on the edit, Dilip on the lights. Mumbai, we're coming.", likes: 731 },
       { id: "i-nitin", when: "4 weeks ago", src: `${R}/w-13.jpg`, title: "Nitin on B cam, gimbal up, grinning at the lens", caption: "Throwback: @nitin.edits on B cam at the Kapoor sangeet. Best editor in Delhi, worst dancer.", likes: 508 },
       { id: "i-haldi", when: "5 weeks ago", src: `${R}/ig-haldi.jpg`, title: "A haldi, yellow everywhere", caption: "Haldi, but make it cinema 💛", likes: 1490 },
@@ -87,6 +87,20 @@ export const profiles: readonly Profile[] = [
       },
       { id: "n-reel", when: "3 weeks ago", src: `${R}/ig-crew.jpg`, title: "The SK Weddings crew", caption: "Team photo but I'm the only one who knows where the files are 🫡", likes: 210 },
     ],
+  },
+  /* Sister Anita (fix brief H-10). On Tuesday she looked up the name the boy
+     kept saying, watched Sameer's story, and asked to follow him. Private:
+     what she is says itself in her bio, for anyone who searches "bedi". */
+  {
+    handle: "lissy.anita",
+    name: "Lissy Anita",
+    bio: "Staff nurse · Bedi Nursing Home, Fatehpur Beri\nKottayam → Delhi 🙏",
+    followers: "214",
+    following: "301",
+    private: true,
+    postCount: 38,
+    posts: [],
+    request: { when: "Tuesday", note: "viewed your story, and requested to follow you", requires: ["fired:data-renewed"] },
   },
   {
     handle: "meera.arora",

@@ -86,6 +86,15 @@ const kunal: Thread = {
               evidence: "kunal-frame",
             },
             { id: "k-t3", from: "them", at: "02:11", text: "Humare paas bhi hai. Soch samajh ke.", english: "We have one too. Think carefully." },
+            // Fix brief H-15: who holds the second angle, and what Kunal knows he did.
+            {
+              id: "k-t3a",
+              from: "them",
+              at: "02:12",
+              typing: 9,
+              text: "Papa ke paas hai woh angle, bhai. Tera. Maine bola tha pose mat kar… phir bhi gun de di.",
+              english: "Dad has that angle, bro. Yours. I told you not to pose… and I handed you the gun anyway.",
+            },
             { id: "k-t4", from: "them", at: "02:12", typing: 8, text: "Aur jerrycan tu khud uthake le gaya tha. Papa ne bas bola tha.", english: "And you carried the jerrycan yourself. Dad just said it.", evidence: "kunal-jerrycan" },
           ],
         },
@@ -148,7 +157,7 @@ export const ANITA_VOICE = {
     { at: 0.7, who: "Sister Anita", line: "Ek ladka hai. Ek hafte se.", english: "There's a boy. For a week." },
     { at: 3.8, who: "Sister Anita", line: "Register mein “Deepak, unnees saal, road accident” likha hai.", english: "The register says “Deepak, nineteen, road accident.”" },
     { at: 8.6, who: "Sister Anita", line: "Road accident nahi hai. Goli ka ghaav hai, kandhe mein.", english: "It isn't a road accident. It's a bullet wound, in the shoulder." },
-    { at: 13.6, who: "Sister Anita", line: "Jo log laaye the, roz aate hain. Aaj raat bole saat baje le jaayenge. Kahan, nahi bataya.", english: "The men who brought him come every day. Tonight they said they'll take him at seven. Where, they didn't say." },
+    { at: 13.6, who: "Sister Anita", line: "Jo log laaye the, roz aate hain. Aaj raat bole subah saat baje le jaayenge. Kahan, nahi bataya.", english: "The men who brought him come every day. Tonight they said they'll take him at seven in the morning. Where, they didn't say." },
     { at: 22.6, who: "Sister Anita", line: "Woh roz ek hi naam leta hai. Sameer bhaiya.", english: "Every day he says one name. Sameer bhaiya." },
   ],
 } as const;
@@ -177,8 +186,8 @@ const dilip: Thread = {
       with: "anita",
       requires: ["fired:anita"],
       typing: 8,
-      text: "Aap Sameer ho? Ye phone ek ladke ka hai. Main Bedi Nursing Home, Fatehpur Beri mein night nurse hoon. Aapka number isme “Sameer Bhaiya Mumbai” naam se save hai.",
-      english: "Are you Sameer? This phone belongs to a boy. I'm the night nurse at Bedi Nursing Home, Fatehpur Beri. Your number is saved in it as “Sameer Bhaiya Mumbai.”",
+      text: "Aap Sameer ho? Ye phone ek ladke ka hai. Main Bedi Nursing Home, Fatehpur Beri mein night nurse hoon. Raat ke round pe iska phone charge karti hoon. Aaj aap online dikhe. Aapka number isme “Sameer Bhaiya Mumbai” naam se save hai.",
+      english: "Are you Sameer? This phone belongs to a boy. I'm the night nurse at Bedi Nursing Home, Fatehpur Beri. I charge his phone on my night round. Tonight you showed online. Your number is saved in it as “Sameer Bhaiya Mumbai.”",
       evidence: "anita",
     },
     afterVoice("an-v", "03:22", {
@@ -196,6 +205,13 @@ const dilip: Thread = {
         src: "/found/raakh/slip.jpg",
       },
       evidence: "slip",
+    }),
+    // Fix brief H-09: who read "maaf kar de" on Tuesday, and why nobody answered.
+    afterVoice("an-1b", "03:23", {
+      typing: 6,
+      text: "Woh phone dekhta rehta hai, jawab nahi deta. Unhone mana kiya hai.",
+      english: "He keeps looking at his phone, and never answers. They've told him not to.",
+      evidence: "anita-read",
     }),
     afterVoice("an-2", "03:24", {
       typing: 7,

@@ -135,3 +135,8 @@
   font-family: var(--font-display);
   font-size: 1.2rem;
 }
+
+/* The three doors, then a gap, then the rest (fix brief §6). */
+.list li[data-after-doors] {
+  margin-top: 18px;
+}

@@ -43,12 +43,14 @@ export default function LookAgainV3({ story, state, onDone }: { story: Story; st
               </button>
             </header>
             <p className={styles.lede}>Everything that said whose door this was, before the camera did. Tap one to see what it meant.</p>
+            {/* The three doors first (fix brief §6): one an episode, none of them skippable, so it was fair. */}
+            {clues.some((c) => c.door) && <p className={styles.where}>The three doors, one an episode</p>}
             <ol className={styles.list}>
-              {clues.map((c) => {
+              {[...clues.filter((c) => c.door), ...clues.filter((c) => !c.door)].map((c, i, all) => {
                 const saw = sawClue(state, c);
                 const at = clueSeenAt(state, c);
                 return (
-                  <li key={c.id}>
+                  <li key={c.id} data-door={c.door || undefined} data-after-doors={(i > 0 && all[i - 1].door && !c.door) || undefined}>
                     <button
                       type="button"
                       className={styles.item}
@@ -56,7 +58,7 @@ export default function LookAgainV3({ story, state, onDone }: { story: Story; st
                       onClick={() => setShown((s) => new Set(s).add(c.id))}
                     >
                       <span className={styles.where}>
-                        {c.id} · {c.where} · {saw ? (at ? `You saw it at ${stamp(at)}` : "You saw it") : "Not seen"}
+                        {c.door ? `Episode ${c.door}'s door` : c.id} · {c.where} · {saw ? (at ? `You saw it at ${stamp(at)}` : "You saw it") : "Not seen"}
                       </span>
                       <span className={styles.what}>{c.what}</span>
                       {shown.has(c.id) && <span className={styles.meant}>{c.meant}</span>}

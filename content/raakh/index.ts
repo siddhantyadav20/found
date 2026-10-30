@@ -34,7 +34,10 @@ export const meta: Omit<CaseMeta, "teaser"> = {
     stamp: ["RETURN TO ORIGIN", "Refused by addressee · 28/11 11:10"],
     courier: "DakRoute Express · Same-city · AWB DR-4471-0926 · Attempt 1",
     contains: "1 mobile phone, used",
+    // Same day, same city (fix brief H-01): out in the morning, back by night, to the address it left from.
+    track: ["28/11 09:10 Picked up · Malviya Nagar", "28/11 11:10 Refused by addressee · Kalkaji", "28/11 22:50 Delivered to origin · Malviya Nagar"],
   },
+  door: { from: "Gate 2 · Ram Kishan ji", text: "B-14 ka parcel aaya hai, upar bhej diya.", english: "B-14's parcel has come. I've sent it up.", at: "10:50 PM" },
   links: 0,
 };
 

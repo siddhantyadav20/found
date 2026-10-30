@@ -67,7 +67,7 @@ describe("the branch routes (RAAKH-V3 §19)", () => {
     expect(chosen(raakh, s)?.id).toBe("room6");
     const lines = told(s).join("\n");
     expect(lines).toMatch(/Aap hi dono ho/);
-    expect(lines).toMatch(/The SHO takes Sameer instead/);
+    expect(lines).toMatch(/Sameer dials 112/);
     // His version still stands in his own statement.
     expect(lines).toMatch(/Us raat goli chali thi. Main wahan tha./);
     expect(leaning(raakh, s)).toBe("auditor");
@@ -130,7 +130,7 @@ describe("the branch routes (RAAKH-V3 §19)", () => {
     const s = play({ say: CONFESSOR, facedown: true });
     expect(chosen(raakh, s)?.id).toBe("origin");
     expect(has(s, "did:rv-montage")).toBe(false);
-    expect(notes(s)).toContain("You didn't look.");
+    expect(notes(s)).toContain("You didn't answer. You didn't look.");
   });
 
   it("11. “Sameer Khurrana” at the last question: Return to Origin, with and without her copy", () => {
@@ -139,7 +139,7 @@ describe("the branch routes (RAAKH-V3 §19)", () => {
     expect(chosen(raakh, kept)?.id).toBe("origin");
     expect(told(kept).join("\n")).toMatch(/Maine copy rakh li hai/);
     expect(told(none).join("\n")).not.toMatch(/Maine copy rakh li hai/);
-    expect(notes(none)).not.toContain("You didn't look.");
+    expect(notes(none)).not.toContain("You didn't answer. You didn't look.");
   });
 
   it("12. closed in Episode 2: Unopened, and opened again exactly as it was", () => {
@@ -155,9 +155,9 @@ describe("the branch routes (RAAKH-V3 §19)", () => {
     const s = play({ say: CONFESSOR, runOut: true, photo: true }, (st, sc) => sc.kind === "table" && has(st, "fired:bhasin-left"));
     const qf = raakh.questions.find((q) => q.final)!;
     expect(claimsFor(qf, s, { who: "me", where: "at Gate 2, with the phone" })[0]?.refuse).toMatch(/car has gone/);
-    expect(fileSentence(raakh, s, "qf", { who: "me", where: "at Gate 2, with the phone" }, ["camera-photo", "bhasin-terms"]).ok).toBe(false);
+    expect(fileSentence(raakh, s, "qf", { who: "me", where: "at Gate 2, with the phone" }, ["camera-photo", "fire-original", "bhasin-terms"]).ok).toBe(false);
     // Every other door is still open.
-    expect(fileSentence(raakh, s, "qf", { who: "me", where: "at Fatehpur Beri" }, ["camera-photo", "slip"]).ok).toBe(true);
+    expect(fileSentence(raakh, s, "qf", { who: "me", where: "at Fatehpur Beri" }, ["camera-photo", "fire-original", "slip"]).ok).toBe(true);
   });
 
   it("14. airplane mode through Episode 2: what's sent waits, and nothing is lost", () => {
@@ -343,7 +343,7 @@ describe("choose differently", () => {
     expect(sceneOf(raakh, back).kind).toBe("table");
     // Everything before the choice is kept: the night's earlier answers still stand.
     expect(has(back, "ask:q8")).toBe(true);
-    expect(fileSentence(raakh, back, "qf", { who: "me", where: "on my way to the 4:55" }, ["camera-photo", "ticket"]).ok).toBe(true);
+    expect(fileSentence(raakh, back, "qf", { who: "me", where: "gone, with the phone" }, ["camera-photo", "fire-original", "ticket"]).ok).toBe(true);
   });
 
   it("puts a face-down night back at M's call", () => {

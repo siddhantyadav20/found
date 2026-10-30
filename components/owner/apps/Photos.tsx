@@ -569,6 +569,7 @@ function Viewer({
           captions={clip.captions}
           voice={voice}
           film={clip.film}
+          evidence={photo.original && clip === photo.original ? photo.original.evidence : photo.evidence}
         />
       )}
 

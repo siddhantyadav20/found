@@ -539,3 +539,142 @@
   line-height: 1.45;
   color: var(--muted);
 }
+
+/* The courier's tracking, printed small under the declaration (fix brief H-01). */
+.track {
+  font-size: 8.5px;
+  color: rgb(26 24 21 / 70%);
+}
+
+.track:first-of-type {
+  margin-top: 2px;
+  padding-top: 4px;
+  border-top: 1px dashed rgb(26 24 21 / 25%);
+}
+
+/* Your own phone beside the parcel, its lock screen lit once (fix brief H-03). */
+.door {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 2px;
+  width: min(320px, calc(100% - 32px));
+  /* Clear of the waybill's tracking lines, which run past the photograph's edge. */
+  margin: 44px auto 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgb(30 30 32 / 78%);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  color: #fff;
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  animation: doorLight 0.9s 1.2s both;
+}
+
+.door b {
+  font-weight: 600;
+}
+
+.door small {
+  color: rgb(255 255 255 / 62%);
+  font-size: 12px;
+}
+
+.doorTime {
+  color: rgb(255 255 255 / 62%);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+@keyframes doorLight {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door {
+    animation: none;
+  }
+}
+
+/* How to play, asked before anything opens (fix brief §8.8). */
+.ask {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: end center;
+  padding: 16px;
+  background: rgb(0 0 0 / 55%);
+  animation: askIn 0.25s ease-out both;
+}
+
+.askCard {
+  display: grid;
+  gap: 8px;
+  width: min(420px, 100%);
+  padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
+  border-radius: 22px;
+  background: #1c1b19;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 60%);
+  color: #f4f1ea;
+}
+
+.askHead {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.askCard button {
+  display: grid;
+  gap: 3px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 8%);
+  color: rgb(244 241 234 / 72%);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.askCard button:hover,
+.askCard button:focus-visible {
+  background: rgb(255 255 255 / 14%);
+}
+
+.askCard b {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.askNote {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: rgb(244 241 234 / 60%);
+  text-align: center;
+}
+
+@media (min-width: 700px) {
+  .ask {
+    place-items: center;
+  }
+}
+
+@keyframes askIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ask {
+    animation: none;
+  }
+}

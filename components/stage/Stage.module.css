@@ -390,3 +390,8 @@
   font-weight: 700;
   letter-spacing: -0.01em;
 }
+
+/* Reached from the phone's case-file icon (fix brief §10): no focus ring on the whole page of it. */
+.notebook:focus {
+  outline: none;
+}

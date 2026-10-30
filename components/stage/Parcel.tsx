@@ -57,7 +57,9 @@ export default function Parcel({
   onOpen: (detective: boolean, realtime: boolean) => void;
 }) {
   const [pull, setPull] = useState(0);
-  const [detective, setDetective] = useState(false);
+  // Nothing chosen until the player chooses (fix brief §8.8): a default nobody saw isn't a choice.
+  const [detective, setDetective] = useState<boolean | null>(null);
+  const [asking, setAsking] = useState(false);
   const [real, setReal] = useState(false);
   const [tearing, setTorn] = useState(false);
   const torn = tearing || Boolean(replay);
@@ -81,8 +83,15 @@ export default function Parcel({
     };
   }, [torn]);
 
-  const finish = () => {
-    if (replay) return onOpen(detective, real);
+  const finish = (mode: boolean | null = detective) => {
+    // How to play is asked before anything opens, every time.
+    if (mode === null) {
+      setPull(0);
+      from.current = null;
+      return setAsking(true);
+    }
+    setAsking(false);
+    if (replay) return onOpen(mode, real);
     if (done.current) return;
     done.current = true;
     try {
@@ -91,7 +100,7 @@ export default function Parcel({
       // A phone that won't buzz still opens.
     }
     setTorn(true);
-    window.setTimeout(() => onOpen(detective, real), TEAR_MS);
+    window.setTimeout(() => onOpen(mode, real), TEAR_MS);
   };
 
   const move = (x: number, width: number) => {
@@ -155,6 +164,11 @@ export default function Parcel({
               <b>Declared</b> {declared}
             </span>
           )}
+          {!to && meta.label?.track?.map((t) => (
+            <span key={t} className={styles.track}>
+              {t}
+            </span>
+          ))}
           {meta.label && (
             <span className={styles.stamp} aria-label={`Stamped: ${meta.label.stamp.join(". ")}`}>
               {meta.label.stamp[0]}
@@ -163,6 +177,16 @@ export default function Parcel({
           )}
         </span>
       </div>
+
+      {/* Your own phone, face down beside it, lit once with what sent it up (fix brief H-03). */}
+      {meta.door && !to && (
+        <p className={styles.door} role="note" aria-label={`Your phone, ${meta.door.at}: ${meta.door.from}, ${meta.door.text}`}>
+          <span className={styles.doorTime}>Your phone · {meta.door.at}</span>
+          <b>{meta.door.from}</b>
+          <span lang="hi-Latn">{meta.door.text}</span>
+          <small>{meta.door.english}</small>
+        </p>
+      )}
 
       <section className={styles.cover}>
         <p className={styles.kicker}>Episode 1 · {episode}</p>
@@ -175,11 +199,11 @@ export default function Parcel({
 
         {/* How to play, chosen once, before anything is opened. */}
         <div className={styles.modes} role="radiogroup" aria-label="How you play">
-          <button type="button" role="radio" aria-checked={!detective} onClick={() => setDetective(false)}>
+          <button type="button" role="radio" aria-checked={detective === false} onClick={() => setDetective(false)}>
             <b>With help</b>
             <span>Where to look, and a nudge when you&apos;re stuck</span>
           </button>
-          <button type="button" role="radio" aria-checked={detective} onClick={() => setDetective(true)}>
+          <button type="button" role="radio" aria-checked={detective === true} onClick={() => setDetective(true)}>
             <b>Detective</b>
             <span>No pointers. Hints only if you ask</span>
           </button>
@@ -192,10 +216,30 @@ export default function Parcel({
           </label>
         )}
 
-        <button type="button" className={styles.open} onClick={finish}>
+        <button type="button" className={styles.open} onClick={() => finish()}>
           {replay ? "Take it out again" : "Pull the strip"}
         </button>
       </section>
+
+      {/* Asked before anything opens (fix brief §8.8), on a first visit and every one after. */}
+      {asking && (
+        <div className={styles.ask} role="dialog" aria-modal="true" aria-labelledby="how-to-play">
+          <div className={styles.askCard}>
+            <p className={styles.askHead} id="how-to-play">
+              How do you want to play?
+            </p>
+            <button type="button" onClick={() => (setDetective(false), finish(false))}>
+              <b>With help</b>
+              <span>Where to look, every claim named, and hints to the end</span>
+            </button>
+            <button type="button" onClick={() => (setDetective(true), finish(true))}>
+              <b>Detective</b>
+              <span>No pointers. Sentence and proof checked together. Two hints a question</span>
+            </button>
+            <p className={styles.askNote}>A detective can switch to help later. Not the other way.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -149,3 +149,51 @@
   color: var(--cf-ink, #fff);
   font-size: 14px;
 }
+
+/* Leave the case (fix brief §8.8): each way out, said plainly under it. */
+.leave {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.leave li {
+  display: grid;
+  gap: 2px;
+}
+
+.leave a,
+.leave button {
+  justify-self: start;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--cf-wash, rgb(255 255 255 / 6%));
+  color: var(--cf-ink, #fff);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.leave span {
+  padding-left: 14px;
+  font-size: 12.5px;
+  color: var(--cf-faint, #888);
+}
+
+.leave .paceHead {
+  padding-left: 0;
+  font-size: 12.5px;
+}
+
+.pace {
+  display: flex;
+  gap: 6px;
+  padding: 0 !important;
+}
+
+.pace button[aria-checked="true"] {
+  background: var(--cf-ink, #fff);
+  color: var(--cf-sheet, #1c1c1e);
+}

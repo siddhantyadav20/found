@@ -29,7 +29,7 @@ export const night: readonly NightBeat[] = [
   { at: "1:25 AM", text: "Asked Nitin if he was okay.", share: "Asked after someone.", needs: ["did:nitin-care"] },
   { at: "1:25 AM", text: "Asked Nitin why he'd recalled the car.", share: "Blamed someone.", needs: ["did:nitin-blame"] },
   { at: "1:27 AM", text: "Promised Nitin his name wouldn't come up.", share: "Made a promise.", needs: ["did:promise-p1"] },
-  { at: "1:52 AM", text: "Got back the message Sameer deleted, a week to the minute.", share: "Got a message back.", needs: ["fired:nitin-copy"] },
+  { at: "1:52 AM", text: "Got back the message Sameer deleted, at the minute Nitin had waited a week for.", share: "Got a message back.", needs: ["fired:nitin-copy"] },
   { at: "2:10 AM", text: "Told Kunal you weren't Sameer.", share: "Lied to someone.", needs: ["did:kunal-denial"] },
   { at: "2:10 AM", text: "Asked Kunal for the truth, and got a frame.", share: "Asked for the truth.", needs: ["did:kunal-frame"] },
   { at: "2:10 AM", text: "Gave Kunal Nitin's name.", share: "Named someone.", needs: ["did:nitin-exposed"] },

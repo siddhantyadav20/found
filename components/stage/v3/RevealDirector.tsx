@@ -91,7 +91,7 @@ function VoiceNote({ story, onDone }: { story: Story; onDone: () => void }) {
         </ol>
       </div>
       {t > v.seconds && (
-        <button type="button" className={styles.next} onClick={onDone}>
+        <button type="button" className={styles.next} onClick={onDone} autoFocus>
           Go on
         </button>
       )}
@@ -211,6 +211,13 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
         <span className={styles.blink} aria-hidden="true" />
         <Hand className={styles.kada} />
         {flashing && <span className={styles.flash} onAnimationEnd={() => setFlashing(false)} aria-hidden="true" />}
+        {/* The case file pins the fire beside it: the same kada (fix brief §6, beat 4). */}
+        {shot && r.camera.pin && (
+          <figure className={styles.pin}>
+            <Image src={r.camera.pin.src} alt={r.camera.pin.label} width={120} height={150} />
+            <figcaption>{r.camera.pin.label}</figcaption>
+          </figure>
+        )}
       </div>
       <div className={styles.camBar}>
         <span className={styles.thumb} aria-label={shot ? "The photo you took" : undefined}>
@@ -227,7 +234,8 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
             flag("did:camera-photo");
           }}
         />
-        {ready ? (
+        {/* The photo is the proof of who S is (fix brief §6): Done comes after the shutter. */}
+        {ready && shot ? (
           <button type="button" onClick={onDone}>
             Done
           </button>
@@ -261,7 +269,7 @@ function CaseInfo({ story, state, onDone }: { story: Story; state: CaseState; on
         {line && <p className={styles.infoLine}>{line}</p>}
         {called && <span className={styles.stamp}>{r.info.called}</span>}
       </div>
-      <button type="button" className={styles.next} onClick={onDone}>
+      <button type="button" className={styles.next} onClick={onDone} autoFocus>
         Go on
       </button>
     </div>
@@ -381,7 +389,7 @@ function MeeraLine({ story, state, onDone }: { story: Story; state: CaseState; o
         </p>
         {early && <p className={styles.answerNote}>Case file · Q1 · filed as your hunch{when ? ` at ${stamp(when)}` : ""}.</p>}
       </div>
-      <button type="button" className={styles.next} onClick={onDone}>
+      <button type="button" className={styles.next} onClick={onDone} autoFocus>
         Go on
       </button>
     </div>

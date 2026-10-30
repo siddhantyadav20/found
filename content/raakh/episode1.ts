@@ -89,6 +89,25 @@ export const threads: readonly Thread[] = [
         requires: ["fired:mummy-findmy"],
         text: "Beta, maine phone dhoondhne wala button daba diya. Location on dikh rahi hai. Tu theek hai na? Bhasin uncle ka phone aaya tha, pooch rahe the.",
         english: "I pressed the find-phone button. The location's showing. You're okay, right? Bhasin uncle called, asking.",
+        evidence: "mummy-findmy",
+      },
+      /* What her phone showed her (fix brief §6, Episode 2's door): the pin on
+         Bhasin's gift, at B-14, Gate 2 side. Where this phone is now. */
+      {
+        id: "mu-6p",
+        from: "them",
+        at: "00:02",
+        day: "29/11",
+        with: "mummy-findmy",
+        requires: ["fired:mummy-findmy"],
+        attachment: {
+          kind: "photo",
+          label: "A screenshot of Find My on Mummy's phone: “Sameer's iPhone”, one pin, B-14 Navjeevan Apartments, Gate 2 side, Malviya Nagar, Now",
+          map: { title: "Sameer's iPhone", sub: "Find My · Mummy's iPhone", stop: "B-14 Navjeevan Apts · Gate 2 side", ended: "Malviya Nagar · Now", area: "Navjeevan Apts", road: "Gate 2", pin: true },
+        },
+        text: "Ye dikh raha hai. Ghar pe hi hai na?",
+        english: "This is what it shows. You're at home, aren't you?",
+        evidence: "mummy-pin",
       },
       { id: "mu-9", from: "them", at: "00:10", day: "29/11", with: "mummy-silent", requires: ["fired:mummy-silent"], text: "Seen kar ke bhi reply nahi?", english: "Seen, and no reply?" },
     ],

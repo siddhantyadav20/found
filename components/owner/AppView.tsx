@@ -111,14 +111,28 @@ export function Page({
 }
 
 /** iOS 26's search field: a capsule with the magnifier, the prompt and the microphone. It only sets the scene here. */
-export function SearchField({ prompt = "Search" }: { prompt?: string }) {
+export function SearchField({ prompt = "Search", value, onChange }: { prompt?: string; value?: string; onChange?: (v: string) => void }) {
   return (
-    <div className={styles.search} aria-hidden="true">
+    <div className={styles.search} aria-hidden={onChange ? undefined : "true"}>
       <svg viewBox="0 0 16 16" className={styles.searchGlass}>
         <circle cx="6.8" cy="6.8" r="4.9" />
         <path d="m10.5 10.5 3.8 3.8" />
       </svg>
-      <span>{prompt}</span>
+      {/* A real field where the app searches (fix brief §8.9); the furniture of one where it doesn't. */}
+      {onChange ? (
+        <input
+          className={styles.searchInput}
+          type="search"
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={prompt}
+          aria-label={prompt}
+          autoComplete="off"
+          spellCheck={false}
+        />
+      ) : (
+        <span>{prompt}</span>
+      )}
       <svg viewBox="0 0 16 16" className={styles.searchMic}>
         <rect x="5.4" y="1.5" width="5.2" height="8.6" rx="2.6" />
         <path d="M3.3 7.6a4.7 4.7 0 0 0 9.4 0M8 12.3v2.3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />

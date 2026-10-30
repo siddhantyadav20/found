@@ -47,6 +47,9 @@ export const NEEDS_CHARGE: Flag = "did:needs-charge";
  */
 export const DETECTIVE: Flag = "did:detective";
 
+/** A detective who asked for help partway (fix brief §8.8): one way only, and the end card says so. */
+export const SWITCHED: Flag = "did:switched-help";
+
 /** Chosen at the parcel too (2026-10-24): the night's last hours run on a real clock (`Story.realtime`). */
 export const REALTIME: Flag = "did:realtime";
 
