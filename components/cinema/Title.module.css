@@ -1,0 +1,34 @@
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.22em;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: var(--text-h1);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.77em;
+  text-transform: uppercase;
+}
+
+.word {
+  display: inline-flex;
+  overflow: hidden;
+  line-height: 0.8em;
+}
+
+.char {
+  position: relative;
+  display: inline-block;
+}
+
+.char > span {
+  display: block;
+  transform: translateY(18%);
+}
+
+.clone {
+  position: absolute;
+  top: 100%;
+  left: 0;
+}

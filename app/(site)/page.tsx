@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Landing from "@/components/site/Landing";
+
+import Roll from "@/components/cinema/Roll";
 
 export const metadata: Metadata = {
   title: { absolute: "Found · Thrillers you play on somebody else's phone" },
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/** The front door (2026-10-23), replacing the desk: what Found is, how it's played, and the chapters. */
+/** The front door since 2026-10-31: the chapters on a reel, the way siena.film shows its films. */
 export default function Home() {
-  return <Landing />;
+  return <Roll />;
 }

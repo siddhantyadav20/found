@@ -1,0 +1,118 @@
+.box {
+  --quick: 0.3s;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: none;
+  pointer-events: none;
+}
+
+@media (min-width: 992px) and (pointer: fine) {
+  .box {
+    display: block;
+  }
+}
+
+.inner {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  transform: translate(-50%, -50%);
+}
+
+.circle {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--white-30);
+  border-radius: 50%;
+  transition: transform 0.5s var(--ease-out-quint);
+}
+
+.text {
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  transition:
+    transform var(--quick) var(--ease-out-quint),
+    opacity var(--quick) var(--ease-out-quint);
+}
+
+.arrow {
+  position: absolute;
+  left: 50%;
+  display: block;
+  height: 0.6rem;
+  opacity: 0;
+  transition:
+    transform var(--quick) var(--ease-out-quint),
+    opacity 0.15s linear;
+}
+
+.arrow svg {
+  display: block;
+  height: 100%;
+}
+
+.arrow[data-at="top"] {
+  top: 50%;
+  transform: translate(-50%, -130%);
+}
+
+.arrow[data-at="bottom"] {
+  bottom: 50%;
+  transform: translate(-50%, 130%) scaleY(-1);
+}
+
+/* Held down: the ring tightens, both arrows come in, the word drops out. */
+.box[data-pressed="true"] .circle,
+.box[data-side="top"] .circle,
+.box[data-side="bottom"] .circle {
+  transform: scale(0.7);
+}
+
+.box[data-pressed="true"] .text {
+  opacity: 0;
+  transform: translateY(150%);
+  transition-duration: 0.2s;
+}
+
+.box[data-side="top"] .text,
+.box[data-side="bottom"] .text {
+  opacity: 0;
+  transform: translateY(200%);
+}
+
+.box[data-pressed="true"] .arrow,
+.box[data-side="top"] .arrow[data-at="top"],
+.box[data-side="bottom"] .arrow[data-at="bottom"] {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
+.box[data-pressed="true"] .arrow[data-at="top"],
+.box[data-side="top"] .arrow[data-at="top"] {
+  transform: translate(-50%, -60%);
+}
+
+.box[data-pressed="true"] .arrow[data-at="bottom"],
+.box[data-side="bottom"] .arrow[data-at="bottom"] {
+  transform: translate(-50%, 60%) scaleY(-1);
+}
+
+.box[data-hide="true"] .circle {
+  transform: scale(0);
+}
+
+.box[data-hide="true"] .text {
+  opacity: 0;
+}
+
+.box[data-hide="true"] .arrow {
+  opacity: 0;
+}

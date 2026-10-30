@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { siteUrl } from "@/lib/origin";
-import { display, hand, mono, phone, sans, ui } from "./fonts";
+import { brucke, display, hand, mono, phone, sans, ui } from "./fonts";
 import "./globals.css";
 import "./ios.css";
-import Splash from "@/components/site/Splash";
+import Preloader from "@/components/cinema/Preloader";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
@@ -32,12 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${display.variable} ${hand.variable} ${ui.variable} ${mono.variable} ${phone.variable} ${sans.variable}`}
-      // SaveScript marks a returning player's page before React sees it.
+      className={`${display.variable} ${hand.variable} ${ui.variable} ${mono.variable} ${phone.variable} ${sans.variable} ${brucke.variable}`}
+      // SaveScript and PreloaderScript mark the page before React sees it.
       suppressHydrationWarning
     >
       <body>
-        <Splash />
+        <Preloader />
         {children}
       </body>
     </html>

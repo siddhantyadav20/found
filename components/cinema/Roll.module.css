@@ -1,0 +1,454 @@
+/* The reel. The numbers are siena.film's; only the fonts' names differ. */
+
+.roll {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+
+.roll[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.slots {
+  position: relative;
+  max-width: 1920px;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.slot {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  visibility: hidden;
+  will-change: transform;
+}
+
+/* Until the reel has hydrated and placed them, only the first one shows. */
+.slot:first-child {
+  visibility: visible;
+  transform: translateY(7.5vh);
+}
+
+.frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 85vh;
+  padding: var(--gy) var(--roll-gx);
+}
+
+.imageWrap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 40px;
+  pointer-events: none;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The shader draws the picture; this <img> is what's left without it. */
+.roll[data-gl="true"] .imageWrap {
+  visibility: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  padding: var(--gy) var(--roll-gx);
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: var(--gy) var(--gx);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ---- Top left: the year, the headline, the seal ---- */
+
+.award {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 7.7rem;
+  padding-left: 1rem;
+  text-align: center;
+  font-family: var(--font-brucke), Arial, sans-serif;
+}
+
+.awardYear {
+  margin-bottom: 0.5rem;
+  font-size: var(--text-h4);
+  line-height: 0.9em;
+}
+
+.awardHeadline {
+  max-width: 6.8rem;
+  font-size: var(--text-bl);
+  line-height: 0.945em;
+  text-transform: uppercase;
+}
+
+.seal {
+  width: 6.2rem;
+  margin-top: 1.3rem;
+}
+
+.sealWord {
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ---- Bottom left: the title block ---- */
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 33ch;
+  padding: 1rem 0;
+  text-align: center;
+  font-family: var(--font-brucke), Arial, sans-serif;
+}
+
+.eyebrow {
+  margin-bottom: 1.3rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 0.8rem;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 12ch;
+  margin-bottom: 1.8rem;
+}
+
+.callouts {
+  width: 33ch;
+  max-width: 100%;
+  padding: 0 1rem;
+  line-height: 0.9em;
+  list-style: none;
+}
+
+.callout {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  height: 14px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.lineTop,
+.lineBottom {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--white);
+}
+
+.lineBottom {
+  margin-top: -5px;
+}
+
+.lineTop {
+  display: none;
+}
+
+.callout:first-child .lineTop {
+  display: block;
+  grid-row: 1;
+}
+
+.callout:nth-child(1) > span:nth-child(3) {
+  transform: translate(-20%);
+}
+
+.callout:nth-child(2) > span:nth-child(2) {
+  transform: translate(-5%);
+}
+
+.callout:nth-child(3) > span:nth-child(2) {
+  transform: translate(-5%);
+}
+
+.calloutLabel {
+  margin-left: -30%;
+}
+
+/* ---- Right: the reviews, and Explore ---- */
+
+.reviews {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.awards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 15ch;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stars {
+  display: block;
+  width: 108px;
+  margin-bottom: 1.55rem;
+  color: var(--white);
+}
+
+.noStars {
+  height: 1px;
+}
+
+.source {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: var(--leading-md);
+  line-height: 1;
+}
+
+.quote {
+  max-width: 15ch;
+  margin-top: 1.1rem;
+  margin-bottom: 3.05rem;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: var(--text-h5);
+  font-weight: 400;
+  line-height: 0.9em;
+}
+
+.explore {
+  display: block;
+  color: var(--white);
+  text-decoration: none;
+}
+
+.exploreMobile,
+.mobileReviews {
+  display: none;
+}
+
+/* ---- The edges ---- */
+
+.gradTop,
+.gradBottom {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 13vh;
+  background: linear-gradient(#000, #fff0);
+  pointer-events: none;
+}
+
+.gradBottom {
+  inset: auto 0 0;
+  background: linear-gradient(#fff0, #000);
+}
+
+.prev,
+.next {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  height: 12vh;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.next {
+  inset: auto 0 0;
+}
+
+/* ---- Short windows ---- */
+
+@media (max-height: 890px) {
+  .quote {
+    margin-bottom: 2.1rem;
+    font-size: 1.2rem;
+  }
+
+  .stars {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-height: 750px) {
+  .title {
+    font-size: 4rem;
+  }
+
+  .quote {
+    margin-top: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .stars {
+    width: 84px;
+    margin-bottom: 0.6rem;
+  }
+
+  .seal {
+    display: none;
+  }
+}
+
+@media (max-height: 550px) {
+  .title {
+    font-size: 5vh;
+  }
+
+  .award {
+    display: none;
+  }
+}
+
+/* ---- Phones ---- */
+
+@media (max-width: 767px) {
+  .frame {
+    height: 90svh;
+    padding: 0.5rem 1rem;
+  }
+
+  .imageWrap {
+    border-radius: 24px;
+  }
+
+  .overlay {
+    padding: 1svh 1rem;
+  }
+
+  .content {
+    padding: 2rem 1vh 1rem;
+    pointer-events: auto;
+  }
+
+  .col {
+    align-items: center;
+    width: 100%;
+  }
+
+  .award,
+  .reviews {
+    display: none;
+  }
+
+  .mobileReviews {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-height: 30svh;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .mobileReviews .review {
+    flex: 1;
+    gap: 0;
+  }
+
+  .mobileReviews .stars {
+    width: 72px;
+    margin-bottom: 0.6rem;
+  }
+
+  .mobileReviews .quote {
+    margin-top: 0.6rem;
+    margin-bottom: 0;
+    font-size: 1.2rem;
+  }
+
+  .item {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .title {
+    width: 9ch;
+    max-width: 13ch;
+    margin-bottom: 0.6rem;
+    font-size: 3rem;
+  }
+
+  .callouts {
+    width: 13.1rem;
+    padding: 0;
+  }
+
+  .callout {
+    height: 13px;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .calloutLabel {
+    margin-left: 0;
+  }
+
+  .lineBottom {
+    margin-top: -3px;
+  }
+
+  .exploreMobile {
+    display: block;
+    width: 141px;
+    margin-top: 1.1rem;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .prev,
+  .next {
+    display: none;
+  }
+}

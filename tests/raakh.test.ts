@@ -303,9 +303,12 @@ describe("the content checks (RAAKH-V3 §19)", () => {
     const files = [
       ...readdirSync("content/raakh").map((f) => `content/raakh/${f}`),
       "content/cases.ts",
+      "content/site.ts",
       "components/site/RaakhPage.tsx",
       "components/site/Landing.tsx",
-      "app/page.tsx",
+      "components/cinema/Preloader.tsx",
+      "components/cinema/Nav.tsx",
+      "app/(site)/page.tsx",
       "app/layout.tsx",
       "components/stage/Parcel.tsx",
       "components/stage/Note.tsx",

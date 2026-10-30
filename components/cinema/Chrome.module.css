@@ -1,0 +1,97 @@
+/* The site's tokens, read straight off siena.film's stylesheet. Rem is 16px;
+   the body is 20px, which is what its `ch` measures are measured in. */
+
+.site {
+  --black: #000;
+  --white: #faf7ef;
+  --white-30: #faf7ef4d;
+  --red: #ff0f00;
+  --gold: #ffc700;
+  --gy: 3rem;
+  --gx: 3rem;
+  --roll-gx: 3.8rem;
+  --sgx: 2.1rem;
+  --gutter: 1.2rem;
+  --text-h1: 5.6rem;
+  --text-h2: 3.2rem;
+  --text-h3: 3rem;
+  --text-h4: 2rem;
+  --text-h5: 1.6rem;
+  --text-bl: 1.05rem;
+  --text-eyeb: 0.8rem;
+  --text-eyeb-small: 0.6rem;
+  --leading-md: 0.21rem;
+  --rounded-xs: 6px;
+  --rounded-md: 12px;
+  --ease-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --custom-ease: cubic-bezier(0.19, 1, 0.22, 1);
+  --panels-duration: 0.9s;
+  --page-delay: 0.6s;
+  --logo-delay: 0.6s;
+  --menu-delay: 0.7s;
+
+  position: relative;
+  min-height: 100svh;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1.3em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.site * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.site[data-route="home"],
+.site[data-route="chapters"] {
+  --page-delay: 1.4s;
+  --logo-delay: 1.6s;
+  --menu-delay: 1.7s;
+}
+
+.site[data-route="contact"] {
+  --page-delay: 0s;
+  background: var(--red);
+}
+
+:global(html):has(.site) {
+  scrollbar-width: none;
+  overscroll-behavior: none;
+  overflow-x: hidden;
+  background: #000;
+}
+
+:global(html):has(.site)::-webkit-scrollbar {
+  display: none;
+}
+
+.page {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+:global(html[data-entered]) .page:not([data-out]) {
+  opacity: 1;
+  transition: opacity 0.8s ease var(--page-delay);
+}
+
+@media (max-width: 991px) {
+  .site {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .site {
+    --text-h1: 3.2rem;
+    --gx: 1.5rem;
+    --sgx: 1.1rem;
+    --roll-gx: 1.5rem;
+  }
+}

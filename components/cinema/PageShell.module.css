@@ -1,0 +1,24 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: var(--gy) var(--gx);
+  text-align: center;
+  --text-h1: clamp(3.2rem, 9vw, 8rem);
+}
+
+.shell[data-red] {
+  color: #000;
+}
+
+.eyebrow {
+  margin-bottom: 1.3rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 0.8rem;
+  text-transform: uppercase;
+}

@@ -83,8 +83,10 @@ const BUDGET = {
    * Raised from 6 to 11 on 2026-10-24 for the footage: four clips as real
    * video (4MB of H.264 at 420kbps, loaded only when a clip is played) and
    * the Episode 3 frames for the living witness (about 1MB).
+   * Raised from 11 to 12 on 2026-10-31 for the reel's two wide stills, which
+   * go to WebGL as they are, so next/image can't lighten them (424KB).
    */
-  publicTotal: 11,
+  publicTotal: 12,
 };
 
 /** Files that are allowed to be over `asset`, and why. Anything not on this
@@ -113,10 +115,10 @@ function homepageJsBytes() {
   /* Turbopack writes a build manifest per route rather than the single
      `app-build-manifest.json` the webpack builder produced. The homepage's
      lives here, and `rootMainFiles` is what the document actually links. */
-  const manifestPath = join(dir, "server", "app", "page", "build-manifest.json");
+  const manifestPath = join(dir, "server", "app", "(site)", "page", "build-manifest.json");
   if (!existsSync(manifestPath)) {
     failures.push(
-      "No build manifest for `/` at .next/server/app/page/build-manifest.json. " +
+      "No build manifest for `/` at .next/server/app/(site)/page/build-manifest.json. " +
         "Next's layout changed — this check needs updating rather than " +
         "skipping, so it fails loudly instead of passing quietly.",
     );
@@ -168,7 +170,7 @@ if (js !== null) {
    gzipped size printed beside it because that is what a 4G phone downloads. */
 
 function routeJs(route) {
-  const seg = route === "/" ? "page" : `${route.slice(1)}/page`;
+  const seg = route === "/" ? "(site)/page" : `${route.slice(1)}/page`;
   const dir = join(ROOT, ".next");
   const manifest = join(dir, "server", "app", seg, "build-manifest.json");
   const refs = join(dir, "server", "app", `${seg}_client-reference-manifest.js`);

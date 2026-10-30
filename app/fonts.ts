@@ -1,4 +1,5 @@
 import { Geist, IBM_Plex_Mono, IBM_Plex_Sans, Inter, Kalam, Newsreader } from "next/font/google";
+import localFont from "next/font/local";
 
 /**
  * Display face: Newsreader (Production Type, SIL Open Font Licence), in the
@@ -76,4 +77,16 @@ export const sans = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
+});
+
+/**
+ * The site's display face since the 2026-10-31 revamp: Neue Brücke, supplied
+ * by Siddhant. Not preloaded: the preloader is on screen until it has arrived.
+ */
+export const brucke = localFont({
+  src: "./fonts/NeueBrucke-Regular.woff2",
+  variable: "--font-brucke",
+  display: "swap",
+  preload: false,
+  fallback: ["Arial Narrow", "Arial", "sans-serif"],
 });
