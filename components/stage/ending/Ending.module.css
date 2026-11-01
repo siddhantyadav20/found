@@ -15,65 +15,76 @@
   gap: 16px;
   min-height: 100dvh;
   padding: calc(18px + env(safe-area-inset-top)) var(--gutter) calc(28px + env(safe-area-inset-bottom));
-  background: var(--ink);
-  color: var(--text);
-  font-family: var(--font-ui), sans-serif;
+  background: #000;
+  color: var(--cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 .screen > * {
   width: 100%;
-  max-width: 30rem;
+  max-width: 40rem;
   margin-inline: auto;
 }
 
 .column { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 30rem; margin: auto; }
 
 .eyebrow {
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 12.8px;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  line-height: 1.3;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--cream-2);
 }
 
-.english { display: block; margin-top: 3px; font-family: var(--font-ui), sans-serif; font-size: 13px; color: var(--muted); }
+.english { display: block; margin-top: 3px; font-family: var(--font-sans), system-ui, sans-serif; font-size: 13px; color: var(--cream-2); }
 
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 0 18px;
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 500;
+  padding: 4px 12px;
+  border: 7px solid transparent;
+  border-image: var(--slip) 7 / 7px;
+  color: var(--cream);
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.15;
+  letter-spacing: 0.15em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
 }
 
-.button:hover { border-color: var(--muted); background: var(--ink-2); }
+.button:hover,
+.button:focus-visible { outline: none; border-image: var(--slip-solid) 7 fill / 7px; color: #000; }
 .button:disabled { opacity: 0.4; cursor: default; }
 
 .quiet {
-  align-self: flex-start;
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  color: var(--muted);
-  text-decoration: underline;
-  text-decoration-color: var(--dim);
-  text-underline-offset: 3px;
+  align-self: center;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cream-2);
+  text-decoration: none;
+  width: auto;
 }
 
 /* --- what follows, a line at a time (the old reading view) --------------- */
 
 .feed { display: flex; flex-direction: column; gap: 1.1rem; width: 100%; max-width: 24rem; margin: auto 0; text-align: left; cursor: pointer; }
 .beat { animation: rise 0.6s ease-out both; }
-.at { display: block; margin-bottom: 0.3rem; font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.told { font-family: var(--font-display), Georgia, serif; font-size: 1.3rem; line-height: 1.4; text-align: center; }
+.at { display: block; margin-bottom: 0.3rem; font-family: var(--font-display), Georgia, serif; font-size: 11.5px;
+  font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cream-2); }
+.told { font-family: var(--font-sans), system-ui, sans-serif; font-size: 1.3rem; line-height: 1.4; text-align: center; }
 .bubble { align-self: flex-start; max-width: 85%; padding: 0.55rem 0.85rem; border-radius: 1.1rem 1.1rem 1.1rem 0.3rem; background: #26252a; font-size: 0.95rem; line-height: 1.4; }
 .bubble[data-mine] { align-self: flex-end; border-radius: 1.1rem 1.1rem 0.3rem 1.1rem; background: #0a84ff; color: #fff; }
-.from { display: block; font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 0.2rem; }
+.from { display: block; font-family: var(--font-sans), system-ui, sans-serif; font-size: 11px; letter-spacing: 0.04em; color: var(--cream-2); margin-bottom: 0.2rem; }
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(0.5rem); }
@@ -84,7 +95,10 @@
 
 /* --- the card: a closed case's report ------------------------------------ */
 
-.card { gap: 36px; padding-top: calc(28px + env(safe-area-inset-top)); }
+.card { gap: 44px; padding-top: calc(56px + env(safe-area-inset-top)); }
+
+/* The ending's still, under the mast, at the top of the card. */
+.hero { flex: none; height: clamp(220px, 44dvh, 420px); }
 
 .section { display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
 
@@ -93,22 +107,21 @@
   position: relative;
   gap: 14px;
   padding: 26px 0 22px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
 }
 
 .score::before {
-  content: "Case 01 · Closed";
+  content: "Case closed";
   align-self: flex-start;
   padding: 5px 9px 4px;
-  border: 2px solid var(--stamp);
-  border-radius: 2px;
-  font-family: var(--font-mono), monospace;
+  border: 2px solid var(--cream);
+  border-radius: 3px;
+  font-family: var(--font-brucke), Arial, sans-serif;
   font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--stamp);
+  color: var(--cream);
   rotate: -3deg;
   animation: stamp 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) 0.2s both;
 }
@@ -119,42 +132,45 @@
 
 .scoreLine {
   margin: 0;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(34px, 9.5vw, 48px);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-  color: var(--text);
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(38px, 11vw, 72px);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--cream);
 }
 
 .scoreMode {
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--cream-2);
 }
 
 /* Eleven boxes, inked where a link was traced. */
 .marks { display: flex; flex-wrap: wrap; gap: 5px; }
-.marks span { width: 18px; height: 18px; border: 1.5px solid var(--line-2); border-radius: 1px; }
-.marks span[data-traced] { border-color: var(--paper); background: var(--paper); }
+.marks span { width: 18px; height: 18px; border: 1.5px solid var(--rule); border-radius: 1px; }
+.marks span[data-traced] { border-color: var(--cream); background: var(--cream); }
 
 /* The chain: a ruled ledger, one line per link. */
-.chain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; width: 100%; border-top: 1px solid var(--line); counter-reset: link; }
-.chain li { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 12px 0 12px 34px; border-bottom: 1px solid var(--line); animation: rise 0.5s ease-out both; counter-increment: link; }
-.chain li::before { content: counter(link, decimal-leading-zero); position: absolute; left: 0; top: 13px; font-family: var(--font-mono), monospace; font-size: 11px; color: var(--dim); }
-.chain li[data-traced]::before { color: var(--paper-2); }
-.linkLabel { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.linkText { font-size: 15px; line-height: 1.5; color: var(--dim); }
-.chain li[data-traced] .linkText { color: var(--text); }
-.count { font-size: 1rem; color: var(--text); animation: rise 0.5s ease-out both; }
-.only { font-family: var(--font-display), Georgia, serif; font-size: 21px; line-height: 1.35; }
+.chain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; width: 100%; border-top: 1px solid var(--rule); counter-reset: link; }
+.chain li { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 12px 0 12px 34px; border-bottom: 1px solid var(--rule); animation: rise 0.5s ease-out both; counter-increment: link; }
+.chain li::before { content: counter(link, decimal-leading-zero); position: absolute; left: 0; top: 13px; font-family: var(--font-sans), system-ui, sans-serif; font-size: 11px; color: var(--cream-3); }
+.chain li[data-traced]::before { color: var(--cream); }
+.linkLabel { font-family: var(--font-display), Georgia, serif; font-size: 11.5px;
+  font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cream-2); }
+.linkText { font-size: 15px; line-height: 1.5; color: var(--cream-3); }
+.chain li[data-traced] .linkText { color: var(--cream); }
+.count { font-size: 1rem; color: var(--cream); animation: rise 0.5s ease-out both; }
+.only { font-size: 19px; line-height: 1.4; }
 
-.outside { max-width: 30rem; padding: 18px 0 0; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.6; color: var(--muted); }
-.outside a { color: var(--text); }
+.outside { max-width: 30rem; padding: 18px 0 0; border-top: 1px solid var(--rule); font-size: 14px; line-height: 1.6; color: var(--cream-2); }
+.outside a { color: var(--cream); }
 .outside p + p { margin-top: 12px; }
-.others { font-family: var(--font-mono), monospace; font-size: 12px; line-height: 1.55; color: var(--muted); }
+.others { font-family: var(--font-sans), system-ui, sans-serif; font-size: 12px; line-height: 1.55; color: var(--cream-2); }
 
 @media (prefers-reduced-motion: reduce) {
   .beat, .chain li, .count, .score::before { animation-duration: 0.01s; animation-delay: 0s !important; }
@@ -163,14 +179,11 @@
 /* The replay image: his note, still being written. */
 .replay {
   padding: 16px 18px;
-  border-radius: 2px;
-  background: var(--paper);
-  color: var(--paper-ink);
-  font-family: var(--font-ui), sans-serif;
+  background: var(--cream);
+  color: #000;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.6;
-  rotate: -0.6deg;
-  box-shadow: 0 10px 24px rgb(0 0 0 / 40%);
 }
 
 .replayTitle { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; }
@@ -191,7 +204,7 @@
   .cursor { animation: none; }
 }
 
-.source { display: block; margin-top: 2px; font-family: var(--font-mono), monospace; font-size: 11px; color: var(--dim); }
+.source { display: block; margin-top: 2px; font-family: var(--font-sans), system-ui, sans-serif; font-size: 11px; color: var(--cream-3); }
 
 /* The next case, as Meera's messages reach your phone. */
 .nextLine {
@@ -207,30 +220,31 @@
   line-height: 1.4;
 }
 
-.nextFrom { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: 0.04em; color: var(--muted); }
+.nextFrom { font-family: var(--font-sans), system-ui, sans-serif; font-size: 11px; letter-spacing: 0.04em; color: var(--cream-2); }
 
 /* "Tell me when it arrives": one field, one button, the promise under it. */
 .notify { display: grid; gap: 8px; margin-top: 4px; }
-.notifyLabel { font-family: var(--font-mono), monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.notifyLabel { font-family: var(--font-display), Georgia, serif; font-size: 11.5px;
+  font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cream-2); }
 .notifyRow { display: flex; gap: 8px; }
 .notifyField {
   flex: 1;
   min-width: 0;
   min-height: 48px;
-  padding: 0 14px;
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius);
-  background: var(--ink-2);
-  color: var(--text);
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--cream-3);
+  background: none;
+  color: var(--cream);
   font-size: 16px;
 }
-.notifyField:focus { outline: none; border-color: var(--paper-2); }
-.notifyRow .button { background: var(--paper); border-color: var(--paper); color: var(--paper-ink); font-weight: 600; }
-.notifyRow .button:disabled { background: transparent; border-color: var(--line-2); color: var(--dim); opacity: 1; }
-.notifySmall, .notifyDone { font-family: var(--font-mono), monospace; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.notifyField:focus { outline: none; border-bottom-color: var(--cream); }
+.notifyRow .button { border-image: var(--slip-solid) 7 fill / 7px; color: #000; }
+.notifyRow .button:disabled { border-image: var(--slip) 7 / 7px; color: var(--cream-3); opacity: 1; }
+.notifySmall, .notifyDone { font-family: var(--font-sans), system-ui, sans-serif; font-size: 12px; line-height: 1.5; color: var(--cream-2); }
 .notifyError { font-size: 13px; color: #f0a294; }
 
-.nextAct { width: 100%; margin-top: 6px; }
+.nextAct { width: 100%; min-height: 52px; margin-top: 6px; }
 
 /* --- the morning after, on your own phone (T21) --------------------------- */
 
@@ -240,7 +254,7 @@
   justify-content: flex-start;
   gap: 0.4rem;
   padding-top: calc(2.2rem + env(safe-area-inset-top));
-  background: radial-gradient(120% 70% at 50% 0%, #1d2433 0%, #0b0d12 55%, #050608 100%);
+  background: #000;
   cursor: pointer;
 }
 
@@ -257,7 +271,7 @@
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  color: #f3efe9;
+  color: var(--cream);
   transition: color 0.6s;
 }
 
@@ -271,10 +285,10 @@
 }
 
 .toldLine {
-  font-family: var(--font-display);
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 1.02rem;
   line-height: 1.45;
-  color: #d9d3cb;
+  color: var(--cream);
   animation: rise 0.6s ease-out both;
 }
 
@@ -324,7 +338,7 @@
 .noticeBody { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
 .noticeHead { display: flex; align-items: baseline; gap: 0.4rem; }
 .noticeHead b { font-weight: 600; }
-.noticeApp { font-size: 0.7rem; color: #9a948c; }
+.noticeApp { font-size: 0.7rem; color: var(--cream-2); }
 
 @keyframes drop {
   from { opacity: 0; transform: translateY(-0.8rem) scale(0.97); }
@@ -350,21 +364,17 @@
   margin: 0;
   text-align: left;
   font-size: 0.9rem;
-  color: #d9d3cb;
+  color: var(--cream);
   animation: rise 1.2s ease-out both;
 }
 
-/* Until the cast is shot: the light of a Chhath morning, and nothing drawn in it. */
 .lastFrame {
   position: relative;
   overflow: hidden;
   display: block;
   aspect-ratio: 4 / 5;
-  border-radius: 0.9rem;
-  background:
-    radial-gradient(60% 45% at 50% 32%, rgb(255 214 120 / 75%), transparent 70%),
-    linear-gradient(180deg, #f2b84b 0%, #c8742b 55%, #5b3a1d 100%);
-  box-shadow: 0 1rem 2.4rem rgb(0 0 0 / 55%);
+  border-radius: 14px;
+  mask: var(--filed) 0 0 / 100% 100% no-repeat;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -394,15 +404,17 @@
 /* What the night decided (2026-10-24): above the score, in the story's own voice. */
 .fate {
   margin: 6px 0 10px;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(26px, 7vw, 38px);
-  font-weight: 500;
-  line-height: 1.1;
-  color: #ff9b72;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(30px, 8vw, 48px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--cream);
 }
 
 .fate[data-yes] {
-  color: #f5f5f7;
+  color: var(--cream);
 }
 
 /* --- the ending's voices and paper (2026-10-24) ------------------------------ */
@@ -436,7 +448,7 @@
 .voiceLength {
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  color: #9a948c;
+  color: var(--cream-2);
 }
 
 .lastSaid[data-voice] {
@@ -459,14 +471,14 @@
 }
 
 .eyebrow[data-cut] {
-  color: #ff9b72;
+  color: var(--cream);
   animation: rise 0.8s ease-out both;
 }
 
 .fateOthers {
   margin: -4px 0 12px;
   font-size: 14px;
-  color: #a8a29a;
+  color: var(--cream-2);
 }
 
 /* --- your night (2026-10-24) ------------------------------------------------- */
@@ -508,31 +520,31 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ff7a45;
+  background: var(--cream);
 }
 
 .nightAt {
   padding-top: 0.15rem;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 0.72rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
-  color: #9a948c;
+  color: var(--cream-2);
   text-align: right;
 }
 
 .nightText {
   padding-left: 0.9rem;
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 1.02rem;
   line-height: 1.4;
-  color: #ece6dd;
+  color: var(--cream);
 }
 
 .nightNote {
   margin-top: 0.8rem;
   font-size: 0.8rem;
-  color: #8a847c;
+  color: var(--cream-2);
 }
 
 .nightActs {
@@ -578,20 +590,9 @@
   left: 50%;
   bottom: calc(24px + env(safe-area-inset-bottom));
   translate: -50% 0;
-  min-width: 132px;
-  padding: 12px 24px;
-  border-radius: 999px;
-  background: rgb(244 241 234 / 14%);
-  box-shadow: inset 0 0 0 0.5px rgb(244 241 234 / 22%);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: #f4f1ea;
+  width: auto;
+  min-width: 142px;
+  background: #000;
   z-index: 5;
 }
 
-.goOn:hover,
-.goOn:focus-visible {
-  background: rgb(244 241 234 / 24%);
-}

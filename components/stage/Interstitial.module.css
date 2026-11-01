@@ -1,102 +1,88 @@
 /* The full-screen moments between the table's: an episode's title card, and
-   coming back after a gap. Set as a film sets its titles: low, left, large,
-   on black with grain (rebuilt 2026-10-17). */
+   coming back after a gap. Set as the site sets a chapter: one still in a
+   filed frame, the words over it, the ticket under them. */
 
 .card {
+  --text-h1: clamp(52px, 15.5vw, 132px);
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  align-items: center;
   gap: 12px;
   min-height: 100dvh;
-  padding: 40px var(--gutter) calc(56px + env(safe-area-inset-bottom));
-  background: #050505;
-  color: var(--text);
+  padding: 72px 28px calc(36px + env(safe-area-inset-bottom));
+  background: #000;
+  color: var(--cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  text-align: center;
   overflow: hidden;
 }
 
-/* Film grain, barely there. */
-.card::before {
+.frame {
+  position: absolute;
+  inset: 10px;
+}
+
+.frame::after {
   content: "";
   position: absolute;
-  inset: -50%;
-  pointer-events: none;
-  opacity: 0.09;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 0.9s steps(3) infinite;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 30%), rgb(0 0 0 / 10%) 35%, rgb(0 0 0 / 88%) 82%);
 }
 
-@keyframes grain {
-  33% { translate: 3% -2%; }
-  66% { translate: -2% 3%; }
-}
-
-.card > * {
+.card > :not(.frame) {
   position: relative;
-  width: 100%;
-  max-width: 34rem;
-  margin-inline: auto;
-}
-
-.eyebrow {
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--stamp);
-  animation: in 0.8s ease-out both;
-}
-
-.line {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(40px, 12vw, 72px);
-  font-weight: 500;
-  line-height: 0.98;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
+  max-width: 44rem;
   animation: in 1s 0.2s ease-out both;
 }
 
-.sub {
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  font-family: var(--font-mono), monospace;
-  font-size: 13px;
-  color: var(--muted);
-  animation: in 1s 0.5s ease-out both;
+/* The mast keeps its own place at the top. */
+.card > header {
+  position: absolute;
+  max-width: none;
+  padding-inline: 28px;
+  animation: none;
 }
 
-.up {
-  margin-top: 18px;
-  width: 100%;
-  padding: 6px 0;
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  letter-spacing: 0.06em;
+.line {
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(42px, 13vw, 100px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
-  color: var(--muted);
-  text-align: left;
+  text-wrap: balance;
 }
 
-.up::after { content: " →"; }
-.up:hover { color: var(--text); }
+.sub {
+  font-size: 15px;
+  color: var(--cream-2);
+}
+
+/* Under the time: what this minute was a week ago (RAAKH-V3 §8.1). */
+.small {
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--cream-2);
+  text-wrap: balance;
+}
+
+.up,
+.back {
+  min-width: 11rem;
+  margin-top: 12px;
+}
 
 @keyframes in {
   from { opacity: 0; translate: 0 8px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .card::before, .eyebrow, .line, .sub { animation: none; }
+@media (min-width: 960px) {
+  .card > header {
+    padding-inline: 44px;
+  }
 }
 
-.back { width: 100%; max-width: 34rem; margin-top: 14px; }
-
-/* Under the time: what this minute was a week ago (RAAKH-V3 §8.1). */
-.small {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 17px;
-  line-height: 1.4;
-  color: var(--muted);
-  animation: in 1s 1.1s ease-out both;
+@media (prefers-reduced-motion: reduce) {
+  .card > :not(.frame) { animation: none; }
 }

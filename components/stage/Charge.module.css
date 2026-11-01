@@ -1,21 +1,32 @@
-/* A dark room, a dying phone, and one thing to do (rebuilt 2026-10-17):
-   the phone's own low-battery screen, then the words, set left. */
+/* A dark room, a dying phone, and one thing to do: the hand at the charger in
+   a filed frame, the phone's own level, then the words. */
 
 .charge {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   min-height: 100dvh;
-  padding: 40px var(--gutter) calc(36px + env(safe-area-inset-bottom));
+  padding: calc(24px + env(safe-area-inset-top)) var(--gutter) calc(32px + env(safe-area-inset-bottom));
   background: #000;
-  color: var(--text);
+  color: var(--cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 .charge > * {
   width: 100%;
-  max-width: 24rem;
+  max-width: 30rem;
   margin-inline: auto;
+}
+
+.hand {
+  flex: none;
+  height: clamp(200px, 38dvh, 340px);
+  margin-bottom: 4px;
+}
+
+.hand img {
+  object-position: 50% 58%;
 }
 
 /* The battery, as a phone draws it when there's almost nothing left. */
@@ -24,7 +35,7 @@
   width: 84px;
   height: 40px;
   margin: 0 auto 18px;
-  border: 3px solid rgb(255 255 255 / 70%);
+  border: 3px solid var(--cream-2);
   border-radius: 10px;
   padding: 4px;
 }
@@ -37,7 +48,7 @@
   width: 4px;
   height: 12px;
   border-radius: 0 3px 3px 0;
-  background: rgb(255 255 255 / 70%);
+  background: var(--cream-2);
 }
 
 .cell span {
@@ -45,89 +56,67 @@
   width: 7%;
   height: 100%;
   border-radius: 3px;
-  background: #ff453a;
+  background: var(--red);
   animation: low 1.4s ease-in-out infinite;
 }
 
 @keyframes low { 50% { opacity: 0.35; } }
 
 .level {
-  margin-bottom: 8px;
-  font-family: -apple-system, var(--font-phone), system-ui, sans-serif;
+  font-family: var(--font-brucke), Arial, sans-serif;
   font-size: 15px;
-  font-weight: 600;
-  text-align: center;
-  color: #ff6b5e;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--red);
 }
 
 .line {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 19px;
-  line-height: 1.4;
-  color: var(--paper-2);
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--cream-2);
 }
 
 .ask {
-  margin-top: 10px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 26px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(26px, 7.4vw, 38px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .waiting {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--cream-2);
 }
 
 .waiting::before {
   content: "";
+  flex: none;
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--stamp);
+  background: var(--red);
   animation: low 1.2s ease-in-out infinite;
 }
 
 .nearby {
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
-  color: var(--dim);
+  color: var(--cream-3);
 }
 
-.cable { width: 100%; }
+.cable { width: 100%; min-height: 52px; }
 
 @media (prefers-reduced-motion: reduce) {
   .cell span, .waiting::before { animation: none; }
-}
-
-/* The kada hand bringing the cable in, on the table (RAAKH-V3 §7.12). */
-.charge[data-hand] {
-  background:
-    radial-gradient(ellipse at 50% 30%, rgb(243 227 195 / 18%), transparent 62%),
-    repeating-linear-gradient(92deg, #2b1d12 0 7px, #2f2015 7px 15px, #281a10 15px 22px),
-    #2b1d12;
-}
-
-.hand {
-  width: min(52vw, 220px);
-  height: auto;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 18px 24px rgb(0 0 0 / 45%));
-  animation: reach 1.4s 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both;
-}
-
-@keyframes reach {
-  from { translate: 0 60px; opacity: 0; }
-  to { translate: 0 0; opacity: 1; }
 }

@@ -18,7 +18,7 @@
   box-shadow:
     inset 0 0 0 0.5px rgb(255 255 255 / 14%),
     0 18px 40px rgb(0 0 0 / 55%);
-  color: #f4f1ea;
+  color: var(--cream);
   animation: down 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
 }
 
@@ -39,7 +39,7 @@
 .bar span {
   display: block;
   height: 100%;
-  background: #ff7a45;
+  background: var(--cream);
   transition: width 0.25s linear;
 }
 
@@ -58,25 +58,25 @@
 
 .time {
   flex: none;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 26px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: #ff9b72;
+  color: var(--cream);
 }
 
 .hint {
   font-size: 12px;
   line-height: 1.35;
-  color: rgb(244 241 234 / 60%);
+  color: rgb(250 247 239 / 60%);
 }
 
 .act {
   margin-top: 6px;
   min-height: 40px;
   border-radius: 12px;
-  background: #f4f1ea;
-  color: #0a0908;
+  background: var(--cream);
+  color: #000;
   font-size: 14px;
   font-weight: 600;
 }

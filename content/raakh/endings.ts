@@ -104,6 +104,7 @@ export const endings: readonly Ending[] = [
         at: "5:31 AM",
         kind: "media",
         text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
+        src: "/found/game/corridor.jpg",
         seconds: 14,
         voice: "media:corridor-alone",
         captions: [
@@ -118,6 +119,7 @@ export const endings: readonly Ending[] = [
         at: "5:31 AM",
         kind: "media",
         text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
+        src: "/found/game/corridor.jpg",
         seconds: 14,
         captions: [
           { at: 1, line: "[his breathing, close to the phone]" },
@@ -175,7 +177,7 @@ export const endings: readonly Ending[] = [
       MONEY,
       /* The last image (PG-FINAL): the old phone in an evidence bag on a steel
          table, lighting up; then the poster, found. */
-      { kind: "final", text: "The phone, in a police evidence bag on a steel table. Its screen lights: “Mummy: …Khana khaya?”" },
+      { kind: "final", src: "/found/game/evidence.jpg", text: "The phone, in a police evidence bag on a steel table. Its screen lights: “Mummy: …Khana khaya?”" },
       {
         who: "Raju",
         text: "",
@@ -389,9 +391,9 @@ export const endings: readonly Ending[] = [
       // B: Bhasin waits while the phone is out of his reach, and so does the boy.
       { at: "7:05 AM", who: "Dilip", text: "Main Anita. Aaj nahi le gaye. Bole, jab tak parcel wapas nahi aata.", english: "It's Anita. They didn't take him today. They said: not till the parcel comes back.", ...RO_B },
       // The last image: the guard's counter, empty, or the sealed envelope with the phone lighting up through it.
-      { kind: "final", text: "Gate 2's counter, in early light. Nothing on it.", ...RO_A },
+      { kind: "final", src: "/found/game/counter.jpg", text: "Gate 2's counter, in early light. Nothing on it.", ...RO_A },
       { kind: "card", text: "Dilip Kumar Mahto, 19. Somebody said it for you.", ...RO_A },
-      { kind: "final", text: "The sealed envelope on the guard's counter, in early light.", ...RO_B },
+      { kind: "final", src: "/found/game/counter-envelope.jpg", text: "The sealed envelope on the guard's counter, in early light.", ...RO_B },
       { kind: "glow", who: "Phone", text: "48 missed calls", ...RO_B },
       { kind: "glow", who: "M", text: "Maine copy rakh li hai. Jab tu tayyar ho.", english: "I've kept a copy. Whenever you're ready.", needs: ["did:sent-m"], unless: ["did:repack-all"] },
       { kind: "glow", who: "Mummy", text: "Khana khaya?", english: "Have you eaten?", ...RO_B },

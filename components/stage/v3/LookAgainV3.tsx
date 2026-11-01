@@ -25,10 +25,10 @@ export default function LookAgainV3({ story, state, onDone }: { story: Story; st
   return (
     <>
       <div className={styles.bar}>
-        <button type="button" className={styles.pill} onClick={() => setOpen(true)}>
-          Whose door it was ({seen} of {clues.length})
+        <button type="button" className={`act ${styles.pill}`} onClick={() => setOpen(true)}>
+          Whose door ({seen} of {clues.length})
         </button>
-        <button type="button" className={styles.back} onClick={onDone}>
+        <button type="button" className={`act-quiet ${styles.back}`} onClick={onDone}>
           Back to the end
         </button>
       </div>

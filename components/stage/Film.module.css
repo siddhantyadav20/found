@@ -1,0 +1,54 @@
+/* A page's top, and a frame with filed edges. */
+
+.mast {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: calc(16px + env(safe-area-inset-top)) var(--gutter) 0;
+}
+
+.home {
+  display: block;
+  color: var(--cream);
+}
+
+.logo {
+  display: block;
+  width: 72px;
+}
+
+.label {
+  font-size: 10.5px;
+  text-align: right;
+}
+
+.still {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0b0b0b;
+  mask: var(--filed) 0 0 / 100% 100% no-repeat;
+}
+
+.still img {
+  object-fit: cover;
+}
+
+@media (min-width: 960px) {
+  .mast {
+    padding: 28px 40px 0;
+  }
+
+  .logo {
+    width: 96px;
+  }
+
+  .label {
+    font-size: 12.8px;
+  }
+}

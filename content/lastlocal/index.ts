@@ -22,6 +22,13 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   ask: "Did you get off at Vasai?",
   hook: "A phone left on the last train.",
   object: "phone",
+  scene: {
+    parcel: "/found/chapters/lastlocal-seat.jpg",
+    open: "/found/chapters/lastlocal-seat.jpg",
+    titles: ["/found/chapters/lastlocal-walker.jpg", "/found/chapters/lastlocal-platform.jpg"],
+    away: "/found/chapters/lastlocal-seat.jpg",
+    end: "/found/chapters/lastlocal-collapse.jpg",
+  },
   links: 7,
 };
 

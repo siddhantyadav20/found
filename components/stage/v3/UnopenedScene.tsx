@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import type { Story } from "@/content/types";
 import { buzz } from "@/lib/found/buzz";
+import { Still } from "../Film";
 import { Unopened } from "./EndCardV3";
 import own from "./Lockscreen.module.css";
 import styles from "./Screens.module.css";
@@ -35,7 +36,7 @@ export default function UnopenedScene({ story, onOpen }: { story: Story; onOpen:
   const glow = (end?.lines ?? []).filter((l) => l.kind === "glow");
   return (
     <div className={styles.table} role="img" aria-label="The phone, face down on the envelope, still lighting up">
-      <div className={own.envelope} aria-hidden="true" />
+      <Still src="/found/game/left-down.jpg" priority sizes="(min-width: 720px) 34rem, 100vw" className={own.table} />
       <div className={own.glow}>
         {glow.map((g) => (
           <p key={g.text}>

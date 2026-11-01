@@ -11,6 +11,7 @@ import { buzz } from "@/lib/found/buzz";
 import { say, useVoice } from "@/lib/found/voice";
 import { longDay, phoneClock } from "@/lib/found/time";
 import ColdOpen from "../ColdOpen";
+import { Still } from "../Film";
 import { flag } from "../playthrough";
 import ending from "../ending/Ending.module.css";
 import styles from "./Screens.module.css";
@@ -93,22 +94,22 @@ function Media({ line, story }: { line: EndingLine; story: Story }) {
   const words = (line.captions ?? []).filter((c) => c.at <= t).slice(-2);
   return (
     <div className={own.media} role="img" aria-label={line.text}>
-      {line.film ? (
-        <video className={own.film} src={line.film} autoPlay playsInline muted={false} />
-      ) : line.src ? (
-        <Image src={line.src} alt="" fill sizes="100vw" className={own.still} />
-      ) : (
-        <span className={own.corridor} aria-hidden="true" />
-      )}
-      <p className={own.mediaTitle}>{line.text}</p>
-      <div className={own.captions} aria-live="polite">
-        {words.map((c) => (
-          <p key={c.at} data-sound={c.line.startsWith("[") || undefined}>
-            {c.who && <b>{c.who}</b>}
-            <span lang={c.english ? "hi-Latn" : undefined}>{c.line}</span>
-            {c.english && <small>{c.english}</small>}
-          </p>
-        ))}
+      <div className={own.frame}>
+        {line.film ? (
+          <video className={own.film} src={line.film} autoPlay playsInline muted={false} />
+        ) : (
+          line.src && <Image src={line.src} alt="" fill sizes="(min-width: 720px) 60vh, 100vw" className={own.still} />
+        )}
+        <p className={own.mediaTitle}>{line.text}</p>
+        <div className={own.captions} aria-live="polite">
+          {words.map((c) => (
+            <p key={c.at} data-sound={c.line.startsWith("[") || undefined}>
+              {c.who && <b>{c.who}</b>}
+              <span lang={c.english ? "hi-Latn" : undefined}>{c.line}</span>
+              {c.english && <small>{c.english}</small>}
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -126,16 +127,18 @@ function Statement({ lines, story }: { lines: readonly EndingLine[]; story: Stor
   }, [n, lines.length, voice]);
   return (
     <div className={own.media} role="img" aria-label="The front camera: Sameer, speaking to it">
-      <Image src={story.camera?.src ?? story.owner.photo ?? ""} alt="" fill sizes="100vw" className={own.still} />
-      <p className={own.rec}>● REC</p>
-      <div className={own.captions} aria-live="polite">
-        {lines.slice(Math.max(0, n - 2), n).map((l) => (
-          <p key={l.text}>
-            <b>{l.who}</b>
-            <span lang="hi-Latn">{l.text}</span>
-            {l.english && <small>{l.english}</small>}
-          </p>
-        ))}
+      <div className={own.frame}>
+        <Image src={story.camera?.src ?? story.owner.photo ?? ""} alt="" fill sizes="(min-width: 720px) 60vh, 100vw" className={own.still} />
+        <p className={own.rec}>● REC</p>
+        <div className={own.captions} aria-live="polite">
+          {lines.slice(Math.max(0, n - 2), n).map((l) => (
+            <p key={l.text}>
+              <b>{l.who}</b>
+              <span lang="hi-Latn">{l.text}</span>
+              {l.english && <small>{l.english}</small>}
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -145,17 +148,19 @@ function Statement({ lines, story }: { lines: readonly EndingLine[]; story: Stor
 function Final({ line, glow }: { line: EndingLine; glow?: readonly EndingLine[] }) {
   return (
     <div className={own.final} role="img" aria-label={line.text}>
-      {line.src ? <Image src={line.src} alt="" fill sizes="100vw" className={own.still} /> : <span className={own.drawn} aria-hidden="true" />}
-      <p className={own.finalText}>{line.text}</p>
-      {glow && (
-        <div className={own.glow}>
-          {glow.map((g) => (
-            <p key={g.text}>
-              <b>{g.who}</b> {g.text}
-            </p>
-          ))}
-        </div>
-      )}
+      <div className={own.frame}>
+        {line.src && <Image src={line.src} alt="" fill sizes="(min-width: 720px) 60vh, 100vw" className={own.still} />}
+        <p className={own.finalText}>{line.text}</p>
+        {glow && (
+          <div className={own.glow}>
+            {glow.map((g) => (
+              <p key={g.text}>
+                <b>{g.who}</b> {g.text}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -192,7 +197,7 @@ function Notice({ line, story }: { line: EndingLine; story: Story }) {
           <b>{name || app}</b>
           {app && <span className={ending.noticeApp}>{app}</span>}
         </span>
-        {line.voice && <span className={own.voice}>🎤 Voice message · 0:{String(Math.round(v?.seconds ?? 12)).padStart(2, "0")}</span>}
+        {line.voice && <span className={own.voice}>Voice message · 0:{String(Math.round(v?.seconds ?? 12)).padStart(2, "0")}</span>}
         {line.text && <span lang={line.english ? "hi-Latn" : undefined}>{line.text}</span>}
         {line.english && <span className={ending.english}>{line.english}</span>}
         {line.src && (
@@ -279,7 +284,7 @@ export default function LockscreenEnding({ story, state, end }: { story: Story; 
       }
       return (
         <div className={styles.table} onClick={next}>
-          <div className={own.envelope} aria-hidden="true" />
+          <Still src="/found/game/left-down.jpg" sizes="(min-width: 720px) 34rem, 100vw" className={own.table} />
           <div className={own.glow}>
             {b.lines.map((g) => (
               <p key={g.text}>
@@ -329,8 +334,7 @@ export default function LockscreenEnding({ story, state, end }: { story: Story; 
       </div>
       <button
         type="button"
-        className={ending.goOn}
-        // eslint-disable-next-line jsx-a11y/no-autofocus -- the only control on a full-screen beat: Enter and Space go on (fix brief §10)
+        className={`act-quiet ${ending.goOn}`}
         autoFocus
         onClick={(e) => {
           e.stopPropagation();

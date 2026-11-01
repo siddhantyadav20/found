@@ -1,67 +1,55 @@
-/* What was in the parcel (rebuilt 2026-10-24): the same table, photographed,
-   the parcel open. The shagun envelope lifts off it and turns over in 3D;
-   the note is in his hand on the cream panel; then the phone and its ringer. */
+/* What was in the parcel (2026-10-24; in the site's frame since 2026-11-01):
+   the same table in a filed card, the shagun envelope turning over in 3D on it,
+   the note in his hand on the cream panel, then the phone and its ringer. */
 
 .scene {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   min-height: 100dvh;
+  padding: calc(56px + env(safe-area-inset-top)) var(--gutter) calc(24px + env(safe-area-inset-bottom));
   overflow: hidden;
-  /* Your table, under one lamp: walnut grain, warm at the top left, dark at the edges. Drawn, so it holds without the photograph. */
-  background:
-    radial-gradient(60% 45% at 32% 22%, rgb(255 190 120 / 22%), transparent 70%),
-    radial-gradient(120% 90% at 50% 30%, transparent 40%, rgb(0 0 0 / 75%) 100%),
-    repeating-linear-gradient(97deg, rgb(255 255 255 / 1.6%) 0 1px, transparent 1px 7px, rgb(0 0 0 / 6%) 7px 9px, transparent 9px 16px),
-    linear-gradient(100deg, #2a1a10, #3a2416 40%, #2b1b11 70%, #22150d);
-  color: #f4f1ea;
+  background: #000;
+  color: var(--cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
   isolation: isolate;
+}
+
+.frame {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 34rem;
+  height: clamp(300px, 46dvh, 460px);
+  margin-inline: auto;
 }
 
 .photo {
   position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: -1;
-  height: 100%;
-  aspect-ratio: 3 / 4;
-  min-width: 100%;
-  translate: -50% 0;
-  mask-image: radial-gradient(75% 70% at 50% 40%, #000 55%, transparent 100%);
-  -webkit-mask-image: radial-gradient(75% 70% at 50% 40%, #000 55%, transparent 100%);
+  inset: 0;
   transition: filter 0.8s;
 }
 
-@media (min-aspect-ratio: 3/4) {
-  .photo {
-    min-width: 0;
-  }
-}
-
-.scene[data-flipped] .photo,
-.scene[data-flipped] .mailer {
-  filter: brightness(0.45) blur(2px);
-}
-
-.image {
-  object-fit: cover;
-  object-position: 50% 40%;
+.scene[data-flipped] .photo {
+  filter: brightness(0.5);
 }
 
 /* --- the envelope ------------------------------------------------------------ */
 
 .envelope {
-  position: absolute;
-  top: 16%;
-  left: 50%;
+  position: relative;
   z-index: 2;
-  width: min(86vw, 360px);
+  width: min(84%, 360px);
   aspect-ratio: 16 / 10;
   padding: 0;
   border: 0;
   background: none;
-  translate: -50% 0;
   perspective: 1000px;
   cursor: pointer;
-  animation: lift 0.9s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: lift 0.9s 0.1s var(--ease-film) both;
 }
 
 @keyframes lift {
@@ -81,8 +69,7 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.3, 0.7, 0.2, 1);
-  rotate: -2deg;
+  transition: transform 0.8s var(--ease-film);
 }
 
 .scene[data-flipped] .card {
@@ -98,36 +85,25 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 6px;
+  border-radius: 5px;
   backface-visibility: hidden;
-  box-shadow:
-    0 30px 60px rgb(0 0 0 / 70%),
-    0 2px 0 rgb(255 255 255 / 6%) inset;
-  background:
-    radial-gradient(120% 90% at 30% 20%, rgb(255 255 255 / 9%), transparent 60%),
-    repeating-linear-gradient(115deg, rgb(255 255 255 / 1.5%) 0 2px, transparent 2px 5px),
-    linear-gradient(160deg, #861629 0%, #5c0d1b 55%, #400812 100%);
+  box-shadow: 0 24px 50px rgb(0 0 0 / 70%);
+  background: linear-gradient(160deg, #7c1426, #4a0a16);
 }
 
-/* The gold border, printed just inside the edge, twice. */
+/* The gold border, printed just inside the edge. */
 .front::before {
   content: "";
   position: absolute;
   inset: 10px;
-  border: 1.5px solid #c9a24c;
-  border-radius: 3px;
-  box-shadow:
-    inset 0 0 0 4px rgb(201 162 76 / 18%),
-    0 0 0 4px rgb(201 162 76 / 12%);
+  border: 1px solid #c9a24c;
+  border-radius: 2px;
 }
 
 .ganesh {
   position: relative;
   font-size: 20px;
-  background: linear-gradient(100deg, #b8893a, #f3d98c 50%, #9d7430);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #e3c678;
 }
 
 .foil {
@@ -135,17 +111,15 @@
   font-family: var(--font-display), Georgia, serif;
   font-size: clamp(24px, 7vw, 30px);
   font-style: italic;
-  background: linear-gradient(100deg, #b8893a 0%, #f3d98c 45%, #c9a24c 70%, #9d7430 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #e3c678;
 }
 
 .small {
   position: relative;
-  font-family: var(--font-mono), monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.24em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: #d8bb72;
 }
@@ -161,9 +135,8 @@
   position: absolute;
   inset: 0 0 auto;
   height: 46%;
-  background: linear-gradient(180deg, #6e1123, #54101c);
+  background: #631120;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 35%));
 }
 
 /* Where people write who it's from; he wrote to M instead. */
@@ -172,13 +145,9 @@
   display: grid;
   width: 100%;
   padding: 10px 14px 8px;
-  border-radius: 3px;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 35%), transparent 40%),
-    #f1ebdc;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+  border-radius: 2px;
+  background: var(--cream);
   text-align: left;
-  rotate: 0.6deg;
 }
 
 .hand {
@@ -199,198 +168,50 @@
 }
 
 .paper {
-  position: absolute;
-  top: 18%;
-  left: 50%;
+  position: relative;
+  z-index: 2;
   display: grid;
-  width: min(80vw, 340px);
+  width: min(84%, 340px);
   padding: 18px;
-  translate: -50% 0;
-  background: #f1ebdc;
-  rotate: -1.5deg;
-}
-
-/* --- the rest of the parcel, on the table ----------------------------------- */
-
-.table {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: min(100%, 680px);
-  translate: -50% 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* The mailer, its strip pulled and its top torn ragged. */
-.mailer {
-  position: absolute;
-  top: 41%;
-  left: 6%;
-  width: min(56vw, 250px);
-  aspect-ratio: 4 / 5;
-  border-radius: 4px;
-  background:
-    radial-gradient(70% 50% at 28% 18%, rgb(255 235 200 / 16%), transparent 70%),
-    linear-gradient(172deg, transparent 46%, rgb(0 0 0 / 7%) 47%, transparent 52%),
-    linear-gradient(160deg, #b48c5c, #9c7243 55%, #82592f);
-  box-shadow:
-    inset 0 0 22px rgb(60 35 10 / 45%),
-    0 26px 50px rgb(0 0 0 / 70%);
-  clip-path: polygon(0 5%, 4% 3.5%, 9% 6%, 12% 2%, 19% 4.5%, 23% 3%, 30% 7%, 36% 4%, 41% 5.5%, 49% 1.5%, 53% 4%, 61% 3%, 66% 6.5%, 72% 2.5%, 79% 4%, 84% 2%, 90% 5.5%, 95% 3%, 100% 4.5%, 100% 100%, 0 100%);
-  rotate: -9deg;
-  animation: settle 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-/* The phone, face down: a black back, its camera bump, a crack running in from one corner. */
-.phone {
-  position: absolute;
-  top: 45%;
-  right: 9%;
-  width: min(36vw, 160px);
-  aspect-ratio: 9 / 19.5;
-  border-radius: 22px;
-  background:
-    radial-gradient(80% 40% at 30% 15%, rgb(255 255 255 / 10%), transparent 60%),
-    linear-gradient(160deg, #26272b, #121315 60%, #0b0b0c);
-  box-shadow:
-    inset 0 0 0 1.5px rgb(255 255 255 / 9%),
-    0 30px 50px rgb(0 0 0 / 75%);
-  rotate: 14deg;
-  animation: settle 0.9s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.scene[data-flipped] .phone {
-  animation:
-    settle 0.9s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both,
-    buzz 2.4s 1.2s ease-in-out infinite;
-}
-
-.camera {
-  position: absolute;
-  top: 5%;
-  left: 7%;
-  width: 44%;
-  aspect-ratio: 1;
-  border-radius: 24%;
-  background: #1b1c1f;
-  box-shadow:
-    inset 0 0 0 1px rgb(255 255 255 / 10%),
-    0 2px 6px rgb(0 0 0 / 60%);
-}
-
-.camera::before,
-.camera::after {
-  content: "";
-  position: absolute;
-  width: 36%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #3a4660, #07080c 60%);
-  box-shadow: 0 0 0 2px #2b2c30;
-}
-
-.camera::before {
-  top: 10%;
-  left: 10%;
-}
-
-.camera::after {
-  bottom: 10%;
-  right: 10%;
-}
-
-.crack {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 46%;
-  height: 26%;
-  border-radius: 0 22px 0 0;
-  background:
-    linear-gradient(38deg, transparent 48.6%, rgb(255 255 255 / 70%) 50%, transparent 51.4%) 0 0 / 100% 100% no-repeat,
-    linear-gradient(62deg, transparent 48.8%, rgb(255 255 255 / 55%) 50%, transparent 51.2%) 100% 0 / 70% 70% no-repeat,
-    linear-gradient(15deg, transparent 48.8%, rgb(255 255 255 / 50%) 50%, transparent 51.2%) 100% 0 / 60% 80% no-repeat,
-    radial-gradient(circle at 100% 0, rgb(255 255 255 / 25%), transparent 18%);
-}
-
-@keyframes settle {
-  from {
-    opacity: 0;
-    translate: 0 30px;
-  }
-}
-
-/* It buzzes on the wood, every so often, once the note is read. */
-@keyframes buzz {
-  0%,
-  82%,
-  100% {
-    transform: translateX(0);
-  }
-  84% {
-    transform: translateX(-2px) rotate(-0.6deg);
-  }
-  87% {
-    transform: translateX(2px) rotate(0.6deg);
-  }
-  90% {
-    transform: translateX(-2px);
-  }
-  93% {
-    transform: translateX(1px);
-  }
+  background: var(--cream);
 }
 
 /* --- the panel under it -------------------------------------------------------- */
 
 .panel {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 3;
   display: grid;
+  flex: 1 0 auto;
+  align-content: end;
   justify-items: center;
-  gap: 10px;
-  padding: 100px var(--gutter, 18px) calc(24px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, transparent, rgb(7 6 5 / 88%) 30%, #070605 66%);
+  gap: 12px;
   text-align: center;
 }
 
 .panel > * {
+  width: 100%;
   max-width: 28rem;
 }
 
-.eyebrow {
-  font-family: var(--font-mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #ff7a45;
-}
-
 .caption {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.45;
-  color: rgb(244 241 234 / 85%);
+  color: var(--cream-2);
   text-wrap: balance;
 }
 
 .english {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 19px;
-  font-style: italic;
-  line-height: 1.45;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(20px, 5.6vw, 28px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
   text-wrap: balance;
   animation: rise 0.6s 0.5s both;
 }
 
 .notYou {
-  font-size: 13px;
-  color: rgb(244 241 234 / 50%);
+  font-size: 14px;
+  color: var(--cream-2);
   animation: rise 0.6s 0.8s both;
 }
 
@@ -398,81 +219,67 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: rgb(255 255 255 / 6%);
-  box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 10%);
+  padding: 8px 10px;
+  border: 7px solid transparent;
+  border-image: var(--slip) 7 / 7px;
   text-align: left;
   animation: rise 0.6s 1s both;
-}
-
-.phoneIcon svg {
-  width: 22px;
-  height: 32px;
-  fill: #111;
-  stroke: rgb(244 241 234 / 60%);
-  stroke-width: 1.2;
 }
 
 .phoneText {
   display: grid;
   flex: 1;
-  font-size: 12px;
-  color: rgb(244 241 234 / 55%);
+  font-size: 12.5px;
+  color: var(--cream-2);
 }
 
 .phoneText b {
   font-size: 13.5px;
   font-weight: 500;
-  color: #f4f1ea;
+  color: var(--cream);
 }
 
-/* The ring/silent switch: orange when silent, as an iPhone's is. */
+/* The ring/silent switch: empty when silent, printed when it rings. */
 .ringer {
   position: relative;
   flex: none;
-  width: 46px;
-  height: 28px;
-  border-radius: 14px;
-  background: #ff9f0a;
+  width: 44px;
+  height: 26px;
+  border: 1px solid var(--cream-3);
+  border-radius: 13px;
   transition: background-color 0.2s;
 }
 
 .ringer::after {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 22px;
-  height: 22px;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
-  transition: translate 0.2s;
+  background: var(--cream);
+  transition: translate 0.2s, background-color 0.2s;
 }
 
 .ringer[data-on] {
-  background: #34c759;
+  background: var(--cream);
 }
 
 .ringer[data-on]::after {
   translate: 18px 0;
+  background: #000;
+}
+
+.ringer:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
 }
 
 .turn {
   width: 100%;
   min-height: 52px;
-  margin-top: 4px;
-  border-radius: 14px;
-  background: #f4f1ea;
-  color: #0a0908;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.turn:active {
-  transform: scale(0.98);
+  margin-top: 2px;
 }
 
 @keyframes rise {
@@ -482,16 +289,33 @@
   }
 }
 
-@media (max-height: 700px) {
-  .envelope {
-    top: 10%;
+@media (min-width: 960px) and (min-height: 560px) {
+  .scene {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 30rem);
+    column-gap: clamp(40px, 6vw, 96px);
+    align-items: center;
+    height: 100dvh;
+    padding: 80px 56px 40px;
+  }
+
+  .frame {
+    max-width: none;
+    height: 100%;
+  }
+
+  .panel {
+    align-content: center;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .panel > * {
+    max-width: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mailer,
-  .phone,
-  .scene[data-flipped] .phone,
   .card,
   .envelope,
   .english,

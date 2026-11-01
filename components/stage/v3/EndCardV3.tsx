@@ -15,6 +15,7 @@ import { resultOf } from "@/lib/found/result";
 import { markSolved } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
 import { DETECTIVE, SWITCHED, UNOPENED } from "@/lib/game/scene";
+import { Mast, Still } from "../Film";
 import PassItOn from "../PassItOn";
 import Night from "../ending/Night";
 import Notify from "../ending/Notify";
@@ -44,13 +45,14 @@ type Others = Record<string, number> | null;
 export function Unopened({ story, onOpen }: { story: Story; onOpen: () => void }) {
   return (
     <div className={`${ending.screen} ${ending.card}`}>
-      <section className={ending.section}>
-        <p className={styles.headline}>Unopened</p>
-        <button type="button" className={ending.button} onClick={onOpen}>
+      <Mast />
+      <section className={`${ending.section} ${styles.bare}`}>
+        <p className={styles.word}>Unopened</p>
+        <button type="button" className="act" onClick={onOpen}>
           {story.unopened?.again ?? "Open it again"}
         </button>
         <Link className={ending.quiet} href="/">
-          Back to the desk
+          Back to Found
         </Link>
       </section>
     </div>
@@ -58,7 +60,7 @@ export function Unopened({ story, onOpen }: { story: Story; onOpen: () => void }
 }
 
 export default function EndCardV3({ story, state, onLookAgain }: { story: Story; state: CaseState; onLookAgain?: () => void }) {
-  const { id } = useCase();
+  const { id, meta } = useCase();
   const end = chosen(story, state);
   const [result] = useState(() => resultOf(story, state, Date.now()));
   const [others, setOthers] = useState<Others>(null);
@@ -116,6 +118,8 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
 
   return (
     <div className={`${ending.screen} ${ending.card}`}>
+      <Mast label={story.title} />
+      {meta.scene && <Still src={meta.scene.end} priority sizes="(min-width: 720px) 40rem, 100vw" className={ending.hero} />}
       <section className={ending.section} aria-label="How it ended">
         {end && <p className={ending.eyebrow}>Ending · {end.row}</p>}
         <p className={styles.headline}>{end?.headline}</p>
@@ -161,7 +165,7 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
               </li>
             ))}
           </ul>
-          <button type="button" className={`${ending.button} ${styles.again}`} onClick={chooseAgain}>
+          <button type="button" className="act" onClick={chooseAgain}>
             Choose differently
           </button>
           <p className={styles.againNote}>Back to the last choice of the night. Everything before it stays as you played it.</p>
@@ -261,7 +265,7 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
         </button>
         <KeepCase caseId={id as CaseId} />
         <Link className={ending.quiet} href="/">
-          Back to the desk
+          Back to Found
         </Link>
       </section>
 

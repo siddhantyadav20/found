@@ -18,10 +18,7 @@
   display: grid;
   place-items: center;
   container: found / size;
-  background-color: #0a0908;
-  background-image:
-    radial-gradient(70% 55% at 50% 12%, rgba(255, 150, 80, 0.1) 0%, transparent 70%),
-    radial-gradient(90% 70% at 50% 8%, #2b221c 0%, #120f0d 55%, #070606 100%);
+  background-color: #000;
   color: #f2ede6;
   touch-action: manipulation;
   overscroll-behavior: none;

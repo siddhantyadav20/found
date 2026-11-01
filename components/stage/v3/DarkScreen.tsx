@@ -32,9 +32,9 @@ export function DarkLine({ line, sub, onDone }: { line: string; sub?: string; on
     <div className={styles.black} role="dialog" aria-label={line} onClick={onDone}>
       <div>
         <p className={styles.darkLine}>{line}</p>
-        {sub && <p className={styles.darkSub}>{sub}</p>}
+        {sub && <p className={`eyebrow ${styles.darkSub}`}>{sub}</p>}
       </div>
-      <button type="button" className={styles.quiet} onClick={onDone} autoFocus>
+      <button type="button" className={`act-quiet ${styles.quiet}`} onClick={onDone} autoFocus>
         Go on
       </button>
     </div>
@@ -63,7 +63,7 @@ function DarkVoice({ voice, voices, onDone }: { voice: NonNullable<Dark["voice"]
   return (
     <div className={styles.black} role="dialog" aria-label={`A voice note from ${voice.who}`}>
       <div className={styles.voice}>
-        <p className={styles.voiceWho}>{voice.who}</p>
+        <p className={`eyebrow ${styles.voiceWho}`}>{voice.who}</p>
         <div className={styles.wave} aria-hidden="true">
           {shape.map((h, i) => (
             <span key={i} style={{ height: `${Math.round(h * 100)}%` }} data-on={i / BARS < t / total || undefined} />
@@ -79,7 +79,7 @@ function DarkVoice({ voice, voices, onDone }: { voice: NonNullable<Dark["voice"]
         </ol>
       </div>
       {over && (
-        <button type="button" className={styles.quiet} onClick={onDone} autoFocus>
+        <button type="button" className={`act-quiet ${styles.quiet}`} onClick={onDone} autoFocus>
           Go on
         </button>
       )}
@@ -106,7 +106,7 @@ function DarkBubble({ bubble, onDone }: { bubble: NonNullable<Dark["bubble"]>; o
         </p>
       </div>
       {over && (
-        <button type="button" className={styles.quiet} onClick={onDone} autoFocus>
+        <button type="button" className={`act-quiet ${styles.quiet}`} onClick={onDone} autoFocus>
           Go on
         </button>
       )}

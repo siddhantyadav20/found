@@ -1,27 +1,24 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import type { CaseMeta } from "@/content/cases";
-import Mark from "@/components/site/Mark";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
-import Hand from "./v3/Hand";
+import { Mast, Still } from "./Film";
 import styles from "./Parcel.module.css";
 
 /* ===========================================================================
-   The first thirty seconds (rebuilt 2026-10-24): a courier parcel on your
-   table at night, photographed from above under one lamp, and a phone
-   inside it that won't stop buzzing.
+   The first thirty seconds (rebuilt 2026-10-24; in the site's frame since
+   2026-11-01): a courier parcel on your table at night, your hand on its
+   strip, and a phone inside it that won't stop buzzing.
 
    The waybill is real type on the photograph (who it was for, where, the
    courier's RETURN TO ORIGIN stamp over it, the content note as the
    declaration line). The strip across the top is pulled by hand: a letter
    addressed to somebody else, opened anyway, is the first trespass, and the
-   player should be able to say *I opened it* (PLAYER-JOURNEY law 5). Below,
-   the chapter's cover in the site's own voice, how to play, and the button
-   for anyone whose pointer isn't a hand.
+   player should be able to say *I opened it* (PLAYER-JOURNEY law 5). Beside
+   it, the chapter's cover, how to play, and the button for anyone whose
+   pointer isn't a hand.
    =========================================================================== */
 
 const TEAR = 0.55;
@@ -114,18 +111,7 @@ export default function Parcel({
 
   return (
     <div className={styles.scene} data-torn={torn || undefined}>
-      <div className={styles.photo} aria-hidden="true">
-        {meta.scene && <Image src={meta.scene.parcel} alt="" fill priority sizes="100vw" className={styles.image} />}
-      </div>
-
-      <header className={styles.bar}>
-        <Link href="/" className={styles.home} aria-label="Found, home">
-          <Mark size={17} />
-        </Link>
-        <span className={styles.crumb}>
-          Chapter {String(meta.chapter).padStart(2, "0")} · {meta.city}
-        </span>
-      </header>
+      <Mast label={`Chapter ${String(meta.chapter).padStart(2, "0")} · ${meta.city}`} />
 
       {/* The parcel itself: the waybill on it, and the strip across its top. */}
       <div
@@ -142,12 +128,16 @@ export default function Parcel({
           if (!done.current) setPull(0);
         }}
       >
+        {/* The hand that pulls it (IC3): a right wrist, a kada half under the cuff. Then what was inside. */}
+        {meta.scene && (
+          <Still src={meta.scene.parcel} priority className={styles.photo}>
+            <Still src={meta.scene.open} className={styles.opened} />
+          </Still>
+        )}
         <span className={styles.strip} aria-hidden="true">
           <span>{replay ? "Opened" : "Pull the strip"}</span>
-          <i>→</i>
+          <i />
         </span>
-        {/* The hand that pulls it (IC3): a right wrist, a kada half under the cuff. */}
-        {(pull > 0 || torn) && !replay && <Hand holding="strip" className={styles.hand} />}
 
         <span className={styles.waybill}>
           <span className={styles.barcode} aria-hidden="true" />
@@ -189,7 +179,7 @@ export default function Parcel({
       )}
 
       <section className={styles.cover}>
-        <p className={styles.kicker}>Episode 1 · {episode}</p>
+        <p className="eyebrow">Episode 1 · {episode}</p>
         <h1 className={styles.title}>{meta.title}</h1>
         <p className={styles.logline}>{replay ? "It came back. It always comes back." : "Something inside is buzzing. It was meant for M."}</p>
         {warning && <p className={styles.warning}>{warning}</p>}
@@ -216,7 +206,7 @@ export default function Parcel({
           </label>
         )}
 
-        <button type="button" className={styles.open} onClick={() => finish()}>
+        <button type="button" className={`act ${styles.open}`} onClick={() => finish()}>
           {replay ? "Take it out again" : "Pull the strip"}
         </button>
       </section>

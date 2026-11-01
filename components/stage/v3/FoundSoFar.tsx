@@ -6,6 +6,7 @@ import Notify from "../ending/Notify";
 import { useCase } from "@/components/found/StoryContext";
 import type { Story } from "@/content/types";
 import { filedClaim, type CaseState } from "@/lib/game/engine";
+import { Still } from "../Film";
 import { releaseLeft, releaseOf, releaseWhen, waitsForRelease } from "@/lib/found/release";
 import styles from "./Screens.module.css";
 
@@ -21,7 +22,7 @@ function subscribeTick(on: () => void): () => void {
   return () => window.clearInterval(t);
 }
 
-export default function FoundSoFar({ story, state, episode, onDone }: { story: Story; state: CaseState; episode: 1 | 2; onDone: () => void }) {
+export default function FoundSoFar({ story, state, episode, still, onDone }: { story: Story; state: CaseState; episode: 1 | 2; still?: string; onDone: () => void }) {
   const recap = story.recaps?.[episode];
   const { id } = useCase();
   const at = releaseOf(id, episode + 1);
@@ -41,7 +42,8 @@ export default function FoundSoFar({ story, state, episode, onDone }: { story: S
   return (
     <div className={styles.recap} role="dialog" aria-label={`End of episode ${episode}`}>
       <div className={styles.recapInner}>
-        <p className={styles.eyebrow}>
+        {still && <Still src={still} sizes="(min-width: 720px) 40rem, 100vw" className={styles.recapStill} />}
+        <p className="eyebrow">
           End of episode {episode} · {story.episodes[episode - 1]}
         </p>
         <h2 className={styles.recapTitle}>What you&apos;ve answered</h2>
@@ -64,8 +66,8 @@ export default function FoundSoFar({ story, state, episode, onDone }: { story: S
             <Notify caseId={id} what="ep3" label="Tell me the moment it's out" small="One message, when it drops. The phone stays where you left it." />
           </div>
         ) : (
-          <button type="button" className={styles.go} onClick={onDone}>
-            Episode {episode + 1} <span aria-hidden="true">→</span>
+          <button type="button" className={`act ${styles.go}`} onClick={onDone}>
+            Episode {episode + 1}
           </button>
         )}
       </div>

@@ -162,8 +162,8 @@ export default function BeforeEnding({ story, state, ending }: { story: Story; s
     return (
       <div className={styles.sheet}>
         <div className={styles.inner}>
-          <p className={styles.eyebrow}>{row}</p>
-          <button type="button" className={styles.go} onClick={go} disabled={going}>
+          <p className="eyebrow">{row}</p>
+          <button type="button" className={`act ${styles.go}`} onClick={go} disabled={going}>
             Go on
           </button>
         </div>
@@ -172,9 +172,9 @@ export default function BeforeEnding({ story, state, ending }: { story: Story; s
   }
   const echo = before.echo && saidNow(state, before.echo) ? before.echo : undefined;
   return (
-    <div className={styles.sheet} data-table={ending === "origin" || undefined}>
+    <div className={styles.sheet}>
       <div className={styles.inner}>
-        <p className={styles.eyebrow}>{row}</p>
+        <p className="eyebrow">{row}</p>
         <h2 className={styles.title}>{before.title}</h2>
         <p className={styles.lede}>All of it optional. None of it can be undone.</p>
         <ul className={styles.steps}>
@@ -188,7 +188,7 @@ export default function BeforeEnding({ story, state, ending }: { story: Story; s
             “{echo.text}”{echo.english && <small>{echo.english}</small>}
           </p>
         )}
-        <button type="button" className={styles.go} onClick={go} disabled={going}>
+        <button type="button" className={`act ${styles.go}`} onClick={go} disabled={going}>
           {before.go}
         </button>
       </div>

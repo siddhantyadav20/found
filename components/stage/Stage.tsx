@@ -132,12 +132,18 @@ export default function Stage() {
   // Back from the end card (Choose differently) is a choice made now, not a return after a gap.
   if (away !== null && (scene.kind === "end-card" || scene.kind === "ending")) setAway(null);
   const midCase = scene.kind === "table" || scene.kind === "ringing" || scene.kind === "charge" || scene.kind === "recap";
+
+  // The save is in this browser: until it's read, the server's guess would be the first screen.
+  const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
+  if (!hydrated) return <Loader full />;
+
   if (state && away !== null && midCase)
     return (
       <Away
         story={story}
         state={state}
         last={away}
+        still={meta.scene?.away}
         onBack={() => {
           track({ case: id, event: "resume", via: state.via });
           setAway(null);
@@ -215,7 +221,7 @@ export default function Stage() {
     /* The only thing the player is given to do with their hands between
        episodes, and the reason anybody goes looking for a cable. */
     case "charge":
-      return <Charge gate={story.gate} hand={Boolean(story.reveal)} waitMs={story.reveal ? 5000 : 30_000} onPlugged={() => flag(...PLUGGED_IN)} />;
+      return <Charge gate={story.gate} hand={meta.scene?.cable} waitMs={story.reveal ? 5000 : 30_000} onPlugged={() => flag(...PLUGGED_IN)} />;
 
     /* The phone dying: an alert, two flickers, a shape in the glass (PG-DEATH). */
     case "death":
@@ -276,7 +282,7 @@ export default function Stage() {
     /* An episode, closed: what the player has to show for it, and what's still open. */
     case "recap":
       return story.recaps?.[scene.episode]?.filed ? (
-        <FoundSoFar story={story} state={state} episode={scene.episode} onDone={() => flag(recapShown(scene.episode))} />
+        <FoundSoFar story={story} state={state} episode={scene.episode} still={meta.scene?.recaps?.[scene.episode - 1]} onDone={() => flag(recapShown(scene.episode))} />
       ) : (
         <Recap story={story} state={state} episode={scene.episode} onDone={() => flag(recapShown(scene.episode))} />
       );
@@ -307,6 +313,7 @@ export default function Stage() {
           title={story.episodes[scene.episode - 1]}
           when={`${story.nowLabel ? `${story.nowLabel} · ` : ""}${clock.day} · ${stamp(clock.base)}`}
           small={clock.card}
+          still={meta.scene?.titles[scene.episode - 2]}
           under={
             bubble ? (
               <p className={styles.bubble} lang="hi-Latn">

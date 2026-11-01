@@ -15,6 +15,7 @@ import { resultOf } from "@/lib/found/result";
 import { markSolved } from "@/lib/found/shelf";
 import { track } from "@/lib/found/track";
 import { DETECTIVE } from "@/lib/game/scene";
+import { Mast, Still } from "../Film";
 import PassItOn from "../PassItOn";
 import Night from "./Night";
 import Notify from "./Notify";
@@ -38,7 +39,7 @@ import styles from "./Ending.module.css";
 type Others = Record<string, number> | null;
 
 export default function EndCard({ story, state, onLookAgain }: { story: Story; state: CaseState; onLookAgain?: () => void }) {
-  const { id } = useCase();
+  const { id, meta } = useCase();
   const ending = chosen(story, state);
   // Minutes are measured to the moment the card first appears.
   const [result] = useState(() => resultOf(story, state, Date.now()));
@@ -81,6 +82,8 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
 
   return (
     <div className={`${styles.screen} ${styles.card}`}>
+      <Mast label={story.title} />
+      {meta.scene && <Still src={meta.scene.end} priority sizes="(min-width: 720px) 40rem, 100vw" className={styles.hero} />}
       {/* The score first: what people screenshot, and what they argue about. */}
       <section className={`${styles.section} ${styles.score}`} aria-label="Your score">
         {ending && <p className={styles.eyebrow}>Ending · {ending.row}</p>}
@@ -202,7 +205,7 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
       <section className={styles.section}>
         <KeepCase caseId={id as CaseId} />
         <Link className={styles.quiet} href="/">
-          Back to the desk
+          Back to Found
         </Link>
       </section>
 

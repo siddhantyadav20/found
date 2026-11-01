@@ -16,7 +16,7 @@ export default function Notify({
   caseId,
   what = "next",
   label = "Tell me when it arrives",
-  small = "One message, when Chapter 2 is on the desk. Nothing else, ever.",
+  small = "One message, when the next chapter arrives. Nothing else, ever.",
 }: {
   caseId: string;
   /** What they're waiting for: the next chapter, or an episode of this one ("ep3"). */

@@ -1,6 +1,6 @@
-/* The parcel, photographed on your table at night (2026-10-24): one warm
-   lamp, the waybill as real type on the photo, a strip to pull, and the
-   chapter's cover in the dark under it. */
+/* The parcel, on your table at night (2026-10-24; in the site's frame since
+   2026-11-01): a card with filed edges, the waybill printed like a ticket, a
+   strip to pull, and the chapter's cover beside it. */
 
 /* Top to bottom on a phone: the bar, the parcel, the cover. Nothing overlaps
    whatever the screen's height; on a wide screen they sit side by side. */
@@ -8,76 +8,14 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 18px;
   min-height: 100dvh;
+  padding: calc(56px + env(safe-area-inset-top)) var(--gutter) calc(24px + env(safe-area-inset-bottom));
   overflow: hidden;
-  /* Your table, under one lamp: walnut grain, warm at the top left, dark at the edges. Drawn, so it holds without the photograph. */
-  background:
-    radial-gradient(60% 45% at 32% 22%, rgb(255 190 120 / 22%), transparent 70%),
-    radial-gradient(120% 90% at 50% 30%, transparent 40%, rgb(0 0 0 / 75%) 100%),
-    repeating-linear-gradient(97deg, rgb(255 255 255 / 1.6%) 0 1px, transparent 1px 7px, rgb(0 0 0 / 6%) 7px 9px, transparent 9px 16px),
-    linear-gradient(100deg, #2a1a10, #3a2416 40%, #2b1b11 70%, #22150d);
-  color: #f4f1ea;
+  background: #000;
+  color: var(--cream);
+  font-family: var(--font-sans), system-ui, sans-serif;
   isolation: isolate;
-}
-
-.photo {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: -1;
-  height: 100%;
-  aspect-ratio: 3 / 4;
-  min-width: 100%;
-  translate: -50% 0;
-  transition:
-    scale 1s cubic-bezier(0.2, 0.8, 0.2, 1),
-    filter 1s;
-  mask-image: radial-gradient(75% 70% at 50% 40%, #000 55%, transparent 100%);
-  -webkit-mask-image: radial-gradient(75% 70% at 50% 40%, #000 55%, transparent 100%);
-}
-
-@media (min-aspect-ratio: 3/4) {
-  .photo {
-    min-width: 0;
-  }
-}
-
-.image {
-  object-fit: cover;
-  object-position: 50% 40%;
-}
-
-.scene[data-torn] .photo {
-  scale: 1.08;
-  filter: brightness(1.25);
-}
-
-/* --- the way home ---------------------------------------------------------- */
-
-.bar {
-  position: relative;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 34rem;
-  margin: 0 auto;
-  padding: calc(16px + env(safe-area-inset-top)) var(--gutter, 18px) 0;
-}
-
-.home {
-  display: inline-flex;
-  color: #f4f1ea;
-  text-decoration: none;
-}
-
-.crumb {
-  font-family: var(--font-mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgb(244 241 234 / 55%);
 }
 
 /* --- the parcel: the strip and the waybill, laid on the photograph ---------- */
@@ -85,44 +23,45 @@
 .parcel {
   position: relative;
   flex: none;
-  z-index: 2;
-  width: min(76vw, 330px);
-  height: clamp(270px, 39dvh, 400px);
-  margin: clamp(18px, 4dvh, 56px) auto 0;
+  width: 100%;
+  max-width: 34rem;
+  height: clamp(380px, 56dvh, 520px);
+  margin-inline: auto;
   touch-action: pan-y;
   cursor: grab;
   animation: shiver 1.6s ease-in-out infinite;
-  /* The mailer: kraft paper over bubble padding, creased where it was squeezed into a courier's bag. */
-  border-radius: 5px;
-  background:
-    radial-gradient(70% 50% at 28% 18%, rgb(255 235 200 / 20%), transparent 70%),
-    linear-gradient(172deg, transparent 46%, rgb(0 0 0 / 7%) 47%, transparent 52%),
-    linear-gradient(12deg, transparent 62%, rgb(255 255 255 / 6%) 63%, transparent 68%),
-    repeating-radial-gradient(circle at 20% 30%, rgb(0 0 0 / 2.5%) 0 1px, transparent 1px 3px),
-    linear-gradient(160deg, #c39a66, #a97c4a 55%, #8f6438);
-  box-shadow:
-    inset 0 0 0 7px rgb(255 255 255 / 5%),
-    inset 0 0 26px rgb(60 35 10 / 45%),
-    0 2px 0 rgb(0 0 0 / 30%),
-    0 34px 70px rgb(0 0 0 / 75%);
-  rotate: 2deg;
 }
-
-/* The sealed flap along the top edge, under the strip. */
-.parcel::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 15%;
-  border-bottom: 1px solid rgb(70 40 15 / 35%);
-  background: linear-gradient(180deg, rgb(255 255 255 / 6%), transparent);
-  border-radius: 5px 5px 0 0;
-}
-
-
 
 .scene[data-torn] .parcel {
   animation: none;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  transition: scale 1s var(--ease-film);
+}
+
+/* On a phone the waybill takes the card's lower half: the still is pushed up it, so that the
+   hand and the strip it's pulling stay in sight. */
+.photo > img {
+  object-position: 62% 50%;
+  scale: 1.32;
+  transform-origin: 50% 100%;
+}
+
+/* What was inside, under the strip: the same table, the parcel open. */
+.opened {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  mask: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.scene[data-torn] .opened {
+  opacity: 1;
 }
 
 @keyframes shiver {
@@ -132,48 +71,50 @@
     transform: rotate(0);
   }
   88% {
-    transform: rotate(-0.8deg) translateX(-1px);
+    transform: rotate(-0.5deg) translateX(-1px);
   }
   90% {
-    transform: rotate(0.7deg) translateX(1px);
+    transform: rotate(0.4deg) translateX(1px);
   }
   92% {
-    transform: rotate(-0.5deg);
+    transform: rotate(-0.3deg);
   }
   94% {
-    transform: rotate(0.4deg);
+    transform: rotate(0.2deg);
   }
 }
 
-/* The tear strip: kraft tape with its words, pulled by hand. */
+/* The tear strip, printed like the site's ticket and pulled by hand. */
 .strip {
+  --hole: 5px;
   position: absolute;
-  top: 4%;
-  left: -6%;
-  right: -6%;
+  top: 16px;
+  left: -8px;
+  right: -8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  height: 34px;
-  background: linear-gradient(180deg, #e2cfa6, #cdb58a);
-  box-shadow:
-    0 6px 14px rgb(0 0 0 / 45%),
-    inset 0 1px 0 rgb(255 255 255 / 50%);
-  color: #5a4426;
-  font-family: var(--font-mono), monospace;
+  gap: 12px;
+  height: 38px;
+  background: var(--cream);
+  color: #000;
+  font-family: var(--font-brucke), Arial, sans-serif;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  rotate: -2deg;
   translate: calc(var(--pull, 0) * 70%) 0;
   transition: translate 0.15s;
-  clip-path: polygon(0 12%, 2% 0, 98% 6%, 100% 18%, 99% 90%, 96% 100%, 3% 94%, 0 82%);
+  mask:
+    radial-gradient(circle var(--hole) at 0 50%, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 100% 50%, #0000 98%, #000);
+  mask-composite: intersect;
 }
 
 .strip i {
-  font-style: normal;
+  width: 13px;
+  height: 12px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 10'%3E%3Cpath d='M4.481.005a6.65 6.65 0 0 1 6.46 4.659c.078.229.08.479-.003.706C10.302 7.105 8.318 10 4.48 10V8.39c.941.127 2.922-.257 4.442-2.603H0V4.208h8.938c-.756-1.229-2.216-2.78-4.457-2.78V.006Z'/%3E%3C/svg%3E") center / contain no-repeat;
   animation: nudge 1.4s ease-in-out infinite;
 }
 
@@ -185,7 +126,7 @@
 
 .scene[data-torn] .strip {
   translate: 140% -20px;
-  rotate: 12deg;
+  rotate: 8deg;
   opacity: 0;
   transition:
     translate 0.6s cubic-bezier(0.5, 0, 0.75, 0),
@@ -193,203 +134,204 @@
     opacity 0.6s 0.2s;
 }
 
-/* The waybill: thermal paper, a barcode, the courier's type, and the stamp over it. */
+/* The waybill: a courier's label, printed like a ticket, and the stamp over it. */
 .waybill {
+  --hole: 7px;
   position: absolute;
-  top: 27%;
   left: 50%;
+  bottom: 14px;
   display: grid;
-  gap: 4px;
-  width: 86%;
-  padding: 12px 14px 14px;
+  gap: 3px;
+  width: calc(100% - 28px);
+  max-width: 330px;
+  padding: 14px 16px;
   translate: -50% 0;
-  rotate: -3.5deg;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 30%), transparent 30%),
-    #f3efe6;
-  box-shadow:
-    0 1px 0 rgb(0 0 0 / 10%),
-    0 10px 26px rgb(0 0 0 / 55%);
-  color: #1a1815;
-  font-family: var(--font-mono), monospace;
-  font-size: 10px;
+  background: var(--cream);
+  color: #000;
+  font-size: 10.5px;
   line-height: 1.35;
+  mask:
+    radial-gradient(circle var(--hole) at 0 0, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 100% 0, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 0 100%, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 100% 100%, #0000 98%, #000);
+  mask-composite: intersect;
   transition:
-    translate 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+    translate 0.8s var(--ease-film),
     opacity 0.8s;
 }
 
 .scene[data-torn] .waybill {
-  translate: -50% -14px;
-  opacity: 0.4;
+  translate: -50% 12px;
+  opacity: 0;
 }
 
 .barcode {
-  height: 26px;
+  height: 30px;
+  margin-right: 50%;
   margin-bottom: 4px;
-  background: repeating-linear-gradient(90deg, #1a1815 0 2px, transparent 2px 3px, #1a1815 3px 4px, transparent 4px 7px, #1a1815 7px 8px, transparent 8px 9px);
+  background: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 3px, #000 3px 4px, transparent 4px 7px, #000 7px 8px, transparent 8px 9px);
 }
 
 .courier {
-  font-size: 8.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgb(26 24 21 / 55%);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: rgb(0 0 0 / 55%);
 }
 
 .to {
-  margin-top: 4px;
-  font-family: var(--font-sans), var(--font-ui), sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  margin-top: 3px;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
 }
 
 .line {
-  color: rgb(26 24 21 / 75%);
+  color: rgb(0 0 0 / 72%);
 }
 
 .decl {
-  margin-top: 2px;
-  padding-top: 4px;
-  border-top: 1px dashed rgb(26 24 21 / 25%);
-  color: rgb(26 24 21 / 80%);
+  margin-top: 3px;
+  padding-top: 5px;
+  border-top: 1px dashed rgb(0 0 0 / 30%);
+  color: rgb(0 0 0 / 80%);
 }
 
 .decl b {
   margin-right: 4px;
   font-weight: 600;
-  text-transform: uppercase;
+}
+
+/* The courier's tracking, printed small under the declaration (fix brief H-01). */
+.track {
+  font-size: 9px;
+  color: rgb(0 0 0 / 65%);
+}
+
+.track:first-of-type {
+  margin-top: 3px;
+  padding-top: 5px;
+  border-top: 1px dashed rgb(0 0 0 / 30%);
 }
 
 .stamp {
   position: absolute;
-  /* On the kraft above the waybill, where the courier's rubber stamp came down. */
-  top: -36px;
-  right: 0;
+  top: 12px;
+  right: 12px;
   display: grid;
   justify-items: center;
-  padding: 4px 9px 3px;
-  border: 2.5px solid #c4412f;
+  max-width: 46%;
+  padding: 3px 6px 2px;
+  border: 2px solid var(--red);
   border-radius: 3px;
-  color: #c4412f;
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  rotate: -5deg;
-  opacity: 0.88;
-  mix-blend-mode: multiply;
+  color: var(--red);
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  rotate: -3deg;
 }
 
 .stamp small {
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 7px;
+  letter-spacing: 0.02em;
 }
 
-/* --- the cover, in the dark under it --------------------------------------- */
+/* --- the cover ------------------------------------------------------------- */
 
 .cover {
   position: relative;
-  z-index: 3;
   display: grid;
   justify-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1 0 auto;
   align-content: end;
-  margin-top: -56px;
-  padding: 72px var(--gutter, 18px) calc(24px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, transparent, rgb(7 6 5 / 88%) 56px, #070605 45%);
   text-align: center;
 }
 
 .cover > * {
+  width: 100%;
   max-width: 28rem;
 }
 
-.kicker {
-  font-family: var(--font-mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #ff7a45;
-}
-
 .title {
-  font-family: var(--font-sans), var(--font-ui), sans-serif;
-  font-size: clamp(44px, 13vw, 64px);
-  font-weight: 600;
-  line-height: 0.95;
-  letter-spacing: 0.05em;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(64px, 21vw, 92px);
+  font-weight: 400;
+  line-height: 0.86;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
 }
 
 .logline {
-  font-family: var(--font-display), Georgia, serif;
   font-size: 16px;
   line-height: 1.45;
-  color: rgb(244 241 234 / 80%);
+  color: var(--cream-2);
   text-wrap: balance;
+}
+
+.warning {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cream-3);
 }
 
 .meta {
   font-size: 12px;
-  color: rgb(244 241 234 / 45%);
+  color: var(--cream-3);
 }
 
+/* How to play: two tickets, the one chosen printed. */
 .modes {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  width: 100%;
-  margin-top: 8px;
-  padding: 4px;
-  border-radius: 14px;
-  background: rgb(255 255 255 / 7%);
-  box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 10%);
+  gap: 8px;
+  margin-top: 6px;
 }
 
 .modes button {
   display: grid;
-  gap: 2px;
-  padding: 9px 10px;
-  border-radius: 10px;
-  color: rgb(244 241 234 / 60%);
+  align-content: start;
+  gap: 3px;
+  padding: 6px 8px;
+  border: 7px solid transparent;
+  border-image: var(--slip) 7 / 7px;
+  color: var(--cream-2);
   font-size: 11.5px;
   line-height: 1.3;
   text-align: left;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
+  transition: color 0.3s;
 }
 
 .modes b {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgb(244 241 234 / 80%);
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
 }
 
 .modes button[aria-checked="true"] {
-  background: rgb(255 255 255 / 12%);
-  color: rgb(244 241 234 / 80%);
-  box-shadow: 0 1px 6px rgb(0 0 0 / 30%);
+  border-image: var(--slip-solid) 7 fill / 7px;
+  color: rgb(0 0 0 / 68%);
 }
 
 .modes button[aria-checked="true"] b {
-  color: #fff;
+  color: #000;
 }
 
-/* Real time, where the story offers it: a switch, the way iOS draws one. */
+/* Real time, where the story offers it. */
 .real {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
-  padding: 8px 4px 0;
-  font-size: 12px;
+  padding-top: 4px;
+  font-size: 12.5px;
   line-height: 1.35;
-  color: rgb(244 241 234 / 60%);
+  color: var(--cream-2);
   text-align: left;
   cursor: pointer;
 }
@@ -403,10 +345,10 @@
   position: relative;
   flex: none;
   width: 40px;
-  height: 24px;
+  height: 22px;
   margin: 0;
-  border-radius: 12px;
-  background: rgb(255 255 255 / 16%);
+  border: 1px solid var(--cream-3);
+  border-radius: 11px;
   transition: background-color 0.2s;
   cursor: pointer;
 }
@@ -414,160 +356,46 @@
 .real input::after {
   content: "";
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
-  transition: translate 0.2s;
+  background: var(--cream);
+  transition: translate 0.2s, background-color 0.2s;
 }
 
 .real input:checked {
-  background: #ff7a45;
+  background: var(--cream);
 }
 
 .real input:checked::after {
-  translate: 16px 0;
+  translate: 18px 0;
+  background: #000;
 }
 
 .real input:focus-visible {
-  outline: 2px solid #ff7a45;
+  outline: 2px solid var(--cream);
   outline-offset: 2px;
 }
 
 .open {
   width: 100%;
   min-height: 52px;
-  margin-top: 6px;
-  border-radius: 14px;
-  background: #f4f1ea;
-  color: #0a0908;
-  font-size: 16px;
-  font-weight: 600;
-  transition: transform 0.15s;
-}
-
-.open:active {
-  transform: scale(0.98);
-}
-
-/* Wide screens: the parcel on the table at the left, the cover beside it. */
-@media (min-width: 960px) and (min-height: 560px) {
-  .bar {
-    max-width: 1120px;
-    padding-inline: 40px;
-  }
-
-  .parcel {
-    position: absolute;
-    top: 50%;
-    left: 31%;
-    width: 360px;
-    height: min(64vh, 470px);
-    margin: 0;
-    translate: -50% -46%;
-  }
-
-  .cover {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 52%;
-    right: auto;
-    margin: 0;
-    width: min(440px, 40vw);
-    align-content: center;
-    justify-items: start;
-    padding: 0;
-    background: none;
-    text-align: left;
-  }
-
-  .cover > * {
-    max-width: none;
-  }
-
-  .title {
-    font-size: 88px;
-  }
-
-  .logline {
-    font-size: 18px;
-  }
-}
-
-@media (max-height: 700px) {
-  .cover {
-    padding-top: 64px;
-  }
-
-  .modes span {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .parcel,
-  .strip i {
-    animation: none;
-  }
-}
-
-/* The hand that pulls the strip (RAAKH-V3 §7.2, IC3): in from the right edge, gripping the strip's end, following the pull. */
-.hand {
-  position: absolute;
-  z-index: 3;
-  right: calc(-34% - var(--pull, 0) * 40%);
-  top: -21%;
-  width: 40%;
-  height: auto;
-  pointer-events: none;
-  rotate: -90deg;
-  filter: drop-shadow(0 14px 20px rgb(0 0 0 / 45%));
-  animation: hand-in 0.35s ease-out both;
-}
-
-@keyframes hand-in {
-  from { opacity: 0; translate: 30px 0; }
-  to { opacity: 1; translate: 0 0; }
-}
-
-.warning {
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--muted);
-}
-
-/* The courier's tracking, printed small under the declaration (fix brief H-01). */
-.track {
-  font-size: 8.5px;
-  color: rgb(26 24 21 / 70%);
-}
-
-.track:first-of-type {
-  margin-top: 2px;
-  padding-top: 4px;
-  border-top: 1px dashed rgb(26 24 21 / 25%);
+  margin-top: 4px;
 }
 
 /* Your own phone beside the parcel, its lock screen lit once (fix brief H-03). */
 .door {
   position: relative;
-  z-index: 3;
   display: grid;
   gap: 2px;
-  width: min(320px, calc(100% - 32px));
-  /* Clear of the waybill's tracking lines, which run past the photograph's edge. */
-  margin: 44px auto 10px;
-  padding: 10px 12px;
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+  padding: 11px 14px;
   border-radius: 16px;
-  background: rgb(30 30 32 / 78%);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  color: #fff;
-  font-family: var(--font-ui), system-ui, sans-serif;
+  background: rgb(250 247 239 / 9%);
   font-size: 13px;
   line-height: 1.35;
   animation: doorLight 0.9s 1.2s both;
@@ -578,14 +406,13 @@
 }
 
 .door small {
-  color: rgb(255 255 255 / 62%);
+  color: var(--cream-2);
   font-size: 12px;
 }
 
 .doorTime {
-  color: rgb(255 255 255 / 62%);
+  color: var(--cream-2);
   font-size: 11px;
-  letter-spacing: 0.02em;
 }
 
 @keyframes doorLight {
@@ -595,9 +422,77 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* Wide screens: the parcel at the left, filling the height, the cover beside it. */
+@media (min-width: 960px) and (min-height: 560px) {
+  .scene {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 30rem);
+    grid-template-rows: 1fr auto auto 1fr;
+    column-gap: clamp(40px, 6vw, 96px);
+    row-gap: 18px;
+    height: 100dvh;
+    padding: 80px 56px 40px;
+  }
+
+  .parcel {
+    grid-row: 1 / 5;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+  }
+
+  .photo > img {
+    object-position: 50% 62%;
+    scale: 1;
+  }
+
+  .waybill {
+    left: 28px;
+    bottom: 28px;
+    translate: 0 0;
+  }
+
+  .scene[data-torn] .waybill {
+    translate: 0 12px;
+  }
+
+  .strip {
+    top: 32px;
+    left: auto;
+    right: -8px;
+    width: min(420px, 70%);
+  }
+
   .door {
-    animation: none;
+    grid-column: 2;
+    grid-row: 2;
+    max-width: none;
+  }
+
+  .cover {
+    grid-column: 2;
+    grid-row: 3;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .cover > * {
+    max-width: none;
+  }
+
+  .title {
+    font-size: 6.4rem;
+  }
+
+  .logline {
+    font-size: 18px;
+  }
+}
+
+@media (max-height: 700px) {
+  .modes span {
+    display: none;
   }
 }
 
@@ -609,35 +504,38 @@
   display: grid;
   place-items: end center;
   padding: 16px;
-  background: rgb(0 0 0 / 55%);
+  background: rgb(0 0 0 / 72%);
   animation: askIn 0.25s ease-out both;
 }
 
 .askCard {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   width: min(420px, 100%);
-  padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
-  border-radius: 22px;
-  background: #1c1b19;
-  box-shadow: 0 20px 60px rgb(0 0 0 / 60%);
-  color: #f4f1ea;
+  padding: 22px 18px calc(18px + env(safe-area-inset-bottom));
+  border-radius: 14px;
+  background: #0d0d0c;
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--cream);
 }
 
 .askHead {
-  margin: 0 0 4px;
-  font-size: 17px;
-  font-weight: 600;
+  margin: 0 0 6px;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.02em;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .askCard button {
   display: grid;
   gap: 3px;
-  padding: 13px 14px;
-  border-radius: 14px;
-  background: rgb(255 255 255 / 8%);
-  color: rgb(244 241 234 / 72%);
+  padding: 7px 8px;
+  border: 7px solid transparent;
+  border-image: var(--slip) 7 / 7px;
+  color: var(--cream-2);
   font-size: 13px;
   line-height: 1.35;
   text-align: left;
@@ -645,19 +543,29 @@
 
 .askCard button:hover,
 .askCard button:focus-visible {
-  background: rgb(255 255 255 / 14%);
+  outline: none;
+  border-image: var(--slip-solid) 7 fill / 7px;
+  color: rgb(0 0 0 / 68%);
 }
 
 .askCard b {
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.askCard button:hover b,
+.askCard button:focus-visible b {
+  color: #000;
 }
 
 .askNote {
   margin: 2px 0 0;
   font-size: 12px;
-  color: rgb(244 241 234 / 60%);
+  color: var(--cream-3);
   text-align: center;
 }
 
@@ -674,6 +582,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .parcel,
+  .strip i,
+  .door,
   .ask {
     animation: none;
   }

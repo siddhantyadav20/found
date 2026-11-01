@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import type { Gate } from "@/content/types";
 import { getBattery, type BatteryLike } from "@/lib/found/battery";
-import Hand from "./v3/Hand";
+import { Still } from "./Film";
 import styles from "./Charge.module.css";
 
 /* ===========================================================================
@@ -20,13 +20,13 @@ import styles from "./Charge.module.css";
 export default function Charge({
   gate,
   onPlugged,
-  hand = false,
+  hand,
   waitMs = 30_000,
 }: {
   gate: Gate;
   onPlugged: () => void;
-  /** The player's hand, with the kada, bringing the cable in (RAAKH-V3 §7.12, IC8). */
-  hand?: boolean;
+  /** The player's hand, with the kada, bringing the cable in (RAAKH-V3 §7.12, IC8): its still. */
+  hand?: string;
   /** How long before the on-screen cable is offered, where the browser can't see a charger. */
   waitMs?: number;
 }) {
@@ -58,9 +58,9 @@ export default function Charge({
   const cable = battery === null || Boolean(battery?.charging) || waited;
 
   return (
-    <div className={styles.charge} data-hand={hand || undefined}>
+    <div className={styles.charge}>
       {hand ? (
-        <Hand holding="cable" className={styles.hand} />
+        <Still src={hand} priority className={styles.hand} />
       ) : (
         <span className={styles.cell} aria-hidden="true">
           <span />

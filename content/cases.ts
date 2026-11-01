@@ -65,8 +65,21 @@ export type CaseMeta = {
    * parcel's share image: Raakh's wedding envelope.
    */
   readonly envelope?: { readonly front: string; readonly small: string };
-  /** The table it arrives on, photographed: the sealed parcel, and what was inside it, opened (2026-10-24). */
-  readonly scene?: { readonly parcel: string; readonly open: string };
+  /**
+   * What the screens around the phone show (2026-11-01). The table it arrives
+   * on: the sealed parcel, and what was inside it, opened. `cable` is the hand
+   * at the charger; `titles` the episode cards, from Episode 2; `recaps` the end
+   * of an episode; `away` coming back; `end` the end card.
+   */
+  readonly scene?: {
+    readonly parcel: string;
+    readonly open: string;
+    readonly cable?: string;
+    readonly titles: readonly string[];
+    readonly recaps?: readonly string[];
+    readonly away: string;
+    readonly end: string;
+  };
   /** What lies on the desk: a sealed parcel (the default), or the phone itself. */
   readonly object?: "parcel" | "phone";
   /** How many links the chain has, for the share images (which never load a story). */

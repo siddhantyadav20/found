@@ -24,6 +24,16 @@ export const meta: Omit<CaseMeta, "teaser"> = {
   ask: "Who did you tell, by seven?",
   hook: "A wedding planner's phone. A missing catering boy.",
   envelope: { front: "Ishita weds Rohan", small: "Sehgal Parivar · 21.11" },
+  /* None of these gives the twist away before it's told; the last is the end card's. */
+  scene: {
+    parcel: "/found/game/hand-strip.jpg",
+    open: "/found/chapters/raakh-parcel.jpg",
+    cable: "/found/game/hand-cable.jpg",
+    titles: ["/found/chapters/raakh-fire.jpg", "/found/chapters/raakh-bhasin.jpg"],
+    recaps: ["/found/chapters/raakh-baraat.jpg", "/found/chapters/raakh-meera.jpg"],
+    away: "/found/chapters/raakh-phone.jpg",
+    end: "/found/chapters/raakh-planner.jpg",
+  },
   /* The waybill (RAAKH-V3 §7.2): sent same-city to M, refused at her door,
      returned to origin. Never a label saying whose address it is: whose door stays a
      fact the player can deduce, not one they're told. */

@@ -4,6 +4,7 @@ import type { Story } from "@/content/types";
 import { episodeOf, type CaseState } from "@/lib/game/engine";
 import { ago } from "@/lib/found/keeping";
 import { useNow } from "@/lib/found/now";
+import { Mast, Still } from "./Film";
 import styles from "./Interstitial.module.css";
 
 /* ===========================================================================
@@ -14,12 +15,14 @@ import styles from "./Interstitial.module.css";
    ROADMAP S5 gives this its own line for the chapter.
    =========================================================================== */
 
-export default function Away({ story, state, last, onBack }: { story: Story; state: CaseState; last: number; onBack: () => void }) {
+export default function Away({ story, state, last, still, onBack }: { story: Story; state: CaseState; last: number; still?: string; onBack: () => void }) {
   const now = useNow(1000);
   const ep = episodeOf(state);
   return (
     <div className={styles.card}>
-      <p className={styles.eyebrow}>{now ? `You put it down ${ago(last, now)}` : " "}</p>
+      {still && <Still src={still} priority sizes="100vw" className={styles.frame} />}
+      <Mast />
+      <p className="eyebrow">{now ? `You put it down ${ago(last, now)}` : " "}</p>
       <p className={styles.line}>It&apos;s where you left it.</p>
       <p className={styles.sub}>
         Episode {ep} · {story.episodes[ep - 1]}

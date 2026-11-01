@@ -149,12 +149,10 @@ export default function Aftermath({ story, state }: { story: Story; state: CaseS
           {last.map((l, i) =>
             l.who && l.text.startsWith("📷") ? (
               <figure key={i} className={styles.lastPhoto}>
-                {l.src ? (
+                {l.src && (
                   <span className={styles.lastFrame} data-photo>
                     <Image src={l.src} alt={l.text.replace(/^📷\s*/, "")} fill sizes="360px" style={{ objectFit: "cover" }} />
                   </span>
-                ) : (
-                  <span className={styles.lastFrame} aria-hidden="true" />
                 )}
                 <figcaption>
                   <span className={styles.from}>{l.who}</span>
@@ -215,7 +213,7 @@ export default function Aftermath({ story, state }: { story: Story; state: CaseS
       </div>
       <button
         type="button"
-        className={styles.quiet}
+        className={`act-quiet ${styles.goOn}`}
         onClick={(e) => {
           e.stopPropagation();
           more();

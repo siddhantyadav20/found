@@ -1,24 +1,41 @@
 /* The v3 end card's own lines (RAAKH-V3 §11). */
 
 .headline {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(30px, 8vw, 46px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(38px, 11vw, 72px);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
   text-wrap: balance;
 }
 
+/* Unopened: nothing on the card but its name, down at the foot of the page. */
+.bare {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.word {
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(64px, 18.5vw, 200px);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
 .line {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 21px;
-  line-height: 1.35;
-  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.4;
+  color: var(--cream-2);
 }
 
 .note {
   font-size: 15px;
   line-height: 1.5;
-  color: var(--text);
+  color: var(--cream);
 }
 
 .bar {
@@ -37,23 +54,21 @@
 }
 
 .track {
-  height: 8px;
-  border-radius: 4px;
-  background: var(--ink-3);
+  height: 4px;
+  background: var(--rule);
   overflow: hidden;
 }
 
 .track i {
   display: block;
   height: 100%;
-  border-radius: 4px;
-  background: var(--muted);
+  background: var(--cream-3);
   animation: grow 1.2s ease-out both;
   transform-origin: left;
 }
 
 .track i[data-side="confessor"] {
-  background: var(--paper);
+  background: var(--cream);
 }
 
 @keyframes grow {
@@ -61,16 +76,17 @@
 }
 
 .quote {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.4;
-  color: var(--muted);
+  color: var(--cream-2);
 }
 
 .stat {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 22px;
-  line-height: 1.3;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(22px, 6vw, 30px);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
 }
 
 .vows {
@@ -80,22 +96,23 @@
   padding: 0;
   list-style: none;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--cream-2);
 }
 
 .vows b {
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
 .vows li[data-state="kept"] b {
-  color: var(--paper);
+  color: var(--cream);
 }
 
 .vows li[data-state="broken"] b {
-  color: var(--stamp);
+  color: var(--red);
 }
 
 /* Endings found, and Choose differently (2026-10-29). */
@@ -110,34 +127,22 @@
 
 .ways li {
   padding: 6px 12px;
-  border: 1px dashed var(--line-2);
-  border-radius: 999px;
+  border: 1px dashed var(--rule);
+  border-radius: 3px;
   font-size: 13px;
-  color: var(--dim);
+  color: var(--cream-3);
 }
 
 .ways li[data-found] {
   border-style: solid;
-  border-color: var(--muted);
-  color: var(--text);
-}
-
-.again {
-  background: var(--paper);
-  border-color: var(--paper);
-  color: var(--paper-ink);
-  font-weight: 600;
-}
-
-.again:hover {
-  background: var(--paper);
-  opacity: 0.9;
+  border-color: var(--cream-2);
+  color: var(--cream);
 }
 
 .againNote {
   font-size: 13px;
   line-height: 1.45;
-  color: var(--muted);
+  color: var(--cream-2);
 }
 
 /* Afterwards (fix brief §7): one line per person, the name first. */

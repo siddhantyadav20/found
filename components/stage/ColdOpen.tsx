@@ -103,12 +103,12 @@ export default function ColdOpen({
     return (
       <div className={styles.cold}>
         <div className={styles.gate}>
-          <p className={styles.where}>Before you begin</p>
+          <p className="eyebrow">Before you begin</p>
           <p className={styles.gateNote}>{warning}</p>
-          <p className={styles.gateSmall}>Best with sound on.</p>
+          <p className={`eyebrow ${styles.gateSmall}`}>Best with sound on</p>
           <button
             type="button"
-            className={styles.begin}
+            className={`act ${styles.begin}`}
             onClick={() => {
               setHeard(true);
               setBegun(true);
@@ -134,7 +134,7 @@ export default function ColdOpen({
       {replay && (
         <button
           type="button"
-          className={styles.skip}
+          className={`eyebrow ${styles.skip}`}
           onClick={(e) => {
             e.stopPropagation();
             onDone();
@@ -145,10 +145,10 @@ export default function ColdOpen({
       )}
       {step < last ? (
         <div className={styles.captions} aria-live="polite">
-          <p className={styles.where}>{cold.where}</p>
+          <p className={`eyebrow ${styles.where}`}>{cold.where}</p>
           {shown.map((l, i) => (
             <p key={i} className={l.who ? styles.said : styles.sound} data-old={i < shown.length - 3 || undefined}>
-              {l.who && <span className={styles.who}>{l.who}</span>}
+              {l.who && <span className={`eyebrow ${styles.who}`}>{l.who}</span>}
               <span lang={l.english ? "hi-Latn" : undefined}>{l.line}</span>
               {l.english && <span className={styles.english}>{l.english}</span>}
             </p>

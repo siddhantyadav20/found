@@ -73,10 +73,10 @@ export default function Moment({
         </span>
       ) : null}
       <div className={styles.body}>
-        <p className={styles.where}>{moment.where}</p>
+        <p className={`eyebrow ${styles.where}`}>{moment.where}</p>
         {moment.lines.slice(0, shown).map((l, i) => (
           <p key={i} className={l.who ? styles.said : styles.told}>
-            {l.who && <span className={styles.who}>{l.who}</span>}
+            {l.who && <span className={`eyebrow ${styles.who}`}>{l.who}</span>}
             <span lang={l.english ? "hi-Latn" : undefined}>{l.text}</span>
             {l.english && <span className={styles.english}>{l.english}</span>}
           </p>
@@ -90,7 +90,7 @@ export default function Moment({
             </p>
           ) : null}
           {options.map((o) => (
-            <button key={o.id} type="button" className={styles.option} onClick={() => onChoose(o.sets)} data-faced={o.face || o.glyph ? "" : undefined}>
+            <button key={o.id} type="button" className={`act-quiet ${styles.option}`} onClick={() => onChoose(o.sets)} data-faced={o.face || o.glyph ? "" : undefined}>
               {o.face ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={o.face} alt="" className={styles.face} />
@@ -105,7 +105,7 @@ export default function Moment({
         </div>
       )}
       {!ready && (
-        <button type="button" className={styles.skip} onClick={() => setShown(moment.lines.length)}>
+        <button type="button" className={`act-quiet ${styles.skip}`} onClick={() => setShown(moment.lines.length)}>
           Go on
         </button>
       )}

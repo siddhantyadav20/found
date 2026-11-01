@@ -13,7 +13,6 @@ import { phoneClock, stamp } from "@/lib/found/time";
 import Ringing from "../Ringing";
 import { flag, sayAll } from "../playthrough";
 import { DarkLine } from "./DarkScreen";
-import Hand from "./Hand";
 import { YourPhoneNote, YourPhoneOverlay } from "./YourPhone";
 import card from "./Screens.module.css";
 import styles from "./Reveal.module.css";
@@ -71,7 +70,7 @@ function VoiceNote({ story, onDone }: { story: Story; onDone: () => void }) {
           {story.owner && <Image src="/found/raakh/dp-bhasin.jpg" alt="" width={40} height={40} />}
           <span>
             <b>{v.who}</b>
-            <span>🎤 Voice message · {phoneClock("03:58")} AM</span>
+            <span>Voice message · {phoneClock("03:58")} AM</span>
           </span>
         </div>
         <div className={styles.vnBubble}>
@@ -91,7 +90,7 @@ function VoiceNote({ story, onDone }: { story: Story; onDone: () => void }) {
         </ol>
       </div>
       {t > v.seconds && (
-        <button type="button" className={styles.next} onClick={onDone} autoFocus>
+        <button type="button" className={`act-quiet ${styles.next}`} onClick={onDone} autoFocus>
           Go on
         </button>
       )}
@@ -159,10 +158,10 @@ function Meera({ story, state, onCamera, onAway }: { story: Story; state: CaseSt
       onSay={(said) => sayAll(said)}
       finale={
         <div className={styles.look}>
-          <button type="button" onClick={onCamera}>
+          <button type="button" className="act" onClick={onCamera}>
             {r.look.open}
           </button>
-          <button type="button" onClick={onAway}>
+          <button type="button" className="act-quiet" onClick={onAway}>
             {r.look.away}
           </button>
         </div>
@@ -181,7 +180,7 @@ function Away({ line, voice, onDone }: { line: Said; voice?: string; onDone: () 
   return (
     <div className={card.black} role="dialog" aria-label={line.text} onClick={onDone}>
       <div className={styles.line}>
-        <p className={styles.lineWho}>{line.who}</p>
+        <p className={`eyebrow ${styles.lineWho}`}>{line.who}</p>
         <p className={styles.lineText} lang="hi-Latn">
           {line.text}
           {line.english && <small>{line.english}</small>}
@@ -209,7 +208,9 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
       <div className={styles.finder}>
         <Image src={r.camera.src} alt={r.camera.alt} fill sizes="100vw" priority />
         <span className={styles.blink} aria-hidden="true" />
-        <Hand className={styles.kada} />
+        <span className={styles.kada}>
+          <Image src="/found/game/hand-cable.jpg" alt="" fill sizes="50vw" />
+        </span>
         {flashing && <span className={styles.flash} onAnimationEnd={() => setFlashing(false)} aria-hidden="true" />}
         {/* The case file pins the fire beside it: the same kada (fix brief §6, beat 4). */}
         {shot && r.camera.pin && (
@@ -258,7 +259,7 @@ function CaseInfo({ story, state, onDone }: { story: Story; state: CaseState; on
   return (
     <div className={styles.stage} role="dialog" aria-label="The case file's info">
       <div className={styles.info}>
-        <p className={styles.infoHead}>{title}</p>
+        <p className={`eyebrow ${styles.infoHead}`}>{title}</p>
         <ul className={styles.infoRows}>
           {rows.map((row, i) => (
             <li key={row} style={{ animationDelay: `${0.4 + i * 0.25}s` }}>
@@ -269,7 +270,7 @@ function CaseInfo({ story, state, onDone }: { story: Story; state: CaseState; on
         {line && <p className={styles.infoLine}>{line}</p>}
         {called && <span className={styles.stamp}>{r.info.called}</span>}
       </div>
-      <button type="button" className={styles.next} onClick={onDone} autoFocus>
+      <button type="button" className={`act-quiet ${styles.next}`} onClick={onDone} autoFocus>
         Go on
       </button>
     </div>
@@ -349,7 +350,7 @@ function Montage({ story, state, onDone }: { story: Story; state: CaseState; onD
       {b?.kind === "cut" && b.index === 1 && (
         <div key={i} className={styles.split} role="img" aria-label="Two hands: at the parcel tonight, at the fire a week ago. The same kada.">
           <span>
-            <Hand holding="strip" />
+            <Image src="/found/game/hand-strip.jpg" alt="" fill sizes="210px" />
           </span>
           <span>
             <Image src="/found/raakh/jerrycan.jpg" alt="" fill sizes="210px" />
@@ -382,14 +383,14 @@ function MeeraLine({ story, state, onDone }: { story: Story; state: CaseState; o
   return (
     <div className={styles.stage} role="dialog" aria-label={line.text}>
       <div className={styles.line}>
-        <p className={styles.lineWho}>{line.who}</p>
+        <p className={`eyebrow ${styles.lineWho}`}>{line.who}</p>
         <p className={styles.lineText} lang="hi-Latn">
           {line.text}
           {line.english && <small>{line.english}</small>}
         </p>
         {early && <p className={styles.answerNote}>Case file · Q1 · filed as your hunch{when ? ` at ${stamp(when)}` : ""}.</p>}
       </div>
-      <button type="button" className={styles.next} onClick={onDone} autoFocus>
+      <button type="button" className={`act-quiet ${styles.next}`} onClick={onDone} autoFocus>
         Go on
       </button>
     </div>

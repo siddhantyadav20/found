@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+
+import Logo from "@/components/cinema/Logo";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { CASES } from "@/content/cases";
@@ -45,7 +47,7 @@ export default function Restore({ raw }: { raw: string }) {
     const back = (cards ?? []).filter((c) => result.cases.includes(c.id));
     body = (
       <>
-        <p className={styles.eyebrow}>Case number {result.number}</p>
+        <p className="eyebrow">Case number {result.number}</p>
         <h1 className={styles.title}>{back.length ? "Your cases are back." : "Nothing on this number yet."}</h1>
         <p className={styles.text}>
           {back.length
@@ -63,7 +65,7 @@ export default function Restore({ raw }: { raw: string }) {
                     <p className={styles.caseStatus}>{line.status}</p>
                     {line.result && <p className={styles.caseResult}>{line.result}</p>}
                   </div>
-                  <Link href={CASES[c.id].href} className={styles.cta}>
+                  <Link href={CASES[c.id].href} className="act">
                     {line.cta}
                   </Link>
                 </li>
@@ -72,7 +74,7 @@ export default function Restore({ raw }: { raw: string }) {
           </ul>
         )}
         <Link href="/" className={styles.link}>
-          To the desk
+          Back to Found
         </Link>
       </>
     );
@@ -88,12 +90,12 @@ export default function Restore({ raw }: { raw: string }) {
         <h1 className={styles.title}>{copy[0]}</h1>
         <p className={styles.text}>{copy[1]}</p>
         {result.reason === "unavailable" && (
-          <button type="button" className={styles.cta} onClick={() => window.location.reload()}>
+          <button type="button" className="act" onClick={() => window.location.reload()}>
             Try again
           </button>
         )}
         <Link href="/" className={styles.link}>
-          To the desk
+          Back to Found
         </Link>
       </>
     );
@@ -101,7 +103,7 @@ export default function Restore({ raw }: { raw: string }) {
 
   return (
     <main className={styles.room} id="main">
-      <p className={styles.brand}>Found</p>
+      <Logo className={styles.brand} />
       {body}
     </main>
   );

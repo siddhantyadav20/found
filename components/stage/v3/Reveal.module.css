@@ -7,8 +7,8 @@
   display: grid;
   place-items: center;
   padding: 32px var(--gutter);
-  background: #050608;
-  color: #f4f1ea;
+  background: #000;
+  color: var(--cream);
   overflow: hidden;
 }
 
@@ -37,13 +37,13 @@
 
 .vnHead span {
   font-size: 13px;
-  color: #8696a0;
+  color: var(--cream-2);
 }
 
 .vnBubble {
   padding: 12px 14px;
   border-radius: 4px 18px 18px 18px;
-  background: #1f2c34;
+  background: rgb(250 247 239 / 7%);
 }
 
 .vnWave {
@@ -56,11 +56,11 @@
 .vnWave span {
   flex: 1;
   border-radius: 2px;
-  background: #3e4a52;
+  background: var(--rule);
 }
 
 .vnWave span[data-on] {
-  background: #53bdeb;
+  background: var(--cream);
 }
 
 .vnWords {
@@ -73,8 +73,9 @@
 }
 
 .vnWords li {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 21px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
   line-height: 1.3;
   animation: rise 0.9s ease-out both;
 }
@@ -84,7 +85,7 @@
   margin-top: 4px;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 13px;
-  color: #8a8f94;
+  color: var(--cream-2);
 }
 
 @keyframes rise {
@@ -98,27 +99,14 @@
   left: 50%;
   bottom: calc(24px + env(safe-area-inset-bottom));
   translate: -50% 0;
-  min-width: 132px;
-  padding: 12px 24px;
-  border-radius: 999px;
-  background: rgb(244 241 234 / 14%);
-  box-shadow: inset 0 0 0 0.5px rgb(244 241 234 / 22%);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: #f4f1ea;
+  min-width: 142px;
+  background: #000;
   animation: goIn 0.8s ease-out both;
 }
 
 @keyframes goIn {
   from { opacity: 0; translate: -50% 6px; }
   to { opacity: 1; translate: -50% 0; }
-}
-
-.next:hover,
-.next:focus-visible {
-  background: rgb(244 241 234 / 24%);
 }
 
 /* Step 3's two buttons, where the call would end. */
@@ -131,20 +119,8 @@
 }
 
 .look button {
-  padding: 15px 18px;
-  border-radius: 999px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.look button:first-child {
-  background: #f4f1ea;
-  color: #111;
-}
-
-.look button:last-child {
-  background: rgb(255 255 255 / 12%);
-  color: #f4f1ea;
+  width: 100%;
+  min-height: 50px;
 }
 
 /* Step 4: the front camera. */
@@ -175,9 +151,14 @@
   background: #000;
 }
 
-.finder img {
+.finder > img {
   object-fit: cover;
   animation: breathe 6s ease-in-out infinite, tremor 0.9s ease-in-out infinite;
+}
+
+.kada img {
+  object-fit: cover;
+  object-position: 26% 50%;
 }
 
 /* A live camera, not a photo: a breath, a hand that isn't steady. */
@@ -216,12 +197,13 @@
    it: cold and dim, with the kada just in frame above the shutter. */
 .kada {
   position: absolute;
-  left: -8%;
-  bottom: 6%;
-  width: 46%;
-  rotate: 18deg;
+  left: -6%;
+  bottom: 0;
+  width: 62%;
+  aspect-ratio: 1;
   opacity: 0.8;
-  filter: grayscale(0.75) brightness(0.42) contrast(1.15);
+  filter: grayscale(0.75) brightness(0.62) contrast(1.15);
+  mask: radial-gradient(closest-side, #000 52%, transparent);
 }
 
 .flash {
@@ -279,12 +261,10 @@
 
 /* Step 5: the case file turns over to its info panel. */
 .info {
-  width: min(100%, 24rem);
-  border-radius: 16px;
-  background: #1c1c1e;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-sans), sans-serif;
+  width: min(100%, 28rem);
   overflow: hidden;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--cream);
   animation: turn 1s cubic-bezier(0.2, 0.8, 0.3, 1) both;
   transform-origin: 50% 100%;
 }
@@ -295,11 +275,8 @@
 }
 
 .infoHead {
-  padding: 14px 16px;
-  border-bottom: 1px solid #38383a;
-  font-size: 15px;
-  font-weight: 600;
-  text-align: center;
+  padding: 0 0 14px;
+  border-bottom: 1px solid var(--rule);
 }
 
 .infoRows {
@@ -309,32 +286,32 @@
 }
 
 .infoRows li {
-  padding: 12px 16px;
-  border-bottom: 1px solid #2c2c2e;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
   font-size: 15px;
   animation: rise 0.6s ease-out both;
 }
 
 .infoLine {
-  margin: 14px 16px 18px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #ffd60a;
-  color: #111;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 17px;
-  line-height: 1.35;
+  margin: 16px 0 18px;
+  padding: 12px 14px;
+  background: var(--cream);
+  color: #000;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
   animation: rise 0.8s 1.2s ease-out both;
 }
 
 .stamp {
   display: inline-block;
-  margin: 0 16px 18px;
   padding: 6px 10px;
-  border: 2px solid #ff453a;
-  border-radius: 4px;
-  color: #ff453a;
-  font-family: var(--font-mono), monospace;
+  border: 2px solid var(--red);
+  border-radius: 3px;
+  color: var(--red);
+  font-family: var(--font-brucke), Arial, sans-serif;
   font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -355,32 +332,38 @@
 }
 
 .mLine {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(22px, 5.6vw, 32px);
-  line-height: 1.25;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: clamp(26px, 7vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
   animation: rise 0.6s ease-out both;
 }
 
 .mAt {
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: #8a8f94;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 12.8px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cream-2);
 }
 
 .mAnswer {
   font-size: 15px;
   line-height: 1.45;
-  color: #8a8f94;
+  color: var(--cream-2);
   animation: rise 0.6s 0.9s ease-out both;
 }
 
 .cut {
   position: relative;
-  width: min(84vw, 360px);
+  display: block;
+  width: min(84vw, 380px);
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 14px;
+  mask: var(--filed) 0 0 / 100% 100% no-repeat;
   animation: rise 0.5s ease-out both;
 }
 
@@ -390,21 +373,27 @@
 
 .cutText {
   position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 22px;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 80%);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 56px 16px 16px;
+  background: linear-gradient(180deg, transparent, rgb(0 0 0 / 82%));
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
 .cutText small {
   display: block;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  margin-top: 8px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #cfcac2;
+  color: var(--cream-2);
 }
 
 /* The split frame: two hands, one kada. */
@@ -420,8 +409,9 @@
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  border-radius: 4px;
-  background: #2b1d12;
+  border-radius: 10px;
+  background: #0b0b0b;
+  mask: var(--filed) 0 0 / 100% 100% no-repeat;
 }
 
 .split img {
@@ -429,12 +419,6 @@
   object-position: 30% 45%;
 }
 
-.split svg {
-  position: absolute;
-  inset: 8% 6% 0;
-  width: 88%;
-  height: auto;
-}
 
 /* Step 7: Meera's line. */
 .line {
@@ -444,17 +428,19 @@
 }
 
 .lineWho {
-  font-family: var(--font-mono), monospace;
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: #8a8f94;
+  color: var(--cream-2);
 }
 
 .lineText {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(22px, 5.4vw, 30px);
-  line-height: 1.3;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: clamp(21px, 5.2vw, 30px);
+  font-weight: 500;
+  line-height: 1.25;
   animation: rise 1.2s ease-out both;
 }
 
@@ -464,16 +450,15 @@
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  color: #8a8f94;
+  color: var(--cream-2);
 }
 
 .answerNote {
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: #1c1c1e;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-sans), sans-serif;
+  padding: 8px 10px;
+  border: 7px solid transparent;
+  border-image: var(--slip) 7 / 7px;
   font-size: 14px;
-  color: #d1d1d6;
+  color: var(--cream-2);
   animation: rise 0.8s 1.6s ease-out both;
 }
 
@@ -500,7 +485,7 @@
   margin: 0;
   padding: 6px 6px 8px;
   rotate: 3deg;
-  background: #f3efe6;
+  background: var(--cream);
   box-shadow: 0 8px 22px rgb(0 0 0 / 55%);
   color: #1a1815;
   animation: pinIn 0.5s 0.4s both;
