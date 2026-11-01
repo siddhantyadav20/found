@@ -31,6 +31,8 @@ export type Page = {
   readonly warning: string;
 };
 
+const art = (name: string) => `/found/chapters/${name}.jpg`;
+
 export type Reel = {
   readonly id: CaseId;
   readonly title: string;
@@ -77,11 +79,14 @@ function reel(
   };
 }
 
+/* The pictures are film stills made for the site (2026-11-01), the way
+   siena.film's are: one person, one light, a moment out of the story. They show
+   nothing the warnings don't already say, and nobody in them is real. */
 export const REELS: readonly Reel[] = [
   reel(CASES.raakh, {
     id: "raakh",
-    still: "/found/site/raakh-wide.jpg",
-    tall: "/found/raakh/key-lawn.jpg",
+    still: art("raakh-key"),
+    tall: art("raakh-poster"),
     badge: { year: YEAR, headline: "Out 5 Nov", seal: "Live" },
     reviews: [
       { stars: 4.5, quote: "A work of art", source: "Reddit" },
@@ -89,7 +94,7 @@ export const REELS: readonly Reel[] = [
       { stars: 4.5, quote: "My man out here competing with Nolan", source: "In-game feedback" },
     ],
     more: {
-      lead: { role: "Written by", name: "Siddhant Yadav", still: "/found/raakh/w-4.jpg" },
+      lead: { role: "Written by", name: "Siddhant Yadav", still: art("raakh-planner") },
       pair: [
         ["Where", "Banyan Farms"],
         ["When", "21 November"],
@@ -106,10 +111,7 @@ export const REELS: readonly Reel[] = [
         ["Worked the lights", "Dilip"],
         ["Not saved", "+91 62••• •4417"],
       ],
-      frames: [
-        "w-0", "w-baraat", "w-3", "w-pheras", "w-1", "w-couple", "w-11", "ig-haldi", "w-4", "w-family", "w-8", "ig-drone",
-        "w-5", "w-blur", "w-9", "w-15", "w-12", "w-portrait-2",
-      ].map((name) => `/found/raakh/${name}.jpg`),
+      frames: ["raakh-planner", "raakh-baraat", "raakh-meera", "raakh-fire", "raakh-photo", "raakh-bhasin", "raakh-parcel", "raakh-phone", "raakh-key"].map(art),
       apps: [
         ["4 voice notes", "WhatsApp"],
         ["47 missed calls", "Phone"],
@@ -118,14 +120,14 @@ export const REELS: readonly Reel[] = [
         ["A locked note", "Notes"],
         ["Say it, then prove it", "Case file"],
       ],
-      appsStill: "/found/site/raakh-wide.jpg",
+      appsStill: art("raakh-phone"),
       warning: "A shooting at a wedding, a missing young man and a fire. None of it is shown; all of it is talked about.",
     },
   }),
   reel(CASES.lastlocal, {
     id: "lastlocal",
-    still: "/found/site/lastlocal-wide.jpg",
-    tall: "/found/lastlocal/dadar.jpg",
+    still: art("lastlocal-key"),
+    tall: art("lastlocal-poster"),
     badge: { year: YEAR, headline: "Three episodes", seal: "Play" },
     // No reviews yet, and none invented: its lock screen speaks for it.
     reviews: [
@@ -134,7 +136,7 @@ export const REELS: readonly Reel[] = [
       { quote: "Shinde Kaka is viewing this iPhone's location", source: "Find My" },
     ],
     more: {
-      lead: { role: "Written by", name: "Siddhant Yadav", still: "/found/lastlocal/dadar.jpg" },
+      lead: { role: "Written by", name: "Siddhant Yadav", still: art("lastlocal-platform") },
       pair: [
         ["Where", "The Western Line"],
         ["When", "1:12 AM"],
@@ -151,7 +153,7 @@ export const REELS: readonly Reel[] = [
         ["Everyone warns her off", "Imran Shaikh"],
         ["Not saved", "+91 77••• •3018"],
       ],
-      frames: ["dadar", "sea", "site", "door", "wallpaper"].map((name) => `/found/lastlocal/${name}.jpg`),
+      frames: ["lastlocal-platform", "lastlocal-walker", "lastlocal-aai", "lastlocal-collapse", "lastlocal-imran", "lastlocal-seat", "lastlocal-key"].map(art),
       apps: [
         ["23 missed calls", "Phone"],
         ["Voice notes", "WhatsApp"],
@@ -159,7 +161,7 @@ export const REELS: readonly Reel[] = [
         ["What she saved", "Files"],
         ["What she kept", "Photos"],
       ],
-      appsStill: "/found/site/lastlocal-wide.jpg",
+      appsStill: art("lastlocal-seat"),
       warning: "A building collapse, threats and a family's violence, none of it graphic.",
     },
   }),

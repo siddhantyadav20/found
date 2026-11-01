@@ -45,6 +45,11 @@
     color 0.3s ease;
 }
 
+:global(html[data-entered] [data-arriving]) .logo {
+  opacity: 0;
+  transition: none;
+}
+
 .wordmark {
   display: block;
   width: 100%;
@@ -84,6 +89,11 @@
 :global(html[data-entered]) .menu {
   transform: none;
   transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1) var(--menu-delay);
+}
+
+:global(html[data-entered] [data-arriving]) .menu {
+  transform: translateY(-200%);
+  transition: none;
 }
 
 .large {

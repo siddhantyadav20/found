@@ -85,8 +85,10 @@ const BUDGET = {
    * the Episode 3 frames for the living witness (about 1MB).
    * Raised from 11 to 12 on 2026-10-31 for the reel's two wide stills, which
    * go to WebGL as they are, so next/image can't lighten them (424KB).
+   * Raised from 12 to 13 on 2026-11-01 for the chapters' eighteen film stills,
+   * which replace those two and mostly go to WebGL the same way (1.5MB).
    */
-  publicTotal: 12,
+  publicTotal: 13,
 };
 
 /** Files that are allowed to be over `asset`, and why. Anything not on this

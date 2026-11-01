@@ -4,11 +4,18 @@
    =========================================================================== */
 
 const raakh = (name: string) => `/found/raakh/${name}.jpg`;
-const local = (name: string) => `/found/lastlocal/${name}.jpg`;
+const art = (name: string) => `/found/chapters/${name}.jpg`;
+
+/** Every still there is, for the wall. It wants 36, so each goes up twice, well apart. */
+const STILLS = [
+  "raakh-baraat", "lastlocal-walker", "raakh-meera", "lastlocal-aai", "raakh-bhasin", "lastlocal-platform",
+  "raakh-photo", "lastlocal-imran", "raakh-fire", "lastlocal-poster", "raakh-planner", "lastlocal-seat",
+  "raakh-parcel", "lastlocal-collapse", "raakh-phone", "lastlocal-key", "raakh-poster", "raakh-key",
+];
 
 export const ABOUT = {
   hero: {
-    arches: [raakh("w-baraat"), local("sea")],
+    arches: [art("raakh-poster"), art("lastlocal-poster")],
     lead: ["Found is a"],
     big: ["One-person", "Thriller", "Studio"],
     tail: ["Dedicated to stories", "you play on a phone"],
@@ -26,12 +33,7 @@ export const ABOUT = {
     side: ["In your", "browser", "for free"],
     block: ["Two chapters.", "One in transit.", "No download.", "No sign-up.", "No ads."],
   },
-  grid: [
-    raakh("w-0"), raakh("x-rain"), local("dadar"), raakh("w-3"), raakh("w-pheras"), raakh("x-goa"), raakh("w-1"), raakh("ig-crew"), raakh("w-couple"),
-    raakh("w-11"), raakh("x-chai"), raakh("ig-haldi"), local("site"), raakh("w-4"), raakh("w-family"), raakh("x-ladakh"), raakh("w-8"), local("door"),
-    raakh("ig-drone"), raakh("w-5"), raakh("x-biryani"), raakh("w-blur"), raakh("w-baraat"), raakh("w-9"), local("sea"), raakh("w-15"), raakh("w-12"),
-    raakh("x-cricket"), raakh("w-portrait-2"), raakh("ig-mirror"), local("wallpaper"), raakh("w-13"), raakh("poster-dilip"), raakh("w-twice"), raakh("key-lawn"), local("dadar"),
-  ],
+  grid: [...STILLS, ...STILLS.slice(7), ...STILLS.slice(0, 7)].map(art),
   who: {
     name: "Siddhant Yadav",
     eyebrow: "Everything",
@@ -45,7 +47,7 @@ export const ABOUT = {
     { label: "Step 1", lines: ["Read", "the phone"] },
     { label: "Step 2", lines: ["Say it,", "then prove it"] },
   ],
-  cta: { title: "Our chapters", still: "/found/site/raakh-wide.jpg" },
+  cta: { title: "Our chapters", still: art("raakh-key") },
 } as const;
 
 export const CONTACT = {
