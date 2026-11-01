@@ -50,7 +50,8 @@
 
 .site[data-route="home"],
 .site[data-route="chapters"] {
-  --page-delay: 1.4s;
+  --page-delay: 0s;
+  --late-delay: 1.4s;
   --logo-delay: 1.6s;
   --menu-delay: 1.7s;
 }

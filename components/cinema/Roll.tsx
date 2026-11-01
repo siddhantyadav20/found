@@ -8,7 +8,7 @@ import { ENTERED_EVENT } from "./entered";
 import ExploreFace from "./ExploreFace";
 import { reel } from "./reel";
 import { createRollGl, type Plane } from "./rollGl";
-import { hoverTick } from "./sounds";
+import { cameraHalt } from "./sounds";
 import Stars from "./Stars";
 import Title, { drawFlicker, prepareFlicker, stopFlicker, type Flicker } from "./Title";
 import styles from "./Roll.module.css";
@@ -42,6 +42,8 @@ const FLICKER_FIRST_MS = 2800;
 const FLICKER_AGAIN_MS = 6000;
 const WHEEL = 0.5;
 const TOUCH = 5;
+/** How long the spin will wait for its pictures before going without them. */
+const STILLS_MS = 2500;
 
 function Quote({ review, parallax }: { review: Review; parallax?: number }) {
   return (
@@ -114,6 +116,7 @@ function Slide({ item, clone }: { item: Reel; clone: boolean }) {
                   href={item.page}
                   className={styles.exploreMobile}
                   data-btn="explore"
+                  onClick={cameraHalt}
                   aria-label={`Explore ${item.title}`}
                   tabIndex={tab}
                 >
@@ -135,7 +138,7 @@ function Slide({ item, clone }: { item: Reel; clone: boolean }) {
                 data-cursor="hide"
                 aria-label={`Explore ${item.title}`}
                 tabIndex={tab}
-                onMouseEnter={hoverTick}
+                onMouseEnter={cameraHalt}
               >
                 <ExploreFace label="EXPLORE" />
               </SiteLink>
@@ -169,6 +172,7 @@ export default function Roll() {
     let itemH = 0;
     let marginH = 0;
     let frame = { x: 0, y: 0, w: 0, h: 0 };
+    let period = 0;
     let radius = 40;
 
     const start = quiet ? 0 : INTRO - (reel.get().index % COUNT);
@@ -197,7 +201,9 @@ export default function Roll() {
     const lost = () => delete wrapper.dataset.gl;
     surface.addEventListener("webglcontextlost", lost);
     const stills = () => REELS.map((r) => (phone ? r.tall : r.still));
-    gl?.load(stills());
+    const loaded = gl?.load(stills());
+    const ready = Promise.race([loaded, new Promise((go) => window.setTimeout(go, STILLS_MS))]);
+    let gone = false;
 
     const measure = () => {
       const was = phone;
@@ -206,9 +212,11 @@ export default function Roll() {
       marginH = (wrapper.clientHeight - itemH) / 2;
       const image = items[0].querySelector<HTMLElement>("[data-image]");
       if (image) frame = { x: image.offsetLeft, y: image.offsetTop, w: image.offsetWidth, h: image.offsetHeight };
+      // Closer together than the words over them, so the next card shows at each end.
+      period = frame.h + marginH / 2;
       radius = phone ? 24 : Math.min(40, window.innerWidth / 36);
       gl?.resize(wrapper.clientWidth, wrapper.clientHeight, window.devicePixelRatio || 1);
-      if (was !== phone) gl?.load(stills());
+      if (was !== phone) void gl?.load(stills());
     };
 
     const moved = () => {
@@ -289,14 +297,19 @@ export default function Roll() {
       step(forward ? 1 : -1);
     };
 
+    // Every arrival, however it came about: the pictures first, then the spin.
     const begin = () => {
-      state.enteredAt = performance.now();
-      if (quiet) return;
-      window.setTimeout(() => {
-        state.speed = 10;
-        state.lspeed = 10;
-        state.current = 0;
-      }, 200);
+      void ready.then(() => {
+        if (gone) return;
+        state.enteredAt = performance.now();
+        wrapper.dataset.in = "true";
+        if (quiet) return;
+        window.setTimeout(() => {
+          state.speed = 10;
+          state.lspeed = 10;
+          state.current = 0;
+        }, 200);
+      });
     };
 
     let flicker: Flicker[] | null = null;
@@ -304,16 +317,20 @@ export default function Roll() {
     let flickerAt = 0;
     let time = 0;
     let raf = 0;
+    let last = 0;
     const planes: Plane[] = items.map((_, i) => ({ texture: i % REELS.length, x: 0, y: 0, w: 0, h: 0, parallax: 0 }));
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
 
-      // Per frame, not per second, as siena.film's are: the same feel on the same screen.
-      state.speed *= 0.85;
-      state.lspeed = lerp(state.lspeed, Math.abs(state.speed), 0.1);
-      if (!state.down) state.target = lerp(state.target, Math.round(state.target), 0.1);
-      state.current = lerp(state.current, state.target, phone ? 0.09 : 0.05);
+      // siena.film's numbers are per frame at 60; a faster screen mustn't rush the spin.
+      const frames = last ? Math.min((now - last) / (1000 / 60), 3) : 1;
+      last = now;
+      const ease = (t: number) => 1 - (1 - t) ** frames;
+      state.speed *= 0.85 ** frames;
+      state.lspeed = lerp(state.lspeed, Math.abs(state.speed), ease(0.1));
+      if (!state.down) state.target = lerp(state.target, Math.round(state.target), ease(0.1));
+      state.current = lerp(state.current, state.target, ease(phone ? 0.09 : 0.05));
 
       const blur = phone || state.lspeed < 0.01 ? "none" : `blur(${(state.lspeed * 10).toFixed(2)}px)`;
 
@@ -326,7 +343,7 @@ export default function Roll() {
         for (const { el, value } of parallax[i]) el.style.transform = `translate3d(0, ${(o * value * 10).toFixed(2)}%, 0)`;
         const plane = planes[i];
         plane.x = frame.x;
-        plane.y = y + frame.y;
+        plane.y = o * period + marginH + frame.y;
         plane.w = frame.w;
         plane.h = frame.h;
         plane.parallax = o;
@@ -359,7 +376,7 @@ export default function Roll() {
       if (gl) {
         const since = state.enteredAt ? (now - state.enteredAt) / 1000 : 0;
         const alpha = state.enteredAt ? Math.min(Math.max((since - 0.4) / 0.8, 0), 1) : 0;
-        time += 0.1;
+        time += 0.1 * frames;
         // Capped so a slow screen, still spinning as the picture fades in, can't burn to white.
         gl.render(planes, radius, alpha, Math.min(state.lspeed, 1.2), time);
       }
@@ -382,6 +399,7 @@ export default function Roll() {
     window.addEventListener("touchmove", onTouchMove, { passive: true });
 
     return () => {
+      gone = true;
       cancelAnimationFrame(raf);
       window.clearTimeout(state.scrolling);
       reel.drive(null);
@@ -390,6 +408,7 @@ export default function Roll() {
       gl?.destroy();
       surface.remove();
       delete wrapper.dataset.gl;
+      delete wrapper.dataset.in;
       window.removeEventListener(ENTERED_EVENT, onEntered);
       window.removeEventListener("resize", measure);
       window.removeEventListener("wheel", onWheel);
@@ -409,7 +428,7 @@ export default function Roll() {
   return (
     <main ref={root} className={styles.roll} data-cursor="scroll">
       <div ref={stage} aria-hidden="true" />
-      <div className={styles.slots}>
+      <div className={styles.slots} data-late>
         {SLOTS.map((item, i) => (
           <Slide key={i} item={item} clone={i >= REELS.length} />
         ))}

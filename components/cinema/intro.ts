@@ -1,22 +1,29 @@
-import { acquire, prefersQuiet, soundOn, stage } from "@/lib/sound";
+import { acquire, soundOn, stage, type Voice } from "@/lib/sound";
+
+import { HEARD_KEY } from "./entered";
 
 /* ===========================================================================
-   Found's sound mark (2026-11-01), played once ever, on the first ENTER. A
-   browser won't let a page sound before a click, and ENTER is that click.
+   Found's sound mark (2026-11-01), played once a browser, over the preloader's
+   film as it goes from white to black.
 
    It's the premise in five seconds: a phone buzzing on a table, twice; a film
-   gate starting up as the reel spins, under a synth line in Raag Bhairav's
-   scale (D, E flat, F sharp, A) rather than any film's; and as the reel lands,
-   two dhol strokes, a wide chord, and a phone's ping going up a fifth. Lost,
-   then found.
+   gate starting up as the stripes swell, under a synth line in Raag Bhairav's
+   scale (D, E flat, F sharp, A) rather than any film's; and as the screen shuts
+   to black, two dhol strokes, a wide chord, and a phone's ping going up a fifth.
+   Lost, then found.
+
+   A browser won't let a page sound until it's been clicked. Some have been
+   clicked before and say yes straight away; for the rest, the film holds on its
+   first frame behind one button, so that sound and picture start together.
 
    Synthesised, not a file: there's nothing to wait for on the click.
    =========================================================================== */
 
-const HEARD = "found:intro";
-/** The dhol's second stroke, timed to the reel landing and the title fading up. */
-const LAND = 1.9;
-const LENGTH = 6.6;
+/** The dhol's second stroke, timed to the stripes shutting to black. */
+const LAND = 2.35;
+const LENGTH = 7;
+/** Long enough for a context that's allowed to start to have started. */
+const ASK_MS = 120;
 const PEAK = 0.8;
 
 const hz = (midi: number) => 440 * 2 ** ((midi - 69) / 12);
@@ -217,16 +224,12 @@ export function score(ctx: BaseAudioContext, out: AudioNode, t: number) {
   });
 }
 
-export function playIntro() {
-  if (!soundOn() || prefersQuiet()) return;
+function play(voice: Voice) {
   try {
-    if (localStorage.getItem(HEARD)) return;
-    localStorage.setItem(HEARD, "1");
+    localStorage.setItem(HEARD_KEY, "1");
   } catch {
     // No memory for it here: better heard twice than not at all.
   }
-  const voice = acquire();
-  if (!voice) return;
   voice.wake();
   const out = stage(voice, PEAK);
   score(voice.ctx, out, voice.ctx.currentTime + 0.03);
@@ -236,4 +239,27 @@ export function playIntro() {
     window.clearInterval(awake);
     out.disconnect();
   }, LENGTH * 1000);
+  document.documentElement.setAttribute("data-run", "");
+}
+
+/** Called once on arrival. The script has already started the film if there's nothing to hear. */
+export function armIntro() {
+  const root = document.documentElement;
+  if (root.hasAttribute("data-run") || window.__foundEntered || !soundOn()) return;
+  const voice = acquire();
+  if (!voice) return;
+  window.__foundArmed = true;
+  voice.wake();
+  window.setTimeout(() => {
+    if (voice.ctx.state === "running") return play(voice);
+    root.setAttribute("data-gate", "");
+    const press = (e: Event) => {
+      if (e instanceof KeyboardEvent && (e.metaKey || e.ctrlKey || e.altKey)) return;
+      document.removeEventListener("click", press);
+      document.removeEventListener("keydown", press);
+      play(voice);
+    };
+    document.addEventListener("click", press);
+    document.addEventListener("keydown", press);
+  }, ASK_MS);
 }

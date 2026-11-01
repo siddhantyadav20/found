@@ -1,4 +1,4 @@
-import { POST_VERTEX, QUAD, emptyTexture, postFragment, program } from "./rollGl";
+import { GATE, POST_VERTEX, QUAD, emptyTexture, postFragment, program } from "./rollGl";
 
 /* ===========================================================================
    The chapters page's picture, in raw WebGL 1 (2026-11-01): the posters in a
@@ -42,18 +42,7 @@ vec3 blur13(vec2 at, vec2 d) {
   c += texture2D(tex, at - o3).rgb * .010381362401148057;
   return c;
 }
-float box(vec2 p, vec2 b, float r) {
-  vec2 q = abs(p) - b + r;
-  return min(max(q.x, q.y), 0.) + length(max(q, 0.)) - r;
-}
-/* The gate of a projector: a rounded frame whose long edges bow very slightly. */
-float gate() {
-  vec2 c = uv * 2. - 1.;
-  vec2 p = (uv - .5) * size;
-  p.y *= 1. + .012 * c.x * c.x;
-  p.x *= 1. + .006 * c.y * c.y;
-  return box(p, size * .5, radius);
-}`;
+${GATE}`;
 
 const POSTER_FRAGMENT = `${COMMON}
 uniform float footage;

@@ -29,8 +29,8 @@
 }
 
 .field {
-  --period: 4.84vw;
-  --edge: max(1px, calc(var(--period) * var(--bar) / 100));
+  --period: 3.125vw;
+  --edge: calc(var(--period) * var(--bar) / 100);
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
@@ -40,30 +40,55 @@
     #faf7ef var(--edge),
     #faf7ef var(--period)
   );
-  animation: close 2.4s linear both;
+  animation: close 2.35s linear both;
 }
 
 @keyframes close {
-  0% {
-    --bar: 0.6;
+  0%,
+  6.4% {
+    --bar: 0;
   }
-  8.3% {
-    --bar: 1.5;
+  10.6% {
+    --bar: 1.8;
   }
-  20.8% {
-    --bar: 13;
+  17% {
+    --bar: 5.5;
   }
-  37.5% {
-    --bar: 40;
+  23.4% {
+    --bar: 10;
   }
-  54.2% {
-    --bar: 52;
+  29.8% {
+    --bar: 17;
   }
-  70.8% {
-    --bar: 72;
+  36.2% {
+    --bar: 24.3;
   }
-  87.5% {
-    --bar: 96;
+  42.6% {
+    --bar: 33;
+  }
+  48.9% {
+    --bar: 41.5;
+  }
+  55.3% {
+    --bar: 50;
+  }
+  61.7% {
+    --bar: 58.5;
+  }
+  68.1% {
+    --bar: 68;
+  }
+  74.5% {
+    --bar: 76;
+  }
+  80.9% {
+    --bar: 84;
+  }
+  87.2% {
+    --bar: 90;
+  }
+  93.6% {
+    --bar: 95;
   }
   100% {
     --bar: 100;
@@ -78,17 +103,54 @@
   mix-blend-mode: difference;
 }
 
+/* The wordmark widens as the stripes close and doesn't stop until the subline
+   is in, more across than up: the curve is the film's, read off frame by frame. */
 .logo {
   display: block;
   width: 100%;
   color: #faf7ef;
-  animation: logoIn 0.4s 0.45s ease-out both;
+  animation: logoIn 3.2s linear both;
 }
 
 @keyframes logoIn {
-  from {
+  0%,
+  17.2% {
     opacity: 0;
-    transform: scale(1.03);
+    transform: scale(0.8, 0.875);
+  }
+  21.9% {
+    opacity: 1;
+    transform: scale(0.813, 0.89);
+  }
+  26.6% {
+    transform: scale(0.857, 0.9);
+  }
+  31.3% {
+    transform: scale(0.897, 0.92);
+  }
+  35.9% {
+    transform: scale(0.921, 0.932);
+  }
+  40.6% {
+    transform: scale(0.934, 0.942);
+  }
+  45.3% {
+    transform: scale(0.946, 0.953);
+  }
+  50% {
+    transform: scale(0.958, 0.963);
+  }
+  54.7% {
+    transform: scale(0.97, 0.974);
+  }
+  64.1% {
+    transform: scale(0.982, 0.985);
+  }
+  73.4% {
+    transform: scale(0.994, 0.995);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -130,6 +192,21 @@
   }
 }
 
+/* The film waits for the script's word: for a first visit, that's the sound. */
+.field,
+.logo,
+.line,
+.enter {
+  animation-play-state: paused;
+}
+
+:global(html[data-run]) .field,
+:global(html[data-run]) .logo,
+:global(html[data-run]) .line,
+:global(html[data-run]) .enter {
+  animation-play-state: running;
+}
+
 .button {
   border: 0;
   color: #faf7ef;
@@ -138,12 +215,49 @@
   font: inherit;
 }
 
+/* A first visit, in a browser that won't sound until it's clicked: a screen of
+   cream, the film's first frame, and one press that starts the film and its
+   sound together. Once ever. */
+.gate {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  --white: #000;
+  color: #000;
+  background: #faf7ef;
+  cursor: pointer;
+  animation: enterIn 0.5s ease-out both;
+}
+
+:global(html[data-gate]:not([data-run])) .gate {
+  display: flex;
+}
+
+.gateLine {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+}
+
 /* A player dropped into a story sees the mark and goes on; nothing to press. */
 :global(html[data-route="game"]) .enter {
   display: none;
 }
 
 @media (max-width: 767px) {
+  .field {
+    --period: 7vw;
+  }
+
   .center {
     width: 62vw;
   }
@@ -158,6 +272,10 @@
   .field {
     background: #000;
     animation: none;
+  }
+
+  .gate {
+    display: none;
   }
 
   .logo,

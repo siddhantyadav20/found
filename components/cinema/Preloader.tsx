@@ -5,9 +5,9 @@ import styles from "./Preloader.module.css";
 
 /* ===========================================================================
    The preloader (2026-10-31), 1:1 with siena.film: hairline black stripes on
-   cream swell until the screen is black, the wordmark inverted through them,
-   the subline out of a blur, then ENTER. Pure CSS, so it never waits on
-   JavaScript; the script ahead of it only decides whether it shows at all.
+   cream swell until the screen is black, the wordmark widening through them,
+   the subline out of a blur, then ENTER. Pure CSS; the script ahead of it says
+   whether it shows at all and when it runs. Found's sound mark plays over it.
    =========================================================================== */
 
 export default function Preloader() {
@@ -15,9 +15,15 @@ export default function Preloader() {
     <>
       <PreloaderScript />
       <noscript>
-        <style>{`[data-preloader]{display:none!important}[data-page],[data-reveal],[data-a]{opacity:1!important;transform:none!important}`}</style>
+        <style>{`[data-preloader]{display:none!important}[data-page],[data-reveal],[data-late],[data-a]{opacity:1!important;transform:none!important}`}</style>
       </noscript>
       <div className={styles.preloader} data-preloader>
+        <div className={styles.gate}>
+          <p className={styles.gateLine}>Sound on</p>
+          <button type="button" className={styles.button} data-btn="explore">
+            <ExploreFace label="BEGIN" />
+          </button>
+        </div>
         <div className={styles.field} />
         <div className={styles.center}>
           <Logo className={styles.logo} />

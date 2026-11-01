@@ -8,7 +8,7 @@ import { ENTERED_EVENT } from "./entered";
 import ExploreFace from "./ExploreFace";
 import { reel, useReel } from "./reel";
 import { clamp, expoOut, lerp, wrap } from "./scroll";
-import { hoverTick } from "./sounds";
+import { cameraHalt } from "./sounds";
 import { createStripGl, type Picture } from "./stripGl";
 import styles from "./Strip.module.css";
 
@@ -430,6 +430,7 @@ export default function Strip() {
 
     const begin = () => {
       state.enteredAt = performance.now();
+      wrapper.dataset.in = "true";
       if (quiet) return;
       window.setTimeout(() => {
         if (!touch) {
@@ -578,7 +579,7 @@ export default function Strip() {
           <div ref={last} className={styles.dockLast} />
         </div>
         <div className={styles.corner} data-keep>
-          <SiteLink href={page.page} className={styles.explore} data-btn="explore" aria-label={`Explore ${page.title}`} onMouseEnter={hoverTick}>
+          <SiteLink href={page.page} className={styles.explore} data-btn="explore" aria-label={`Explore ${page.title}`} onMouseEnter={cameraHalt} onClick={cameraHalt}>
             <ExploreFace label="EXPLORE" />
           </SiteLink>
         </div>

@@ -55,6 +55,7 @@
 
 .arrow {
   position: absolute;
+  top: 50%;
   left: 50%;
   display: block;
   height: 0.6rem;
@@ -70,16 +71,14 @@
 }
 
 .arrow[data-at="top"] {
-  top: 50%;
-  transform: translate(-50%, -130%);
+  transform: translate(-50%, calc(-50% - 2.2rem));
 }
 
 .arrow[data-at="bottom"] {
-  bottom: 50%;
-  transform: translate(-50%, 130%) scaleY(-1);
+  transform: translate(-50%, calc(-50% + 2.2rem)) scaleY(-1);
 }
 
-/* Held down: the ring tightens, both arrows come in, the word drops out. */
+/* Held down: the ring tightens, an arrow comes up either side of it, the word drops out. */
 .box[data-pressed="true"] .circle,
 .box[data-side="top"] .circle,
 .box[data-side="bottom"] .circle {
@@ -107,12 +106,12 @@
 
 .box[data-pressed="true"] .arrow[data-at="top"],
 .box[data-side="top"] .arrow[data-at="top"] {
-  transform: translate(-50%, -60%);
+  transform: translate(-50%, calc(-50% - 3.2rem));
 }
 
 .box[data-pressed="true"] .arrow[data-at="bottom"],
 .box[data-side="bottom"] .arrow[data-at="bottom"] {
-  transform: translate(-50%, 60%) scaleY(-1);
+  transform: translate(-50%, calc(-50% + 3.2rem)) scaleY(-1);
 }
 
 .box[data-hide="true"] .circle {

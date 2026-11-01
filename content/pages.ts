@@ -82,7 +82,7 @@ export const LEGAL: Readonly<Record<"cookies" | "terms" | "privacy", LegalPage>>
       {
         heading: "What your browser keeps instead",
         body: [
-          "A chapter needs to remember where you got to, so your browser's own local storage keeps it: your saves and finishes, whether the sound is on, your text size and pace, and the fact that you've already seen the opening screen in the last hour.",
+          "A chapter needs to remember where you got to, so your browser's own local storage keeps it: your saves and finishes, whether the sound is on, your text size and pace, and the fact that you've already seen the opening screen and heard its sound.",
           "None of that is sent anywhere unless you ask for a case number (see Privacy). Clearing your browser's site data removes all of it, and your progress with it.",
         ],
       },

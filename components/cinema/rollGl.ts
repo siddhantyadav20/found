@@ -20,6 +20,25 @@ void main() {
   gl_Position = vec4(q.x * 2. - 1., 1. - q.y * 2., 0., 1.);
 }`;
 
+/**
+ * The frame every card is cut to: rounded, but filed by hand, the way the gate
+ * of an old projector is. Each edge wanders on its own. Needs `uv`, `size` and
+ * `radius`; a distance, negative inside.
+ */
+export const GATE = `
+float box(vec2 p, vec2 b, float r) {
+  vec2 q = abs(p) - b + r;
+  return min(max(q.x, q.y), 0.) + length(max(q, 0.)) - r;
+}
+float filed(float t, float s) {
+  return sin(t * 5.3 + s) * .5 + sin(t * 11.7 + s * 2.3) * .3 + sin(t * 2.1 + s * .6) * .2;
+}
+float gate() {
+  float give = max(size.x, size.y) * .0034;
+  vec2 edge = vec2(filed(uv.y, uv.x < .5 ? .7 : 3.2), filed(uv.x, uv.y < .5 ? 1.9 : 4.6));
+  return box((uv - .5) * size, size * .5 - give * (1.1 + edge), radius);
+}`;
+
 const PLANE_FRAGMENT = `
 precision highp float;
 varying vec2 uv;
@@ -31,25 +50,19 @@ uniform float alpha;
 uniform float radius;
 float dodge(float b, float s) { return s >= 1. ? s : min(b / (1. - s), 1.); }
 vec3 dodge(vec3 b, vec3 s) { return vec3(dodge(b.r, s.r), dodge(b.g, s.g), dodge(b.b, s.b)); }
-float box(vec2 p, vec2 b, float r) {
-  vec2 q = abs(p) - b + r;
-  return min(max(q.x, q.y), 0.) + length(max(q, 0.)) - r;
-}
+${GATE}
 void main() {
   vec2 u = (uv - .5) * fit + .5;
-  u.y -= parallax * .3;
-  vec3 color = texture2D(tex, u).rgb;
+  // A card above or below shows the middle of its picture, so its edge isn't black.
+  u.y += parallax * .3;
+  // Lifted a touch: these are night stills, and the frame's edge has to read against black.
+  vec3 color = pow(texture2D(tex, u).rgb, vec3(.86));
   float a = smoothstep(.1, .4, distance(u, vec2(.15)));
   float b = smoothstep(.1, .4, distance(u, vec2(.85)));
   float grads = a * b;
   color = mix(mix(color * .2, dodge(color, vec3(1., .86, 0.)) * .3, .2), color, grads);
   color *= 1. - smoothstep(.1, .5, distance(u.y, .5));
-  // The gate of a projector: a rounded frame whose long edges bow very slightly.
-  vec2 c = uv * 2. - 1.;
-  vec2 p = (uv - .5) * size;
-  p.y *= 1. + .012 * c.x * c.x;
-  p.x *= 1. + .006 * c.y * c.y;
-  float mask = 1. - smoothstep(-.75, .75, box(p, size * .5, radius));
+  float mask = 1. - smoothstep(-.75, .75, gate());
   gl_FragColor = vec4(color, mask * alpha);
 }`;
 
@@ -107,8 +120,8 @@ export type Plane = {
 export type RollGl = {
   resize(width: number, height: number, dpr: number): void;
   render(planes: readonly Plane[], radius: number, alpha: number, speed: number, time: number): void;
-  /** Point the stills at a different set (a phone's tall ones, after a resize). */
-  load(sources: readonly string[]): void;
+  /** Point the stills at a different set; settles once each has loaded or failed. */
+  load(sources: readonly string[]): Promise<unknown>;
   destroy(): void;
 };
 
@@ -179,19 +192,26 @@ export function createRollGl(canvas: HTMLCanvasElement): RollGl | null {
   const load: RollGl["load"] = (sources) => {
     const mine = ++generation;
     const old = stills;
-    sources.forEach((src, i) => {
-      const image = new Image();
-      image.onload = () => {
-        if (mine !== generation) return;
-        const texture = emptyTexture(gl);
-        if (!texture) return;
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-        stills[i] = { texture, aspect: image.naturalWidth / image.naturalHeight };
-      };
-      image.src = src;
-    });
     stills = [];
     old.forEach((s) => gl.deleteTexture(s.texture));
+    return Promise.all(
+      sources.map(
+        (src, i) =>
+          new Promise((settled) => {
+            const image = new Image();
+            image.onerror = settled;
+            image.onload = () => {
+              settled(null);
+              if (mine !== generation) return;
+              const texture = emptyTexture(gl);
+              if (!texture) return;
+              gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+              stills[i] = { texture, aspect: image.naturalWidth / image.naturalHeight };
+            };
+            image.src = src;
+          }),
+      ),
+    );
   };
 
   return {

@@ -9,7 +9,7 @@ import { SiteLink, useGo } from "./Chrome";
 import Logo from "./Logo";
 import { reel, useReel } from "./reel";
 import Socials from "./Socials";
-import { hoverTick, menuTick } from "./sounds";
+import { filmOut, hoverTick, menuTick } from "./sounds";
 import Stars from "./Stars";
 import styles from "./Nav.module.css";
 
@@ -49,7 +49,7 @@ export default function Nav({ route }: { route: Route }) {
   }, []);
 
   const toggle = (next: Panel) => {
-    menuTick();
+    if (panel !== next) (next === "main" ? menuTick : filmOut)();
     window.clearTimeout(swap.current);
     if (panel === next) setPanel(null);
     else if (panel) {
@@ -99,7 +99,6 @@ export default function Nav({ route }: { route: Route }) {
   }, [pathname]);
 
   const select = (i: number) => {
-    menuTick();
     close();
     if (route === "home" || route === "chapters") reel.goTo(i);
     else go(REELS[i].page);

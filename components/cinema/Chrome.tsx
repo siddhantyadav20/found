@@ -15,20 +15,20 @@ import {
 } from "react";
 
 import Cursor from "./Cursor";
-import { ENTERED_EVENT } from "./entered";
-import { playIntro } from "./intro";
+import { armIntro } from "./intro";
 import Nav from "./Nav";
 import { onFrame } from "./scroll";
 import Shapes from "./Shapes";
+import { warmCues } from "./sounds";
 import styles from "./Chrome.module.css";
 
 /* ===========================================================================
    Everything that stays while the pages change (2026-10-31): the design's
    tokens, the nav, the cursor, and the page's fade. A link fades the page out
    for .2s and only then moves, and the new page comes in through the same CSS
-   that brought the first one in from behind the preloader. Arriving home from
-   inside the site puts the logo and the ticket back too, so that the home page
-   opens the same way every time it's visited, not only on a reload.
+   that brought the first one in from behind the preloader. Arriving home, by
+   any road, puts the logo and the ticket back too, so that the home page opens
+   the same way every time it's visited.
    =========================================================================== */
 
 type Route = "home" | "chapters" | "chapter" | "contact" | "page";
@@ -111,7 +111,7 @@ export default function Chrome({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [out, setOut] = useState(false);
   const [path, setPath] = useState(pathname);
-  const [arriving, setArriving] = useState(false);
+  const [arriving, setArriving] = useState(pathname === "/");
   const timer = useRef(0);
 
   // A new route has arrived: the page may come back in.
@@ -130,11 +130,9 @@ export default function Chrome({ children }: { children: ReactNode }) {
     return () => cancelAnimationFrame(raf);
   }, [arriving]);
 
-  // In the click's own call, because a phone's browser won't start sound any later.
   useEffect(() => {
-    if (window.__foundPressed) return playIntro();
-    window.addEventListener(ENTERED_EVENT, playIntro, { once: true });
-    return () => window.removeEventListener(ENTERED_EVENT, playIntro);
+    armIntro();
+    warmCues();
   }, []);
 
   const go = useCallback(

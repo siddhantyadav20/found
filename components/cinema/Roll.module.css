@@ -24,6 +24,13 @@
   max-width: 1920px;
   height: 100%;
   margin: 0 auto;
+  opacity: 0;
+}
+
+/* The picture spins in first; the words only arrive as it lands. */
+.roll[data-in] .slots {
+  opacity: 1;
+  transition: opacity 0.8s ease var(--late-delay);
 }
 
 .slot {

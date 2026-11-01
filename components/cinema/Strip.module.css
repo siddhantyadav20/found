@@ -16,6 +16,16 @@
   cursor: grabbing;
 }
 
+/* The picture spins in first; everything else only arrives as it lands. */
+.strip > :not(.stage) {
+  opacity: 0;
+}
+
+.strip[data-in] > :not(.stage) {
+  opacity: 1;
+  transition: opacity 0.8s ease var(--late-delay);
+}
+
 .hidden {
   position: absolute;
   width: 1px;
