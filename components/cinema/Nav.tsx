@@ -1,12 +1,16 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { LEGAL_LINKS, NAV_LINKS, REELS } from "@/content/site";
+import Arrow from "./Arrow";
 import { SiteLink, useGo } from "./Chrome";
 import Logo from "./Logo";
 import { reel, useReel } from "./reel";
+import Socials from "./Socials";
 import { hoverTick, menuTick } from "./sounds";
+import Stars from "./Stars";
 import styles from "./Nav.module.css";
 
 /* ===========================================================================
@@ -17,47 +21,27 @@ import styles from "./Nav.module.css";
    reel closes them, and so does a click anywhere else.
    =========================================================================== */
 
-type Panel = "list" | "main";
+type Panel = "list" | "case" | "sheet" | "main";
 type Route = "home" | "chapters" | "chapter" | "contact" | "page";
 
 const SWAP_MS = 550;
 /** The ticket waits for the reel to land before it changes. */
 const SETTLE_MS = 800;
 
-function Socials() {
-  // No public accounts yet: the icons hold their place and go nowhere.
-  return (
-    <ul className={styles.socials} aria-hidden="true">
-      <li>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="3" y="3" width="18" height="18" rx="5" />
-          <circle cx="12" cy="12" r="4" />
-          <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" />
-        </svg>
-      </li>
-      <li>
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M22 12.2c0-1.2-1-2.2-2.2-2.2-.6 0-1.1.2-1.5.6-1.5-1-3.4-1.6-5.5-1.7l1-4.5 3.1.7a1.6 1.6 0 1 0 .2-1l-3.6-.8c-.3 0-.5.1-.6.4l-1.1 5.2c-2.1.1-4.1.7-5.6 1.7a2.2 2.2 0 1 0-2.5 3.6l-.1.8c0 3.3 3.9 6 8.7 6s8.7-2.7 8.7-6l-.1-.8c.7-.4 1.2-1.2 1.2-2ZM7.5 13.8a1.6 1.6 0 1 1 3.2 0 1.6 1.6 0 0 1-3.2 0Zm8.9 4.2c-1 .9-2.6 1-4.4 1s-3.4-.1-4.4-1a.5.5 0 0 1 .7-.7c.7.6 2 .8 3.7.8s3-.2 3.7-.8a.5.5 0 0 1 .7.7Zm-.3-2.6a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z" />
-        </svg>
-      </li>
-      <li>
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.6 3h3.1l-6.8 7.8L22 21h-6.3l-4.9-6.4L5.2 21H2.1l7.3-8.3L1.7 3h6.5l4.4 5.9L17.6 3Zm-1.1 16.2h1.7L7.1 4.7H5.3l11.2 14.5Z" />
-        </svg>
-      </li>
-    </ul>
-  );
-}
-
 export default function Nav({ route }: { route: Route }) {
   const go = useGo();
-  const { index } = useReel();
+  const { index, footage } = useReel();
   const [panel, setPanel] = useState<Panel | null>(null);
   const [shown, setShown] = useState(index);
+  const [dark, setDark] = useState(false);
+  const pathname = usePathname();
   const swap = useRef(0);
 
   const film = route === "home" || route === "chapters" || route === "chapter";
   const variant = film ? "film" : route === "contact" ? "contact" : "about";
+  // On a chapter's page the stub opens that chapter's sheet; in footage mode, its billing.
+  const stub: Panel = route === "chapter" ? "case" : footage ? "sheet" : "list";
+  const open = panel === "list" || panel === "case" || panel === "sheet";
 
   const close = useCallback(() => {
     window.clearTimeout(swap.current);
@@ -94,15 +78,35 @@ export default function Nav({ route }: { route: Route }) {
     };
   }, [panel, close]);
 
+  // Over a cream section the white logo would vanish, so it turns black.
+  useEffect(() => {
+    const over = new Set<Element>();
+    const seen = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) over.add(e.target);
+          else over.delete(e.target);
+        }
+        setDark(over.size > 0);
+      },
+      { rootMargin: "0px 0px -90% 0px" },
+    );
+    document.querySelectorAll('[data-color="white"]').forEach((el) => seen.observe(el));
+    return () => {
+      seen.disconnect();
+      setDark(false);
+    };
+  }, [pathname]);
+
   const select = (i: number) => {
     menuTick();
     close();
-    if (route === "home") reel.goTo(i);
+    if (route === "home" || route === "chapters") reel.goTo(i);
     else go(REELS[i].page);
   };
 
   return (
-    <header className={styles.nav} data-panel={panel ?? undefined} data-variant={variant}>
+    <header className={styles.nav} data-panel={panel ?? undefined} data-variant={variant} data-ink={dark ? "black" : undefined}>
       {panel && <div className={styles.catcher} onClick={close} />}
       <div className={styles.mobileBg} />
 
@@ -117,9 +121,9 @@ export default function Nav({ route }: { route: Route }) {
             <button
               type="button"
               className={styles.ticket}
-              aria-expanded={panel === "list"}
-              aria-label={`${REELS[shown].title}, ${REELS[shown].eyebrow}. All chapters`}
-              onClick={() => toggle("list")}
+              aria-expanded={open}
+              aria-label={`${REELS[shown].title}, ${REELS[shown].eyebrow}. ${stub === "list" ? "All chapters" : "More"}`}
+              onClick={() => toggle(stub)}
             >
               {REELS.map((r, i) => (
                 <span key={r.id} className={styles.row} data-on={i === shown || undefined}>
@@ -166,7 +170,9 @@ export default function Nav({ route }: { route: Route }) {
                 </svg>
                 <span>Let&apos;s talk</span>
               </span>
-              <span className={styles.contactCta}>Email us</span>
+              <label htmlFor="note" className={styles.contactCta}>
+                Leave a note
+              </label>
             </div>
           )}
 
@@ -218,6 +224,69 @@ export default function Nav({ route }: { route: Route }) {
             </div>
           )}
         </div>
+
+        {variant === "film" && (
+          <div className={styles.sheetPanel} data-for="sheet">
+            <div className={styles.panelClip}>
+              <div className={styles.sheetInner}>
+                <span className={styles.dashedShort} />
+                <div className={styles.sheet}>
+                  {REELS.map((r, i) => (
+                    <div key={r.id} className={styles.sheetItem} data-on={i === shown || undefined}>
+                      <div className={styles.sheetGrid}>
+                        <div className={styles.sheetBox}>
+                          {r.reviews[0].stars && <Stars value={r.reviews[0].stars} className={styles.sheetStars} />}
+                          <p className={styles.sheetEyebrow}>{r.reviews[0].source}</p>
+                          <p className={styles.sheetTitle}>{r.reviews[0].quote}</p>
+                        </div>
+                        <div className={styles.sheetBox} data-left>
+                          <p className={styles.sheetEyebrow}>{r.more.lead.role}</p>
+                          <p className={styles.sheetTitle}>{r.more.lead.name}</p>
+                          <p className={styles.sheetEyebrow}>{r.more.pair[0][0]}</p>
+                          <p className={styles.sheetTitle}>{r.more.pair[0][1]}</p>
+                        </div>
+                      </div>
+                      <SiteLink href={r.page} className={styles.sheetCta} tabIndex={panel === "sheet" && i === shown ? 0 : -1} onClick={close}>
+                        <span>See the chapter</span>
+                        <Arrow small tone="black" />
+                      </SiteLink>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {route === "chapter" && (
+          <div className={styles.sheetPanel} data-for="case">
+            <div className={styles.panelClip}>
+              <div className={styles.sheetInner}>
+                <span className={styles.dashedShort} />
+                <div className={styles.sheet}>
+                  {REELS.map((r, i) => (
+                    <div key={r.id} className={styles.sheetItem} data-on={i === shown || undefined}>
+                      <p className={styles.caseText}>{r.logline}</p>
+                      <div className={styles.caseFoot}>
+                        <span className={styles.caseScore}>
+                          {r.reviews[0].stars ? (
+                            <>
+                              <Stars value={r.reviews[0].stars} className={styles.caseStars} />
+                              <span>{r.reviews[0].stars}/5</span>
+                            </>
+                          ) : (
+                            <span>{r.badge.headline}</span>
+                          )}
+                        </span>
+                        <span className={styles.caseCity}>{r.callouts[0][1]}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <span className={styles.perforation} aria-hidden="true" />
 
@@ -274,7 +343,7 @@ export default function Nav({ route }: { route: Route }) {
                 ))}
               </ul>
               <span className={styles.dashedLine} style={{ ["--delay" as string]: "0.3s" }} />
-              <Socials />
+              <Socials className={styles.socials} />
               <span className={styles.dashedLine} style={{ ["--delay" as string]: "0.4s" }} />
               <p className={styles.copyright}>©2026. Found Thriller Game.</p>
             </div>

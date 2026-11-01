@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 
-import PageShell from "@/components/cinema/PageShell";
+import AboutPage from "@/components/cinema/AboutPage";
 
-export const metadata: Metadata = { title: "About", robots: { index: false } };
+export const metadata: Metadata = {
+  title: "About",
+  description: "Found is a one-person thriller studio, dedicated to stories you play on a phone.",
+};
 
-/** Set up and waiting for its design. */
 export default function About() {
-  return <PageShell eyebrow="Found" title="About" />;
+  return <AboutPage />;
 }

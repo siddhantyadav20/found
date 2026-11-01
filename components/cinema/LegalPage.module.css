@@ -1,0 +1,65 @@
+.page {
+  position: relative;
+  background: #000;
+  color: var(--white);
+}
+
+.hero {
+  min-height: 100svh;
+  padding: 30svh var(--gx) 8rem;
+}
+
+.text {
+  max-width: 80ch;
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 7vw;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.updated {
+  margin-top: 1rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+.heading {
+  margin: 3rem 0 1rem;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.body {
+  max-width: 60ch;
+  margin-bottom: 1rem;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding: 22svh var(--sgx) 5rem;
+  }
+
+  .title {
+    font-size: 3.4rem;
+  }
+
+  .heading {
+    font-size: 1.8rem;
+  }
+}

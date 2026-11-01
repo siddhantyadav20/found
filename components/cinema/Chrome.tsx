@@ -6,7 +6,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useMemo,
+  useEffect,
   useRef,
   useState,
   type ComponentProps,
@@ -16,6 +16,8 @@ import {
 
 import Cursor from "./Cursor";
 import Nav from "./Nav";
+import { expoOut, onFrame } from "./scroll";
+import Shapes from "./Shapes";
 import styles from "./Chrome.module.css";
 
 /* ===========================================================================
@@ -52,6 +54,42 @@ export function SiteLink({ href, onClick, ...rest }: ComponentProps<typeof Link>
   return <Link href={href} onClick={follow} {...rest} />;
 }
 
+/** Lenis's defaults, as siena.film sets them: a wheel turn eases out over one second. */
+function useSmoothWheel(on: boolean) {
+  useEffect(() => {
+    if (!on || !window.matchMedia("(pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let from = 0;
+    let to = window.scrollY;
+    let started = 0;
+    let stop: (() => void) | null = null;
+
+    const frame = (now: number) => {
+      const p = (now - started) / 1000;
+      window.scrollTo(0, from + (to - from) * expoOut(p));
+      if (p >= 1) {
+        stop?.();
+        stop = null;
+      }
+    };
+    const wheel = (e: WheelEvent) => {
+      if (e.ctrlKey || document.querySelector("dialog[open]")) return;
+      e.preventDefault();
+      if (!stop) to = window.scrollY;
+      const step = e.deltaMode === 1 ? e.deltaY * (100 / 6) : e.deltaMode === 2 ? e.deltaY * window.innerHeight : e.deltaY;
+      to = Math.min(Math.max(to + step, 0), document.documentElement.scrollHeight - window.innerHeight);
+      from = window.scrollY;
+      started = performance.now();
+      stop ??= onFrame(frame);
+    };
+    window.addEventListener("wheel", wheel, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", wheel);
+      stop?.();
+    };
+  }, [on]);
+}
+
 export default function Chrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -76,13 +114,15 @@ export default function Chrome({ children }: { children: ReactNode }) {
   );
 
   const route = routeOf(pathname);
-  const cursor = useMemo(() => route === "home", [route]);
+  const cursor = route === "home" || route === "chapters";
+  useSmoothWheel(route === "chapter" || route === "page");
 
   return (
     <Fade.Provider value={go}>
       <div className={styles.site} data-route={route}>
+        <Shapes />
         <Nav route={route} />
-        {cursor && <Cursor />}
+        {cursor && <Cursor sideways={route === "chapters"} />}
         <div className={styles.page} data-page data-out={out || undefined}>
           {children}
         </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import ChapterHero from "@/components/cinema/ChapterHero";
+import ChapterPage from "@/components/cinema/ChapterPage";
 import { CASES, isCaseId } from "@/content/cases";
 import { REELS } from "@/content/site";
 
@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: PageProps<"/chapters/[id]">):
   };
 }
 
-/** A chapter's own page. Only its top exists so far; the game itself is at /c/<id>. */
+/** A chapter's own page; the game itself is at /c/<id>. */
 export default async function Chapter({ params }: PageProps<"/chapters/[id]">) {
   const { id } = await params;
   const item = REELS.find((r) => r.id === id);
   if (!item) notFound();
-  return <ChapterHero item={item} />;
+  return <ChapterPage item={item} />;
 }

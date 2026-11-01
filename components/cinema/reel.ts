@@ -5,9 +5,9 @@ import { REELS } from "@/content/site";
 /* The little that Roll and Nav share: which chapter is up, whether the reel
    is moving (a moving reel closes the menu), and how to ask it to go somewhere. */
 
-type Snapshot = { readonly index: number; readonly moving: boolean };
+type Snapshot = { readonly index: number; readonly moving: boolean; readonly footage: boolean };
 
-let snapshot: Snapshot = { index: 0, moving: false };
+let snapshot: Snapshot = { index: 0, moving: false, footage: false };
 let driver: ((chapter: number) => void) | null = null;
 const listeners = new Set<() => void>();
 
@@ -29,7 +29,10 @@ export const reel = {
   setMoving(moving: boolean) {
     if (moving !== snapshot.moving) publish({ ...snapshot, moving });
   },
-  /** Roll registers itself; there's nothing to drive away from the home page. */
+  setFootage(footage: boolean) {
+    if (footage !== snapshot.footage) publish({ ...snapshot, footage });
+  },
+  /** Whichever reel is on the page registers itself; there's nothing to drive anywhere else. */
   drive(next: ((chapter: number) => void) | null) {
     driver = next;
   },
@@ -38,7 +41,7 @@ export const reel = {
   },
 };
 
-const server: Snapshot = { index: 0, moving: false };
+const server: Snapshot = { index: 0, moving: false, footage: false };
 
 export function useReel() {
   return useSyncExternalStore(reel.subscribe, reel.get, () => server);

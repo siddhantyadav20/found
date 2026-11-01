@@ -7,7 +7,7 @@
    isn't available, and the reel falls back to the plain <img> underneath.
    =========================================================================== */
 
-const QUAD = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
+export const QUAD = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
 
 const PLANE_VERTEX = `
 attribute vec2 p;
@@ -53,7 +53,7 @@ void main() {
   gl_FragColor = vec4(color, mask * alpha);
 }`;
 
-const POST_VERTEX = `
+export const POST_VERTEX = `
 attribute vec2 p;
 varying vec2 uv;
 void main() {
@@ -61,13 +61,14 @@ void main() {
   gl_Position = vec4(p, 0., 1.);
 }`;
 
-const POST_FRAGMENT = `
+/** The last pass: grain, and a smear along the way the picture is travelling. */
+export const postFragment = (dir: string, power: number, keepFloor: boolean) => `
 precision highp float;
 varying vec2 uv;
 uniform sampler2D tex;
 uniform float time;
 uniform float speed;
-const vec2 dir = vec2(0., 1.);
+const vec2 dir = ${dir};
 vec4 blur13(vec2 at, vec2 res, vec2 d) {
   vec4 c = vec4(0.);
   vec2 o1 = vec2(1.411764705882353) * d;
@@ -85,8 +86,9 @@ vec4 blur13(vec2 at, vec2 res, vec2 d) {
 void main() {
   vec4 img = texture2D(tex, uv);
   vec4 smear = blur13(uv, vec2(1920., 1080.), dir * 10.);
-  img = mix(img, smear, min(speed * .5, 1.));
-  img += smear * speed * 3. * .5;
+  float s = speed${keepFloor ? " * step(.15, uv.y)" : ""};
+  img = mix(img, smear, min(s * .5, 1.));
+  img += smear * s * ${power.toFixed(1)} * .5;
   float noise = fract(sin(dot(vec2(sin(uv.x + time) + 1., uv.y), vec2(12.9898, 78.233) * 2.)) * 43758.5453);
   img += noise * .07;
   gl_FragColor = vec4(img.rgb, 1.);
@@ -110,7 +112,7 @@ export type RollGl = {
   destroy(): void;
 };
 
-function program(gl: WebGLRenderingContext, vertex: string, fragment: string) {
+export function program(gl: WebGLRenderingContext, vertex: string, fragment: string) {
   const compile = (type: number, source: string) => {
     const shader = gl.createShader(type);
     if (!shader) return null;
@@ -129,7 +131,7 @@ function program(gl: WebGLRenderingContext, vertex: string, fragment: string) {
   return gl.getProgramParameter(linked, gl.LINK_STATUS) ? linked : null;
 }
 
-function emptyTexture(gl: WebGLRenderingContext) {
+export function emptyTexture(gl: WebGLRenderingContext) {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -144,7 +146,7 @@ export function createRollGl(canvas: HTMLCanvasElement): RollGl | null {
   if (!gl) return null;
 
   const plane = program(gl, PLANE_VERTEX, PLANE_FRAGMENT);
-  const post = program(gl, POST_VERTEX, POST_FRAGMENT);
+  const post = program(gl, POST_VERTEX, postFragment("vec2(0., 1.)", 3, false));
   const buffer = gl.createBuffer();
   const target = emptyTexture(gl);
   const frame = gl.createFramebuffer();

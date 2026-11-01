@@ -1,0 +1,593 @@
+/* The chapters page. Everything stays in one screen; the document doesn't scroll. */
+
+.strip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+  cursor: grab;
+  touch-action: none;
+}
+
+.strip[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.spine {
+  position: absolute;
+  inset: 0 auto 0 50%;
+  z-index: 1;
+  width: 1px;
+  background: linear-gradient(#0e0e0e, #fff 55%, #0e0e0e 92%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.rollWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding-top: 2.5rem;
+}
+
+.row {
+  position: relative;
+  flex: 1;
+  height: min(63vh, calc(min(26rem, max(33vw, 17em)) * 1.635));
+}
+
+/* ---- One poster ---- */
+
+.item {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 33vw;
+  min-width: 17em;
+  max-width: 26rem;
+  padding: 0 0.9rem 1rem;
+  visibility: hidden;
+}
+
+.item:first-child {
+  visibility: visible;
+  transform: translateX(calc(50vw - 50%));
+}
+
+.hit {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+.picture {
+  position: absolute;
+  inset: -1.3rem 0.7rem auto;
+  aspect-ratio: 393 / 510;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mask-image: linear-gradient(#000 50%, #0000 85%);
+  pointer-events: none;
+}
+
+.strip[data-gl="true"] .picture {
+  visibility: hidden;
+}
+
+.text {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  pointer-events: none;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  text-align: center;
+  transition:
+    opacity 0.8s var(--custom-ease),
+    transform 0.8s var(--custom-ease);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 297px;
+  max-width: 100%;
+  transform-origin: 0 100%;
+  transition: transform 1.2s var(--custom-ease);
+}
+
+.eyebrow {
+  margin-bottom: 0.7rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 0.8rem;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 100%;
+  margin: 0 0 0;
+  font-size: var(--text-h3);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.77em;
+  text-transform: uppercase;
+}
+
+.callouts {
+  width: 260px;
+  max-width: 100%;
+  margin: 1rem 0 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 0.9em;
+  list-style: none;
+  text-transform: uppercase;
+  transition:
+    transform 1.2s var(--custom-ease),
+    opacity 0.4s ease;
+}
+
+.callout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  height: 11px;
+  white-space: nowrap;
+}
+
+.lineTop,
+.lineBottom {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--white);
+}
+
+.lineTop {
+  display: none;
+}
+
+.callout:first-child .lineTop {
+  display: block;
+}
+
+.lineBottom {
+  margin-top: -4px;
+}
+
+/* Each row slipped a little out of true, as siena.film sets them. */
+.callout:nth-child(1) > span:nth-child(2) {
+  transform: translate(-15%);
+}
+
+.callout:nth-child(1) > span:nth-child(3) {
+  transform: translate(-20%);
+}
+
+.callout:nth-child(2) > span:nth-child(1) {
+  transform: translate(10%);
+}
+
+.callout:nth-child(2) > span:nth-child(2) {
+  transform: translate(-5%);
+}
+
+.callout:nth-child(3) > span:nth-child(1) {
+  transform: translate(-5%);
+}
+
+/* ---- Footage / Poster ---- */
+
+.edgeTop,
+.edgeBottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: none;
+  justify-content: center;
+  height: 16vh;
+  cursor: auto;
+}
+
+.edgeTop {
+  align-items: flex-start;
+  padding-top: 2rem;
+}
+
+.edgeBottom {
+  align-items: flex-end;
+  padding-bottom: 2.5rem;
+}
+
+.strip:not([data-gl="true"]) .toggle {
+  visibility: hidden;
+}
+
+.toggle {
+  position: relative;
+  width: 139px;
+  aspect-ratio: 2.3;
+}
+
+.toggleBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: #222;
+}
+
+.toggleList {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0;
+  padding: 7px 15px 0 14px;
+  list-style: none;
+}
+
+.toggleList li {
+  display: flex;
+  width: 47px;
+  aspect-ratio: 1;
+}
+
+.switchBtn {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--white);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.switchBtn:hover {
+  opacity: 0.8;
+}
+
+.switchBtn[data-active] {
+  color: var(--gold);
+  cursor: auto;
+  opacity: 1;
+}
+
+.fadeOne {
+  mask-image: linear-gradient(to right, transparent 0%, #000 20%, #000 80%, transparent 100%);
+}
+
+.fadeTwo {
+  mask-image: linear-gradient(to right, transparent 15%, #000 30%, #000 70%, transparent 85%);
+}
+
+.switchWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 5% 5% 0;
+  pointer-events: none;
+}
+
+.switch {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  padding: 0 0.4rem 0.4rem;
+  transition: transform 1s var(--custom-ease);
+}
+
+.toggle[data-on] .switch {
+  transform: translate(100%);
+}
+
+.switchBg {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background: #000;
+}
+
+.switchLabel {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.3rem;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 12px;
+  line-height: 0.9em;
+}
+
+.swap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 1em;
+  margin-bottom: 0.2em;
+  overflow: clip;
+}
+
+.swap > div {
+  transition: transform 0.4s ease-out;
+}
+
+.toggle[data-on] .swap > div {
+  transform: translateY(-100%);
+}
+
+.mode {
+  padding-top: 0.1rem;
+  letter-spacing: 0.1em;
+  opacity: 0.3;
+}
+
+/* ---- The foot ---- */
+
+.ticks {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 9em;
+  height: 2rem;
+  margin: 0;
+  padding-top: 1rem;
+  overflow: clip;
+  cursor: grab;
+}
+
+.tickRow {
+  display: flex;
+  height: 80%;
+}
+
+.tick {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 100%;
+}
+
+.tick i {
+  width: 1px;
+  height: 50%;
+  background: var(--white);
+  opacity: 0.5;
+}
+
+.tick i[data-long] {
+  height: 100%;
+  opacity: 1;
+}
+
+.tick i[data-last] {
+  width: 0;
+  height: 0;
+}
+
+.marker {
+  position: absolute;
+  width: 1.3rem;
+  height: 0.8rem;
+  border: 1px solid var(--white);
+  border-radius: 4px;
+  background: #0e0e0e;
+}
+
+.dock {
+  position: absolute;
+  inset: auto auto 0 3rem;
+  display: flex;
+  align-items: flex-end;
+  width: 40%;
+  max-width: 530px;
+  height: 9ch;
+  padding-bottom: 1.45rem;
+  pointer-events: none;
+}
+
+.dockThumb {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  justify-content: center;
+  width: 67px;
+  height: 5rem;
+  margin-bottom: -0.5rem;
+}
+
+.dockImage {
+  width: 75%;
+  aspect-ratio: 1 / 1.4;
+}
+
+.dockFirst {
+  flex: none;
+  width: 12px;
+  height: 4.2rem;
+  margin-left: 0.6rem;
+}
+
+.dockLast {
+  flex: 1;
+  height: 3.6rem;
+  margin-left: 2vw;
+  padding-left: 12rem;
+}
+
+.corner {
+  position: absolute;
+  right: 3rem;
+  bottom: 2.5rem;
+}
+
+.explore {
+  display: block;
+  color: var(--white);
+  text-decoration: none;
+}
+
+/* ---- Either side of the middle poster ---- */
+
+.prev,
+.next {
+  position: absolute;
+  top: 16vh;
+  bottom: 16vh;
+  z-index: 5;
+  width: 8vw;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+.strip[data-footage] .prev,
+.strip[data-footage] .next {
+  display: none;
+}
+
+.strip[data-footage] .hit {
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) and (max-height: 750px) {
+  .item {
+    width: 18vw !important;
+    min-width: auto;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 5vh !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .item {
+    width: 80vw;
+    min-width: auto;
+    max-width: none;
+    padding-bottom: 2.2rem;
+  }
+
+  .rollWrap {
+    inset: 0 0 auto;
+    align-items: flex-end;
+    height: 84svh;
+    padding-top: 0;
+  }
+
+  .row {
+    height: 100%;
+    max-height: calc(80vw * 1.635);
+  }
+
+  .edgeBottom {
+    justify-content: center;
+    padding-bottom: 1.6rem;
+  }
+
+  .ticks {
+    display: none;
+  }
+
+  .dock {
+    display: none;
+  }
+
+  .corner {
+    position: static;
+  }
+
+  .prev,
+  .next {
+    display: none;
+  }
+}
+
+@media (max-width: 479px) {
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .toggle {
+    width: 110px;
+  }
+
+  .toggleList {
+    padding: 5px 11px 0;
+  }
+
+  .toggleList li {
+    width: 37px;
+  }
+}

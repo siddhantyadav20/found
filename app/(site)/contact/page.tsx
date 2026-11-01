@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 
-import PageShell from "@/components/cinema/PageShell";
+import ContactPage from "@/components/cinema/ContactPage";
 
-export const metadata: Metadata = { title: "Contact", robots: { index: false } };
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Leave a note for Found, or buy the person who makes it a coffee.",
+};
 
-/** Set up and waiting for its design. */
 export default function Contact() {
-  return <PageShell eyebrow="Let's talk" title="Contact" red />;
+  return <ContactPage />;
 }

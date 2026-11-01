@@ -40,7 +40,9 @@
 
 :global(html[data-entered]) .logo {
   opacity: 1;
-  transition: opacity 0.8s ease var(--logo-delay);
+  transition:
+    opacity 0.8s ease var(--logo-delay),
+    color 0.3s ease;
 }
 
 .wordmark {
@@ -61,7 +63,8 @@
   white-space: nowrap;
 }
 
-.nav[data-variant="contact"] .logo {
+.nav[data-variant="contact"] .logo,
+.nav[data-ink="black"] .logo {
   color: #000;
 }
 
@@ -227,7 +230,9 @@
   width: 1rem;
 }
 
-.nav[data-panel="list"] .chevron {
+.nav[data-panel="list"] .chevron,
+.nav[data-panel="sheet"] .chevron,
+.nav[data-panel="case"] .chevron {
   transform: rotate(180deg);
 }
 
@@ -308,6 +313,7 @@
   font-size: 8px;
   letter-spacing: 0.1rem;
   text-transform: uppercase;
+  cursor: pointer;
 }
 
 /* The tear between the ticket and its stub. */
@@ -435,6 +441,175 @@
 
 .main {
   z-index: 2;
+}
+
+/* What the stub opens where there's no list to show: under the stub alone. */
+.sheetPanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: 0fr;
+  width: var(--stub);
+  transition: grid-template-rows var(--panels-duration) var(--custom-ease);
+}
+
+.nav[data-panel="sheet"] .sheetPanel[data-for="sheet"],
+.nav[data-panel="case"] .sheetPanel[data-for="case"] {
+  grid-template-rows: 1fr;
+}
+
+.sheetInner {
+  position: relative;
+  background: var(--white);
+  color: #000;
+  filter: drop-shadow(0 1rem 1rem #0005);
+  mask:
+    radial-gradient(circle var(--hole) at 0 0, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 100% 0, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 0 100%, #0000 98%, #000),
+    radial-gradient(circle var(--hole) at 100% 100%, #0000 98%, #000);
+  mask-composite: intersect;
+}
+
+.dashedShort {
+  display: block;
+  width: 92%;
+  height: 1px;
+  margin: 0 auto;
+  border-bottom: 1px dashed #000;
+  opacity: 0.3;
+}
+
+.sheet {
+  position: relative;
+}
+
+.sheetItem {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  line-height: 1.2;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.sheetItem[data-on] {
+  position: relative;
+  opacity: 1;
+}
+
+.sheetGrid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr;
+}
+
+.sheetBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 14px;
+  text-align: center;
+}
+
+.sheetBox[data-left] {
+  align-items: flex-start;
+  justify-content: flex-end;
+  border-left: 1px dashed #0000004d;
+  text-align: left;
+}
+
+.sheetStars {
+  width: 50px;
+  height: auto;
+}
+
+.sheetEyebrow {
+  padding: 0.6rem 0 0.2rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 6px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.sheetBox[data-left] .sheetEyebrow:first-child {
+  padding-top: 0;
+}
+
+.sheetTitle {
+  font-family: var(--font-brucke), Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.sheetCta {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 14px;
+  border-top: 1px dashed #0000004d;
+  color: #000;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+
+.sheetCta:hover {
+  background: #000;
+  color: var(--white);
+}
+
+.caseText {
+  padding: 0.8rem 14px;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.5;
+  text-align: center;
+}
+
+.caseFoot {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 42px;
+  border-top: 1px dashed #0000004d;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.caseScore {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 14px;
+  border-right: 1px dashed #0000004d;
+}
+
+.caseStars {
+  width: 70px;
+  height: auto;
+}
+
+.caseCity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .shadow {

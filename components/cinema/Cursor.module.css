@@ -43,6 +43,16 @@
     opacity var(--quick) var(--ease-out-quint);
 }
 
+.arrows {
+  position: absolute;
+  inset: 0;
+}
+
+/* On the chapters page the reel runs left and right, and so do the arrows. */
+.box[data-sideways] .arrows {
+  transform: rotate(-90deg);
+}
+
 .arrow {
   position: absolute;
   left: 50%;

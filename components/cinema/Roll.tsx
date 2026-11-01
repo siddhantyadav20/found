@@ -9,6 +9,7 @@ import ExploreFace from "./ExploreFace";
 import { reel } from "./reel";
 import { createRollGl, type Plane } from "./rollGl";
 import { hoverTick } from "./sounds";
+import Stars from "./Stars";
 import Title, { drawFlicker, prepareFlicker, stopFlicker, type Flicker } from "./Title";
 import styles from "./Roll.module.css";
 
@@ -42,26 +43,10 @@ const FLICKER_AGAIN_MS = 6000;
 const WHEEL = 0.5;
 const TOUCH = 5;
 
-const STAR = "m8 0 2.35 5.2 5.65.62-4.2 3.82 1.17 5.56L8 12.36 3.03 15.2 4.2 9.64 0 5.82l5.65-.62L8 0Z";
-const HALF_STAR = "M8 0v12.36L3.03 15.2 4.2 9.64 0 5.82l5.65-.62L8 0Z";
-
-function Stars({ value }: { value: number }) {
-  return (
-    <svg className={styles.stars} viewBox="0 0 108 16" fill="currentColor" role="img" aria-label={`${value} out of 5 stars`}>
-      {[0, 1, 2, 3, 4].map((i) => (
-        <g key={i} transform={`translate(${i * 23})`}>
-          <path d={STAR} fillOpacity={i + 1 <= value ? 1 : 0.25} />
-          {i < value && i + 1 > value && <path d={HALF_STAR} />}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 function Quote({ review, parallax }: { review: Review; parallax?: number }) {
   return (
     <div className={styles.review} data-parallax={parallax}>
-      {review.stars ? <Stars value={review.stars} /> : <span className={styles.noStars} />}
+      {review.stars ? <Stars value={review.stars} className={styles.stars} /> : <span className={styles.noStars} />}
       <p className={styles.source}>{review.source}</p>
       <h3 className={styles.quote}>&ldquo;{review.quote}&rdquo;</h3>
     </div>

@@ -1,0 +1,592 @@
+/* About: on black, top to bottom. */
+
+.page {
+  position: relative;
+  background: #000;
+  color: var(--white);
+}
+
+.eyebrow {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 0.8rem;
+  text-transform: uppercase;
+}
+
+.clip {
+  display: block;
+  overflow: clip;
+}
+
+/* ---- Hero ---- */
+
+.hero {
+  display: flex;
+  gap: var(--gutter);
+  width: 100vw;
+  height: 100svh;
+  padding: 10rem var(--sgx) 0;
+  overflow: clip;
+}
+
+.arch {
+  position: relative;
+  flex: none;
+  height: 100%;
+  aspect-ratio: 1 / 2.298;
+}
+
+.archClip {
+  position: absolute;
+  inset: auto 0 0;
+  height: 92.65%;
+  overflow: hidden;
+  clip-path: url(#found-arch);
+}
+
+.archImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.5);
+  transition: transform 1.8s var(--custom-ease);
+}
+
+:global([data-in]) .archImage {
+  transform: scale(1.1);
+}
+
+.archLine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.statement {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  margin-bottom: var(--gutter);
+  text-align: center;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0.6;
+}
+
+.statementText {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.small,
+.big {
+  position: relative;
+  display: block;
+  padding-top: 0.2em;
+}
+
+.small {
+  color: #bababa;
+  font-size: 2.8vh;
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+}
+
+.big {
+  font-size: 7vw;
+  letter-spacing: -0.03em;
+  line-height: 0.8;
+}
+
+.small i,
+.big i {
+  display: block;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.big [data-lean] {
+  display: block;
+}
+
+.heroDown {
+  position: absolute;
+  bottom: 1.4rem;
+}
+
+/* ---- The type ---- */
+
+.type {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  margin-top: 3rem;
+  padding-top: 14rem;
+  overflow: clip;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.moved {
+  display: inline-block;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 5%;
+  font-size: 22px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.smallBlock {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4rem;
+  padding-left: 10%;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 1.5rem;
+  opacity: 0.5;
+  text-transform: none;
+}
+
+.smallWrap {
+  flex: 1;
+  max-width: 55ch;
+}
+
+.smallRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  letter-spacing: -0.03em;
+}
+
+.medium {
+  margin-top: 6rem;
+  font-size: var(--text-h1);
+  line-height: 1;
+}
+
+.mediumFirst {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5%;
+}
+
+.mediumSecond {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+
+.mediumSecond i {
+  display: block;
+  width: 10%;
+  height: 5px;
+  background: currentColor;
+}
+
+.xlRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding: 0 var(--sgx);
+}
+
+.xl {
+  display: inline-block;
+  font-size: 23vw;
+  letter-spacing: -0.056em;
+  line-height: 0.9;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.3;
+}
+
+/* ---- The wall of stills ---- */
+
+.gridSection {
+  min-height: 180svh;
+  margin: 10rem 0 3rem;
+}
+
+.gridStick {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+  transform: scale(0.85);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(4, auto);
+  perspective: 600px;
+}
+
+.gridItem {
+  display: flex;
+  width: 100%;
+  height: 25svh;
+  opacity: 0.05;
+  will-change: transform, opacity;
+}
+
+.gridItem img {
+  flex: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Who ---- */
+
+.who,
+.how {
+  padding: 3rem var(--sgx);
+}
+
+.team {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2.4rem;
+}
+
+.member {
+  display: flex;
+  min-height: 26rem;
+  border-radius: var(--rounded-md);
+  outline: 1px dashed var(--white);
+  overflow: clip;
+}
+
+.memberImage {
+  display: flex;
+  flex: none;
+  width: 50%;
+  border-right: 1px dashed var(--white);
+}
+
+.memberImage[data-paper] {
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  color: #000;
+}
+
+.memberLogo {
+  width: 60%;
+}
+
+.memberImage img {
+  width: 100%;
+  object-fit: cover;
+  filter: grayscale(1);
+}
+
+.memberText {
+  width: 100%;
+  padding: var(--sgx);
+}
+
+.memberName {
+  max-width: 3ch;
+  margin: 1.4rem 0 2rem;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: var(--text-h2);
+  font-weight: 400;
+  line-height: 0.8;
+  text-transform: uppercase;
+}
+
+.coffee {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.12em;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.coffee:hover {
+  color: var(--gold);
+}
+
+.bio {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  opacity: 0.5;
+}
+
+/* ---- How it plays ---- */
+
+.steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2.4rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepHead {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+  border-radius: var(--rounded-md) var(--rounded-md) 0 0;
+  background: var(--white);
+  color: #000;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.stepRow {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding: 3rem 1rem;
+  border: 1px dashed var(--white);
+  border-top: 0;
+  border-radius: 0 0 var(--rounded-md) var(--rounded-md);
+  text-align: center;
+}
+
+.stepTitle {
+  margin: 0;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 4rem;
+  font-weight: 400;
+  line-height: 0.8;
+  text-transform: uppercase;
+}
+
+.stepTitle span {
+  display: block;
+}
+
+/* ---- On to the chapters ---- */
+
+.cta {
+  padding: 3rem var(--sgx) 6rem;
+}
+
+.ctaFrame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  clip-path: url(#found-film);
+}
+
+.ctaImage {
+  position: absolute;
+  inset: 0;
+}
+
+.ctaShade {
+  position: absolute;
+  inset: 0;
+  background: #0007;
+}
+
+.ctaText {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.ctaTitle {
+  margin: 0;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: var(--text-h1);
+  font-weight: 400;
+  line-height: 0.85;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.ctaLink {
+  display: block;
+  color: var(--white);
+  text-decoration: none;
+}
+
+@media (max-width: 991px) {
+  .hero {
+    position: relative;
+  }
+
+  .arch {
+    position: absolute;
+    top: 10rem;
+    bottom: 0;
+    width: 50%;
+    height: auto;
+    aspect-ratio: auto;
+  }
+
+  .archClip {
+    opacity: 0.35;
+  }
+
+  .statement {
+    z-index: 2;
+  }
+
+  .arch:first-child {
+    left: var(--sgx);
+  }
+
+  .arch:last-child {
+    right: var(--sgx);
+  }
+
+  .big {
+    font-size: 11vw;
+  }
+
+  .statementText {
+    position: relative;
+  }
+
+  .team,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding-top: 8rem;
+  }
+
+  .type {
+    padding-top: 6rem;
+  }
+
+  .smallBlock {
+    padding: 0 var(--sgx);
+    font-size: 1rem;
+  }
+
+  .medium {
+    margin-top: 3rem;
+    font-size: 2.2rem;
+  }
+
+  .mediumSecond {
+    gap: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .xlRow {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 var(--sgx);
+  }
+
+  .xl {
+    font-size: 30vw;
+  }
+
+  .side {
+    margin-top: 1rem;
+    padding-left: 50%;
+  }
+
+  .titles {
+    padding-left: var(--sgx);
+  }
+
+  .gridSection {
+    margin-top: 4rem;
+  }
+
+  .gridItem {
+    height: 12svh;
+  }
+
+  .stepTitle {
+    font-size: 2.6rem;
+  }
+
+  .member {
+    flex-direction: column;
+  }
+
+  .memberImage {
+    width: 100%;
+    height: 13rem;
+    border-right: 0;
+    border-bottom: 1px dashed var(--white);
+  }
+
+  .ctaFrame {
+    aspect-ratio: 0.9;
+  }
+
+  .ctaTitle {
+    font-size: 3rem;
+  }
+}

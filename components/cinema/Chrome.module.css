@@ -67,6 +67,11 @@
   background: #000;
 }
 
+/* Hidden on both, body would be its own scroller and nothing inside could stick. */
+:global(html):has(.site) :global(body) {
+  overflow-x: clip;
+}
+
 :global(html):has(.site)::-webkit-scrollbar {
   display: none;
 }

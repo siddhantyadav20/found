@@ -1,0 +1,88 @@
+.page {
+  position: relative;
+  background: #000;
+  color: var(--white);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 93vh;
+  padding: 7rem var(--sgx) 0;
+}
+
+.heading {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.numbers {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.number {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+  padding: 2rem 0;
+  overflow: clip;
+  border-radius: var(--rounded-md);
+  outline: 1px dashed var(--white);
+  font-size: 34vw;
+  line-height: 0.75;
+}
+
+/* Clipped to one digit: the next face of the board waits just under it. */
+.digit {
+  display: block;
+  overflow: clip;
+  line-height: 0.82;
+}
+
+.lines {
+  display: block;
+  margin-top: 2rem;
+  font-size: 38px;
+  line-height: 1;
+  opacity: 0.5;
+}
+
+.clip {
+  display: block;
+  padding-top: 0.3rem;
+  overflow: clip;
+}
+
+.rule {
+  display: block;
+  height: 1px;
+  background: currentColor;
+}
+
+.explore {
+  display: block;
+  color: var(--white);
+  text-decoration: none;
+}
+
+@media (max-width: 767px) {
+  .number {
+    width: 30%;
+    font-size: 44vw;
+  }
+
+  .lines {
+    font-size: 24px;
+  }
+}

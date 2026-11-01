@@ -1,0 +1,36 @@
+.round {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--white);
+  color: #000;
+}
+
+.round[data-tone="black"] {
+  background: #000;
+  color: var(--white);
+}
+
+.round[data-small] {
+  width: 1.7rem;
+}
+
+.round svg {
+  width: 40%;
+}
+
+.round[data-to="left"] svg {
+  transform: rotate(180deg);
+}
+
+.round[data-to="down"] svg {
+  transform: rotate(90deg);
+}
+
+.round[data-to="up"] svg {
+  transform: rotate(-90deg);
+}

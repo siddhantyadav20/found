@@ -1,0 +1,70 @@
+.group [data-a="line"] {
+  transform: scaleX(0);
+}
+
+.group[data-in] [data-a="line"] {
+  transform: scaleX(1);
+  transition: transform 1.2s var(--custom-ease) calc(var(--delay) + var(--i, 0) * 0.03s);
+}
+
+.group [data-a="alpha"] {
+  opacity: 0;
+}
+
+.group[data-in] [data-a="alpha"] {
+  opacity: 1;
+  transition: opacity 1.2s var(--custom-ease) calc(var(--delay) + var(--i, 0) * 0.03s);
+}
+
+.group [data-a="item"] {
+  display: block;
+  transform: translateY(200%);
+}
+
+.group[data-in] [data-a="item"] {
+  transform: none;
+  transition: transform 1.2s var(--custom-ease) calc(var(--delay) + var(--i, 0) * 0.03s);
+}
+
+.parallax {
+  overflow: clip;
+}
+
+.parallax img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.rollover {
+  display: inline-block;
+}
+
+.char {
+  position: relative;
+  display: inline-block;
+  transform: translateY(115%);
+}
+
+.rollover[data-done] .char {
+  transform: none;
+}
+
+.clone {
+  position: absolute;
+  top: 115%;
+  left: 0;
+}
+
+.char > span {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group [data-a] {
+    opacity: 1;
+    transform: none;
+  }
+}

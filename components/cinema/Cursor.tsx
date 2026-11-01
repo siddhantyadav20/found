@@ -13,7 +13,7 @@ const ARROW =
  * `"prev"` or `"next"`. Its state is written to the DOM directly, because it
  * changes on every mouse move and nothing else on the page needs to know.
  */
-export default function Cursor() {
+export default function Cursor({ sideways = false }: { sideways?: boolean }) {
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,19 +57,21 @@ export default function Cursor() {
   }, []);
 
   return (
-    <div ref={box} className={styles.box} aria-hidden="true">
+    <div ref={box} className={styles.box} data-sideways={sideways || undefined} aria-hidden="true">
       <div className={styles.inner}>
-        <span className={styles.arrow} data-at="top">
-          <svg viewBox="0 0 35 23" fill="currentColor">
-            <path d={ARROW} />
-          </svg>
-        </span>
         <span className={styles.circle} />
         <span className={styles.text}>SCROLL</span>
-        <span className={styles.arrow} data-at="bottom">
-          <svg viewBox="0 0 35 23" fill="currentColor">
-            <path d={ARROW} />
-          </svg>
+        <span className={styles.arrows}>
+          <span className={styles.arrow} data-at="top">
+            <svg viewBox="0 0 35 23" fill="currentColor">
+              <path d={ARROW} />
+            </svg>
+          </span>
+          <span className={styles.arrow} data-at="bottom">
+            <svg viewBox="0 0 35 23" fill="currentColor">
+              <path d={ARROW} />
+            </svg>
+          </span>
         </span>
       </div>
     </div>

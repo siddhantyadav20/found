@@ -15,7 +15,7 @@ export default function Preloader() {
     <>
       <PreloaderScript />
       <noscript>
-        <style>{`[data-preloader]{display:none!important}[data-page],[data-reveal]{opacity:1!important;transform:none!important}`}</style>
+        <style>{`[data-preloader]{display:none!important}[data-page],[data-reveal],[data-a]{opacity:1!important;transform:none!important}`}</style>
       </noscript>
       <div className={styles.preloader} data-preloader>
         <div className={styles.field} />

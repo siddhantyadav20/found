@@ -1,0 +1,209 @@
+.page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--red);
+  color: #000;
+  font-family: var(--font-brucke), Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.head {
+  width: 100%;
+  margin-top: -5rem;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.headline {
+  margin: 0;
+  font-weight: 400;
+}
+
+.line {
+  display: block;
+  height: 0.7em;
+  font-size: 12vw;
+  letter-spacing: -0.3rem;
+  line-height: 0.8;
+  overflow: clip;
+  text-align: center;
+}
+
+.rule {
+  display: block;
+  height: 1px;
+  background: #000;
+}
+
+.rows {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 3rem;
+  padding: 46px 0;
+}
+
+.row {
+  position: relative;
+  width: 40vw;
+  min-width: 50ch;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 3.6rem;
+  margin: 0;
+}
+
+.label {
+  flex: none;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1;
+}
+
+.value,
+.field,
+.coffee {
+  font-family: var(--font-brucke), Arial, sans-serif;
+  font-size: 48px;
+  letter-spacing: -0.1rem;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.value {
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  height: 3rem;
+  padding: 0.3rem 0 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: #000;
+  text-align: center;
+}
+
+.field::placeholder {
+  color: #000;
+  opacity: 1;
+}
+
+.field:focus::placeholder {
+  opacity: 0.3;
+}
+
+.send {
+  display: grid;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.coffee {
+  padding: 0.3rem 0 0;
+  border: 0;
+  background: none;
+  color: #000;
+  cursor: pointer;
+}
+
+.coffee:hover {
+  color: var(--white);
+}
+
+.error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.4rem;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 12px;
+  text-align: center;
+  text-transform: none;
+}
+
+@media (max-width: 991px) {
+  .row {
+    width: 80vw;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .line {
+    font-size: 18vw;
+    letter-spacing: -0.15rem;
+  }
+
+  .value,
+  .field,
+  .coffee {
+    font-size: 24px;
+    letter-spacing: -0.03rem;
+  }
+
+  .field {
+    font-size: 19px;
+    letter-spacing: 0;
+  }
+
+  .value {
+    font-size: 18px;
+  }
+
+  .rows {
+    padding: 24px 0;
+  }
+
+  .row {
+    width: calc(100vw - 2 * var(--sgx));
+  }
+
+  .item {
+    min-height: 3rem;
+  }
+
+  .field {
+    height: 2rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .line {
+    font-size: 24vw;
+  }
+
+  .head {
+    margin-top: -7rem;
+  }
+}

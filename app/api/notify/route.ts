@@ -28,8 +28,9 @@ export async function POST(request: Request) {
   if (throttled(`notify:${await requester()}`)) return json({ ok: false, error: "Too many tries. Give it a minute." }, 429);
 
   const from = isCaseId(body?.case) ? body.case : "unknown";
-  // What they're waiting for: the next chapter, or the next episode of a held-back one.
-  const waiting = body?.what === "ep3" ? `${from} Episode 3` : "Chapter 2";
+  // What they're waiting for: the next chapter, the next episode of a held-back
+  // one, or (from the site's contact page) simply to hear back.
+  const waiting = body?.what === "ep3" ? `${from} Episode 3` : body?.what === "site" ? "the next chapter" : body?.what === "talk" ? "a reply" : "Chapter 2";
   try {
     await deliver(
       {

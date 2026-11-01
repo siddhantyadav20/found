@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
-import PageShell from "@/components/cinema/PageShell";
+import LegalPage from "@/components/cinema/LegalPage";
+import { LEGAL } from "@/content/pages";
 
-export const metadata: Metadata = { title: "Cookies", robots: { index: false } };
+export const metadata: Metadata = { title: "Cookies" };
 
-/** Set up and waiting for its design. */
 export default function Cookies() {
-  return <PageShell eyebrow="Legal" title="Cookies" />;
+  return <LegalPage page={LEGAL.cookies} />;
 }

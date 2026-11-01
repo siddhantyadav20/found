@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 
 import styles from "./Coffee.module.css";
 
@@ -13,7 +13,7 @@ import styles from "./Coffee.module.css";
 
 const QR = "/support/upi-qr.png";
 
-export default function Coffee() {
+export default function Coffee({ className, children }: { className?: string; children?: ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [asked, setAsked] = useState(false);
   const [missing, setMissing] = useState(false);
@@ -26,11 +26,15 @@ export default function Coffee() {
 
   return (
     <>
-      <button type="button" className={styles.button} onClick={open} aria-haspopup="dialog">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Zm13 1.5h1.5a2.5 2.5 0 0 1 0 5H17M8 3.5c0 1.2-1 1.3-1 2.5M11.5 3.5c0 1.2-1 1.3-1 2.5M15 3.5c0 1.2-1 1.3-1 2.5" />
-        </svg>
-        Buy me a coffee
+      <button type="button" className={className ?? styles.button} onClick={open} aria-haspopup="dialog">
+        {children ?? (
+          <>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Zm13 1.5h1.5a2.5 2.5 0 0 1 0 5H17M8 3.5c0 1.2-1 1.3-1 2.5M11.5 3.5c0 1.2-1 1.3-1 2.5M15 3.5c0 1.2-1 1.3-1 2.5" />
+            </svg>
+            Buy me a coffee
+          </>
+        )}
       </button>
 
       <dialog
