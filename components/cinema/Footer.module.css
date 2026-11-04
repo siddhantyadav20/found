@@ -160,7 +160,7 @@
   color: #000;
   opacity: 0.2;
   text-decoration: none;
-  transition: opacity 0.3s var(--ease-out-quint);
+  transition: opacity var(--t-short) var(--ease-out);
 }
 
 .mapLink[data-current] {
@@ -180,18 +180,18 @@
   width: 1.7rem;
   margin-left: 0.3rem;
   transform: scale(0) rotate(0deg);
-  transition: transform 0.3s var(--ease-out-quint);
+  transition: transform var(--t-short) var(--ease-out);
 }
 
 @media (hover: hover) {
   .mapLink:hover {
     opacity: 1;
-    transition: opacity 0.4s var(--ease-out-quint);
+    transition: opacity var(--t-short) var(--ease-out);
   }
 
   .mapLink:hover .mapArrow {
     transform: scale(1) rotate(-45deg);
-    transition: transform 0.8s var(--ease-out-quint);
+    transition: transform var(--t-mid) var(--ease-out);
   }
 }
 

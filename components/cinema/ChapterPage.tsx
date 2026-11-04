@@ -2,7 +2,7 @@ import type { Credit, Reel } from "@/content/site";
 import { REELS } from "@/content/site";
 import Arrow from "./Arrow";
 import ChapterGallery from "./ChapterGallery";
-import ChapterPlay from "./ChapterPlay";
+import ChapterPlay, { Jump, PlayNow } from "./ChapterPlay";
 import ChapterReviews from "./ChapterReviews";
 import { SiteLink } from "./Chrome";
 import ExploreFace from "./ExploreFace";
@@ -32,41 +32,101 @@ export default function ChapterPage({ item }: { item: Reel }) {
   const next = REELS[(REELS.indexOf(item) + 1) % REELS.length];
   const crew = [more.crew.slice(0, 2), more.crew.slice(2)];
   const apps = Array.from({ length: 5 }, () => more.apps);
+  const { hero } = item;
+  const place = REELS.indexOf(item) + 1;
+  const clockParts = hero.clock.time.split(":");
 
   return (
     <main className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.heroImage}>
-          <Parallax src={item.still} className={styles.heroPicture} />
-          <span className={styles.heroShade} />
-          <SiteLink href="/chapters" className={styles.back}>
-            <Arrow to="left" />
-            All chapters
-          </SiteLink>
+      {/* The hero (2026-11-05): an editorial poster on black. The figure stands
+          right of centre, one line is set big on the left, the clock the story
+          runs against sits on the right, and the ways on are along the bottom. */}
+      <Group as="section" className={styles.hero} delay={0.4}>
+        <div className={styles.heroFigure} data-a="alpha">
+          <Parallax src={item.tall} className={styles.heroPicture} />
         </div>
-        <Group className={styles.heroText} delay={0.4} data-color="white">
-          <div className={styles.eyebrow} data-a="alpha">
+
+        <div className={styles.heroMark}>
+          <span className={styles.eyebrow} data-a="alpha">
             {item.eyebrow}
-          </div>
-          <div className={styles.titleWrap}>
-            <span className={styles.rule} data-a="line" />
-            <h1 className={styles.title}>
-              <span className={styles.clip}>
-                <span data-a="item">{item.title}</span>
-              </span>
-            </h1>
-            <span className={styles.rule} data-a="line" />
-          </div>
-          <span className={styles.down} data-a="alpha">
-            <Arrow to="down" tone="black" />
           </span>
-        </Group>
-      </section>
+          <h1 className={styles.heroName}>
+            <span className={styles.clip}>
+              <span data-a="item">{item.title}</span>
+            </span>
+          </h1>
+          <span className={styles.heroDash} data-a="line" />
+        </div>
+
+        <SiteLink href="/chapters" className={styles.back}>
+          <Arrow to="left" />
+          All chapters
+        </SiteLink>
+
+        <div className={styles.heroIndex} data-a="alpha" aria-label={`Chapter ${place} of ${REELS.length}`}>
+          <span>{place}</span>
+          <i />
+          <span>{REELS.length}</span>
+        </div>
+
+        <p className={styles.headline}>
+          {hero.headline.map((line) => (
+            <span key={line} className={styles.clip}>
+              <span data-a="item">{line}</span>
+            </span>
+          ))}
+        </p>
+
+        <div className={styles.clock}>
+          <div className={styles.clockTime} data-a="alpha">
+            <svg className={styles.hourglass} viewBox="0 0 14 20" fill="currentColor" aria-hidden="true">
+              <path d="M0 0h14v2h-1.5c0 3.4-2 5.6-4 8 2 2.4 4 4.6 4 8H14v2H0v-2h1.5c0-3.4 2-5.6 4-8-2-2.4-4-4.6-4-8H0V0Zm3.5 2c0 2.5 1.5 4.3 3.5 6.6C9 6.3 10.5 4.5 10.5 2h-7Zm3.5 9.4C5 13.7 3.5 15.5 3.5 18h7c0-2.5-1.5-4.3-3.5-6.6Z" />
+            </svg>
+            {clockParts[0]}
+            <span className={styles.clockColon}>:</span>
+            {clockParts[1]}
+          </div>
+          <span className={styles.clockRule} data-a="line" />
+          <span className={styles.clockCaption} data-a="alpha">
+            {hero.clock.caption}
+          </span>
+        </div>
+
+        <div className={styles.cue} data-a="alpha">
+          <span className={styles.cueLength}>{item.ticket[2]} min</span>
+          <p className={styles.cueText}>
+            {hero.tagline[0]}
+            <br />
+            {hero.tagline[1]}
+          </p>
+          <span className={styles.cueRule} />
+          <Jump to={item.trailer ? "trailer" : "credits"} className={styles.down} label="Down the page">
+            <Arrow to="down" />
+          </Jump>
+        </div>
+
+        <div className={styles.heroBar} data-a="alpha">
+          <div className={styles.heroBarSide}>
+            <span className={styles.barNote}>{item.badge.headline}</span>
+            <span className={styles.barNote} data-quiet>
+              Free, in your browser
+            </span>
+            <PlayNow item={item} className={styles.heroPlay} />
+          </div>
+          <div className={styles.heroBarSide}>
+            {item.trailer && (
+              <Jump to="trailer" className={styles.barLink}>
+                Watch the trailer · {item.trailer.length}
+              </Jump>
+            )}
+          </div>
+        </div>
+      </Group>
 
       <div data-color="white" className={styles.white}>
         <ChapterPlay item={item} />
 
-        <section className={styles.credits}>
+        <section id="credits" className={styles.credits}>
           <Group className={styles.leadCard}>
             <div className={styles.leadImage} data-a="alpha">
               {/* eslint-disable-next-line @next/next/no-img-element -- a still behind a tint */}

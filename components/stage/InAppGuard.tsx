@@ -48,7 +48,7 @@ export default function InAppGuard() {
         It forgets everything when you close it, and this case takes a while. Open it in your browser to keep your place.
       </p>
       {os === "android" ? (
-        <a className={styles.guardCta} href={chromeIntent(window.location.href)} onClick={() => track({ case: id, event: "guard:chrome" })}>
+        <a className={`act ${styles.guardCta}`} href={chromeIntent(window.location.href)} onClick={() => track({ case: id, event: "guard:chrome" })}>
           Open in Chrome
         </a>
       ) : (
@@ -56,7 +56,7 @@ export default function InAppGuard() {
           Tap <b>•••</b> at the top, then open it in Safari.
         </p>
       )}
-      <button type="button" className={styles.guardStay} onClick={() => setStay(true)}>
+      <button type="button" className={`act-text ${styles.guardStay}`} onClick={() => setStay(true)}>
         Play here anyway
       </button>
     </div>

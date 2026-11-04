@@ -55,8 +55,8 @@
   translate: 0 calc(var(--lift, 0px) * -1);
   opacity: var(--fade, 1);
   transition:
-    translate 0.45s cubic-bezier(0.2, 0.9, 0.25, 1),
-    opacity 0.3s;
+    translate var(--t-short) var(--ease-out),
+    opacity var(--t-short);
 }
 
 .lock[data-dragging] .slide {
@@ -107,7 +107,7 @@
   corner-shape: superellipse(1.4);
   text-align: left;
   letter-spacing: -0.02em;
-  animation: stack 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
+  animation: stack 0.6s var(--ease-spring-soft) both;
 }
 
 .note:nth-child(2) {
@@ -218,7 +218,7 @@
 }
 
 .dots[data-shake] {
-  animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  animation: shake 0.42s var(--ease-shake);
 }
 
 @keyframes shake {
@@ -237,7 +237,7 @@
   height: 13px;
   border: 1.5px solid #fff;
   border-radius: 50%;
-  transition: background-color 0.1s;
+  transition: background-color var(--t-quick);
 }
 
 .dot[data-on] {
@@ -254,7 +254,7 @@
 
 /* Each new hint arrives, so a second tap visibly did something. */
 .hint[data-new] {
-  animation: hintIn 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  animation: hintIn 0.4s var(--ease-out) both;
 }
 
 @keyframes hintIn {
@@ -286,7 +286,7 @@
   color: #fff;
   font: inherit;
   cursor: pointer;
-  transition: background-color 0.12s;
+  transition: background-color var(--t-quick);
 }
 
 .key b {
@@ -344,7 +344,7 @@
   inset: 0;
   padding: calc(var(--os-top) + 8px) 18px 30px;
   background: var(--os-bg);
-  animation: up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: up 0.35s var(--ease-out) both;
 }
 
 @keyframes up {
@@ -413,6 +413,6 @@
 }
 
 /* On a replay, hold the first notification to see its icon up close. */
-.note[data-look] .noteIcon { transition: scale 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1); transform-origin: left center; }
+.note[data-look] .noteIcon { transition: scale var(--t-short) var(--ease-spring-soft); transform-origin: left center; }
 .note[data-look]:hover .noteIcon,
 .note[data-look]:active .noteIcon { scale: 2.4; position: relative; z-index: 2; }

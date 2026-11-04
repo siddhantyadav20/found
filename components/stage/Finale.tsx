@@ -44,7 +44,7 @@ export default function Finale({ story, state, onLater }: { story: Story; state:
         <div className={`${file.file} ${styles.sheet}`}>
           <CloseCase story={story} state={state} open />
         </div>
-        <button type="button" className={styles.later} onClick={onLater}>
+        <button type="button" className={`act-text ${styles.later}`} onClick={onLater}>
           Not yet. I want to look at his phone again
         </button>
       </div>

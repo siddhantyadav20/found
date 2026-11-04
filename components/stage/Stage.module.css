@@ -106,21 +106,11 @@
 }
 
 .guardCta {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--cream);
+  align-self: flex-start;
 }
 
 .guardStay {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.72rem;
-  color: #8d8781;
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
+  align-self: flex-start;
 }
 
 /* --- the table, once the parcel is open -----------------------------------
@@ -278,7 +268,7 @@
   translate: 0 -50%;
   box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 50%);
   cursor: pointer;
-  animation: note-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: note-in 0.35s var(--ease-out) both;
 }
 
 .edgeNote strong {

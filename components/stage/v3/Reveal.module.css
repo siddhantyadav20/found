@@ -265,7 +265,7 @@
   overflow: hidden;
   font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--cream);
-  animation: turn 1s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  animation: turn 1s var(--ease-out) both;
   transform-origin: 50% 100%;
 }
 
@@ -316,7 +316,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   rotate: -6deg;
-  animation: stamp 0.4s 2.2s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation: stamp 0.4s 2.2s var(--ease-spring) both;
 }
 
 @keyframes stamp {

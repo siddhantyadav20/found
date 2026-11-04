@@ -87,8 +87,10 @@ const BUDGET = {
    * go to WebGL as they are, so next/image can't lighten them (424KB).
    * Raised from 12 to 13 on 2026-11-01 for the chapters' eighteen film stills,
    * which replace those two and mostly go to WebGL the same way (1.5MB).
+   * Raised from 13 to 21 on 2026-11-05 for Raakh's trailer on its chapter
+   * page (7.4MB of H.264 at 720p, fetched only when someone presses play).
    */
-  publicTotal: 13,
+  publicTotal: 21,
 };
 
 /** Files that are allowed to be over `asset`, and why. Anything not on this
@@ -96,6 +98,8 @@ const BUDGET = {
 const ALLOWED_LARGE = {
   "found/raakh/clip-fire-whole.mp4":
     "31 seconds of video, the longest clip in the chapter; it loads only when the locked note's clip is played (preload=metadata).",
+  "found/trailer/raakh.mp4":
+    "Raakh's 72-second trailer on its chapter page; the <video> is only created when someone presses play.",
 };
 
 const KB = 1024;

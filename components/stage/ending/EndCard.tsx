@@ -191,11 +191,11 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
 
       <section className={styles.section}>
         {onLookAgain && story.lookAgain?.length ? (
-          <button type="button" className={styles.button} onClick={onLookAgain}>
+          <button type="button" className="act-quiet" onClick={onLookAgain}>
             Look again
           </button>
         ) : null}
-        <button type="button" className={styles.button} onClick={playAgain}>
+        <button type="button" className="act-quiet" onClick={playAgain}>
           Play again
         </button>
       </section>
@@ -204,7 +204,7 @@ export default function EndCard({ story, state, onLookAgain }: { story: Story; s
 
       <section className={styles.section}>
         <KeepCase caseId={id as CaseId} />
-        <Link className={styles.quiet} href="/">
+        <Link className={`act-text ${styles.quiet}`} href="/">
           Back to Found
         </Link>
       </section>

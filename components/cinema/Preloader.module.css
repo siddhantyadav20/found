@@ -24,7 +24,7 @@
   visibility: hidden;
   pointer-events: none;
   transition:
-    opacity 0.3s ease,
+    opacity var(--t-short) ease,
     visibility 0s 0.3s;
 }
 

@@ -40,7 +40,7 @@
 .beats li,
 .cliff,
 .brief {
-  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: rise 0.6s var(--ease-out) both;
 }
 
 .beats li {
@@ -156,25 +156,8 @@
 }
 
 .go {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 54px;
-  padding: 0 20px;
-  border: 0;
-  border-radius: 12px;
-  background: #f2efe9;
-  color: #0a0a0c;
-  font: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.go:hover {
-  transform: translateY(-1px);
+  width: 100%;
+  min-height: 52px;
 }
 
 @keyframes rise {

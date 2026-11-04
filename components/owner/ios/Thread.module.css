@@ -110,7 +110,7 @@ span.who {
 }
 
 .row[data-new] {
-  animation: arrive 0.45s cubic-bezier(0.2, 1, 0.3, 1) both;
+  animation: arrive 0.45s var(--ease-out) both;
 }
 
 @keyframes arrive {
@@ -278,7 +278,7 @@ span.who {
   display: grid;
   gap: 6px;
   margin: 4px 10px 30px;
-  animation: rise 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  animation: rise 0.35s var(--ease-out) both;
 }
 
 @keyframes rise {
@@ -360,7 +360,7 @@ span.who {
   flex-direction: column;
   padding: calc(var(--os-top) + 2px) 16px 40px;
   background: var(--os-bg);
-  animation: sheet 0.38s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation: sheet 0.38s var(--ease-out) both;
 }
 
 @keyframes sheet {

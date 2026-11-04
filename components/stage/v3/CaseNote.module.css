@@ -23,7 +23,7 @@
   height: 22px;
   border-radius: 50%;
   border: 1.5px solid currentColor;
-  font-family: Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-size: 13px;
   font-style: italic;
   font-weight: 700;

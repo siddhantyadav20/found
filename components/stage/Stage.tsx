@@ -37,7 +37,7 @@ import Note from "./Note";
 import Parcel from "./Parcel";
 import Recap from "./Recap";
 import Finale from "./Finale";
-import Loader from "@/components/site/Loader";
+import Loader from "@/components/cinema/Loader";
 import Ringing from "./Ringing";
 import TitleCard from "./TitleCard";
 import Previously from "./Previously";

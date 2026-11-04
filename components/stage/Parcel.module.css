@@ -39,7 +39,7 @@
 .photo {
   position: absolute;
   inset: 0;
-  transition: scale 1s var(--ease-film);
+  transition: scale var(--t-long) var(--ease-out);
 }
 
 /* On a phone the waybill takes the card's lower half: the still is pushed up it, so that the
@@ -57,7 +57,7 @@
   border-radius: 0;
   mask: none;
   opacity: 0;
-  transition: opacity 0.8s ease;
+  transition: opacity var(--t-mid) ease;
 }
 
 .scene[data-torn] .opened {
@@ -103,7 +103,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   translate: calc(var(--pull, 0) * 70%) 0;
-  transition: translate 0.15s;
+  transition: translate var(--t-quick);
   mask:
     radial-gradient(circle var(--hole) at 0 50%, #0000 98%, #000),
     radial-gradient(circle var(--hole) at 100% 50%, #0000 98%, #000);
@@ -129,9 +129,9 @@
   rotate: 8deg;
   opacity: 0;
   transition:
-    translate 0.6s cubic-bezier(0.5, 0, 0.75, 0),
-    rotate 0.6s,
-    opacity 0.6s 0.2s;
+    translate var(--t-mid) var(--ease-in),
+    rotate var(--t-mid),
+    opacity var(--t-mid) 0.2s;
 }
 
 /* The waybill: a courier's label, printed like a ticket, and the stamp over it. */
@@ -157,8 +157,8 @@
     radial-gradient(circle var(--hole) at 100% 100%, #0000 98%, #000);
   mask-composite: intersect;
   transition:
-    translate 0.8s var(--ease-film),
-    opacity 0.8s;
+    translate var(--t-mid) var(--ease-out),
+    opacity var(--t-mid);
 }
 
 .scene[data-torn] .waybill {
@@ -302,7 +302,7 @@
   font-size: 11.5px;
   line-height: 1.3;
   text-align: left;
-  transition: color 0.3s;
+  transition: color var(--t-short);
 }
 
 .modes b {
@@ -349,7 +349,7 @@
   margin: 0;
   border: 1px solid var(--cream-3);
   border-radius: 11px;
-  transition: background-color 0.2s;
+  transition: background-color var(--t-quick);
   cursor: pointer;
 }
 
@@ -362,7 +362,7 @@
   height: 14px;
   border-radius: 50%;
   background: var(--cream);
-  transition: translate 0.2s, background-color 0.2s;
+  transition: translate var(--t-quick), background-color var(--t-quick);
 }
 
 .real input:checked {

@@ -20,21 +20,29 @@
   text-transform: uppercase;
 }
 
-/* ---- Hero ---- */
+/* ---- Hero ----
+   An editorial poster on black (2026-11-05): the figure right of centre and
+   dissolving into the dark, one line set big on the left, the story's clock
+   on the right, a quiet cue over the way down and the ways on along the
+   bottom. Cream on black, red only where the game is. */
 
 .hero {
-  display: flex;
-  flex-direction: column;
-  min-height: 100svh;
-  background: var(--white);
-  color: #000;
-}
-
-.heroImage {
+  --hero-quiet: #faf7ef8c;
   position: relative;
-  flex: 1;
+  min-height: max(100svh, 40rem);
   overflow: clip;
   background: #000;
+  color: var(--white);
+}
+
+.heroFigure {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 49%;
+  width: min(36vw, 66svh);
+  -webkit-mask-image: radial-gradient(50% 56% at 50% 46%, #000 45%, #0000 100%);
+  mask-image: radial-gradient(50% 56% at 50% 46%, #000 45%, #0000 100%);
 }
 
 .heroPicture {
@@ -42,18 +50,139 @@
   inset: 0;
 }
 
-.heroShade {
+.heroPicture img {
+  filter: saturate(0.82) contrast(1.06);
+}
+
+.heroMark {
   position: absolute;
-  inset: 0 0 auto;
-  height: 40%;
-  background: linear-gradient(#0009, #0000);
-  pointer-events: none;
+  top: 2.1rem;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.heroName {
+  margin: 0;
+  padding-left: 0.55em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: 0.55em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.heroDash {
+  display: block;
+  width: 1.6rem;
+  height: 2px;
+  background: currentColor;
+}
+
+.heroIndex {
+  position: absolute;
+  top: 50%;
+  left: var(--sgx);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.heroIndex i {
+  display: block;
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.headline {
+  position: absolute;
+  top: 50%;
+  left: 18vw;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3.4rem, 6.6vw, 7.4rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  transform: translateY(-46%);
+}
+
+.headline .clip {
+  padding-bottom: 0.08em;
+}
+
+.clock {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--gx) + 3vw);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 14.5rem;
+  transform: translateY(-50%);
+}
+
+.clockTime {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 4.6rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.hourglass {
+  width: 0.95rem;
+  margin-right: 1.4rem;
+  color: var(--red);
+}
+
+.clockColon {
+  margin: 0 0.12em;
+  color: var(--hero-quiet);
+  font-size: 0.5em;
+}
+
+.clockRule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 1.4rem 0 1.5rem;
+  background: var(--hero-quiet);
+}
+
+.clockCaption {
+  color: var(--hero-quiet);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.4;
+  text-align: right;
+  text-transform: uppercase;
 }
 
 .back {
   position: absolute;
   top: 10rem;
   left: var(--sgx);
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -67,50 +196,43 @@
   text-transform: uppercase;
 }
 
-.heroText {
+.cue {
+  position: absolute;
+  bottom: 2.1rem;
+  left: 50%;
+  z-index: 2;
   display: flex;
-  flex: none;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
-  width: 100%;
-  height: 30svh;
-  min-height: 15rem;
-  padding: 2.6rem 0 2rem;
-}
-
-.titleWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  width: 100%;
-}
-
-.rule {
-  display: block;
-  height: 1px;
-  background: #000;
-}
-
-.title {
-  max-width: 100%;
-  margin: 0;
-  padding: 0.35rem 0 0;
-  font-family: var(--font-brucke), Arial, sans-serif;
-  font-size: 6.1rem;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 0.85;
+  transform: translateX(-50%);
   text-align: center;
+}
+
+.cueLength {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: var(--text-eyeb-small);
+  font-weight: 500;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-.clip {
+.cueText {
+  margin: 1.6rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.cueRule {
   display: block;
-  overflow: clip;
+  width: 5.5rem;
+  height: 2px;
+  margin: 1.6rem 0 1.8rem;
+  background: currentColor;
 }
 
 .down {
+  display: block;
   animation: bob 10s linear infinite;
 }
 
@@ -122,6 +244,57 @@
   100% {
     transform: none;
   }
+}
+
+.heroBar {
+  position: absolute;
+  right: var(--sgx);
+  bottom: 2.1rem;
+  left: var(--sgx);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.heroBarSide {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  pointer-events: auto;
+}
+
+.barNote,
+.barLink {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.barNote[data-quiet] {
+  color: var(--hero-quiet);
+}
+
+.barLink {
+  color: inherit;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 0.3rem;
+  transition: background-size var(--t-mid) var(--ease-out);
+}
+
+.barLink:hover {
+  background-size: 100% 1px;
+}
+
+.heroPlay {
+  display: block;
+  color: var(--white);
+}
+
+.clip {
+  display: block;
+  overflow: clip;
 }
 
 /* ---- The way in ---- */
@@ -180,7 +353,7 @@
 .playMark {
   width: 88px;
   margin-bottom: 1.2rem;
-  transition: transform 0.8s var(--ease-out-quint);
+  transition: transform var(--t-mid) var(--ease-out);
 }
 
 .actionCta:hover .playMark {
@@ -216,6 +389,51 @@
   font-size: 32px;
   line-height: 1.8rem;
   text-transform: uppercase;
+}
+
+.actionFrame[data-trailer] {
+  aspect-ratio: 1280 / 536;
+}
+
+button.actionCta {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.actionPicture[data-playing] {
+  transform: none !important;
+}
+
+.actionPicture[data-playing]::after {
+  display: none;
+}
+
+.trailerVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  object-fit: contain;
+}
+
+.trailerFoot {
+  position: relative;
+  z-index: 11;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 3.4rem;
+}
+
+/* The Explore face inks itself in --white; on cream it's printed in black. */
+.trailerFoot a {
+  --white: #000;
+  display: block;
 }
 
 /* ---- Credits ---- */
@@ -453,7 +671,7 @@
   width: 78%;
   aspect-ratio: 1 / 1.349;
   color: var(--white);
-  transition: color 0.3s;
+  transition: color var(--t-short);
 }
 
 .reviewCard:hover {
@@ -467,7 +685,7 @@
   height: 100%;
   opacity: 0.6;
   pointer-events: none;
-  transition: transform 0.8s var(--ease-out-quint);
+  transition: transform var(--t-mid) var(--ease-out);
 }
 
 .reviewCard:hover .reviewArch {
@@ -693,8 +911,8 @@
   color: #000;
   text-decoration: none;
   transition:
-    background 0.5s,
-    color 0.5s;
+    background var(--t-short),
+    color var(--t-short);
 }
 
 .allChapters:hover {
@@ -762,7 +980,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 1.2s var(--ease-out-quint);
+  transition: transform var(--t-long) var(--ease-out);
 }
 
 .nextCard:hover .nextImage img {
@@ -790,8 +1008,21 @@
 }
 
 @media (max-width: 991px) {
-  .title {
-    font-size: 4.4rem;
+  .headline {
+    left: 12vw;
+  }
+
+  .clock {
+    right: var(--sgx);
+    width: 11rem;
+  }
+
+  .clockTime {
+    font-size: 3.4rem;
+  }
+
+  .barNote[data-quiet] {
+    display: none;
   }
 
   .credits {
@@ -818,12 +1049,100 @@
 }
 
 @media (max-width: 767px) {
-  .title {
-    font-size: 4.1rem;
+  /* On a phone the poster fills the screen and everything stacks under it. */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 1.6rem;
+    padding: 0 var(--sgx) 1.8rem;
+  }
+
+  .heroFigure {
+    inset: 0 0 18%;
+    left: 0;
+    width: 100%;
+    -webkit-mask-image: linear-gradient(#000 55%, #0000);
+    mask-image: linear-gradient(#000 55%, #0000);
+  }
+
+  .heroMark,
+  .headline,
+  .clock,
+  .cue,
+  .heroBar {
+    position: relative;
+    inset: auto;
+    transform: none;
+  }
+
+  .heroMark {
+    order: 1;
+    align-items: flex-start;
+    gap: 0.7rem;
+    text-align: left;
+  }
+
+  .heroName {
+    padding-left: 0;
+  }
+
+  .headline {
+    order: 2;
+    font-size: 3.4rem;
+  }
+
+  .clock {
+    order: 3;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    width: auto;
+  }
+
+  .clockTime {
+    font-size: 1.6rem;
+  }
+
+  .hourglass {
+    width: 0.6rem;
+    margin-right: 0.7rem;
+  }
+
+  .clockRule {
+    width: 1.6rem;
+    margin: 0;
+  }
+
+  .clockCaption {
+    text-align: left;
+  }
+
+  .heroIndex,
+  .cue {
+    display: none;
+  }
+
+  .heroBar {
+    order: 4;
+    z-index: 2;
+    margin-top: 0.4rem;
+  }
+
+  .heroBarSide {
+    gap: 1rem;
+  }
+
+  .barNote {
+    display: none;
   }
 
   .back {
     top: 6.4rem;
+  }
+
+  .trailerFoot {
+    margin-top: 2rem;
   }
 
   .action {
@@ -907,7 +1226,7 @@
 }
 
 @media (max-width: 479px) {
-  .title {
-    font-size: 3rem;
+  .headline {
+    font-size: 2.9rem;
   }
 }

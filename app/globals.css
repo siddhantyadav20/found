@@ -29,6 +29,28 @@
   --lamp: #f3e3c3;
   --gutter: 20px;
   --radius: 3px;
+
+  /* MOTION (2026-11-05): every transition and animation in the product, the
+     site, the game's screens and the phone alike, draws on these. Six curves
+     and four lengths; a number that isn't one of these is choreography (a
+     preloader's timing, a loop), not a transition.
+
+     --ease-out          things arriving, hovers, anything answering a touch
+     --ease-in-out       a whole surface moving: curtains, panels, a phone closing
+     --ease-in           things leaving
+     --ease-spring-soft  a small settle past the mark (iOS sheets, chips)
+     --ease-spring       a pop (badges, a tapped key, a stamp)
+     --ease-shake        a wrong answer */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+  --ease-spring-soft: cubic-bezier(0.2, 0.9, 0.3, 1.1);
+  --ease-spring: cubic-bezier(0.3, 1.4, 0.5, 1);
+  --ease-shake: cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  --t-quick: 0.2s; /* a press, a colour, a tick */
+  --t-short: 0.4s; /* a sheet, a toggle, a fade */
+  --t-mid: 0.8s; /* a ticket's hover, a reveal */
+  --t-long: 1.2s; /* the site's film reveals */
 }
 
 *,
@@ -49,7 +71,7 @@ body {
   min-height: 100svh;
   color: var(--text);
   background-color: var(--ink);
-  font-family: var(--font-ui), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -100,7 +122,7 @@ html[data-found-save] [data-envelope] {
    A touch of blur mid-flight hides the scaling. */
 ::view-transition-group(.morph) {
   animation-duration: 460ms;
-  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-image-pair(.morph) {
@@ -158,7 +180,6 @@ html[data-found-save] [data-envelope] {
   --cream-3: rgb(250 247 239 / 44%);
   --rule: rgb(250 247 239 / 16%);
   --red: #ff0f00;
-  --ease-film: cubic-bezier(0.22, 1, 0.36, 1);
   /* A frame's edge, filed by hand rather than cut straight (components/cinema/rollGl.ts). */
   --filed: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000' preserveAspectRatio='none'%3E%3Cpath d='M0 6L38 6L77 6L115 6L154 6L192 6L231 6L269 6L308 6L346 5L385 4L423 4L462 3L500 2L538 2L577 2L615 2L654 3L692 3L731 4L769 5L808 6L846 6L885 6L923 6L962 6L1000 5L994 0L994 38L995 77L995 115L996 154L997 192L998 231L998 269L998 308L998 346L998 385L997 423L996 462L996 500L995 538L994 577L994 615L994 654L994 692L995 731L995 769L995 808L995 846L995 885L995 923L995 962L994 1000L1000 998L962 997L923 996L885 995L846 995L808 994L769 994L731 994L692 995L654 995L615 995L577 995L538 995L500 995L462 995L423 995L385 995L346 995L308 995L269 995L231 996L192 997L154 997L115 998L77 998L38 999L0 998L5 1000L4 962L4 923L3 885L2 846L2 808L2 769L2 731L3 692L4 654L4 615L5 577L6 538L6 500L6 462L6 423L6 385L6 346L5 308L6 269L6 231L6 192L7 154L7 115L7 77L7 38L7 0Z'/%3E%3C/svg%3E");
   /* A ticket's outline, its corners bitten out: a border-image, so that it fits any size. */
@@ -210,7 +231,7 @@ html[data-found-save] [data-envelope] {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  transition: background 0.3s;
+  transition: background var(--t-short);
   mask:
     radial-gradient(circle var(--hole) at 0 0, #0000 98%, #000),
     radial-gradient(circle var(--hole) at 100% 0, #0000 98%, #000),
@@ -237,7 +258,7 @@ html[data-found-save] [data-envelope] {
   width: var(--stub);
   background: currentColor;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 10'%3E%3Cpath d='M4.481.005a6.65 6.65 0 0 1 6.46 4.659c.078.229.08.479-.003.706C10.302 7.105 8.318 10 4.48 10V8.39c.941.127 2.922-.257 4.442-2.603H0V4.208h8.938c-.756-1.229-2.216-2.78-4.457-2.78V.006Z'/%3E%3C/svg%3E") center / 13px 12px no-repeat;
-  transition: translate 0.5s var(--ease-film);
+  transition: translate var(--t-short) var(--ease-out);
 }
 
 .act:hover { background: #fff; }
@@ -264,7 +285,7 @@ html[data-found-save] [data-envelope] {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 0.3s;
+  transition: color var(--t-short);
 }
 
 .act-quiet:hover,
@@ -275,6 +296,32 @@ html[data-found-save] [data-envelope] {
 }
 
 .act-quiet:disabled { opacity: 0.45; cursor: default; }
+
+/* Third to them: words only, in the site's small caps. "Not now", "Play here
+   anyway", "Seal another": a way out, never the way on. */
+.act-text {
+  display: inline-block;
+  padding: 6px 0;
+  color: var(--cream-2);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.3;
+  text-align: inherit;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  text-transform: uppercase;
+  transition: color var(--t-quick), text-decoration-color var(--t-quick);
+}
+
+.act-text:hover,
+.act-text:focus-visible {
+  outline: none;
+  color: var(--cream);
+  text-decoration-color: currentColor;
+}
 
 /* A link in a sentence. */
 .link {

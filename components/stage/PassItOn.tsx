@@ -201,7 +201,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
               autoCapitalize="words"
               placeholder="First name, or leave it"
             />
-            <button type="submit" className={styles.primary} disabled={phase === "sealing"}>
+            <button type="submit" className={`act ${styles.primary}`} disabled={phase === "sealing"}>
               {phase === "sealing" ? "Sealing…" : "Seal it"}
             </button>
           </div>
@@ -215,7 +215,7 @@ export default function PassItOn({ result }: { result: Result | null }) {
             {note && <p className={styles.note}>{note}</p>}
             <div className={styles.row}>
               <a
-                className={styles.whatsapp}
+                className={`act-quiet ${styles.whatsapp}`}
                 href={`https://wa.me/?text=${encodeURIComponent(text)}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -224,15 +224,15 @@ export default function PassItOn({ result }: { result: Result | null }) {
                 Send on WhatsApp
               </a>
               {canShare && (
-                <button type="button" className={styles.secondary} onClick={nativeShare}>
+                <button type="button" className="act-quiet" onClick={nativeShare}>
                   Share…
                 </button>
               )}
-              <button type="button" className={styles.secondary} onClick={copy}>
+              <button type="button" className="act-quiet" onClick={copy}>
                 {copied ? "Link copied" : "Copy link"}
               </button>
             </div>
-            <button type="button" className={styles.again} onClick={again}>
+            <button type="button" className={`act-text ${styles.again}`} onClick={again}>
               Address another
             </button>
           </div>

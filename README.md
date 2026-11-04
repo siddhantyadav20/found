@@ -4,7 +4,7 @@ Mysteries played on a stranger's phone. **Chapter 1 is *Raakh*** (called
 *Shagun* until 2026-10-23): a Delhi wedding planner's phone arrives with a
 note addressed to someone else, and everything on it is true, but not in the
 right order. **Chapter 2 is *Last Local*** (Mumbai). The front page is a
-landing page (`components/site/`) with both chapters.
+film-site front (`components/cinema/`) with both chapters.
 
 - The story (canon, never edited): `SCRIPT.md`
 - The game adaptation: `CHAPTER1.md`

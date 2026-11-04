@@ -1,4 +1,4 @@
-import { Geist, IBM_Plex_Mono, IBM_Plex_Sans, Inter, Kalam, Newsreader } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Kalam, Newsreader } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
@@ -31,22 +31,12 @@ export const hand = Kalam({
 });
 
 /**
- * UI face: IBM Plex Sans (SIL OFL), Regular / Medium / SemiBold. It replaced
- * Outfit on 2026-10-17: a geometric startup sans read as a template; Plex is
- * a working typeface, the kind a form or a case file is set in.
+ * Labels, times and numbers outside the phones: Geist Mono (Vercel, SIL OFL),
+ * Geist's own mono, so a label and the sentence beside it are one family. It
+ * replaced IBM Plex Mono on 2026-11-05, when the product went to one type
+ * system (see the note above `sans`).
  */
-export const ui = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-ui",
-  display: "swap",
-});
-
-/**
- * Field labels, times and numbers outside the phones: IBM Plex Mono (SIL
- * OFL), the voice of a courier's waybill and a case file's form.
- */
-export const mono = IBM_Plex_Mono({
+export const mono = Geist_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
@@ -67,11 +57,21 @@ export const phone = Inter({
 });
 
 /**
- * The site's own voice: Geist (Vercel, SIL OFL), one variable file for every
- * weight. It replaced Inter Tight on 2026-10-25, with the site's revamp:
- * the wordmark, the headlines and the controls round the game, set tight.
- * The site's other faces (Anton, Instrument Serif, Geist Mono) load only on
- * its own pages: components/site/fonts.ts.
+ * THE TYPE SYSTEM (2026-11-05). One set of faces for the site and the game's
+ * own screens alike:
+ *
+ *   - Neue Brücke (`--font-brucke`): titles and every button, in capitals.
+ *   - Newsreader (`--font-display`): the editorial serif, and the small caps
+ *     on anything that labels (`.eyebrow`).
+ *   - Geist (`--font-sans`): everything you read, and the page's default.
+ *   - Geist Mono (`--font-mono`): times, codes and field labels.
+ *
+ * Two more belong to the story, not the product: the found phone is drawn in
+ * the phone's own face (SF, or Inter where there's no SF: `--font-ios`), and
+ * whatever someone wrote by hand is Kalam. IBM Plex Sans and Plex Mono (the
+ * game's old UI faces) and the old site's Anton and Instrument Serif are gone.
+ *
+ * Geist (Vercel, SIL OFL) is one variable file for every weight.
  */
 export const sans = Geist({
   subsets: ["latin"],

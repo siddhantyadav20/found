@@ -84,7 +84,7 @@ export default function RealClock({ story, state }: { story: Story; state: CaseS
       </span>
       <span className={styles.hint}>{rt.hint}</span>
       {rt.go.length > 0 && (
-        <button type="button" className={styles.act} onClick={() => flag(...rt.go)}>
+        <button type="button" className={`act ${styles.act}`} onClick={() => flag(...rt.go)}>
           {rt.act}
         </button>
       )}

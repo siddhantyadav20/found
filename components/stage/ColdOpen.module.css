@@ -40,7 +40,7 @@
 .sound,
 .said {
   animation: in 0.7s ease-out both;
-  transition: opacity 1.2s ease;
+  transition: opacity var(--t-long) ease;
 }
 
 .sound {

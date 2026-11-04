@@ -1,6 +1,6 @@
 "use client";
 
-import Coffee from "@/components/site/Coffee";
+import Coffee from "@/components/cinema/Coffee";
 import { CONTACT } from "@/content/pages";
 import Arrow from "./Arrow";
 import { Group, Rollover } from "./Motion";

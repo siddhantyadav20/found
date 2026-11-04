@@ -7,7 +7,7 @@
   padding: 40px var(--gutter) 80px;
   background: var(--ink);
   color: var(--text);
-  font-family: var(--font-ui), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 40px;

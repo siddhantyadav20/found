@@ -51,7 +51,7 @@ export function Unopened({ story, onOpen }: { story: Story; onOpen: () => void }
         <button type="button" className="act" onClick={onOpen}>
           {story.unopened?.again ?? "Open it again"}
         </button>
-        <Link className={ending.quiet} href="/">
+        <Link className={`act-text ${ending.quiet}`} href="/">
           Back to Found
         </Link>
       </section>
@@ -216,7 +216,7 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
         {copy && of > 0 && <p className={styles.stat}>{copy.clues.replace("{n}", String(clues.length)).replace("{of}", String(of))}</p>}
         {/* Face down, and nothing else yet: the twist isn't laid out for a player who didn't look (fix brief H-25). */}
         {onLookAgain && of > 0 && !(state.flags.includes("did:facedown") && !found.some((f) => f !== end?.id && f !== "unopened")) && (
-          <button type="button" className={ending.button} onClick={onLookAgain}>
+          <button type="button" className="act-quiet" onClick={onLookAgain}>
             Look again
           </button>
         )}
@@ -254,17 +254,17 @@ export default function EndCardV3({ story, state, onLookAgain }: { story: Story;
 
       <PassItOn result={full ? { ...result, line: fullShare } : result} />
       <section className={ending.section}>
-        <button type="button" className={ending.button} onClick={() => setFull((f) => !f)} aria-pressed={full}>
+        <button type="button" className="act-quiet" onClick={() => setFull((f) => !f)} aria-pressed={full}>
           {full ? "Share the spoiler-safe card" : "Finished it? Share the full card"}
         </button>
       </section>
 
       <section className={ending.section}>
-        <button type="button" className={ending.button} onClick={playAgain}>
+        <button type="button" className="act-quiet" onClick={playAgain}>
           Play again
         </button>
         <KeepCase caseId={id as CaseId} />
-        <Link className={ending.quiet} href="/">
+        <Link className={`act-text ${ending.quiet}`} href="/">
           Back to Found
         </Link>
       </section>

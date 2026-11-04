@@ -9,6 +9,7 @@ import { SiteLink, useGo } from "./Chrome";
 import Logo from "./Logo";
 import { reel, useReel } from "./reel";
 import Socials from "./Socials";
+import SoundSwitch from "./SoundSwitch";
 import { filmOut, hoverTick, menuTick } from "./sounds";
 import Stars from "./Stars";
 import styles from "./Nav.module.css";
@@ -109,10 +110,13 @@ export default function Nav({ route }: { route: Route }) {
       {panel && <div className={styles.catcher} onClick={close} />}
       <div className={styles.mobileBg} />
 
-      <SiteLink href="/" className={styles.logo} aria-label="Found, home" onClick={close} data-cursor="hide">
-        <Logo className={styles.wordmark} />
-        <span className={styles.logoLine}>Thriller Game</span>
-      </SiteLink>
+      <div className={styles.left}>
+        <SiteLink href="/" className={styles.logo} aria-label="Found, home" onClick={close} data-cursor="hide">
+          <Logo className={styles.wordmark} />
+          <span className={styles.logoLine}>Thriller Game</span>
+        </SiteLink>
+        <SoundSwitch className={styles.sound} />
+      </div>
 
       <div className={styles.menu} data-cursor="hide" onMouseEnter={hoverTick}>
         <div className={styles.large}>

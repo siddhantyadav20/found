@@ -28,7 +28,7 @@
   inset: 0;
   border: 2px solid var(--white-30);
   border-radius: 50%;
-  transition: transform 0.5s var(--ease-out-quint);
+  transition: transform var(--t-short) var(--ease-out);
 }
 
 .text {
@@ -39,8 +39,8 @@
   letter-spacing: 0.15em;
   line-height: 1;
   transition:
-    transform var(--quick) var(--ease-out-quint),
-    opacity var(--quick) var(--ease-out-quint);
+    transform var(--quick) var(--ease-out),
+    opacity var(--quick) var(--ease-out);
 }
 
 .arrows {
@@ -61,8 +61,8 @@
   height: 0.6rem;
   opacity: 0;
   transition:
-    transform var(--quick) var(--ease-out-quint),
-    opacity 0.15s linear;
+    transform var(--quick) var(--ease-out),
+    opacity var(--t-quick) linear;
 }
 
 .arrow svg {
@@ -88,7 +88,7 @@
 .box[data-pressed="true"] .text {
   opacity: 0;
   transform: translateY(150%);
-  transition-duration: 0.2s;
+  transition-duration: var(--t-quick);
 }
 
 .box[data-side="top"] .text,

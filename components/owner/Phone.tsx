@@ -164,8 +164,8 @@ export default function Phone({
   const closeApp = () => {
     const el = appRef.current;
     if (!el) return onCloseApp();
-    const ease = `${CLOSE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-    el.style.transition = `scale ${ease}, translate ${ease}, border-radius ${ease}, opacity ${CLOSE_MS}ms cubic-bezier(0.6, 0, 1, 1)`;
+    const ease = `${CLOSE_MS}ms var(--ease-in-out)`;
+    el.style.transition = `scale ${ease}, translate ${ease}, border-radius ${ease}, opacity ${CLOSE_MS}ms var(--ease-in)`;
     const into = origin && zoomOver(origin, el.clientWidth, el.clientHeight);
     el.style.scale = into ? into.scale : "0.3";
     el.style.translate = into ? into.translate : "0 -18%";
@@ -190,7 +190,7 @@ export default function Phone({
       },
       end: ({ dy, vy }) => {
         if (dy < -80 || vy < -0.5) return closeApp();
-        const spring = "0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1)";
+        const spring = "0.35s var(--ease-spring-soft)";
         el.style.transition = `scale ${spring}, translate ${spring}, border-radius ${spring}`;
         el.style.scale = "";
         el.style.translate = "";
@@ -219,7 +219,7 @@ export default function Phone({
       },
       end: ({ dx, vx }) => {
         const go = dx > width * 0.33 || vx > 0.45;
-        view.style.transition = `translate ${BACK_MS}ms cubic-bezier(0.2, 0.8, 0.2, 1)`;
+        view.style.transition = `translate ${BACK_MS}ms var(--ease-out)`;
         view.style.translate = go ? `${width}px 0` : "0px 0";
         window.setTimeout(() => {
           if (go) back.click();
@@ -296,12 +296,12 @@ export default function Phone({
       },
       end: ({ dy, vy }) => {
         if (dy < -26 || vy < -0.3) {
-          el.style.transition = "transform 0.22s cubic-bezier(0.4, 0, 1, 1)";
+          el.style.transition = "transform 0.22s var(--ease-in)";
           el.style.transform = "translateY(-160%)";
           window.setTimeout(() => onDismissBanner?.(), 220);
           return;
         }
-        el.style.transition = "transform 0.3s cubic-bezier(0.2, 1.2, 0.3, 1)";
+        el.style.transition = "transform 0.3s var(--ease-spring)";
         el.style.transform = "";
       },
     });

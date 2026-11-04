@@ -1,4 +1,4 @@
-import Coffee from "@/components/site/Coffee";
+import Coffee from "@/components/cinema/Coffee";
 import { ABOUT } from "@/content/pages";
 import { Arch, FlyGrid, Lean, Scrub } from "./AboutMotion";
 import Arrow from "./Arrow";

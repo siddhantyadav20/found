@@ -47,7 +47,7 @@
     inset 0 0 0 3px #050505,
     0 50px 120px rgba(0, 0, 0, 0.75),
     0 0 120px rgba(255, 140, 60, 0.07);
-  animation: lift 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: lift 0.9s var(--ease-out) both;
 }
 
 @keyframes lift {
@@ -293,7 +293,7 @@
    and --zr lay the layer over that box; they're worked out in index.tsx
    (`zoomOver`) about this layer's own 50% 70% origin. */
 .appLayer[data-zoom] {
-  animation: zoom 0.44s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation: zoom 0.44s var(--ease-out) both;
 }
 
 @keyframes zoom {
@@ -354,7 +354,7 @@
   backdrop-filter: blur(30px) saturate(1.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s;
+  transition: opacity var(--t-quick);
 }
 
 .control[data-open] { opacity: 1; pointer-events: auto; }
@@ -406,7 +406,7 @@
   background: rgba(255, 255, 255, 0.16);
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--t-quick);
 }
 
 .ccRound svg { width: 24px; height: 24px; }
@@ -473,7 +473,7 @@
   padding: calc(var(--os-top) + 14px) 14px 14px;
   background: rgba(0, 0, 0, 0.35);
   translate: 0 -100%;
-  transition: translate 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+  transition: translate var(--t-short) var(--ease-out);
   touch-action: none;
 }
 
@@ -646,7 +646,7 @@
   inset: 12px 23px 11px;
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.72);
-  transition: background-color 0.2s;
+  transition: background-color var(--t-quick);
 }
 
 .homeBar:hover::before {
@@ -676,7 +676,7 @@
   cursor: pointer;
   /* Flicked up to dismiss: the drag is the banner's, not the page's. */
   touch-action: none;
-  animation: drop 0.5s cubic-bezier(0.2, 1.1, 0.3, 1) both;
+  animation: drop 0.5s var(--ease-spring-soft) both;
 }
 
 /* Thicker than the widgets' glass: a banner lands over anything, a title
@@ -877,7 +877,7 @@
 
 /* A replay's second look: hold the first notification and its icon comes up
    close enough to see whose it really is. */
-.notice[data-look] .noticeIcon { transition: scale 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1); transform-origin: left center; }
+.notice[data-look] .noticeIcon { transition: scale var(--t-short) var(--ease-spring-soft); transform-origin: left center; }
 .notice[data-look]:hover .noticeIcon,
 .notice[data-look]:active .noticeIcon { scale: 2.4; position: relative; z-index: 2; }
 

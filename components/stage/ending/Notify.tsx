@@ -63,7 +63,7 @@ export default function Notify({
           autoComplete="email"
           inputMode="email"
         />
-        <button type="submit" className={styles.button} disabled={!ok || state === "sending"}>
+        <button type="submit" className={`act-quiet ${styles.button}`} disabled={!ok || state === "sending"}>
           {state === "sending" ? "Sending…" : "Tell me"}
         </button>
       </span>

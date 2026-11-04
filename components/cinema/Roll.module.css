@@ -30,7 +30,7 @@
 /* The picture spins in first; the words only arrive as it lands. */
 .roll[data-in] .slots {
   opacity: 1;
-  transition: opacity 0.8s ease var(--late-delay);
+  transition: opacity var(--t-mid) ease var(--late-delay);
 }
 
 .slot {

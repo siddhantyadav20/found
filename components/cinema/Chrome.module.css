@@ -23,9 +23,6 @@
   --leading-md: 0.21rem;
   --rounded-xs: 6px;
   --rounded-md: 12px;
-  --ease-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-  --custom-ease: cubic-bezier(0.19, 1, 0.22, 1);
   --panels-duration: 0.9s;
   --page-delay: 0.6s;
   --logo-delay: 0.6s;
@@ -79,12 +76,12 @@
 
 .page {
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--t-quick) ease;
 }
 
 :global(html[data-entered]) .page:not([data-out]) {
   opacity: 1;
-  transition: opacity 0.8s ease var(--page-delay);
+  transition: opacity var(--t-mid) ease var(--page-delay);
 }
 
 @media (max-width: 991px) {

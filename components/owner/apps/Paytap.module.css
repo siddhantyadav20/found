@@ -8,13 +8,13 @@
   padding-top: var(--os-top);
   background: #0b1311;
   color: #f2f6f5;
-  animation: open 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: open 0.34s var(--ease-out) both;
   touch-action: pan-y;
   letter-spacing: -0.01em;
 }
 
 .app[data-push] {
-  animation: push 0.42s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation: push 0.42s var(--ease-out) both;
 }
 
 @keyframes open {

@@ -41,8 +41,8 @@
 :global(html[data-entered]) .logo {
   opacity: 1;
   transition:
-    opacity 0.8s ease var(--logo-delay),
-    color 0.3s ease;
+    opacity var(--t-mid) ease var(--logo-delay),
+    color var(--t-short) ease;
 }
 
 :global(html[data-entered] [data-arriving]) .logo {
@@ -73,6 +73,43 @@
   color: #000;
 }
 
+.left {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  height: fit-content;
+}
+
+/* The sound switch, beside the logo: arrives with it, and takes its ink. */
+.sound {
+  margin-top: 0.35rem;
+  color: var(--white);
+  opacity: 0;
+}
+
+:global(html[data-entered]) .sound {
+  opacity: 1;
+  transition:
+    opacity var(--t-mid) ease var(--logo-delay),
+    color var(--t-short) ease,
+    background-color var(--t-quick);
+}
+
+:global(html[data-entered] [data-arriving]) .sound {
+  opacity: 0;
+  transition: none;
+}
+
+.nav[data-variant="contact"] .sound,
+.nav[data-ink="black"] .sound {
+  color: #000;
+}
+
+.nav[data-panel] .sound {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ---- The ticket ---- */
 
 .menu {
@@ -88,7 +125,7 @@
 
 :global(html[data-entered]) .menu {
   transform: none;
-  transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1) var(--menu-delay);
+  transition: transform var(--t-long) var(--ease-out) var(--menu-delay);
 }
 
 :global(html[data-entered] [data-arriving]) .menu {
@@ -135,14 +172,14 @@
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.4s ease,
+    opacity var(--t-short) ease,
     visibility 0s 0.4s;
 }
 
 .row[data-on] {
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.4s ease;
+  transition: opacity var(--t-short) ease;
 }
 
 .rowTop {
@@ -162,7 +199,7 @@
   border-radius: var(--rounded-xs);
   background-position: center;
   background-size: cover;
-  transition: transform 1.1s var(--custom-ease);
+  transition: transform var(--t-long) var(--ease-out);
 }
 
 .rowTitle {
@@ -172,8 +209,8 @@
   line-height: 0.9;
   text-transform: uppercase;
   transition:
-    transform 1.1s var(--custom-ease),
-    opacity 1.1s var(--custom-ease);
+    transform var(--t-long) var(--ease-out),
+    opacity var(--t-long) var(--ease-out);
 }
 
 .rowBot {
@@ -192,7 +229,7 @@
   height: 1px;
   background: #000;
   transform-origin: left;
-  transition: transform 1.1s var(--custom-ease);
+  transition: transform var(--t-long) var(--ease-out);
 }
 
 .clip {
@@ -209,7 +246,7 @@
   grid-template-columns: auto auto auto;
   justify-content: space-between;
   height: 100%;
-  transition: transform 1.1s var(--custom-ease);
+  transition: transform var(--t-long) var(--ease-out);
 }
 
 .info > span {
@@ -232,8 +269,8 @@
   padding: 1rem;
   line-height: 0;
   transition:
-    transform 0.8s var(--custom-ease),
-    opacity 0.3s ease;
+    transform var(--t-mid) var(--ease-out),
+    opacity var(--t-short) ease;
 }
 
 .chevron svg {
@@ -375,8 +412,8 @@
   transform: scaleY(0);
   transform-origin: bottom;
   transition:
-    transform 1.1s var(--ease-out-quint),
-    opacity 0.3s ease;
+    transform var(--t-long) var(--ease-out),
+    opacity var(--t-short) ease;
 }
 
 @media (hover: hover) and (min-width: 767px) {
@@ -403,7 +440,7 @@
   width: 100%;
   height: 2px;
   background: #000;
-  transition: transform 1.1s var(--custom-ease);
+  transition: transform var(--t-long) var(--ease-out);
 }
 
 .icon i:nth-child(1) {
@@ -436,7 +473,7 @@
   inset: 100% 0 auto;
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--panels-duration) var(--custom-ease);
+  transition: grid-template-rows var(--panels-duration) var(--ease-out);
 }
 
 .panelClip {
@@ -462,7 +499,7 @@
   display: grid;
   grid-template-rows: 0fr;
   width: var(--stub);
-  transition: grid-template-rows var(--panels-duration) var(--custom-ease);
+  transition: grid-template-rows var(--panels-duration) var(--ease-out);
 }
 
 .nav[data-panel="sheet"] .sheetPanel[data-for="sheet"],
@@ -504,7 +541,7 @@
   font-size: 13px;
   line-height: 1.2;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity var(--t-short) ease;
 }
 
 .sheetItem[data-on] {
@@ -574,8 +611,8 @@
   text-decoration: none;
   text-transform: uppercase;
   transition:
-    background 0.3s,
-    color 0.3s;
+    background var(--t-short),
+    color var(--t-short);
 }
 
 .sheetCta:hover {
@@ -680,7 +717,7 @@
 
 .nav[data-panel="list"] .filmThumb {
   transform: none;
-  transition: transform 1.1s var(--ease-out-quint) var(--delay);
+  transition: transform var(--t-long) var(--ease-out) var(--delay);
 }
 
 .filmTitle {
@@ -695,7 +732,7 @@
 
 .nav[data-panel="list"] .filmTitle {
   transform: none;
-  transition: transform 0.8s var(--ease-out-quint) var(--delay);
+  transition: transform var(--t-mid) var(--ease-out) var(--delay);
 }
 
 .dot {
@@ -704,12 +741,12 @@
   border-radius: 50%;
   background: #000;
   transform: scale(0);
-  transition: transform 0.2s ease-out;
+  transition: transform var(--t-quick) ease-out;
 }
 
 .film[data-current] .dot {
   transform: scale(1);
-  transition: transform 1.1s var(--ease-out-quint);
+  transition: transform var(--t-long) var(--ease-out);
 }
 
 .film:hover .dot {
@@ -728,8 +765,8 @@
   opacity: 0;
   transform: scale(0.5);
   transition:
-    opacity 0.2s ease-out,
-    transform 0.2s ease-out;
+    opacity var(--t-quick) ease-out,
+    transform var(--t-quick) ease-out;
 }
 
 .direct svg {
@@ -744,7 +781,7 @@
 .direct:hover path:first-of-type {
   fill: #000;
   stroke: #000;
-  transition: fill 0.4s ease-out;
+  transition: fill var(--t-short) ease-out;
 }
 
 .direct:hover path:last-of-type {
@@ -768,7 +805,7 @@
 .nav[data-panel] .dashed,
 .nav[data-panel] .dashedLine {
   transform: none;
-  transition: transform var(--panels-duration) var(--custom-ease) var(--delay, 0s);
+  transition: transform var(--panels-duration) var(--ease-out) var(--delay, 0s);
 }
 
 /* The menu */
@@ -826,7 +863,7 @@
   line-height: 0.9;
   text-decoration: none;
   text-transform: uppercase;
-  transition: opacity 0.2s;
+  transition: opacity var(--t-quick);
 }
 
 .linkText {
@@ -836,7 +873,7 @@
 
 .nav[data-panel="main"] .linkText {
   transform: none;
-  transition: transform 0.8s var(--ease-out-quint) var(--delay);
+  transition: transform var(--t-mid) var(--ease-out) var(--delay);
 }
 
 .linkText[data-n]::before {
@@ -869,7 +906,7 @@
   opacity: 0.5;
   text-decoration: none;
   text-transform: uppercase;
-  transition: opacity 0.2s;
+  transition: opacity var(--t-quick);
 }
 
 .legal a:hover {
@@ -989,7 +1026,7 @@
     visibility: hidden;
     transition:
       visibility 0s 0.3s,
-      opacity 0.3s ease-in-out;
+      opacity var(--t-short) ease-in-out;
   }
 
   .nav[data-panel="main"] .mobileBg {
@@ -997,7 +1034,7 @@
     visibility: visible;
     transition:
       visibility 0s,
-      opacity 0.3s ease-in-out;
+      opacity var(--t-short) ease-in-out;
   }
 }
 

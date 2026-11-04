@@ -209,7 +209,7 @@
 
 /* A wrong password: the field shakes, as iOS shakes it, and then the owner's hint. */
 .pin[data-shake] {
-  animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: shake 0.42s var(--ease-shake) both;
 }
 
 @keyframes shake {
@@ -310,7 +310,7 @@
 }
 
 .otp[data-shake] {
-  animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation: shake 0.42s var(--ease-shake) both;
 }
 
 .otpBox {

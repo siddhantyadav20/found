@@ -27,7 +27,7 @@
   font-family: var(--font-ios);
   text-align: center;
   color: var(--os-text);
-  animation: pop 0.26s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+  animation: pop 0.26s var(--ease-spring) both;
 }
 
 .title {

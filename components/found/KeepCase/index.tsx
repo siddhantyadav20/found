@@ -63,7 +63,7 @@ export default function KeepCase({ caseId = FEATURED, variant = "card" }: { case
               ? "It looks like private browsing, or storage is switched off, so closing this tab would lose the case. A case number keeps it for you instead."
               : "A case number keeps your cases for a year after you last play. No account, no email."}
           </p>
-          <button type="button" className={styles.primary} onClick={claim} disabled={phase === "asking"}>
+          <button type="button" className={`act ${styles.primary}`} onClick={claim} disabled={phase === "asking"}>
             {phase === "asking" ? "Getting one…" : "Get a case number"}
           </button>
           {phase === "failed" && <p className={styles.error}>Couldn&apos;t get one just now. Try again in a minute.</p>}
@@ -82,7 +82,7 @@ export default function KeepCase({ caseId = FEATURED, variant = "card" }: { case
           {!handheld && <CaseQR url={url} />}
           <div className={styles.row}>
             <a
-              className={styles.whatsapp}
+              className={`act-quiet ${styles.whatsapp}`}
               href={`https://wa.me/?text=${encodeURIComponent(`My Found case number: ${number}\n${url}`)}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -90,7 +90,7 @@ export default function KeepCase({ caseId = FEATURED, variant = "card" }: { case
             >
               Send it to yourself
             </a>
-            <button type="button" className={styles.secondary} onClick={copy}>
+            <button type="button" className="act-quiet" onClick={copy}>
               {copied ? "Link copied" : "Copy link"}
             </button>
           </div>

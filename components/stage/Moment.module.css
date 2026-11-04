@@ -31,7 +31,7 @@
   display: block;
   height: 100%;
   background: var(--red);
-  transition: width 1s linear;
+  transition: width var(--t-long) linear;
 }
 
 .body {
@@ -83,7 +83,7 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.1em;
   color: var(--red);
-  transition: font-size 0.2s;
+  transition: font-size var(--t-quick);
 }
 
 /* A choice is words first: the ticket's outline, in plain type. */

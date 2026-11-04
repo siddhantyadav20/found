@@ -16,11 +16,11 @@
     linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.36) 100%),
     var(--wallpaper, linear-gradient(180deg, #0a0c1c 0%, #16132b 45%, #2a1a1c 100%)) center / cover no-repeat,
     #0a0c1c;
-  animation: settle 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: settle 0.45s var(--ease-out) both;
   /* `transform`, not `scale`: the entry animation owns `scale`. */
   transition:
-    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-    filter 0.4s;
+    transform var(--t-short) var(--ease-out),
+    filter var(--t-short);
 }
 
 @keyframes settle {
@@ -203,7 +203,7 @@ p.widget { cursor: default; }
   height: 7px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.38);
-  transition: background-color 0.25s;
+  transition: background-color var(--t-quick);
 }
 
 .pageDot[data-on] {
@@ -239,8 +239,8 @@ p.widget { cursor: default; }
   width: min(62px, 100%);
   aspect-ratio: 1;
   transition:
-    scale 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2),
-    filter 0.2s;
+    scale var(--t-quick) var(--ease-spring),
+    filter var(--t-quick);
 }
 
 /* Pressed: the icon sinks and darkens a touch, like the real thing. */
@@ -264,7 +264,7 @@ p.widget { cursor: default; }
   line-height: 23px;
   letter-spacing: -0.02em;
   text-align: center;
-  animation: pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation: pop 0.4s var(--ease-spring) both;
 }
 
 @keyframes pop {
@@ -338,7 +338,7 @@ p.widget { cursor: default; }
 }
 
 .icon[data-busy="loading"] .progress {
-  animation: fill 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fill 1.8s var(--ease-in-out) forwards;
 }
 
 @property --p {

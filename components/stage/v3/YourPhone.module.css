@@ -28,7 +28,7 @@
   background: #0b0d10;
   box-shadow: 0 -24px 60px rgb(0 0 0 / 55%);
   overflow: hidden;
-  animation: up 0.62s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  animation: up 0.62s var(--ease-out) both;
 }
 
 @keyframes up {
@@ -79,7 +79,7 @@
   backdrop-filter: blur(24px);
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-sans), sans-serif;
-  animation: drop 0.5s 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+  animation: drop 0.5s 0.4s var(--ease-spring) both;
 }
 
 @keyframes drop {
@@ -130,5 +130,5 @@
 /* A call on it needs the room (fix brief §10): the guard's lines and the replies, all on screen at once. */
 .phone:has([data-answered]) {
   height: min(88dvh, 720px);
-  transition: height 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+  transition: height var(--t-short) var(--ease-out);
 }

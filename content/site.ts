@@ -31,6 +31,17 @@ export type Page = {
   readonly warning: string;
 };
 
+/** The top of a chapter's page (2026-11-05): one line set big, the clock the
+ *  story runs against, and two quiet lines over the way down. Spoiler-free. */
+export type Hero = {
+  readonly headline: readonly string[];
+  readonly clock: { readonly time: string; readonly caption: string };
+  readonly tagline: readonly [string, string];
+};
+
+/** A chapter's trailer, served from public/. */
+export type Trailer = { readonly src: string; readonly poster: string; readonly length: string };
+
 const art = (name: string) => `/found/chapters/${name}.jpg`;
 
 export type Reel = {
@@ -50,6 +61,8 @@ export type Reel = {
   readonly reviews: readonly Review[];
   readonly logline: string;
   readonly note: string;
+  readonly hero: Hero;
+  readonly trailer?: Trailer;
   readonly more: Page;
 };
 
@@ -57,7 +70,7 @@ const YEAR = "2026";
 
 function reel(
   meta: CaseMeta,
-  own: Pick<Reel, "still" | "tall" | "badge" | "reviews" | "more"> & { id: CaseId },
+  own: Pick<Reel, "still" | "tall" | "badge" | "reviews" | "hero" | "more"> & Partial<Pick<Reel, "trailer">> & { id: CaseId },
 ): Reel {
   const [category, city, length] = meta.tone.split(" · ");
   const eyebrow = `Chapter ${meta.chapter}`;
@@ -88,6 +101,14 @@ export const REELS: readonly Reel[] = [
     still: art("raakh-key"),
     tall: art("raakh-poster"),
     badge: { year: YEAR, headline: "Out 5 Nov", seal: "Live" },
+    // Lines from the trailer's own cards, which were written twist-safe.
+    hero: {
+      headline: ["Everyone", "has a", "version."],
+      clock: { time: "7:00", caption: "They want it back by seven" },
+      tagline: ["A wedding in Delhi.", "Every phone was recording."],
+    },
+    // v4 (2026-11-04), cropped to its scope frame and cut down to 720p for the web.
+    trailer: { src: "/found/trailer/raakh.mp4", poster: "/found/trailer/raakh-poster.jpg", length: "1:12" },
     reviews: [
       { stars: 4.5, quote: "A work of art", source: "Reddit" },
       { stars: 4.5, quote: "Fresh in the world of slop", source: "Instagram" },
@@ -129,6 +150,11 @@ export const REELS: readonly Reel[] = [
     still: art("lastlocal-key"),
     tall: art("lastlocal-poster"),
     badge: { year: YEAR, headline: "Three episodes", seal: "Play" },
+    hero: {
+      headline: ["Her phone", "stayed", "behind."],
+      clock: { time: "1:12", caption: "The last train out" },
+      tagline: ["She stepped off at Dadar.", "Her phone stayed on the seat."],
+    },
     // No reviews yet, and none invented: its lock screen speaks for it.
     reviews: [
       { quote: "23 Missed Calls", source: "Aai" },

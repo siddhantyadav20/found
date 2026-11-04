@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { siteUrl } from "@/lib/origin";
-import { brucke, display, hand, mono, phone, sans, ui } from "./fonts";
+import { brucke, display, hand, mono, phone, sans } from "./fonts";
 import "./globals.css";
 import "./ios.css";
 import Preloader from "@/components/cinema/Preloader";
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${display.variable} ${hand.variable} ${ui.variable} ${mono.variable} ${phone.variable} ${sans.variable} ${brucke.variable}`}
+      className={`${display.variable} ${hand.variable} ${mono.variable} ${phone.variable} ${sans.variable} ${brucke.variable}`}
       // SaveScript and PreloaderScript mark the page before React sees it.
       suppressHydrationWarning
     >

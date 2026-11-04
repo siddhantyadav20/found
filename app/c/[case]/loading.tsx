@@ -1,4 +1,4 @@
-import Loader from "@/components/site/Loader";
+import Loader from "@/components/cinema/Loader";
 
 /** A case on its way: the parcel is being fetched. */
 export default function Loading() {

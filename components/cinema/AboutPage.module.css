@@ -52,7 +52,7 @@
   height: 100%;
   object-fit: cover;
   transform: scale(1.5);
-  transition: transform 1.8s var(--custom-ease);
+  transition: transform 1.8s var(--ease-out);
 }
 
 :global([data-in]) .archImage {

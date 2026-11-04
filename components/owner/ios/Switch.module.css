@@ -11,8 +11,8 @@
   background: rgba(120, 120, 128, 0.32);
   cursor: pointer;
   transition:
-    background-color 0.2s,
-    opacity 0.2s;
+    background-color var(--t-quick),
+    opacity var(--t-quick);
 }
 
 .switch[data-on] {
@@ -35,7 +35,7 @@
   box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.18),
     0 1px 1px rgba(0, 0, 0, 0.16);
-  transition: translate 0.25s cubic-bezier(0.3, 0.9, 0.3, 1.1);
+  transition: translate var(--t-quick) var(--ease-spring-soft);
 }
 
 .switch[data-on] .knob {

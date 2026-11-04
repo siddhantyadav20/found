@@ -2,8 +2,7 @@
    same face works inside a <button> and a link. */
 
 .face {
-  --duration: 0.8s;
-  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration: var(--t-mid);
   position: relative;
   display: flex;
   width: 142px;
@@ -45,8 +44,8 @@
   letter-spacing: 0.15em;
   line-height: 0.9;
   transition:
-    transform var(--duration) var(--ease),
-    color var(--duration) var(--ease) 0.1s;
+    transform var(--duration) var(--ease-out),
+    color var(--duration) var(--ease-out) 0.1s;
 }
 
 .text::after {
@@ -60,8 +59,8 @@
   display: block;
   height: 0.8rem;
   transition:
-    transform var(--duration) var(--ease),
-    color var(--duration) var(--ease);
+    transform var(--duration) var(--ease-out),
+    color var(--duration) var(--ease-out);
 }
 
 .arrow svg {
@@ -81,16 +80,16 @@
   width: 100%;
   height: 100%;
   overflow: visible;
-  transition: fill var(--duration) var(--ease);
+  transition: fill var(--duration) var(--ease-out);
 }
 
 .outline path:first-child {
   fill: transparent;
-  transition: fill var(--duration) var(--ease);
+  transition: fill var(--duration) var(--ease-out);
 }
 
 .tear {
-  transition: stroke var(--duration) var(--ease);
+  transition: stroke var(--duration) var(--ease-out);
 }
 
 @media (min-width: 767px) and (hover: hover) {

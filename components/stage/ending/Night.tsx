@@ -40,7 +40,7 @@ export default function Night({ story, state }: { story: Story; state: CaseState
       <div className={styles.nightActs}>
         {/* A real link, never a popup opened from script, so no in-app browser blocks it. */}
         <a
-          className={styles.button}
+          className="act-quiet"
           href={typeof window === "undefined" ? undefined : `https://wa.me/?text=${encodeURIComponent(text())}`}
           target="_blank"
           rel="noopener noreferrer"
@@ -51,7 +51,7 @@ export default function Night({ story, state }: { story: Story; state: CaseState
         {canShare ? (
           <button
             type="button"
-            className={styles.button}
+            className="act-quiet"
             onClick={() => {
               track({ case: id, event: "share:night" });
               void navigator.share({ text: text() }).catch(() => {});
@@ -62,7 +62,7 @@ export default function Night({ story, state }: { story: Story; state: CaseState
         ) : (
           <button
             type="button"
-            className={styles.button}
+            className="act-quiet"
             onClick={() => {
               track({ case: id, event: "share:night" });
               void navigator.clipboard?.writeText(text()).then(() => setCopied(true), () => {});

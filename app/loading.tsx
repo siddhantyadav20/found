@@ -1,4 +1,4 @@
-import Loader from "@/components/site/Loader";
+import Loader from "@/components/cinema/Loader";
 
 /** Between pages: Found's own loader, never a blank screen. */
 export default function Loading() {

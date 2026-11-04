@@ -145,9 +145,8 @@ export default function Recap({ story, state, episode, onDone }: { story: Story;
             />
           </div>
         ) : (
-          <button type="button" className={styles.go} onClick={onDone}>
+          <button type="button" className={`act ${styles.go}`} onClick={onDone}>
             {episode === 1 ? "His phone is dying. Keep it alive" : `Episode ${episode + 1}: ${next}`}
-            <span aria-hidden="true">→</span>
           </button>
         )}
       </div>

@@ -225,7 +225,7 @@
   font-size: 16px;
   letter-spacing: 0.06em;
   rotate: -7deg;
-  animation: stamp 0.45s 0.8s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation: stamp 0.45s 0.8s var(--ease-spring) both;
 }
 
 .wbStamp small {

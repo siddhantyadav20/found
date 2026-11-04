@@ -92,9 +92,8 @@ export default function Previously({ story, state, episode, onDone }: { story: S
           </dl>
         </section>
 
-        <button type="button" className={styles.go} onClick={onDone}>
+        <button type="button" className={`act ${styles.go}`} onClick={onDone}>
           Begin Episode {episode}
-          <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>
