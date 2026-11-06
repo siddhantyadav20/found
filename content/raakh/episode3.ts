@@ -195,7 +195,7 @@ const dilip: Thread = {
       evidence: "anita-voice",
     }),
     afterVoice("an-p1", "03:23", {
-      attachment: { kind: "photo", label: "A patient's belongings in a plastic bag: a maroon waistcoat with a dried stain, and a name badge, DILIP", src: "/found/raakh/nurse-bag-2.jpg" },
+      attachment: { kind: "photo", label: "A patient's belongings in a plastic bag on a steel tray: a maroon waistcoat, folded, and a name badge, DILIP", src: "/found/raakh/nurse-bag-2.jpg" },
       evidence: "belongings",
     }),
     afterVoice("an-p2", "03:23", {

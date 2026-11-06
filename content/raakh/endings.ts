@@ -103,14 +103,14 @@ export const endings: readonly Ending[] = [
       {
         at: "5:31 AM",
         kind: "media",
-        text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
+        text: "Bedi Nursing Home, the side corridor: a tube light flickers once; at the far end, a door marked 6",
         src: "/found/game/corridor.jpg",
         seconds: 14,
         voice: "media:corridor-alone",
         captions: [
           { at: 1, line: "[his breathing, close to the phone]" },
           { at: 5, line: "[a tube light flickers once]" },
-          { at: 8, line: "[a hand points to a door: 6]" },
+          { at: 8, line: "[at the far end, a door: 6]" },
           { at: 10, who: "Sister Anita", line: "Aap akele aaye ho? …Aap hi dono ho.", english: "You came alone? …You're both." },
         ],
         unless: ["did:raju-called", "did:dcp-route"],
@@ -118,13 +118,13 @@ export const endings: readonly Ending[] = [
       {
         at: "5:31 AM",
         kind: "media",
-        text: "Bedi Nursing Home, the side corridor: a tube light flickers once; a hand points to a door marked 6",
+        text: "Bedi Nursing Home, the side corridor: a tube light flickers once; at the far end, a door marked 6",
         src: "/found/game/corridor.jpg",
         seconds: 14,
         captions: [
           { at: 1, line: "[his breathing, close to the phone]" },
           { at: 5, line: "[a tube light flickers once]" },
-          { at: 8, line: "[a hand points to a door: 6]" },
+          { at: 8, line: "[at the far end, a door: 6]" },
         ],
         any: ["did:raju-called", "did:dcp-route"],
       },

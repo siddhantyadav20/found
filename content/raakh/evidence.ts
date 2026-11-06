@@ -131,7 +131,7 @@ export const evidence: readonly Evidence[] = [
   { code: "E47", id: "anita", device: "owner", app: "whatsapp", label: "From Dilip's number: Sister Anita, night nurse, Bedi Nursing Home, Fatehpur Beri", within: true },
   { code: "E47", id: "anita-voice", device: "owner", app: "whatsapp", label: "Sister Anita's voice note: “Deepak, unnees saal, road accident… Goli ka ghaav hai.”", within: true },
   { code: "E47", id: "anita-read", device: "owner", app: "whatsapp", label: "Sister Anita: “Woh phone dekhta rehta hai, jawab nahi deta. Unhone mana kiya hai.”", within: true },
-  { code: "E48", id: "belongings", device: "owner", app: "whatsapp", label: "A patient's bag: a maroon waistcoat, a dried stain, a badge: DILIP", within: true },
+  { code: "E48", id: "belongings", device: "owner", app: "whatsapp", label: "A patient's bag: a maroon waistcoat, folded, a badge: DILIP", within: true },
   { code: "E48", id: "slip", device: "owner", app: "whatsapp", label: "The admission slip: “Deepak · 19 · M · RTA · Adm 22/11 3:20 AM · Room 6”", within: true },
   { code: "E49", id: "dilip-plea", device: "owner", app: "whatsapp", label: "Dilip's voice note: “Bhaiya… aap aa rahe ho na?”", within: true },
   { code: "E50", id: "bhasin-terms", device: "owner", app: "whatsapp", label: "Bhasin's terms: the phone down with the guard, the boy on a bus at seven", within: true },

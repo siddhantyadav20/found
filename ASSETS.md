@@ -266,6 +266,21 @@ any size without a photograph.
 **Voices** added for the too-late moments: the Chhattarpur SHO, Sister Anita
 and Raju (`moment:late-*` in `scripts/voices.raakh.json`).
 
+## One face for Dilip (2026-11-06)
+
+A playtest caught three different boys playing Dilip: the portrait, the poster and his "Hello sir" frame showed one; the 12:29 photo, the reel take, Kunal's frame and the crew photo another; Room 6 and Chhath a third. The 12:29 photo's face (slim, nineteen, neat side-parted hair, faint thin moustache) is now the only one. These were redrawn from it in ChatGPT's image tool, using crops of `bts.jpg` as the reference, then fitted to the old sizes:
+
+| File | Is now |
+|---|---|
+| `w-portrait-2.jpg` | The 9:48 PM portrait, same framing; the badge zoom in `phone.ts` moved to 63 %, 67 % |
+| `poster-dilip.jpg` | A grayscale head-and-shoulders crop of the new portrait |
+| `dp-dilip.jpg` | A still from his front-camera "Hello sir" video, in a corridor under a tube light, as its caption always said |
+| `room6.jpg` | Room 6: eyes open, the shoulder bandaged, a drip, as the ending's line says |
+| `dilip-chhath.jpg` | Chhath at the Samastipur ghat, yellow kurta, a red thread on his wrist |
+| `playtest/raakh-whatsapp/art/B16-proof.jpg` | Kit only: Bhasin's photo of him asleep in the same room, a man beside the bed with his face out of frame |
+
+`dilip-awake.jpg` still has the old third face, but nothing in the game uses it.
+
 ## Trailers (2026-10-24, second pass)
 
 `scripts/trailers.py` builds both, with `scripts/card.swift` (title cards: Mac

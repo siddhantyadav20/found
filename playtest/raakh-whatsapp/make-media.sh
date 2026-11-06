@@ -1,6 +1,7 @@
 #!/bin/sh
 # Copies the game's own photos, clips and voices into media/, named by the beat
-# that uses them (see 2-NIGHT.md). Run from anywhere: sh make-media.sh
+# that uses them (see 2-NIGHT.md), plus the kit-only art in art/.
+# Run from anywhere: sh make-media.sh (it clears media/ first).
 set -e
 here="$(cd "$(dirname "$0")" && pwd)"
 root="$here/../.."
@@ -8,6 +9,7 @@ img="$root/public/found/raakh"
 game="$root/public/found/game"
 vo="$root/public/voices/raakh"
 out="$here/media"
+rm -rf "$out"
 mkdir -p "$out/dp"
 
 cp_() { cp "$1" "$out/$2"; }
@@ -51,17 +53,17 @@ cp_ "$vo/reveal-away.m4a"              B08-meera-dontlook.m4a
 cp_ "$vo/call-meera-meera-keep-early-0.m4a" B08-meera-delete.m4a
 
 # Act 2
-cp_ "$img/kunal-frame.jpg"             B10-kunal-frame.jpg
-cp_ "$img/clip-reel-take.mp4"          B11-reel-take.mp4
-cp_ "$vo/memo-memo-458.m4a"            B11-memo-14.m4a
-cp_ "$img/clip-fire-whole.mp4"         B15-fire-whole.mp4
-cp_ "$vo/voice-an-v.m4a"               B16-anita.m4a
-cp_ "$img/nurse-bag-2.jpg"             B16-belongings.jpg
-cp_ "$img/slip.jpg"                    B16-slip.jpg
-cp_ "$vo/voice-an-4.m4a"               B17-dilip-plea.m4a
-cp_ "$vo/call-guard-0.m4a"             B18-guard-1.m4a
-cp_ "$vo/voice-b-gate.m4a"             B18-bhasin-gate.m4a
-cp_ "$vo/voice-b-terms.m4a"            B18-bhasin-terms.m4a
+cp_ "$img/clip-reel-take.mp4"          B10-reel-take.mp4
+cp_ "$vo/memo-memo-458.m4a"            B10-memo-14.m4a
+cp_ "$img/clip-fire-whole.mp4"         B11-fire-whole.mp4
+cp_ "$img/kunal-frame.jpg"             B13-kunal-frame.jpg
+cp_ "$vo/call-guard-0.m4a"             B16-guard.m4a
+cp_ "$vo/voice-b-gate.m4a"             B16-bhasin-gate.m4a
+cp "$here/art/B16-proof.jpg"           "$out/B16-proof.jpg"
+cp_ "$vo/voice-an-v.m4a"               B17-anita.m4a
+cp_ "$img/nurse-bag-2.jpg"             B17-belongings.jpg
+cp_ "$img/slip.jpg"                    B17-slip.jpg
+cp_ "$vo/voice-an-4.m4a"               B18-dilip-plea.m4a
 
 # The phone's contents
 cp_ "$img/poster-dilip.jpg"            P-poster.jpg
@@ -83,7 +85,6 @@ cp_ "$img/poster-dilip.jpg"            E-poster.jpg
 cp_ "$vo/ending-dilip-thanks.m4a"      E-dilip-thanks.m4a
 cp_ "$img/dilip-chhath.jpg"            E-chhath.jpg
 cp_ "$game/counter.jpg"                E-counter.jpg
-cp_ "$game/counter-envelope.jpg"       E-counter-envelope.jpg
 
 # Group photos
 for who in raju meera bhasin kunal nitin dilip; do cp "$img/dp-$who.jpg" "$out/dp/$who.jpg"; done

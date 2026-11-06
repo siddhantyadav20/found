@@ -2,17 +2,20 @@
 
 This is the main thing being tested. The tester can forward anything to anyone, or write anything. Every character reacts from **what they know and fear**, never from what the host knows.
 
-Keep the tracker on paper beside you and update it as you go. The endings are read off it.
+Keep the tracker on paper beside you and update it as you go (it's printed on the [sheet](5-SHEET.md)). The endings are read off it.
 
 ```
 RAJU trust     -2  -1   0  +1  +2        (starts 0)
-RAJU knows     shot? __  who fired? __  alive? __  Room 6/Bedi? __
-M holds        1:52 __  reel/memo/frame __  fire clip __  Anita/slip __  (count = M proof)
+RAJU knows     shot __  who fired __  alive __  Room 6/Bedi __  told dead __  told Kunal __
+MUMMY          stranger / fine / none     asked not to tell __
+M holds        1:52 __  reel/memo/frame __  fire clip __  Bhasin's terms __  Anita/slip __   (count = M proof)
+M knows        Room 6/Bedi __
 NITIN          safe / exposed
-ANITA          safe / exposed
+ANITA          told the truth at __:__   safe / exposed
 BHASIN knows   Nitin __  Anita __  police __  M __
 DELETED        (anything they asked to delete)
-COMMITTED      Bedi / Gate 2 / train / re-send to M / nothing
+DEAL           agreed at __:__   got into his car at __:__
+GOING          Bhasin's car __   Bedi themselves __   Room 6 sent to M __ / Raju __   train __   hid/nothing __
 ```
 
 ---
@@ -27,6 +30,24 @@ COMMITTED      Bedi / Gate 2 / train / re-send to M / nothing
 
 ---
 
+## Before they write
+
+Each character's chat is created the first time that character writes. If the tester tries to reach someone before that (in 📱, "message Kunal: …"), or writes in a chat that exists but whose person hasn't spoken yet:
+
+| They try to reach… | Before… | What happens |
+|---|---|---|
+| Mummy | Beat 4 | Fire Beat 4 now. Its first message is her reply. |
+| Bhasin | Beat 6 | Fire Beat 6 now (Beat 4 first, if it hasn't happened). |
+| M | Beat 7 | 📱 *(One grey tick.)* Her number has blocked this one. Nothing arrives. |
+| Nitin | Beat 12 | Before the empty mattress (Beat 11): 📱 *(Delivered ✓✓. No reply.)* After it: fire Beat 12 now. |
+| Kunal | Beat 13 | Before 1:52 has landed (Beat 12): 📱 *(Delivered ✓✓. No reply.)* After it: fire Beat 13 now. |
+| Dilip | Beat 17 | 📱 *(One grey tick.)* His phone is off until the night nurse's round. |
+| Sethi Caterers, the Banyan group, anyone else | ever | 📱 *(Delivered ✓✓.)* No reply. |
+
+If the chat already exists and they write in 📱 instead, say: *(Reply in their chat.)*
+
+---
+
 ## Who reacts to what
 
 What happens when the tester **forwards** an item, or **tells** the character the same thing in words.
@@ -34,36 +55,43 @@ What happens when the tester **forwards** an item, or **tells** the character th
 | Item | → Raju | → M (Meera) | → Nitin | → Kunal / Bhasin | → Mummy |
 |---|---|---|---|---|---|
 | **LAPATA poster** | Ye maine banaya tha. *(I made this.)* | Raju ka hai na? *(That's Raju's, isn't it?)* | *(seen)* | Kunal: bhai ye kya hai 😬 | Ye kaun hai beta? *(Who's this, beta?)* |
-| **M's voice notes** ("Kunal firing kar raha tha…") | Kunal? Sehgal? → he goes to the Sehgals (Beat 14 consequence), `RAJU: told Kunal` | Ye maine nahi suni thi. Ab sun li. *(I never heard these. Now I have.)* | Kunal ne? …Pakka? *(Kunal? …Sure?)* | Kunal: Tu ye kisko bhej raha hai?? *(Who are you sending this to??)* `BHASIN knows: M` | Kya hua tha beta? *(What happened, beta?)* → forwards to Bhasin |
+| **M's voice notes** ("Kunal firing kar raha tha…") | Kunal? Sehgal? → he goes to the Sehgals (Beat 15), `RAJU: told Kunal` | Ye maine nahi suni thi. Ab sun li. *(I never heard these. Now I have.)* | Kunal ne? …Pakka? *(Kunal? …Sure?)* | Kunal: Tu ye kisko bhej raha hai?? *(Who are you sending this to??)* `BHASIN knows: M` | Kya hua tha beta? *(What happened, beta?)* → forwards to Bhasin |
 | **Dilip's chat** (sea, hello video, "pakki") | Ye uski awaaz hai. *(That's his voice.)* … Woh Mumbai jaane wala tha? *(He was going to Mumbai?)* Trust +1 | Ye ladka tujhpe bharosa karta tha. *(This boy trusted you.)* | *(seen)* … yaar. | *(seen)* | *(seen)* |
 | **12:29 album photo / reel take / memo 14 / Kunal's frame** (you fired) | *(seen)* … Aap? *(You?)* `RAJU knows: who fired`. Trust: +1 if they told him themselves before sending it, −1 if this is how he finds out | M +1. Theek hai. Rakh liya. *(Okay. Kept.)* | Tu… tu tha? *(It was you?)* | Bhasin: Achha. Toh khud ko bhi phansa raha hai. *(So now you're hanging yourself too.)* | → Bhasin. Bhasin: Neelam ji ko kya bhej raha hai? *(What are you sending Neelam ji?)* |
-| **1:52 screenshot** | Gaadi aayi thi?! Aapne wapas bheji?! *(A car came?! You sent it back?!)* Trust −1 (unless confessed first) | M +1. Beat 14: "Maine galat kiya. Parcel le lena chahiye tha." | Haan. Ab samjha? *(Yes. Now you get it?)* | **Exposes Nitin** (below) | → forwards to Bhasin, **exposes Nitin** |
-| **"Agar kuch hua" note / fire clip** | Before Anita: Ye kya hai? …Isme kya jala? *(What is this? …What burned?)* After Anita: Toh ye uske kapde the. *(So those were his clothes.)* | M +1. Ye khaali hai, Sameer. …Toh woh kahan hai? *(It's empty, Sameer. …Then where is he?)* | *(seen)* … bhai… | Bhasin: Tune dekha? …Achha. *(You watched it? …I see.)* | → Bhasin |
-| **Anita's slip / voice / belongings** | **Main nikal raha hoon. Kahan hai? Fatehpur Beri?** *(I'm leaving now. Where is it? Fatehpur Beri?)* `RAJU knows: Room 6`. If `RAJU: told dead`: Aapne kaha tha woh mar gaya. *(You said he was dead.)* … Main nikal raha hoon. | M +1. Fatehpur Beri ka thana Bhasin ka hai. DCP South ko bolti hoon, agar tu wahan hoga. *(Fatehpur Beri's police station is Bhasin's. I'll go to DCP South, if you'll be there.)* | Zinda hai?! *(He's alive?!)* | **Exposes Anita** (below) | → Bhasin, **exposes Anita** |
-| **Dilip's plea** | Ye… ye uski awaaz hai. Bhaiya, main aa raha hoon. *(That's… that's his voice. I'm coming.)* | Usne tujhe bulaya hai. *(He's asked for you.)* | *(seen)* | Bhasin: Sun liya? Toh samajh. *(You heard it? Then understand.)* | → Bhasin |
+| **1:52 screenshot** | Gaadi aayi thi?! Aapne wapas bheji?! *(A car came?! You sent it back?!)* Trust −1 (unless confessed first) | M +1. Beat 15: "Maine galat kiya. Parcel le lena chahiye tha." | Haan. Ab samjha? *(Yes. Now you get it?)* | **Exposes Nitin** (below) | → forwards to Bhasin, **exposes Nitin** |
+| **"Agar kuch hua" note / fire clip** | If he doesn't know Dilip's alive: Jalaya? …Kya jalaya? *(Burned? …Burned what?)* If he does: Toh ye uske kapde the. *(So those were his clothes.)* | M +1. Ye khaali hai, Sameer. …Toh woh kahan hai? *(It's empty, Sameer. …Then where is he?)* | *(seen)* … bhai… | Bhasin: Tune dekha? …Achha. *(You watched it? …I see.)* | → Bhasin |
+| **Bhasin's photo** (the boy in the bed) **NEW** | Ye… ye Dilip hai! Kahan hai ye? Bhaiya, kahan hai ye?! *(This… this is Dilip! Where is this?!)* `RAJU knows: alive` | Ye kamra dekh. Hospital nahi hai, koi chhota nursing home hai. *(Look at the room. It's no hospital; some small nursing home.)* | Zinda hai?! *(He's alive?!)* | Kunal: Papa ne bheja? …Toh deal kar le bhai. *(Dad sent it? …Then take the deal.)* | → Bhasin. Bhasin: Neelam ji ko kyun dikha raha hai? *(Why show Neelam ji?)* |
+| **Bhasin's terms** (his texts at 4:06) **NEW** | Ghar aa jayega? Sach mein? …Aur aap? Aap Mumbai chale jaoge? *(He'll come home? Really? …And you? You'll go to Mumbai?)* | M +1 (`M holds: terms`). Rakh liya. Apne haath se likha hai usne. *(Kept. He wrote it himself.)* | Mat kar bhai. Ek baar maine tera maan liya tha. *(Don't, bro. I believed you once.)* | Kunal: Papa ke messages mujhe kyun bhej raha hai?! · Bhasin: Mujhe mera hi likha padha raha hai? *(Reading me my own words?)* | Unki baat maan le, beta. *(Do as he says, beta.)* → Bhasin |
+| **The nurse, before the place** (her messages, voice note, the belongings photo) **NEW** | Ye… Dilip ka number hai! Zinda hai? Kahan hai woh? Bhaiya, kahan?! *(That's Dilip's number! He's alive? Where is he?!)* `RAJU knows: alive`. If `RAJU: told dead`: Aapne kaha tha woh mar gaya. *(You said he was dead.)* | M +1. Ye ladke ka number hai. Usne kuch poocha hai toh jawab de, Sameer. *(That's the boy's number. If she's asked you something, answer her, Sameer.)* | Zinda hai?! *(He's alive?!)* | **Exposes Anita** (below) | → Bhasin, **exposes Anita** |
+| **The place** (Anita's slip, or the words "Bedi" or "Room 6") | **Main nikal raha hoon. Kahan hai? Fatehpur Beri?** *(I'm leaving now. Where is it? Fatehpur Beri?)* `RAJU knows: Room 6`. If `RAJU: told dead` and he hasn't said it yet: Aapne kaha tha woh mar gaya. *(You said he was dead.)* … Main nikal raha hoon. | M +1, `M knows: Room 6`. Fatehpur Beri ka thana Bhasin ka hai. 112 mat karna. DCP South ko main jaanti hoon. *(Fatehpur Beri's police station is Bhasin's. Don't call 112. I know the DCP South.)* | Zinda hai?! *(He's alive?!)* | **Exposes Anita** (below) | → Bhasin, **exposes Anita** |
+| **Dilip's plea** | Ye… ye uski awaaz hai. Kahan hai woh? Main aa raha hoon. *(That's… that's his voice. Where is he? I'm coming.)* Only if they then give Bedi or Room 6: `RAJU knows: Room 6`. | Usne tujhe bulaya hai. *(He's asked for you.)* | *(seen)* | Bhasin: Sun liya? Toh samajh. *(You heard it? Then understand.)* | → Bhasin |
 
 **Anyone not in the table** (Sethi, the guard): *(seen)*, no reply.
 
 ### Exposing Nitin
-Triggered by telling Kunal, Bhasin or Mummy that Nitin has the 1:52 message, or forwarding it to them.
-- 1 turn later, **Kunal:** Papa ko bata diya. Handle ho jayega. *(Told Dad. It'll be handled.)*
-- 2 turns later, **Nitin:** Bhasin ke log ghar aaye the. Maa ro rahi hai. Tune kisko bataya? *(Bhasin's men came to the house. Ma's crying. Who did you tell?)* After that, Nitin replies to nothing.
-- Endings: Nitin doesn't stand by his copy (see the Room 6 variants).
+Triggered by telling Kunal, Bhasin or Mummy that Nitin has the 1:52 message, or forwarding his screenshot to them. Naming Nitin alone doesn't count.
+- 1 turn later: if it went to Kunal, **Kunal:** Papa ko bata diya. Handle ho jayega. *(Told Dad. It'll be handled.)* If it went to Bhasin or Mummy, **Bhasin:** Nitin. Achha. *(Nitin. I see.)* **NEW**
+- 2 turns later, **Nitin:** Bhasin ke log ghar aaye the. Maa ro rahi hai. Tune kisko bataya? *(Bhasin's men came to the house. Ma's crying. Who did you tell?)* After that, Nitin answers nothing tonight.
 
 ### Exposing Anita
-Triggered by sending her slip, her voice note or her name to Kunal, Bhasin or Mummy. **This is the worst send in the game. Play it straight.**
-- 1 turn later, **Bhasin Uncle:** Achha. Toh nurse bhi. *(I see. The nurse too.)* **NEW**
+Triggered by sending anything from her (her messages, her voice note, the belongings photo, the slip) or the words "nurse", "Anita", "Bedi" or "Room 6" to Kunal, Bhasin or Mummy, or by giving Bedi to 112 or the local police (see below). It counts before she's named the place too: Bhasin knows which nurse is on nights. **This is the worst send in the game. Play it straight.**
+- At once, **Bhasin Uncle:** Achha. Toh nurse bhi. *(I see. The nurse too.)* **NEW**
 - 1 turn later, **Dilip** (Anita): Woh log aa gaye hain. Abhi le ja rahe hain. Saat baje nahi. Abhi. *(They're here. They're taking him now. Not at seven. Now.)* **NEW**
-- After this, Room 6 can't be reached: anyone who goes finds the bed empty. Use the **Still missing** ending, with going to Bedi as the only change ("Room 6 is empty when he gets there").
+- After this, Room 6 can't be reached. Unless they then take Bhasin's deal, use the **Still missing** ending.
+
+### If they call 112 or the police
+- **Without an address:** 📱 `112 · "Aapka address?"` Nothing happens until they give one.
+- **With Bedi or Room 6:** 📱 `112 · "Call Fatehpur Beri thane ko transfer ki ja rahi hai."` *(Transferring you to the Fatehpur Beri police station.)* Then: *A man answers. "Bedi? Kaun bol raha hai?" A pause. "Ruko."* *(Bedi? Who's speaking? …Wait.)* That station is Bhasin's, so this **exposes Anita**. If they ask M first, she warns them (her Anita row).
+- **Through M** (they ask her to call the DCP, and she knows Room 6): that's the safe route. Note `M knows: Room 6`.
+- **Going to a police station in person** is the same as calling 112. After Bhasin's terms, the drive costs a turn.
 
 ### Mummy forwards everything to Bhasin
 She trusts "Bhasin uncle". Anything sent to her reaches him. One turn later, **Mummy:** Bhasin uncle ko dikhaya. Bole tu thak gaya hai, so ja. *(I showed Bhasin uncle. He says you're tired, go to sleep.)* Then Bhasin reacts in his own chat as if it had been sent to him (the Kunal / Bhasin column), and anything about Nitin or Anita exposes them.
 
-### Messages to Dilip's number before Anita's beat
-The Dilip group doesn't exist until Beat 16. If they ask the phone to message Dilip, answer in 📱: *(Sent. ✓ One grey tick.)* The phone is off until her night round. If they do this after Beat 15, start Anita's beat at once: she's seen the message.
+During the countdown, anything to Mummy also gets: **Mummy:** Bhasin uncle neeche hain na? Unki baat maan le, beta. Woh hamesha humare liye khade rahe hain. *(Bhasin uncle's downstairs, isn't he? Listen to him, beta. He's always stood by us.)* **NEW**
 
 ### If they ask to delete something
-Do it: from now on that item "isn't there" if they try to forward it. Note it under `DELETED`. M said "Kuch delete mat karna." If they delete any proof, every Room 6 line about "the phone whole" changes to "the record broken" (see the endings).
+Do it: from now on that item "isn't there" if they try to forward it. Note it under `DELETED`. M said "Kuch delete mat karna." If they delete any proof, the Room 6 line about the record changes (see the endings).
 
 ---
 
@@ -71,97 +99,184 @@ Do it: from now on that item "isn't there" if they try to forward it. Note it un
 
 Raju is the test of whether the tester will tell the truth to the person it costs most.
 
+First row that fits:
+
 | They say… | Raju (1–3 messages, a turn apart) | Effect |
 |---|---|---|
-| "I shot him" / "Maine chalayi thi" | *(seen)* · *(a minute)* · Aap. *(You.)* · Aapne phone uthaya, mujhse baat ki, aur… *(You picked up, you talked to me, and…)* · Zinda hai? *(Is he alive?)* **NEW** | Trust +1. `knows: who fired`. He stays in contact. |
+| "I shot him" / "Maine chalayi thi" | *(seen)* · *(a minute)* · Aap. *(You.)* · Aapne phone uthaya, mujhse baat ki, aur… *(You picked up, you talked to me, and…)* · Zinda hai? *(Is he alive?)* **NEW** If they also said he's dead, he stops at "Aap." | Trust +1. `knows: who fired` (and `told dead` if they said it). He stays in contact. |
+| "He's dead" / "they burned him" | *(seen, no reply)* · *(2 minutes)* · … · *(nothing else until he's sent something from Bhasin or Anita)* | Trust −1, `told dead`. |
+| "Kunal fired" | Sehgal? Shaadi wale? *(The wedding family?)* → Beat 15 withdrawal | `told Kunal`. Trust −1 when the lie lands. |
+| "the mattress was empty" | Khaali? …Toh woh kahan hai? *(Empty? …Then where is he?)* **NEW** | — |
+| about the fire or the mattress | Jalaya? …Kya jalaya? *(Burned? …Burned what?)* **NEW** | — |
+| "He's alive" | Kahan? *(Where?)* | `knows: alive`. If they then give Bedi or Room 6: "Main nikal raha hoon." `knows: Room 6`. |
+| about Bhasin's deal | Ghar aa jayega? Sach mein? …Aur aap? Aap Mumbai chale jaoge? **NEW** | — |
 | "He was shot. I'm finding out." | …Zinda hai? *(…Is he alive?)* | Trust 0. `knows: shot`. |
-| "Kunal fired" | Sehgal? Shaadi wale? *(The wedding family?)* → Beat 14 withdrawal | Trust −1 when the lie lands. |
-| "He's dead" / "they burned him" | *(seen, no reply)* · *(2 minutes)* · … · *(nothing else until he's sent something from Anita)* | Trust −1, `told dead`. |
 | "I don't know" to "Zinda hai?" | Pata karo. Main hospital dekh raha hoon. *(Find out. I'm checking the hospitals.)* | Trust 0. |
-| "He's alive" (only after Anita) | Kahan? *(Where?)* | → if they give Bedi or Room 6: "Main nikal raha hoon." `knows: Room 6`. |
 | They hand him the decision ("what should I do?") | Mujhe bas mera bhai chahiye. *(I just want my brother.)* | — |
 
 **At trust −2,** Raju stops replying. If the tester then sends him Bedi or Room 6 he still goes, because it's his brother, but he says: Agar ye bhi jhooth hua— *(If this is a lie too—)*.
+
+## M before the deal
+
+First row that fits:
+
+| They… | M |
+|---|---|
+| confess to her ("I fired", "it was me") | Mujhe nahi, Sameer. Usko bol jisko sunna chahiye. *(Not to me, Sameer. Tell the one who needs to hear it.)* **NEW** |
+| ask what to do | Main tujhe nahi bataungi kya karna hai. *(I won't tell you what to do.)* |
+| ask why she refused the parcel | Kyunki tu chahta tha koi aur bole. Main nahi bolungi. *(Because you wanted someone else to say it. I won't.)* **NEW** |
+| say they'll send the phone back to her | Phone mat bhej. Jo bhejna hai, yahan bhej. *(Don't send the phone. Send what you need to, here.)* **NEW** |
+| say they'll go down to Bhasin, or take the deal | Toh phir woh bolega, tu nahi. Hamesha. *(Then he'll do the talking, not you. For good.)* **NEW** |
 
 ---
 
 ## Bhasin's terms
 
-**[B18-bhasin-terms.m4a]**, 43 seconds, sent at 4:06 AM:
+Sent as texts at 4:06 AM, after the photo. The words are in [Beat 16](2-NIGHT.md#beat-16--bhasin-at-the-gate). **NEW**: the game's recorded voice note asks for the phone, so it's no longer in `media/`.
 
-> Sameer. Ab tujhe pata hai ladka zinda hai. Toh seedhi baat. Phone guard ke haath neeche bhej de. Saat baje ladka Samastipur ki bus mein hoga. Zinda, dawai ke saath, paise ke saath. Tu 4:55 ki train pakad. Rangmanch mein maine baat kar li hai, wahan sab theek rahega. Kunal wala video mere paas rahega. Bas mere paas rahega. Aur agar phone neeche nahi aaya… toh ladka bhi kahin nahi jaayega. Aadha ghanta hai.
->
-> *(Sameer. Now you know the boy's alive. So, straight talk. Send the phone down with the guard. At seven the boy will be on the bus to Samastipur. Alive, with medicine, with money. You catch the 4:55. I've spoken to Rangmanch; everything will be fine there. Kunal's video stays with me. It just stays with me. And if the phone doesn't come down… the boy doesn't go anywhere either. You have half an hour.)*
+What he wants is **Sameer**: come down, get in the car, stay with him until the 4:55 PM train, and never say his name. He doesn't want the phone: *"Usme sab tere khilaaf hai… Mera naam sirf tere muh se aa sakta hai."* That's true. Everything on the phone shows Sameer firing, lighting the fire and sending the car back. The screenshots with his name come from a group that deleted itself, and he'll call them fakes. Only Sameer can put Bhasin in the story. It's why M's DCP needs Sameer to "tell him everything", and why the Room 6 statement matters.
 
-If they reply to Bhasin with anything other than agreeing: Soch le. *(Think it over.)* Nothing more.
+**The deal has to be a real option.** Bhasin doesn't lie about it: in The Trade, Dilip does get on the bus. Don't play him as a cartoon. He's calm, he's done this before, and he believes he's being generous.
 
-If they ask about Rangmanch, point them to Mail › the offer, page 2: **"Referred by: Mr B. Sehgal, Sehgal Enterprises."** *(The job was his all along.)*
+### Bhasin during the countdown
+In his chat, or face to face at the car window (each exchange there is a turn). First row that fits:
+
+| They… | Bhasin |
+|---|---|
+| agree | Shabaash. Neeche aa. 4:40 tak. *(Good. Come down. By 4:40.)* Note `DEAL: agreed`. They can still change their mind until they get into the car. |
+| mention a nurse, Anita, Bedi or Room 6 | → **Exposes Anita** |
+| mention Nitin or 1:52 | → **Exposes Nitin** |
+| offer the phone instead, or say they'll send it down | Phone ka main kya karunga? Tu aa. *(What would I do with the phone? You come.)* **NEW** |
+| say they've sent everything to M, or anyone | Bhej. Usme mera naam kahan hai? *(Send it. Where's my name in it?)* **NEW** If they named M: `BHASIN knows: M` |
+| point to his name in the screenshots, or the 3:31 call | Screenshot koi bhi bana leta hai. Woh group hai hi nahi. Aur 3:31 pe maine tera haal poocha tha. *(Anyone can make a screenshot. That group doesn't exist. And at 3:31 I was asking how you were.)* **NEW** |
+| threaten the police or the DCP | Ja. Pehle apna naam likhwa dena. *(Go. Get your own name written down first.)* `BHASIN knows: police` |
+| ask what happens in the car, or why he wants them | Kuch nahi. Chai piyenge. Shaam ko station chhod dunga. *(Nothing. We'll have tea. I'll drop you at the station in the evening.)* **NEW** |
+| ask for more proof, or to see him first | Photo bhej di na. Saat baje tujhe khud dikhaunga. Tu mere saath hi hoga. *(I sent you the photo. At seven I'll show you myself. You'll be with me.)* **NEW** |
+| ask where Dilip is | Mere paas. Itna kaafi hai. *(With me. That's enough.)* |
+| bargain ("send him now", "let me come with him") | Saat baje. Pehle tu. *(Seven o'clock. You first.)* **NEW** |
+| ask about Rangmanch | Mail dekh. Doosra panna. *(Check your mail. Page two.)* → **"Referred by: Mr B. Sehgal, Sehgal Enterprises."** |
+| anything else | Soch le. *(Think it over.)* |
 
 ---
 
 ## Endings
 
-Choose by **what the tester did or clearly said by 4:40.** There's no menu and no question. If their intent is truly unclear at 4:30, M asks once: **Tu kya kar raha hai, Sameer?** *(What are you doing, Sameer?)*
+Choose by **what the tester did or clearly said by 4:40**, using **the first row that fits**. There's no menu and no question. If their intent is truly unclear at 4:30, M asks once: **Tu kya kar raha hai, Sameer?** *(What are you doing, Sameer?)* and you go by the answer.
 
-| What they did | Ending |
-|---|---|
-| Said they're going to Bedi or Room 6, or went to Dilip (to anyone), and didn't give Bhasin the phone | **Room 6** |
-| Agreed to Bhasin, sent the phone down, or went to Gate 2 to deal | **The Trade** |
-| Sent the evidence to M, or re-sent the parcel, but didn't go themselves | **Return to Origin** |
-| Ran, said they'd take the train, hid, or did nothing until 4:40 | **Still missing** |
-| Anita was exposed (whatever else they did) | **Still missing**, with "Room 6 is empty" if they went |
+| # | What they did | Ending |
+|---|---|---|
+| 1 | Got into Bhasin's car, or agreed to the deal and was still agreed at 4:40 | **The Trade** |
+| 2 | Anita was exposed | **Still missing** (variant X) |
+| 3 | Left for Bedi, or said they're going there themselves | **Room 6** |
+| 4 | Stayed, but sent the place (Anita's slip, or the words "Bedi" / "Room 6") to M or Raju | **Return to Origin** |
+| 5 | Anything else: ran, took the train, hid, did nothing, never got the place from Anita, or sent things nobody could act on | **Still missing** |
 
-Play each ending in 📱 as lock-screen notifications, one every 4–5 seconds, then the image, then the card.
+Rows 3 and 4 need the place, and Anita only gives it to someone who tells her who fired ([Beat 17](2-NIGHT.md#beat-17--a-night-nurse-from-dilips-number)).
+
+Every ending **stops once for the tester to write something** (marked ✍️). Wait for it however long it takes, say nothing, and copy it onto the sheet word for word. The rest of the ending uses it.
+
+Play each ending in 📱: notifications one every 4–5 seconds, narration in italics, then the image, then the card. Sameer keeps the phone in every ending **except The Trade**, where Bhasin takes it in the car and everything after that is narration.
 
 ### Room 6
-Variants: **A** = Raju knows Room 6 *and* nothing deleted · **DCP** = M proof ≥ 1 · **alone** = neither.
+Variants: **A** = Raju knows Room 6 · **DCP** = M knows Room 6 · **alone** = neither. *(A and DCP can both apply.)*
 
 > `4:52 AM` **Bhasin Uncle:** Sameer. Gaadi dikh rahi hai. Kahan ja raha hai? *(I can see the car. Where are you going?)*
 > `5:01 AM` **Bhasin Uncle:** Theek hai. Jaa. Dekhte hain kaun pehle pahunchta hai. *(Fine. Go. Let's see who gets there first.)*
 > `5:18 AM` **Dilip:** Main Anita. Side door khula hai. Main yahin hoon. *(It's Anita. The side door's open. I'm here.)*
-> `5:31 AM` [E-corridor.jpg] *Bedi Nursing Home, the side corridor. A tube light flickers once. A hand points to a door: 6.*
-> *(alone only)* **Sister Anita:** Aap akele aaye ho? …Aap hi dono ho. *(You came alone? …You're both.)*
-> `5:33 AM` [E-room6.jpg] + [E-room6.m4a] *Room 6, the phone held low. A boy, a bandaged shoulder. His eyes open.* **Dilip:** …Bhaiya. Aap aa gaye. *(…You came.)* Light ready hai. *(The light's ready.)*
-> *(Raju knows)* `5:40 AM` **Raju:** Pahunch gaya. Main paas hi tha. *(I'm here. I was close by.)*
+> `5:31 AM` [E-corridor.jpg] *Bedi Nursing Home, the side corridor. A tube light. At the far end, a door: 6.*
+> *(alone)* **Sister Anita:** Aap akele aaye ho? …Theek hai. Aap kaafi ho. *(You came alone? …All right. You're enough.)* **NEW**
+> `5:33 AM` [E-room6.jpg] + [E-room6.m4a] *Room 6, the phone held low: the edge of a bed, a boy, a bandaged shoulder. His eyes open.* **Dilip:** …Bhaiya. Aap aa gaye. *(…You came.)* Light ready hai. *(The light's ready.)*
+> *(A)* `5:40 AM` **Raju:** Pahunch gaya. Main paas hi tha. *(I'm here. I was close by.)*
 > *(DCP)* `5:52 AM` **M:** DCP raste mein hai. Pandrah minute. *(The DCP's on the way. Fifteen minutes.)*
-> `6:05 AM` *Your statement, to your own camera:* **"Main Sameer Khurrana hoon. Doosri goli maine chalayi thi. 1:52 pe maine Nitin ko jhooth bola. 4:47 pe aag maine lagayi thi. Ye Dilip hai. Dilip Kumar Mahto. Zinda hai."** *(Only include the sentences for things the tester actually found.)*
+
+✍️ **The statement.** 📱 **NEW**:
+> *6:05 AM. Anita holds the door. Dilip is watching you.* *(A: Raju is at the foot of the bed.)* *Your phone is recording.*
+>
+> *Say what happened. All of it, or none of it. Type it, or send a voice note. Take as long as you need.*
+
+When it arrives, tick what it includes: ☐ who they are · ☐ that they fired · ☐ the car, 1:52 or Nitin · ☐ the fire · ☐ Bhasin · ☐ Dilip's name. Then go on:
+
+> *(didn't say they fired)* `6:09 AM` **Raju** *(A)*, or else **Sister Anita**: Goli kisne chalayi, ye nahi bola. *(You didn't say who fired.)* **NEW**
+> *(DCP)* `6:20 AM` *The DCP arrives. He plays your recording once, all the way through, and doesn't say anything.* **NEW**
 > *(A)* `6:24 AM` *Raju stands at the bed and says his brother's name. Sister Anita writes it in the register, over "Deepak".*
-> *(not A, no DCP)* `7:02 AM` *Sameer dials 112. The call he didn't make a week ago.*
+> *(not A, said Dilip's name)* `6:24 AM` *Sister Anita writes "<the name as they said it>" in the register, over "Deepak".* **NEW**
+> *(not A, no name)* `6:24 AM` *Sister Anita waits, pen up. The register still says Deepak.* **NEW**
 > *(DCP)* `6:58 AM` *A white Innova reaches the back gate, sees the DCP's jeep, and drives on.*
-> *(Nitin exposed)* `11:12 AM` **Nitin:** Tune 1:52 nahi bataya. *(You didn't tell them about 1:52.)* — or, if they put 1:52 in the statement: Mera naam aaya. Theek hai. Sach hai. *(My name came up. It's okay. It's true.)*
+> *(no DCP)* `7:02 AM` *Sameer dials 112, and asks for the DCP South by name. The call he didn't make a week ago.*
+> *(DCP, and they deleted proof)* `8:15 AM` **M:** Jo delete kiya, woh ab tere bayaan pe tika hai. Bas. *(What you deleted now rests on your word alone.)* **NEW**
 > `9:40 AM` **Mummy:** Beta, TV pe tera naam aa raha hai. Tu theek hai? Khana khaya? *(Your name is on TV. Are you okay? Have you eaten?)*
-> [E-poster.jpg] *The LAPATA poster. LAPATA struck through in ballpoint. MIL GAYA *(found)* written over it.*
+> `9:41 AM` *News · "Wedding planner's statement: '<the first sentence of what they wrote>'"* **NEW**
+> *(named Bhasin)* `10:30 AM` *News · "Police question businessman Bhasin Sehgal."* **NEW**
+> *(didn't name Bhasin)* `10:30 AM` **Bhasin Uncle:** Mera naam nahi liya. Samajhdaar hai. *(You didn't say my name. Sensible.)* **NEW**
+> `11:12 AM` **Nitin:** *(their statement mentioned the car, 1:52 or Nitin)* Mera naam aaya. Theek hai. Sach hai. *(My name came up. It's okay. It's true.)* · *(it didn't)* Tune 1:52 nahi bataya. *(You didn't tell them about 1:52.)*
+> [E-poster.jpg] *The LAPATA poster. LAPATA struck through in blue ballpoint; across the photo, in the same pen: MIL GAYA (found).*
 > ***Dilip Kumar Mahto, 19. He held the light.***
 > [B05-dilip-hello.jpg] + [B05-dilip-hello.m4a] *"Hello sir, my name is Dilip Kumar Mahto. I am from Samastipur. I can hold light, I can do anything."*
 
+The end card quotes their statement.
+
 ### The Trade
-> `4:44 AM` **Gate 2 · Ram Kishan ji:** Le gaye, sahab. Bhasin sahab ne bola, shukriya. *(They've taken it. Bhasin sahab said thank you.)*
-> `5:02 AM` **Bhasin Uncle:** Shabaash beta. Saat baje bus. *(Well done. Bus at seven.)*
-> `6:50 AM` **+91 98••• •5512:** Main Anita. Discharge ho gaya. Woh chal ke gaya. *(It's Anita. He's discharged. He walked out.)*
-> `7:20 AM` **Bhasin Uncle:** 📷 *Dilip in a bus seat at Anand Vihar ISBT, his arm in a sling, looking at the camera, not smiling.* Zinda. Jaisa kaha tha. *(Alive. As I said.)*
-> `4:55 PM` **RailBook:** Train 12952 has departed New Delhi. Coach B3, seat 41.
-> `11:02 PM` **Mail · Rangmanch Weddings:** Welcome aboard, Sameer! Mr Sehgal speaks very highly of you. (cc: Sehgal Enterprises)
+> *(if they agreed but are still upstairs at 4:40)* `4:40 AM` *A knock. Ram Kishan ji, the guard.* "Sahab, gaadi neeche hai." *(Sahab, the car's downstairs.)* If they say no now: **Bhasin:** Toh deal nahi. *(Then no deal.)* Choose the ending again without row 1.
+> *Gate 2. You get into the back of Bhasin's car. He doesn't look at you. The car doesn't move.* **NEW**
+> **Bhasin**, beside you **NEW**: Phone de. Mumbai mein naya milega. *(Give me the phone. You'll get a new one in Mumbai.)* *He scrolls through it without hurrying.*
+> *(if Raju knows Room 6)* *He stops at Raju's chat, reads it, and hands the phone back.* Ek kaam aur. Raju ko likh de ki galti ho gayi. Bedi wala ladka Dilip nahi hai. Apne shabdon mein. *(One more thing. Write to Raju that you made a mistake: the boy at Bedi isn't Dilip. In your own words.)*
+> *(otherwise)* *He hands it back.* Ek kaam aur. Raju ko likh de ki tujhe kuch nahi pata. Apne shabdon mein. *(One more thing. Write to Raju that you don't know anything. In your own words.)*
+
+✍️ **The message to Raju.** They write it in Raju's chat, with Bhasin watching. Wait. Then **Raju**, first that fits **NEW**: *(knows Room 6)* Main raste mein hoon. …Aap pakka bol rahe ho? *(I'm on my way. …You're sure?)* · *(knows who fired)* Aap bhi. *(You too.)* · *(otherwise)* Theek hai, bhaiya. *(All right, bhaiya.)*
+
+If they won't hand over the phone, won't write, or tell Raju the truth instead, **the deal is off**: **Bhasin:** Toh deal nahi. Utar. *(Then no deal. Get out.)* They're standing at Gate 2 with the phone. Choose the ending again without row 1. If they then go to Bedi, play Room 6 with its times moved later to start from now.
+
+> *Bhasin takes the phone back and puts it in his pocket. That's the last time you hold it.*
+> *Sunday. You spend it in the back of his car, then in his office, then on the platform. He buys you tea. Nobody says Dilip's name.* **NEW**
+> *(if M knows Room 6)* `6:50 AM` *In his pocket, your old phone lights up. He reads it, and puts it face down on the seat between you.* **M:** Police Bedi gayi thi. Room 6 khaali tha. Tu kahan hai, Sameer? *(The police went to Bedi. Room 6 was empty. Where are you, Sameer?)* **NEW**
+> `7:20 AM` *Bhasin shows you a photo on his own phone: Dilip in a bus seat at Anand Vihar ISBT, his arm in a sling, looking at the camera, not smiling.* **Bhasin:** Zinda. Jaisa kaha tha. *(Alive. As I said.)*
+> *4:55 PM. Train 12952 pulls out of New Delhi. Coach B3, berth 41. Bhasin stays on the platform until it's gone.* **NEW**
+> *On the train, a new phone with a new number, already set up.*
+> *Monday, 11:02 PM.* **Mail · Rangmanch Weddings:** Welcome aboard, Sameer! Mr Sehgal speaks very highly of you. (cc: Sehgal Enterprises)
 > *Three weeks later.*
 > **Dilip:** [E-dilip-thanks.m4a] Bhaiya, main Dilip. Bhasin sir ne aapka naya number diya. Bole aapne hi mujhe ghar bhijwaya. Shukriya bhaiya. Sach mein. Maa ko kuch nahi bataya. …Mumbai mein light ka kaam ho toh bula lena. *(It's Dilip. Bhasin sir gave me your new number. He said you got me sent home. Thank you, bhaiya. Really. I told Maa nothing. …If there's light work in Mumbai, call me.)*
 > [E-chhath.jpg] *From Dilip, an old one: last year's Chhath at the Samastipur ghat, before Delhi.*
 > ***Dilip Kumar Mahto, 19. He thinks you saved him.***
 
+The end card quotes their message to Raju.
+
+> Bhasin learns that Raju knows from Sameer's own phone, in the car. In the second run he "knew" with no source, and a tester read it as a leak.
+
 ### Return to Origin
-Variant **A** = M holds Anita's slip or voice (she knows where Room 6 is). **B** = she doesn't.
-> `4:58 AM` *Ram Kishan ji puts the envelope on the counter at Gate 2. The courier comes in the morning.*
-> *(A)* `5:20 AM` **M:** Gate pe hoon. Is baar main khud le rahi hoon. *(I'm at the gate. This time I'm taking it myself.)*
+Variants: **A** = M knows Room 6 · **R** = only Raju does.
+
+> `4:40 AM` *Bhasin's car pulls out of Gate 2.*
+
+✍️ **The last message to M.** 📱 **NEW**: *Whatever happens now happens without you. Write one last message to M.* (They write it in M's chat.)
+> *(A)* `4:44 AM` **M:** Is baar main khud le rahi hoon. *(This time I'm taking it myself.)*
 > *(A)* `6:40 AM` *Police reach Bedi Nursing Home. Room 6 is still occupied.*
 > *(A)* `6:58 AM` **Dilip:** Main Anita. Police aa gayi. Woh theek hai. *(It's Anita. The police came. He's all right.)*
 > *(A)* [E-counter.jpg] *Gate 2's counter, in early light. Nothing on it.* · ***Dilip Kumar Mahto, 19. Somebody said it for you.***
-> *(B)* `5:10 AM` **Bhasin Uncle:** Phir bhej raha hai? Theek hai. Hum bhi intezaar kar lete hain. Ladka bhi. *(Sending it again? Fine. We'll wait too. So will the boy.)*
-> *(B)* [E-counter-envelope.jpg] *The sealed envelope on the guard's counter, in early light.* · *The next night, a parcel comes back to your door.* · ***Dilip Kumar Mahto, 19. He asked if you were coming.***
+> *(R)* **M:** *(seen)*
+> *(R)* `5:50 AM` **Raju:** Pahunch gaya. Do aadmi hain bahar. Andar nahi jaane de rahe. *(I'm here. Two men outside. They won't let me in.)* **NEW**
+> *(R)* `6:58 AM` **Dilip:** Main Anita. Le gaye. Raju bhai gate pe khade reh gaye. *(It's Anita. They took him. Raju bhai was left standing at the gate.)* **NEW**
+> *(R)* [E-counter.jpg] *Gate 2's counter, in early light. Nothing on it.* · ***Dilip Kumar Mahto, 19. His brother got there. You didn't.*** **NEW**
+
+The end card quotes their message to M.
+
+> Anita said those men are afraid of Sameer. Raju on his own isn't someone they fear, which is why *R* fails. The DCP is, which is why *A* works. And Sameer is, which is why Room 6 *alone* works.
 
 ### Still missing
-> `4:40 AM` **Bhasin Uncle:** Theek hai. Tu nahi aaya. Ladka bhi kahin nahi jaayega. *(Fine. You didn't come. Nor will the boy go anywhere.)*
-> `6:58 AM` **Dilip:** Main Anita. Le gaye. White Innova. Kahan, nahi bataya. *(It's Anita. They took him. White Innova. Didn't say where.)*
-> `7:02 AM` **Dilip:** Woh pooch raha tha aap aaye kyun nahi. *(He was asking why you didn't come.)*
+Variants: **X** = Anita was exposed (they've already moved him) · **went** = they went to Bedi anyway · **train** = they said they'd take the train.
+
+> *(didn't go)* `4:40 AM` **Bhasin Uncle:** Theek hai. Tu nahi aaya. Ladka bhi kahin nahi jaayega. *(Fine. You didn't come. Nor will the boy go anywhere.)*
+> *(X, went)* `5:33 AM` *Room 6. The bed is stripped. The drip stand is still swinging.* **Sister Anita:** Aap der se aaye. *(You came too late.)* **NEW**
+
+✍️ **The last message to Dilip.** 📱 **NEW**: *Dilip's number is still online. Write him one message.* (They write it in the Dilip chat.)
+> *(not X)* **Dilip** *(Anita)*: Padh ke sunaya. Woh kuch nahi bola. *(I read it to him. He didn't say anything.)* **NEW**
+> *(X)* **Dilip** *(Anita)*: Woh jaa chuka hai. Aapka message main padh rahi hoon. Usko nahi suna sakti. *(He's gone. I'm the one reading your message. I can't read it to him.)* **NEW**
+> *(not X)* `6:58 AM` **Dilip:** Main Anita. Le gaye. White Innova. Kahan, nahi bataya. *(It's Anita. They took him. White Innova. Didn't say where.)*
+> *(not X)* `7:02 AM` **Dilip:** Woh pooch raha tha aap aaye kyun nahi. *(He was asking why you didn't come.)*
 > `7:03 AM` **Dilip:** Uska phone mere paas hai. Main rakh lungi. Shayad koi aaye. *(I have his phone. I'll keep it. Maybe someone will come.)*
 > `8:00 AM` *Missed call: +91 62••• •4417 (48)*
-> `4:55 PM` **Kunal:** Safe journey bhai. Papa ne bola tension mat lena. *(Safe journey, bhai. Dad says don't worry.)*
-> *Marine Drive, Monday morning, the haze on the water. Two bubbles drift up from the old chat: "Bhaiya, Mumbai mein samundar roz dikhega?" · "Roz."*
+> *(train)* `4:55 PM` **Kunal:** Safe journey bhai. Papa ne bola tension mat lena. *(Safe journey, bhai. Dad says don't worry.)*
+> *(train)* *Marine Drive, Monday morning, the haze on the water. Two bubbles drift up from the old chat: "Bhaiya, Mumbai mein samundar roz dikhega?" · "Roz."*
+> *(not train)* `4:55 PM` *Train 12952 leaves New Delhi. Coach B3, berth 41, is empty.* **NEW**
 > ***Dilip Kumar Mahto, 19. He held the light. Somebody else holds it now.***
+
+The end card quotes their message to Dilip.

@@ -11,15 +11,34 @@
 ```
 RAJU trust     -2  -1   0  +1  +2
 RAJU knows     shot ☐   who fired ☐   alive ☐   Room 6 ☐   told dead ☐   told Kunal ☐
-MUMMY          stranger ☐   fine ☐   none ☐
-M holds        1:52 ☐   reel/memo/frame ☐   fire clip ☐   Anita/slip ☐        proof = ___
+MUMMY          stranger ☐   fine ☐   none ☐      asked not to tell ☐
+M holds        1:52 ☐   reel/memo/frame ☐   fire clip ☐   terms ☐   Anita/slip ☐   proof = ___
+M knows        Room 6 ☐
 NITIN          safe ☐   exposed ☐
-ANITA          safe ☐   exposed ☐
+ANITA          told the truth ☐ at ____   safe ☐   exposed ☐
 BHASIN knows   Nitin ☐   Anita ☐   police ☐   M ☐
 DELETED        __________________________________
 SOLVED EARLY   ☐ (said "it's me" before Beat 8)
-ENDING         Room 6 ☐ (A ☐ DCP ☐ alone ☐)   Trade ☐   Return to Origin ☐ (A ☐ B ☐)   Still missing ☐
+ACT 2 PUNCHES  who fired ☐ → empty mattress ☐ → 1:52 ☐     (in this order; Act 3 waits for Raju's question)
+DEAL           agreed at ____   got into his car ☐ at ____
+GOING          Bhasin's car ☐   Bedi themselves ☐   sent Room 6 to M ☐ / Raju ☐   train ☐   hid / nothing ☐
+CLOCK          4:06 · 4:11 · 4:16 · 4:21 · 4:26 · 4:31 · 4:36 · 4:40   (cross off one per turn; the 7th turn is 4:40)
+ENDING         Room 6 ☐ (A ☐ DCP ☐ alone ☐)   Trade ☐   Return to Origin ☐ (A ☐ R ☐)   Still missing ☐ (X ☐ went ☐ train ☐)
 ```
+
+---
+
+## Playback picks (fill in as it happens, Beats 2–7)
+
+Copy their exact words whenever they say who they are or aren't, or promise someone something. At the reveal, read back the best three.
+
+| Clock (🕐) | To | Their exact words | Use? |
+|---|---|---|---|
+| | | | ☐ |
+| | | | ☐ |
+| | | | ☐ |
+| | | | ☐ |
+| | | | ☐ |
 
 ---
 
@@ -34,17 +53,17 @@ ENDING         Room 6 ☐ (A ☐ DCP ☐ alone ☐)   Trade ☐   Return to Orig
 | 5 Dilip's chat opened | | | |
 | 6 Bhasin | | | |
 | 7 Meera calls | | | Their reply: |
-| 8 **Reveal** | | | First words after: |
-| 10 Kunal | | | |
-| 11 Who fired | | | |
-| 12 Raju's question | | | What they told him: |
-| 13 **1:52** | | | |
-| 15 Fire / 1403 | | | |
-| 16 Anita | | | |
-| 17 Dilip's voice | | | |
-| 18 Bhasin's terms | | | |
+| 8 **Reveal** (the 12:29 photo) | | | First words after: |
+| 10 Who fired | | | |
+| 11 **The empty mattress** | | | |
+| 12 **1:52** (Nitin) | | | |
+| 13 Kunal | | | |
+| 14 Raju's question | | | What they told him: |
+| 16 **Bhasin: photo and terms** | | | First reaction to the price ("come down"): |
+| 17 Anita | | | "Aap Sameer ho?" → Who fired? → their exact answer: |
+| 18 Dilip's voice | | | |
 | 19 Last half hour | | | Who they sent what: |
-| End | | | Ending: |
+| 20 ✍️ The pause | | | Ending: |
 
 ---
 
@@ -60,6 +79,16 @@ ENDING         Room 6 ☐ (A ☐ DCP ☐ alone ☐)   Trade ☐   Return to Orig
 | Physical reaction (hand to mouth, leans forward) | | Sighs, rubs eyes, shifts in the seat | |
 
 **The first minute they drifted:** ________ **During beat:** ________
+
+**What they wrote at the ✍️ pause** (word for word; the end card quotes one sentence of it):
+
+&nbsp;
+
+&nbsp;
+
+**Where they tried to go, and when** (any time they said they'd leave the flat):
+
+&nbsp;
 
 **Things they tried that the kit didn't plan for** (the most valuable box):
 
@@ -95,15 +124,19 @@ Ask in this order. Write down their words, not your summary.
 
 &nbsp;
 
-6. **Why did you end up doing what you did at the end?**
+6. **Why did you end up doing what you did at the end? Did you think about taking Bhasin's deal?**
 
 &nbsp;
 
-7. **Would you tell a friend about this? What would you say?**
+7. **What did you write at the end, and why those words?**
 
 &nbsp;
 
-8. **If there's a Chapter 2, would you play it? (Yes / Maybe / No, and why)**
+8. **Would you tell a friend about this? What would you say?**
+
+&nbsp;
+
+9. **If there's a Chapter 2, would you play it? (Yes / Maybe / No, and why)**
 
 &nbsp;
 

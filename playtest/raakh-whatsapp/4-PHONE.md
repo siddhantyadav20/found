@@ -15,12 +15,12 @@ Inside the phone, the owner's own messages are labelled **You**. That's true of 
 
 ## WhatsApp: chat list
 > **WhatsApp**
-> 📌 **M** · 🎤 Voice message · Wed
-> **+91 62••• •4417** · Bhaiya, Dilip kahan hai? Bas itna bata do. · Sat
-> **Mummy** · Beta, phone kyun nahi utha raha? Khana khaya? · Sat
-> **Bhasin Uncle** · Balance aaj aa jayega… · Sun
-> **Kunal** · 🎥 Video · Sat
-> **Sethi Caterers** · Dilip ka hisaab Bhasin sir ne kar diya… · Mon
+> 📌 **M** · 🎤 Voice message · Wednesday
+> **+91 62••• •4417** · Bhaiya, Dilip kahan hai? Bas itna bata do. · 11:31 PM
+> **Mummy** · Beta, phone kyun nahi utha raha? Khana khaya? · 10:52 PM
+> **Bhasin Uncle** · Balance aaj aa jayega… · Sunday
+> **Kunal** · 🎥 Video · 21/11/26
+> **Sethi Caterers** · Dilip ka hisaab Bhasin sir ne kar diya… · Monday
 > **Banyan — Security** · ⏱ Disappearing messages are on
 > 🔒 **Locked chats (2)**
 > *(Say which chat.)*
@@ -51,8 +51,8 @@ Then the four voice notes:
 > **+91 62••• •4417** · *~Raju Mahto*
 > *Mon 23 Nov, 1:12 PM* · *Forwarded* [P-poster.jpg]
 > *1:13 PM* · Aap Sameer bhaiya ho na? Dilip ne aapka number diya tha. Woh aapke saath kaam kar raha tha. *(You're Sameer bhaiya, right? Dilip gave me your number. He was working with you.)*
-> *Wed, 7:40 PM* · Bhaiya ek baar baat kar lo 🙏 *(Please talk to me once.)*
-> *Sat, 11:31 PM* · Bhaiya, Dilip kahan hai? Bas itna bata do. *(Where is Dilip? Just tell me that.)*
+> *Wed 25 Nov, 7:40 PM* · Bhaiya ek baar baat kar lo 🙏 *(Please talk to me once.)*
+> *Today, 11:31 PM* · Bhaiya, Dilip kahan hai? Bas itna bata do. *(Where is Dilip? Just tell me that.)*
 
 ### Mummy
 > **Mummy**
@@ -61,9 +61,9 @@ Then the four voice notes:
 > *30 Oct* · **Mummy:** Bhasin uncle ne ghutne ka bill de diya. Kitne achhe hain. *(Bhasin uncle paid the knee bill. So kind.)*
 > *Sun 22 Nov, 1:02 PM* · **Mummy:** Beta shaadi kaisi rahi? Photo bhejna 😊 *(How was the wedding? Send photos.)*
 > *3:40 PM* · **You:** theek thi mummy. thak gaya hoon *(It was fine. I'm tired.)*
-> *Tue* · **Mummy:** Bhasin uncle aaye the. Pooch rahe the tu Mumbai kab ja raha hai. *(Bhasin uncle came by. Asking when you leave for Mumbai.)*
-> *Thu, 8:15 PM* · **Mummy:** Mumbai ka ticket le liya? Rent ka kya socha? *(Got the Mumbai ticket? What about rent?)*
-> *Sat, 10:52 PM* · **Mummy:** Beta, phone kyun nahi utha raha? Khana khaya? *(Why aren't you picking up? Have you eaten?)*
+> *Tue 24 Nov* · **Mummy:** Bhasin uncle aaye the. Pooch rahe the tu Mumbai kab ja raha hai. *(Bhasin uncle came by. Asking when you leave for Mumbai.)*
+> *Thu 26 Nov, 8:15 PM* · **Mummy:** Mumbai ka ticket le liya? Rent ka kya socha? *(Got the Mumbai ticket? What about rent?)*
+> *Today, 10:52 PM* · **Mummy:** Beta, phone kyun nahi utha raha? Khana khaya? *(Why aren't you picking up? Have you eaten?)*
 
 ### Bhasin Uncle
 > **Bhasin Uncle**
@@ -79,8 +79,8 @@ Then the four voice notes:
 ### Sethi Caterers
 > **Sethi Caterers**
 > *Sat 21 Nov, 2:10 PM* · Sameer ji, Dilip ko aapke shoot ke liye 12 baje chhod dunga. *(I'll send Dilip to your shoot at 12.)*
-> *Mon, 9:05 AM* · Sameer ji, Dilip Saturday ke baad se nahi aaya. Us raat aapke shoot pe tha na? *(Dilip hasn't come in since Saturday. He was at your shoot that night, wasn't he?)*
-> *Mon, 10:12 AM* · Dilip ka hisaab Bhasin sir ne kar diya. List se naam hata diya. *(Bhasin sir settled Dilip's account. Took him off the list.)*
+> *Mon 23 Nov, 9:05 AM* · Sameer ji, Dilip Saturday ke baad se nahi aaya. Us raat aapke shoot pe tha na? *(Dilip hasn't come in since Saturday. He was at your shoot that night, wasn't he?)*
+> *10:12 AM* · Dilip ka hisaab Bhasin sir ne kar diya. List se naam hata diya. *(Bhasin sir settled Dilip's account. Took him off the list.)*
 
 ### Banyan — Security
 > **Banyan — Security** · *Bhasin, Kunal, Pappu, Ramesh, You*
@@ -89,9 +89,10 @@ Then the four voice notes:
 > *(Nothing else. Everything in it has disappeared.)*
 
 ### 🔒 Locked chats
-> 🔒 **Locked chats** · *Enter secret code*
+> 🔒 **Locked chats (2)** · *Enter secret code*
+> *Hint: jo woh roz poochta tha* *(what he asked every day)*
 
-Wrong code: `Incorrect code.` Right code (**pakki**, any capitalisation): paste both chats below.
+Wrong code: `Incorrect code.` Right code (**pakki**, any capitalisation): say *Dilip · Nitin* and paste whichever they open.
 
 ### WhatsApp › Dilip (locked, code: pakki)
 > **Dilip**
@@ -121,16 +122,14 @@ Wrong code: `Incorrect code.` Right code (**pakki**, any capitalisation): paste 
 > *Sun 22 Nov, 12:58 AM* · **Nitin:** Kunal ki story pe goli ki awaaz?? tum log theek ho? *(A gunshot on Kunal's story?? Are you all okay?)*
 > *1:22 AM* · **Nitin:** Vicky ki Swift bhej raha hoon, 20 min. Dilip ko service gate pe le aao. *(Sending Vicky's Swift, 20 minutes. Bring Dilip to the service gate.)*
 > *1:40 AM* · **Nitin:** Vicky 10 min. Service gate — Mandi Road wala na? *(The service gate on Mandi Road, right?)*
-> *1:53 AM* · **Nitin:** theek hai bhai. agar le gaye hain toh main Vicky ko wapas bula leta hoon. *(Okay. If they've taken him, I'll call Vicky back.)*
-> *2:04 AM* · **Nitin:** Vicky wapas aa gaya. *(Vicky's back.)*
 > *9:31 AM* · **Nitin:** bhai?
 
-> The 1:53 reply answers a message that isn't there. That's a planted clue. Don't point it out.
+> The chat stops at 1:40 and picks up at 9:31: whatever was said in between has been deleted on this phone. Nitin still has it, and it arrives in Beat 12. Don't point the gap out.
 
 ---
 
 ## Photos
-> **Photos** · Albums: **Favorites (2) · Sehgal wedding · Screenshots (5) · Recently Deleted (2)** · 🔒 Act 2: **Sehgal Shaadi · Shared (1)**
+> **Photos** · Albums: **Favorites (2) · Sehgal wedding · Screenshots (3) · Recently Deleted (2)** · 🔒 Act 2: **Recently Deleted (3) · Sehgal Shaadi · Shared (1)**
 
 **Favorites**
 > *Sat 21 Nov, 9:48 PM · Chhattarpur* [P-portrait.jpg] *A catering boy in a maroon waistcoat with a tray, smiling into the lens. Zoom: his badge says DILIP.*
@@ -138,36 +137,32 @@ Wrong code: `Incorrect code.` Right code (**pakki**, any capitalisation): paste 
 
 **Sehgal wedding:** send 3–4 of [P-wedding-1…5.jpg] with *Sat 21 Nov · Chhattarpur*. They're scenery: let it feel like a real camera roll.
 
-**Screenshots** (taken Sun 22 Nov, 8:52 AM, before the group disappeared). Paste all four as one message:
-> 📷 **Banyan — Security**
+**Screenshots** (taken Sun 22 Nov, 8:52 AM, before the group disappeared). Paste all three as one message:
+> 📷 **Banyan — Security** · *Sun 22 Nov*
 > *12:38 AM* · **Bhasin:** Koi 112 nahi karega. Ladke ko service room le jao. *(Nobody calls 112. Take the boy to the service room.)*
-> *12:52 AM* · **Bhasin:** Thane mein baat ho gayi hai. Doctor ka intezaam ho raha hai. *(The police station's been spoken to. A doctor's being arranged.)*
 > *1:14 AM* · **Pappu:** Sir ladka hosh mein hai. Paani maang raha hai. *(Sir, the boy's conscious. Asking for water.)*
->
-> 📷 **Banyan — Security**
-> *1:31 AM* · **Bhasin:** Doctor aa raha hai. Sab shaant raho. *(Doctor's coming. Everyone stay calm.)*
 > *1:49 AM* · **Ramesh:** Sameer sir service room mein hain, ladke ke saath. *(Sameer sir is in the service room with the boy.)*
-> *1:59 AM* · **Pappu:** Service gate pe ek Swift aayi hai. *(A Swift has come to the service gate.)*
 >
-> 📷 **Banyan — Security**
-> *2:04 AM* · **Pappu:** Chali gayi sir. Driver bol raha tha cancel ho gaya. *(It left, sir. The driver said it was cancelled.)*
-> *2:41 AM* · **Pappu:** Sir ladka bol nahi raha. *(Sir, the boy isn't speaking.)* · **Bhasin:** Call karo mujhe. *(Call me.)*
+> 📷 **Banyan — Security** · *Sun 22 Nov*
+> *2:04 AM* · **Pappu:** Service gate pe Swift aayi thi, chali gayi. Driver bol raha tha cancel ho gaya. *(A Swift came to the service gate and left. The driver said it was cancelled.)*
 > *2:55 AM* · **Pappu:** Sir gaadi nikal gayi. Uska waistcoat gaadi mein rakh diya. *(The car's left. Put his waistcoat in the car.)* · **Bhasin:** Baaki back plot pe. *(The rest to the back plot.)*
 >
 > 📷 **ZipEMI** · EMI of Rs 14,200 for your Sony A7 IV is due on 25 Nov. Pay now to avoid a late fee of Rs 750.
 
+> Five lines, down from eleven: the first tester named the old dump as a place an impatient friend would stop. What's left is what the story needs (no 112, he was awake, Sameer was with him, the car was sent away, then a different car).
+
 **Recently Deleted**
 > *Before Beat 9:* two blurry wedding photos *(The varmala, out of focus · The baraat at the gate, again)*, deleted Thursday 11:20 PM.
-> *🔒 Act 2, after Beat 9:* + **a video** · *Sat 21 Nov, 12:31 AM · Banyan Farms · 0:18 · deleted Thursday 10:47 PM* → the reel take, Beat 11.
+> *🔒 Act 2, after Beat 9:* + **a video** · *Sun 22 Nov, 12:31 AM · Banyan Farms · 0:18 · deleted Thursday 10:47 PM* → the reel take, Beat 10.
 
-**🔒 Sehgal Shaadi · Shared** (Act 2): [B08-album-1229.jpg] *Kunal added a photo · 12:29 AM.* *(It was already shown at the reveal; this is where it lives.)*
+**🔒 Sehgal Shaadi · Shared** (Act 2): [B08-album-1229.jpg] *Kunal added a photo · Sun 22 Nov, 12:29 AM.* *(It was already shown at the reveal; this is where it lives.)*
 
 ---
 
 ## Notes
 > **Notes**
 > **For M** · *Thursday 11:26 PM*
-> 🔒 **Agar kuch hua** · *Thursday 11:16 PM* · *(Act 1: "Downloading from iCloud…" Act 2: locked)*
+> **Agar kuch hua** · *Thursday 11:16 PM* · ☁️ *("Downloading from iCloud…" until Beat 11)*
 > **Mumbai flats** · *Tuesday*
 > **Sehgal — run sheet** · *20/11*
 
@@ -194,19 +189,19 @@ Wrong code: `Incorrect code.` Right code (**pakki**, any capitalisation): paste 
 > **12:15 — SK reel w/ Kunal. back lawn. D — light (N sick)**
 > 01:00 pheras
 
-**Agar kuch hua:** Act 1: `Downloading from iCloud… Waiting for network.` Act 2: `🔒 Enter password · hint: birthday · ddmm` → Beat 15.
+**Agar kuch hua:** `Downloading from iCloud… Waiting for network.` It finishes downloading in [Beat 11](2-NIGHT.md#beat-11--the-fire-pulled), once who fired has landed, and opens with no password.
 
 ---
 
 ## Phone (Recents)
+Newest first, as the phone shows them:
 > **Recents**
-> **+91 62••• •4417** (47) · missed · Sat 11:38 PM
-> **Mummy** (6) · missed · Sat 10:50 PM
-> **Bhasin Uncle** (2) · missed · Sat 9:40 PM
-> **Nitin** · outgoing · Thu 11:24 PM · *(rang once)*
-> **Nitin** · missed · Thu 11:25 PM
-> **Nitin** (3) · missed · Sun 22 Nov, 2:06 AM
+> **+91 62••• •4417** (47) · missed · Today, 11:38 PM
+> **Mummy** (6) · missed · Today, 10:50 PM
+> **Bhasin Uncle** (2) · missed · Today, 9:40 PM
+> **Nitin** · outgoing, cancelled · Thursday, 11:24 PM
 > **Bhasin Uncle** · incoming · Sun 22 Nov, **3:31 AM · 4 min 12 sec**
+> **Nitin** (3) · missed · Sun 22 Nov, 2:06 AM
 > **Nitin** · outgoing · Sun 22 Nov, 1:15 AM · 2 min 38 sec
 
 ---
@@ -245,7 +240,7 @@ Wrong code: `Incorrect code.` Right code (**pakki**, any capitalisation): paste 
 
 - [P-memo-pitch.m4a] Main shaadiyan plan karta hoon, par mera har function ek film jaisa hota hai. Nahi. Phir se. …Main shaadiyon mein kahaniyan dhoondhta hoon. [a laugh] *(I plan weddings, but every function I do plays like a film. No. Again. …I find stories in weddings.)*
 - [B05-memo-15.m4a] M. Code woh hai… jo woh roz poochta tha. …Nahi. Rehne de. *(M. The code is… what he asked every day. …No. Leave it.)*
-- 🔒 [B11-memo-14.m4a] Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai. *(The first was for the camera. The second… I was posing. I thought it was empty.)*
+- 🔒 [B10-memo-14.m4a] Pehli camera ke liye thi. Doosri… main pose kar raha tha. Mujhe laga khaali hai. *(The first was for the camera. The second… I was posing. I thought it was empty.)*
 
 > The pitch memo is in the owner's voice, and so are the M voice notes. A tester who notices "same voice" has a clue. Don't confirm it.
 
@@ -266,24 +261,28 @@ If they tap the name:
 ---
 
 ## Timeline lines
-Post these in **🗒 Notes** the first time the tester sees each fact. Keep the list in time order by pinning it or reposting it. Don't post a line they haven't earned.
+Post these in **🗒 Notes** once the tester has **reacted** to each item (the rules are at the top of [2-NIGHT.md](2-NIGHT.md)). Keep the list in time order by reposting it now and then. Don't post a line they haven't earned. Each line says what the item shows and where it came from, never what it means.
 
-| When they see… | Post |
+Before the reveal, the phone's owner is **the owner**. After it, he's **Sameer**.
+
+| When they've reacted to… | Post |
 |---|---|
-| Raju's poster | 🕐 **Sat 21 Nov** · Dilip Kumar Mahto, 19, last seen at Banyan Farms, Chhattarpur. |
-| Sethi's 2:10 PM message or the run sheet | 🕐 **12:15 AM** · Dilip is sent to hold the light for the owner's reel on the back lawn. |
-| The 9:48 portrait | 🕐 **9:48 PM** · Dilip, smiling, with a tray. |
-| Kunal's clip | 🕐 **11:52 PM** · Kunal fires twice into the air on the dance floor. |
-| M voice note 1 | 💬 The owner tells M: "Kunal was firing. A boy fell." |
-| Screenshot 12:38 | 🕐 **12:38 AM** · Bhasin: nobody calls 112. The boy goes to the service room. |
-| Screenshot 1:14 or Dilip's 1:07 | 🕐 **1:07–1:14 AM** · Dilip is awake. "It hurts. You're coming, right?" |
-| Nitin's 1:22 (locked chat) | 🕐 **1:22 AM** · Nitin sends a car to the service gate for Dilip. |
-| Screenshot 2:04 or Nitin's 2:04 | 🕐 **2:04 AM** · The car leaves without him. |
-| Screenshot 2:55 | 🕐 **2:55 AM** · "The car's left." Dilip is taken somewhere. |
-| Recents, 3:31 | 🕐 **3:31 AM** · Bhasin rings the owner for 4 minutes. |
-| Fire trim | 🕐 **4:47 AM** · A mattress and clothes on the back plot. "His shirt too." |
-| M voice note 3 | 💬 The owner tells M: "They burned him. I lit the fire." |
-| Rangmanch page 2 | 💼 The Mumbai job was referred by **Mr B. Sehgal**. |
-| RailBook | 🚆 **Today, 4:55 PM** · the owner's train to Mumbai. |
+| Raju's poster | **Sat 21 Nov** · Dilip Kumar Mahto, 19, last seen at Banyan Farms, Chhattarpur. *(Raju's poster)* |
+| Sethi's 2:10 PM message | **Sat 21 Nov · 2:10 PM** · Sethi Caterers: "Dilip ko aapke shoot ke liye 12 baje chhod dunga." *(Sethi's chat)* |
+| The run sheet | **Sun 22 Nov · 12:15 AM** · Run sheet: "SK reel w/ Kunal. back lawn. D — light (N sick)" *(Notes)* |
+| The 9:48 portrait | **Sat 21 Nov · 9:48 PM** · A catering boy in a maroon waistcoat, with a tray. His badge: DILIP. *(Favorites)* |
+| Kunal's clip | **Sat 21 Nov · 11:58 PM** · Kunal's clip: two shots into the air on the dance floor. *(Kunal's chat)* |
+| M voice note 1 | **Sun 22 Nov · 9:40 AM** · The owner to M: "Kunal firing kar raha tha. Ek ladka gir gaya." *(never delivered)* |
+| Screenshot 12:38 | **Sun 22 Nov · 12:38 AM** · Bhasin: "Koi 112 nahi karega. Ladke ko service room le jao." *(screenshot)* |
+| Dilip's 1:07 (locked chat) | **Sun 22 Nov · 1:07 AM** · Dilip: "Bhaiya dard ho raha hai. Aap aa rahe ho na?" *(Dilip's chat)* |
+| Screenshot 1:14 | **Sun 22 Nov · 1:14 AM** · Pappu: "Sir ladka hosh mein hai. Paani maang raha hai." *(screenshot)* |
+| Nitin's 1:22 (locked chat) | **Sun 22 Nov · 1:22 AM** · Nitin: "Vicky ki Swift bhej raha hoon, 20 min. Dilip ko service gate pe le aao." *(Nitin's chat)* |
+| Screenshot 2:04 | **Sun 22 Nov · 2:04 AM** · Pappu: "Service gate pe Swift aayi thi, chali gayi. Driver bol raha tha cancel ho gaya." *(screenshot)* |
+| Screenshot 2:55 | **Sun 22 Nov · 2:55 AM** · Pappu: "Sir gaadi nikal gayi. Uska waistcoat gaadi mein rakh diya." Bhasin: "Baaki back plot pe." *(screenshot)* |
+| Recents, 3:31 | **Sun 22 Nov · 3:31 AM** · Bhasin Uncle, incoming call, 4 min 12 sec. *(Recents)* |
+| Fire trim | **Sun 22 Nov · 4:47 AM** · A rolled mattress and clothes on the back plot. "Uski shirt bhi." *(Favorites)* |
+| M voice note 3 | **Mon 23 Nov · 2:05 AM** · The owner to M: "Unhone usko jala diya, M. Aag maine lagayi." *(never delivered)* |
+| Rangmanch page 2 | **Mon 30 Nov** · Joining Rangmanch Weddings, Mumbai. "Referred by: Mr B. Sehgal, Sehgal Enterprises." *(Mail)* |
+| RailBook | **Sun 29 Nov · 4:55 PM** · Train 12952, New Delhi → Mumbai Central, coach B3, berth 41. *(RailBook)* |
 
-The Act 2 lines are written into the beats in [2-NIGHT.md](2-NIGHT.md). After the reveal, change "the owner" to **"you"** in every new line.
+The Act 2 and 3 lines are written into the beats in [2-NIGHT.md](2-NIGHT.md).

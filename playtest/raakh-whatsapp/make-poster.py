@@ -47,6 +47,7 @@ d = ImageDraw.Draw(found)
 pen = (28, 52, 140)
 for dy in (-6, 6):
     d.line([(150, 140 + dy), (750, 132 + dy)], fill=pen, width=9)
+d.line([(170, 252), (730, 246)], fill=pen, width=6)  # and the English line under it
 layer = Image.new("RGBA", (W, 300), (0, 0, 0, 0))
 ImageDraw.Draw(layer).text((W / 2, 150), "MIL GAYA", font=font("MarkerFelt.ttc", 150, 1), fill=pen + (235,), anchor="mm")
 layer = layer.rotate(7, resample=Image.BICUBIC)

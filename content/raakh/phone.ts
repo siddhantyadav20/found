@@ -508,7 +508,7 @@ export const photos: readonly Photo[] = [
     src: "/found/raakh/w-portrait-2.jpg",
     title: "A catering boy in a maroon waistcoat with a tray, smiling into the lens",
     camera: "iPhone 14 Pro — Back Camera",
-    zoom: { at: { x: 60, y: 68 }, reveal: "DILIP", evidence: "badge" },
+    zoom: { at: { x: 63, y: 67 }, reveal: "DILIP", evidence: "badge" },
     evidence: "portrait",
   },
   /* 12:29 AM, in the album Kunal shared: Sameer with the revolver raised, a
