@@ -696,8 +696,43 @@ export function fileSentence(story: Story, s: CaseState, id: string, words: Read
    strikes is unchanged. Sameer's version, and a hunch, are lines too, offered
    once the phone shows what they stand on. */
 
-/** One row of a question: a fact of its true line, and what shows it now, if anything still does. */
-export type Row = { readonly fact: Fact; readonly by?: readonly string[] };
+/**
+ * One row of a question: a fact of its true line, its place in the line, what
+ * holds it on the note now (`by`), and what the phone shows for it whether
+ * or not it's been pinned (`shown`).
+ */
+export type Row = { readonly fact: Fact; readonly i: number; readonly by?: readonly string[]; readonly shown?: readonly string[] };
+
+/* --- pinning (2026-11-12) -------------------------------------------------
+   A row isn't filled by opening what shows it: the player pins a clue they've
+   seen to the row it answers, and that's the deduction (Ace Attorney's
+   "present", Golden Idol's earned words). What's pinned is a flag,
+   `did:pin-<question>-<row>:<evidence>`, so it saves, restarts and replays
+   like everything else. A player who'd rather read than pin turns on
+   `AUTOPIN`, and rows fill as before. lib/game/pin.ts has the rest. */
+
+/** "Fill the lines for me": rows fill as the phone shows them, with nothing to pin. */
+export const AUTOPIN: Flag = "did:autopin";
+
+/** The flag that pins a clue to a row. */
+export const pinFlag = (q: string, row: number, evidence: string): Flag => `did:pin-${q}-${row}:${evidence}`;
+
+/** Whether this player pins clues to rows: a lines case file, unless they asked for the rows to fill themselves. */
+export const pinning = (story: Story, s: CaseState): boolean => story.filing === "lines" && !has(s, AUTOPIN);
+
+/** What's pinned to a row, the latest if more than one ever was. */
+export function pinnedTo(s: CaseState, q: string, row: number): string | undefined {
+  const head = `did:pin-${q}-${row}:`;
+  for (let k = s.flags.length - 1; k >= 0; k--) if (s.flags[k].startsWith(head)) return s.flags[k].slice(head.length);
+  return undefined;
+}
+
+/** What holds a row on the note: the route its pinned clue belongs to, still on the phone; or, not pinning, what shows it. */
+function rowBy(story: Story, s: CaseState, q: Question, f: Fact, i: number): readonly string[] | undefined {
+  if (!pinning(story, s)) return shownBy(story, s, f);
+  const p = pinnedTo(s, q.id, i);
+  return p ? factRoutes(f).find((r) => r.includes(p) && r.every((id) => usable(story, s, id))) : undefined;
+}
 
 /**
  * A line the player could file: the claim, the proof the phone shows for it
@@ -738,7 +773,10 @@ const sameWords = (refusal: FileClaim, c: FileClaim): boolean =>
  */
 export function filingFor(story: Story, s: CaseState, q: Question): { rows: Row[]; lines: Line[] } {
   if (q.kind !== "file") return { rows: [], lines: [] };
-  const rows = (leadClaim(q)?.facts ?? []).map((fact) => ({ fact, by: shownBy(story, s, fact) }));
+  const lead = leadClaim(q);
+  const rows = (lead?.facts ?? []).map((fact, i): Row => ({ fact, i, by: rowBy(story, s, q, fact, i), shown: shownBy(story, s, fact) }));
+  // Pinning, the true line stands on what's pinned, and on nothing it hasn't been shown.
+  const pinned = pinning(story, s) && rows.length > 0;
   const revisiting = needsRevisit(q, s) || editable(q, s);
   const filed = new Set(filedClaims(q, s).map((c) => c.id));
   const lines = q.claims
@@ -749,8 +787,9 @@ export function filingFor(story: Story, s: CaseState, q: Question): { rows: Row[
       const held = q.claims.slice(0, at).find((r) => r.refuse && sameWords(r, c) && !lifted(s, r));
       const shut = (c.unless ?? []).some((f) => has(s, f));
       const said = shut ? q.claims.find((r) => r.refuse && r.aloud && sameWords(r, c)) : undefined;
-      const needs = (c.facts ?? []).filter((f) => !shownBy(story, s, f)).map((f) => f.what);
-      const proof = held || shut ? undefined : proofNow(story, s, c);
+      const own = pinned && c === lead;
+      const needs = own ? rows.filter((r) => !r.by).map((r) => r.fact.what) : (c.facts ?? []).filter((f) => !shownBy(story, s, f)).map((f) => f.what);
+      const proof = held || shut ? undefined : own ? (needs.length ? undefined : [...new Set(rows.flatMap((r) => r.by ?? []))]) : proofNow(story, s, c);
       return { claim: c, proof, needs, closed: shut ? (said?.refuse ?? WRONG) : held?.aloud ? held.refuse : undefined };
     })
     .filter((l) => q.final || l.proof);
@@ -763,7 +802,8 @@ export function fileLine(story: Story, s: CaseState, id: string, claimId: string
   if (!q || q.kind !== "file") return { state: s, ok: false, reply: WRONG };
   const line = filingFor(story, s, q).lines.find((l) => l.claim.id === claimId);
   if (!line) return { state: s, ok: false, reply: WRONG };
-  if (!line.proof) return { state: s, ok: false, reply: line.closed ?? (line.needs[0] ? `Nothing yet shows ${line.needs[0]}.` : UNPROVED), claim: line.claim };
+  const why = line.needs[0] ? (pinning(story, s) && line.claim === leadClaim(q) ? `Nothing's pinned to ${line.needs[0]} yet.` : `Nothing yet shows ${line.needs[0]}.`) : UNPROVED;
+  if (!line.proof) return { state: s, ok: false, reply: line.closed ?? why, claim: line.claim };
   return { ...answer(story, s, id, { claim: claimId, proof: line.proof }), claim: line.claim };
 }
 
@@ -851,7 +891,7 @@ export function stamp(s: CaseState, now: number): CaseState {
 }
 
 /** How the player chose to play, carried across a restart: a detective who switched to help stays switched. */
-const MODE_FLAGS: readonly Flag[] = ["did:detective", "did:switched-help", "did:realtime"];
+const MODE_FLAGS: readonly Flag[] = ["did:detective", "did:switched-help", "did:realtime", AUTOPIN];
 
 /**
  * Back to the start of this episode (fix brief §8.8), as the night stood

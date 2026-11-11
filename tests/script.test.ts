@@ -82,6 +82,25 @@ describe("the script checker", () => {
     expect(said({ ...raakh, evidence })).toMatch(/question q1\.\w+: .* can't be shown in time: .* waits for Episode 3/);
   });
 
+  it("catches a near miss that's really one of the row's own ways in", () => {
+    const questions = raakh.questions.map((q) =>
+      q.kind === "file" && q.id === "q5"
+        ? { ...q, claims: q.claims.map((c, i) => (i === 0 && c.facts ? { ...c, facts: c.facts.map((f, j) => (j === 0 ? { ...f, misses: { conscious: "Look earlier." } } : f)) } : c)) }
+        : q,
+    );
+    expect(said({ ...raakh, questions })).toMatch(/calls “conscious” a near miss, and it's one of the row's own ways in/);
+  });
+
+  it("catches Sameer's account that doesn't say where it breaks", () => {
+    const questions = raakh.questions.map((q) => (q.kind === "file" && q.id === "q4" ? { ...q, claims: q.claims.map((c) => (c.version ? { ...c, against: ["Kunal fired twice"] } : c)) } : q));
+    expect(said({ ...raakh, questions })).toMatch(/against “Kunal fired twice”, which isn't one of the true line's facts/);
+  });
+
+  it("catches a question the note can't open on", () => {
+    const questions = raakh.questions.map((q) => (q.id === "q2" ? { ...q, scene: undefined } : q));
+    expect(said({ ...raakh, questions })).toMatch(/question q2: a lines case file needs a scene/);
+  });
+
   it("catches an ending filed that doesn't exist", () => {
     const questions = raakh.questions.map((q) => (q.kind === "file" && q.final ? { ...q, claims: q.claims.map((c, i) => (i === 0 ? { ...c, ending: "room7" } : c)) } : q));
     expect(said({ ...raakh, questions })).toMatch(/files the ending “room7”/);

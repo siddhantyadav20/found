@@ -1,0 +1,398 @@
+<title>Raakh Case File Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of research, broken by a phone-width mockup of the note and dense comparison tables. */
+:root {
+  --bg: #eceef1;
+  --surface: #f8f9fa;
+  --ink: #16181d;
+  --muted: #5d6370;
+  --rule: #d3d7de;
+  --marigold: #b67810;
+  --marigold-soft: #f4e3bf;
+  --ember: #b8392a;
+  --pencil: #7b818c;
+  --ok: #2f6b4f;
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1115; --surface: #181b21; --ink: #e9e7e2; --muted: #9aa0ab; --rule: #2b3039;
+    --marigold: #f0b43c; --marigold-soft: #3a2f17; --ember: #e2614b; --pencil: #8b919b; --ok: #6fbf95;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1115; --surface: #181b21; --ink: #e9e7e2; --muted: #9aa0ab; --rule: #2b3039;
+  --marigold: #f0b43c; --marigold-soft: #3a2f17; --ember: #e2614b; --pencil: #8b919b; --ok: #6fbf95;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 48px 96px; }
+.col { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.6rem, 3.6vw, 2.1rem); margin-bottom: 14px; }
+h3 { font-size: 1.25rem; margin-bottom: 6px; }
+p { margin: 0 0 14px; }
+.eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--marigold); margin-bottom: 14px; }
+.lede { font-family: var(--display); font-size: 1.3rem; line-height: 1.45; color: var(--ink); margin-top: 18px; }
+.meta { font: 400 13px/1.5 var(--mono); color: var(--muted); margin-top: 18px; }
+section { padding-top: 64px; display: grid; gap: 18px; }
+a { color: var(--marigold); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--marigold); outline-offset: 2px; }
+strong { font-weight: 600; }
+.verdict { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 22px 24px; display: grid; gap: 12px; }
+.verdict ol { margin: 0; padding-left: 1.3em; display: grid; gap: 10px; }
+.verdict li::marker { font-family: var(--mono); color: var(--marigold); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+
+/* Game cards */
+.group-label { font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-top: 18px; border-top: 1px solid var(--rule); }
+.games { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.game { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.game h3 { font-size: 1.15rem; margin: 0; }
+.game .yr { font: 400 12px/1 var(--mono); color: var(--muted); }
+.game p { margin: 0; font-size: 14.5px; }
+.game .take { font-size: 14px; border-top: 1px dashed var(--rule); padding-top: 8px; }
+.game .take b { font: 500 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--marigold); display: block; margin-bottom: 4px; }
+
+/* Tables */
+.scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--rule); }
+th { font: 500 11px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; white-space: nowrap; }
+.tag { display: inline-block; font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 4px 7px; border-radius: 3px; white-space: nowrap; }
+.tag.take { background: var(--marigold-soft); color: var(--marigold); }
+.tag.adapt { border: 1px solid var(--marigold); color: var(--marigold); }
+.tag.avoid { border: 1px solid var(--ember); color: var(--ember); }
+
+/* Two-up */
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; align-items: start; }
+.two > * { min-width: 0; }
+
+/* Mockup of the note */
+.phone { width: 100%; max-width: 380px; justify-self: center; background: var(--surface); border: 1px solid var(--rule); border-radius: 28px; padding: 22px 18px 20px; box-shadow: 0 18px 40px -24px rgba(0,0,0,.35); display: grid; gap: 14px; }
+.n-top { display: flex; justify-content: space-between; font: 500 12px/1 var(--body); color: var(--marigold); }
+.n-when { font: 500 11px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.n-q { font-family: var(--display); font-size: 1.45rem; line-height: 1.25; }
+.n-label { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.row { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 10px 12px; border-radius: 6px; }
+.row.known { background: var(--bg); }
+.row.known .what { font-family: var(--display); font-size: 1.08rem; }
+.row .src { font: 400 11.5px/1.3 var(--mono); color: var(--muted); }
+.row.gap { border: 1px dashed var(--pencil); }
+.row.gap .what { font-family: var(--display); font-style: italic; color: var(--pencil); }
+.row.gap.target { border-color: var(--marigold); }
+.tray { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.clue { flex: 0 0 auto; width: 132px; border: 1px solid var(--rule); background: var(--bg); border-radius: 6px; padding: 8px 9px; font-size: 12.5px; line-height: 1.35; display: grid; gap: 4px; }
+.clue .src { font: 400 10.5px/1.2 var(--mono); color: var(--muted); }
+.clue.glow { border-color: var(--marigold); box-shadow: 0 0 0 3px var(--marigold-soft); animation: wiggle 2.4s ease-in-out infinite; }
+@keyframes wiggle { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-1.6deg); } 90% { transform: rotate(1.6deg); } 95% { transform: rotate(-.8deg); } }
+@media (prefers-reduced-motion: reduce) { .clue.glow { animation: none; } }
+.n-reply { font-size: 13px; color: var(--ember); font-style: italic; font-family: var(--display); }
+.night { display: grid; gap: 6px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.tl { display: grid; grid-template-columns: 58px 1fr; gap: 10px; font-size: 13px; align-items: baseline; }
+.tl .t { font: 500 11.5px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tl .struck { text-decoration: line-through; text-decoration-color: var(--ember); color: var(--muted); }
+.stamp { font: 500 9.5px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ok); border: 1px solid currentColor; padding: 2px 4px; border-radius: 2px; margin-left: 6px; white-space: nowrap; }
+.stamp.his { color: var(--ember); }
+.tl.next .t, .tl.next span { color: var(--marigold); }
+.caption { font: 400 12.5px/1.5 var(--mono); color: var(--muted); text-align: center; }
+
+.spec { display: grid; gap: 14px; }
+.spec .item { display: grid; grid-template-columns: 30px 1fr; gap: 10px; }
+.spec .num { font: 500 13px/1.6 var(--mono); color: var(--marigold); }
+.spec .item p { margin: 0; }
+.from { font: 400 12.5px/1.4 var(--mono); color: var(--muted); }
+
+.callout { border-left: 3px solid var(--ember); padding: 4px 0 4px 16px; }
+.sources { font-size: 13.5px; columns: 2 300px; column-gap: 32px; }
+.sources li { break-inside: avoid; margin-bottom: 6px; }
+code { font-family: var(--mono); font-size: .88em; background: var(--surface); border: 1px solid var(--rule); padding: 1px 5px; border-radius: 3px; }
+</style>
+
+<div class="wrap">
+  <header class="col">
+    <div class="eyebrow">Found · Raakh · design study</div>
+    <h1>What Raakh’s case file should be</h1>
+    <p class="lede">Fifteen detective and deduction games, plus Candy Crush and Duolingo, read for one question: what makes logging a case feel like detective work instead of filling in a questionnaire. Each finding is turned into a decision for Raakh.</p>
+    <p class="meta">12 Nov 2026 · Raakh as of commit 8f3364a · the game details are from play knowledge and the sources at the end</p>
+  </header>
+
+  <section>
+    <div class="verdict col">
+      <div class="eyebrow" style="margin:0">The verdict</div>
+      <ol>
+        <li><strong>The player makes the deduction; the game only checks it.</strong> Every game that feels like detective work makes the player commit to something the game hasn’t already decided (Obra Dinn, Golden Idol, Ace Attorney, Orwell). Raakh’s rows fill themselves, and that is the main reason it reads as a form.</li>
+        <li><strong>The verb is “pin this clue to that gap”.</strong> It’s Ace Attorney’s <em>present evidence</em>, scaled down to a phone. The clue you pin earns its word in the sentence, as Golden Idol’s collected words do. It’s one tap more than today, and that tap is the deduction.</li>
+        <li><strong>Keep the choice small, and keep a wrong pin free.</strong> Show the last two or three clues you saw, not the whole evidence list. A wrong pin gets the pointed line already written in <code>refuse</code> and costs nothing. This is the lesson from Golden Idol’s “close” indicator and from our own playtests, where open sentence-building was a wall.</li>
+        <li><strong>Make Sameer’s account a real rival.</strong> Once the rows are in, the player calls it between his version and theirs. Choosing his tells you which row it breaks on (Orwell’s conflicting data, Golden Idol’s yellow).</li>
+        <li><strong>Help shows before it tells.</strong> Candy Crush wiggles a valid move when you idle. Raakh should glow the clue that fits, or the app it’s in, before any written hint, and wait longer for a player who has been quick (Duolingo’s Birdbrain aims for middle difficulty).</li>
+        <li><strong>A filed line changes the note.</strong> Pencil becomes print with a stamp (Obra Dinn). The line takes its place on a timeline of the night, and the next unknown hour is visible, like the next level on a saga map.</li>
+        <li><strong>Between sessions, the characters are the notification.</strong> One opt-in message in a character’s voice about a day after the last play, rotated so it never repeats, and it stops after two are ignored (Duolingo, Lifeline). No lives, energy or paid skips.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Today</div>
+    <h2>Why the current case file reads like a form</h2>
+    <p>I opened it mid–Episode 2 on Q5. Four things give it a questionnaire feel. None of them is the visual style.</p>
+    <ul class="plain">
+      <li><strong>The game deduces for you.</strong> Open the right message and the row writes its own conclusion (“At 1:14 Dilip was awake”). The player’s only act is pressing File on a sentence they didn’t form.</li>
+      <li><strong>It counts like a form.</strong> “Episode 2 · Question 2 of 3” and “1 of 3 shown so far” measure completion, not understanding.</li>
+      <li><strong>The question is compound.</strong> “Was Dilip alive, and what happened to the car that came for him?” is two questions with a comma, like an exam item.</li>
+      <li><strong>Answers vanish into a list.</strong> “Answered” is a stack of finished items. It doesn’t build a picture of the night, so filing doesn’t feel like it changed anything.</li>
+    </ul>
+    <p>The data under it is already right. Each row is a <code>fact</code> with routes in <code>by</code>. Q5 already has two wrong answers with pointed replies (“At 2:41 he’d stopped speaking… Look earlier.”, “Who wrote ‘Dilip ko service gate pe le aao’?”). And <code>say.learn</code> already maps each word to the clue that earns it. The rebuild is mostly what the player does with this data, not new data.</p>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="eyebrow">The games</div>
+      <h2>Fifteen case files, and what each one teaches</h2>
+      <p>I grouped them by what their case file is: a book you complete, a confrontation you win, or a body of data you sort. For each, the one thing worth carrying into Raakh.</p>
+    </div>
+
+    <div class="group-label">Books and boards: the case file is a thing you complete</div>
+    <div class="games">
+      <article class="game">
+        <h3>Return of the Obra Dinn</h3><span class="yr">2018 · Lucas Pope</span>
+        <p>A logbook with 60 blanks: who each person is and how they died. Fates are confirmed only in sets of three, so you can’t guess one at a time. Confirmed entries turn from handwriting into print.</p>
+        <p class="take"><b>Take</b>Confirmation that changes the artifact. Raakh’s filed lines should go from Sameer’s pencil to print, and stay there.</p>
+      </article>
+      <article class="game">
+        <h3>The Case of the Golden Idol</h3><span class="yr">2022 · Color Gray Games</span>
+        <p>You collect words by clicking things in a frozen scene, then drag them into the blanks of an account. When a section is one or two words off, it turns yellow instead of red.</p>
+        <p class="take"><b>Take</b>Words are earned from evidence, and being close is rewarded. Here the clue you pin earns the word. Calling Sameer’s version says which part fails. The developers say the yellow indicator made the game shorter and easier, so we use it once, at “Call it”, not on every row.</p>
+      </article>
+      <article class="game">
+        <h3>Heaven’s Vault</h3><span class="yr">2019 · inkle</span>
+        <p>You translate an ancient script by guessing a word from a few options. A guess stays tentative until the word turns up in enough other inscriptions, then it’s confirmed.</p>
+        <p class="take"><b>Take</b>Hunches that firm up later. Raakh already files some lines “as your hunch”. Show them in pencil, and ink them when a later clue backs them.</p>
+      </article>
+      <article class="game">
+        <h3>Sherlock Holmes: Crimes &amp; Punishments</h3><span class="yr">2014 · Frogwares</span>
+        <p>The Deduction Space links clues into nodes, and some nodes allow more than one conclusion. The game flags contradictions but doesn’t say whether you’re right until you commit. Then you choose to absolve or condemn.</p>
+        <p class="take"><b>Take</b>Competing conclusions from the same clues, and a moral call at the end. That’s Raakh’s Call it, and its endings.</p>
+      </article>
+      <article class="game">
+        <h3>Shadows of Doubt</h3><span class="yr">2023 · ColePowered</span>
+        <p>A free-form corkboard with pins and strings. String colour and width show how incriminating and reliable a link is. Cases are closed on a Resolve screen of objectives you pick answers for.</p>
+        <p class="take"><b>Avoid</b>Both halves. The board turns into a tangle even on a monitor, and Resolve is exactly the questionnaire we’re leaving.</p>
+      </article>
+      <article class="game">
+        <h3>Outer Wilds</h3><span class="yr">2019 · Mobius Digital</span>
+        <p>No quest log. The ship log shows what you know as a map of entries, and marks the ones with more to find. Knowledge is the only progression.</p>
+        <p class="take"><b>Take</b>Show the gaps without the answers. A dashed “what I don’t know” row works like Outer Wilds’ “more to explore” marker.</p>
+      </article>
+    </div>
+
+    <div class="group-label">Confrontations: the case file is ammunition</div>
+    <div class="games">
+      <article class="game">
+        <h3>Ace Attorney</h3><span class="yr">2001– · Capcom</span>
+        <p>The Court Record holds evidence. In cross-examination you press a witness, then present the one item that contradicts a statement. A wrong present costs credibility.</p>
+        <p class="take"><b>Take</b>Present evidence against a specific claim, which is the verb we said we wanted. Drop the penalty: Raakh is about understanding, not a health bar.</p>
+      </article>
+      <article class="game">
+        <h3>Danganronpa</h3><span class="yr">2010– · Spike Chunsoft</span>
+        <p>In Nonstop Debate, statements scroll past with weak points highlighted. You fire a Truth Bullet (a piece of evidence) at the one that’s false.</p>
+        <p class="take"><b>Take</b>Sameer’s account as a statement with a weak point you hit with a clue. That’s a stretch goal for the final question, where his whole version is on trial.</p>
+      </article>
+      <article class="game">
+        <h3>L.A. Noire</h3><span class="yr">2011 · Team Bondi</span>
+        <p>Interrogation options were Truth, Doubt and Lie, and Lie needs evidence. Players misread “Doubt” as an aggressive accusation, and the 2017 release relabelled them Good Cop, Bad Cop and Accuse.</p>
+        <p class="take"><b>Take</b>Make the option label say what happens. In Call it, each choice is the full sentence you’d file, never an abstract label.</p>
+      </article>
+      <article class="game">
+        <h3>Paradise Killer</h3><span class="yr">2020 · Kaizen Game Works</span>
+        <p>A free investigation with no quest log for much of development. You start the trial when you choose, accuse whoever you can make a case against, and the verdict is whatever you can prove.</p>
+        <p class="take"><b>Take</b>The ending is the player’s case. Raakh’s final question should read as Sameer arguing his own trial, not a last quiz item.</p>
+      </article>
+    </div>
+
+    <div class="group-label">Data and phones: the case file is what you make of someone’s data</div>
+    <div class="games">
+      <article class="game">
+        <h3>Orwell</h3><span class="yr">2016 · Osmotic Studios</span>
+        <p>You drag “datachunks” from chats and web pages onto a suspect’s profile. Some chunks conflict, and you must choose which goes to the government. There’s no game over for choosing wrong, only consequences. Early tests showed that without drawbacks, players just dragged everything that was highlighted.</p>
+        <p class="take"><b>Take</b>Conflicting versions are where the decisions are, and filing has to cost something to mean anything. In Raakh the cost is the record: what you file is what Sameer has said.</p>
+      </article>
+      <article class="game">
+        <h3>Her Story</h3><span class="yr">2015 · Sam Barlow</span>
+        <p>You search a police video database, and each search shows only the first five clips. Your own notebook is the only case file. You decide when you understand enough.</p>
+        <p class="take"><b>Take</b>Slow discovery on purpose, and let the player say “I know enough”. Raakh’s search and “Leave the case” already do this. The note shouldn’t list evidence the player hasn’t found.</p>
+      </article>
+      <article class="game">
+        <h3>Simulacra</h3><span class="yr">2017 · Kaigan Games</span>
+        <p>The whole game is a missing woman’s phone: her apps, chats and photos. There’s no game interface outside the phone. Replica and Sara Is Missing use the same frame.</p>
+        <p class="take"><b>Take</b>Stay inside the fiction. Raakh’s case file is Sameer’s own Notes note, and the twist depends on it. The redesign must still look like a note on his phone, not a game screen.</p>
+      </article>
+      <article class="game">
+        <h3>Lifeline</h3><span class="yr">2015 · 3 Minute Games</span>
+        <p>A stranded astronaut texts you in real time. When he’s busy, he goes quiet for hours, and a push notification brings you back when he writes again. Duskwood later took the messenger frame into an episodic murder mystery.</p>
+        <p class="take"><b>Take</b>Characters are the notification. If Raakh ever reaches out between sessions, it should be Nitin or Mummy writing, not “Found misses you”.</p>
+      </article>
+      <article class="game">
+        <h3>Disco Elysium</h3><span class="yr">2019 · ZA/UM</span>
+        <p>The Thought Cabinet holds ideas you’re “internalising”, which take time and change you. Your skills talk to you as inner voices, commenting on what you see.</p>
+        <p class="take"><b>Take</b>The case file has a voice. Sameer’s note can talk back to the player’s pins in short lines, which is what the <code>refuse</code> replies already are.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">The pattern</div>
+    <h2>What the good ones share</h2>
+    <p>Across all fifteen, deduction feels like deduction when four things are true at once:</p>
+    <ul class="plain">
+      <li><strong>The player commits</strong> to a claim the game hasn’t made for them: a name, a fate, a word in a blank, a piece of evidence.</li>
+      <li><strong>It’s backed by something they chose</strong>: the scene they clicked, the item they presented, the chunk they dragged.</li>
+      <li><strong>There is a tempting alternative</strong>: a conflicting chunk, a near-miss word, a witness’s version.</li>
+      <li><strong>The world answers back</strong>: the witness breaks, the entry turns to print, the government acts on it.</li>
+    </ul>
+    <p>And the failures share three things: an open board that gets messy (Shadows of Doubt), a choice set so big you brute-force it (Golden Idol’s late scrolls, as reviewers note), and silence about whether you’re close. Raakh’s current file has the opposite problem. It is so guided that there’s nothing to commit to.</p>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="eyebrow">Candy Crush and Duolingo</div>
+      <h2>The logic under the habit</h2>
+      <p>Both games are built so the next move is always obvious and close, and so coming back takes almost no effort. Here is what each does, and what Raakh should do with it. <em>Take</em> means use as is, <em>adapt</em> means change it to fit a story, and <em>avoid</em> means it works against a one-time narrative game.</p>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Mechanic</th><th>How it works</th><th>For Raakh</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Idle move hint</td><td>Candy Crush: stop moving for a few seconds and a valid swap wiggles. It shows, it doesn’t tell.</td><td>After a pause, glow the clue card that fits an open row. If none of the loose clues fits, glow the app icon the next clue is in. Text hints come after.</td><td><span class="tag take">Take</span></td></tr>
+          <tr><td>Near-miss</td><td>A Waterloo study of Candy Crush (Larche et al., 2017) found near-misses were the most frustrating outcome and also produced the strongest urge to keep playing.</td><td>When the player calls Sameer’s version, say which row it breaks on. “His account holds until 2:04.” It keeps them moving without giving the answer.</td><td><span class="tag adapt">Adapt</span></td></tr>
+          <tr><td>The next level is visible</td><td>The saga map shows the path ahead and where friends have reached.</td><td>“The night so far” is the map: filed lines at their times, and the next unknown hour marked. It makes how close you are visible without a “2 of 3” counter.</td><td><span class="tag adapt">Adapt</span></td></tr>
+          <tr><td>Difficulty in waves</td><td>Hard levels are followed by easier ones, and hard levels are labelled before you start.</td><td>Order questions so a hard one (Q5, Q8) is followed by a quick win. The follower bot’s step counts can measure which ones are hard.</td><td><span class="tag adapt">Adapt</span></td></tr>
+          <tr><td>The win moment</td><td>Sugar Crush: the board celebrates loudly when a level ends.</td><td>Filing gets its own moment: pencil turning to print, the stamp, one sound, and a haptic tap on phones.</td><td><span class="tag take">Take</span></td></tr>
+          <tr><td>Lives and paid moves</td><td>Five lives refilling on a timer, and extra moves offered when you fail.</td><td>No. It meters a story, and it would cost the trust that “Pass it on” depends on.</td><td><span class="tag avoid">Avoid</span></td></tr>
+          <tr><td>Notifications as a bandit</td><td>Duolingo picks each reminder’s wording from templates with a “recovering, sleeping” bandit. A template recently sent to you is penalised, so fresh ones win (Yancey &amp; Settles, KDD 2020).</td><td>Write four or five return messages in characters’ voices. Pick one you haven’t had recently. Count opens on /insights per template, and keep the ones that bring people back.</td><td><span class="tag adapt">Adapt</span></td></tr>
+          <tr><td>Send when they’d play</td><td>Reported (from Lenny’s Podcast, not a Duolingo paper): reminders sent about 23.5 hours after the last session beat the time users picked themselves.</td><td>One message about a day after they stopped, at the time of day they played. It’s the cheapest version of personal timing.</td><td><span class="tag take">Take</span></td></tr>
+          <tr><td>Knowing when to stop</td><td>Duolingo tapers reminders for people who don’t respond, and is widely reported to send a final “we’ll stop sending these” message.</td><td>Stop after two ignored messages. The last one is in character: Nitin saying he won’t write again.</td><td><span class="tag take">Take</span></td></tr>
+          <tr><td>A small daily unit</td><td>Duolingo separated the streak from the daily goal, so one lesson keeps it. Day-14 retention rose 3.3%. Learners with a 7-day streak were 2.4× as likely to come back the next day.</td><td>Each episode should be playable in one sitting and end on a message arriving, not on a menu. Coming back should open on the lock screen with that message waiting.</td><td><span class="tag adapt">Adapt</span></td></tr>
+          <tr><td>Aim for the middle</td><td>Birdbrain predicts the chance you’ll get each exercise right, and Duolingo picks exercises in the middle range, neither too easy nor too hard.</td><td>Time the help to the player. The glow waits about 1.5× the player’s own median time per row, between 15 and 60 seconds, instead of a fixed 45. Fast players get left alone; slow ones get help sooner.</td><td><span class="tag adapt">Adapt</span></td></tr>
+          <tr><td>Streaks and leagues</td><td>Loss aversion over a daily habit, and a weekly leaderboard.</td><td>Raakh is a few sessions long, so a streak has nothing to protect. Leave it out.</td><td><span class="tag avoid">Avoid</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="col">
+      <div class="eyebrow">The recommendation</div>
+      <h2>The note, rebuilt around one verb</h2>
+      <p>This is Q5 with the real data, about halfway through. Everything is still Sameer’s Notes note. Clue text is from the evidence list, shortened. Here the player pinned Pappu’s 1:14 screenshot, and the tray’s decoy is his 2:41 one, which is the near miss Q5 already answers.</p>
+    </div>
+    <div class="two">
+      <div class="phone" aria-label="Mockup of the proposed case file">
+        <div class="n-top"><span>‹ Notes</span><span>Done</span></div>
+        <div class="n-when">1:14 – 2:04 AM · The service gate</div>
+        <div class="n-q">He was shot at 12:32. What happened to him after?</div>
+
+        <div class="n-label">What I know</div>
+        <div class="row known">
+          <div class="what">At 1:14 Dilip was awake.</div>
+          <div class="src">📎 “Sir ladka hosh mein hai.” · Pappu · 1:14 AM</div>
+        </div>
+
+        <div class="n-label">What I don’t</div>
+        <div class="row gap target"><div class="what">who sent the car</div></div>
+        <div class="row gap"><div class="what">how the car left</div></div>
+
+        <div class="n-label">Just seen · pin one to a gap</div>
+        <div class="tray">
+          <div class="clue glow"><span>“Vicky ki Swift bhej raha hoon…”</span><span class="src">Nitin · 1:22 AM</span></div>
+          <div class="clue"><span>“Sir ladka bol nahi raha.”</span><span class="src">Pappu · 2:41 AM</span></div>
+          <div class="clue"><span>A Swift at the service gate</span><span class="src">Pappu · 1:59 AM</span></div>
+        </div>
+
+        <div class="night">
+          <div class="n-label">The night so far</div>
+          <div class="tl"><span class="t">11:52 PM</span><span>Kunal fired on the dance floor <span class="stamp">On record</span></span></div>
+          <div class="tl"><span class="t">12:32 AM</span><span><span class="struck">Kunal fired again on the back lawn</span> <span class="stamp his">His account</span></span></div>
+          <div class="tl"><span class="t">1:14 AM</span><span>Dilip was awake <span class="stamp">On record</span></span></div>
+          <div class="tl next"><span class="t">2:04 AM</span><span>?</span></div>
+        </div>
+      </div>
+
+      <div class="spec">
+        <div class="item"><span class="num">1</span><div><p><strong>A lead, not “Question 2 of 3”.</strong> The heading is the time window and place the question is about, and the question is one short sentence in Sameer’s voice. The compound question splits into its rows.</p><p class="from">Outer Wilds, Her Story</p></div></div>
+        <div class="item"><span class="num">2</span><div><p><strong>Gaps are the rows.</strong> Each fact shows as a dashed, pencilled gap using its <code>what</code> (“who sent the car”). Known rows are in ink, with the clue pinned beside them: its source and time in mono.</p><p class="from">Obra Dinn, Outer Wilds</p></div></div>
+        <div class="item"><span class="num">3</span><div><p><strong>Pin a clue to a gap.</strong> What you’ve seen on the phone lands in “Just seen”: the two or three most recent clues that bear on this lead, plus at most one that doesn’t. Tap a clue, then a gap. If it’s on one of that fact’s routes, the gap inks itself. If not, the note says why in one line (the <code>refuse</code> text, such as “At 2:41 he’d stopped speaking. That isn’t the same thing. Look earlier.”) and the clue goes back. No penalty.</p><p class="from">Ace Attorney, Golden Idol, Orwell</p></div></div>
+        <div class="item"><span class="num">4</span><div><p><strong>Call it.</strong> When every gap is filled, the note offers the sentences that fit: the line your pins make, and, where it’s available, Sameer’s own account, stamped “His account”. Calling his says which row it breaks on. Filing turns pencil to print with a stamp.</p><p class="from">Orwell, Sherlock C&amp;P, Golden Idol, Obra Dinn</p></div></div>
+        <div class="item"><span class="num">5</span><div><p><strong>The night so far.</strong> Filed lines sit at their hour. An account later disproved is struck in red. The next unknown hour shows as a “?”. That is your progress, in the story’s own units.</p><p class="from">Candy Crush saga map, Sherlock C&amp;P</p></div></div>
+        <div class="item"><span class="num">6</span><div><p><strong>Help shows first.</strong> On a pause, the fitting clue wiggles (as above). If nothing in the tray fits, the app it’s in pulses in the dock. Then come the written hints we already derive from the script. The pause scales with the player’s own pace.</p><p class="from">Candy Crush, Duolingo Birdbrain</p></div></div>
+        <div class="item"><span class="num">7</span><div><p><strong>Story mode keeps auto-pinning.</strong> For players who want the story and not the puzzle, a setting pins clues as they’re seen, which is today’s behaviour. Default is pinning yourself.</p><p class="from">Our playtests</p></div></div>
+      </div>
+    </div>
+    <p class="caption">Mockup. The 📎 stands in for the clue’s thumbnail. The struck 12:32 line shows how a filed account looks once it’s disproved.</p>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Risk</div>
+    <h2>The one thing that could go wrong</h2>
+    <div class="callout">
+      <p>Pinning puts back an act that playtesters stalled on before: the old sentence-building flow, and “tabling proof”. This design differs in three ways. The choice is two or three recent clues instead of every word in a sentence. A wrong pin costs nothing and says why. And the glow arrives before the player is stuck long enough to quit.</p>
+      <p>It still needs measuring. I’d log every pin (right or wrong, which row, seconds since the last one) to /insights. The target is a median of about one wrong pin per question. Near zero means it’s too easy and we’re back to a form. Above two or three, the tray is too big or the clues are unclear.</p>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Coming back</div>
+    <h2>Between sessions</h2>
+    <p>Our 20-player run had people stop mid–Episode 2. Bringing them back is a separate problem from the case file, and it comes second.</p>
+    <ul class="plain">
+      <li><strong>End each episode on a message arriving.</strong> Reopening the game should land on the lock screen with that message waiting, so the first thing on return is the story, not a menu.</li>
+      <li><strong>Opt-in return messages.</strong> At the end of an episode, offer “Let Nitin text you when he writes back”. Send one message about a day later at the time they last played, in a character’s voice. Rotate four or five so nobody gets the same one twice, and stop after two are ignored.</li>
+      <li><strong>The technical catch.</strong> Found has no web app manifest or service worker today, so web push needs both. On iPhone, web push only works after the player adds the site to their home screen (iOS 16.4 and later). Email is the fallback for everyone else. I’d build this only after the case file is tested.</li>
+    </ul>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Build order</div>
+    <h2>What I’d build, in order</h2>
+    <ul class="plain">
+      <li><strong>1. The note.</strong> A rebuild of the lines case file in <code>components/stage/CaseFile.tsx</code>: lead heading, gaps, the clue tray, pin, Call it, stamps, and the night timeline. In the engine, a row fills when a clue on one of its routes is pinned to it, saved as a flag. Filing still goes through <code>answer()</code>, so endings, <code>pays</code> and struck versions keep working. Story mode keeps today’s auto-fill.</li>
+      <li><strong>2. Help that shows.</strong> The glow on the fitting clue or app, timed from the player’s own pace, then the derived text hints.</li>
+      <li><strong>3. The checks.</strong> The script checker learns the new rules (every row has a route that isn’t a decoy, and every version claim names the row it breaks on). The follower bot learns to pin, so it still proves every ending is reachable by following the help.</li>
+      <li><strong>4. Measure, then people.</strong> Pin events on /insights, then three to five people play by touch on a phone. Their results decide the tray size and the glow timing.</li>
+      <li><strong>5. Return messages.</strong> Only after the note is right.</li>
+    </ul>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Sources</div>
+    <ul class="sources">
+      <li><a href="https://en.wikipedia.org/wiki/Return_of_the_Obra_Dinn">Return of the Obra Dinn</a>, Wikipedia; <a href="https://epiloguegaming.com/three-and-out-return-of-the-obra-dinn/">Three and Out</a>, Epilogue Gaming</li>
+      <li><a href="https://www.gamedeveloper.com/design/case-of-the-golden-idol">Pursuing the “Aha!” moment</a>, Game Developer (Golden Idol near-miss indicator)</li>
+      <li><a href="https://www.gamedeveloper.com/road-to-igf-2023/-the-case-of-the-golden-idol-i-used-frequent-testing-to-improve-its-mystery-solving">Golden Idol used frequent testing</a>, Game Developer</li>
+      <li><a href="https://adventuregamehotspot.com/review/119/the-case-of-the-golden-idol">The Case of the Golden Idol review</a>, Adventure Game Hotspot</li>
+      <li><a href="https://www.purexbox.com/reviews/xbox-one/sherlock_holmes_crimes_and_punishments">Crimes &amp; Punishments review</a>, Pure Xbox; <a href="https://destructoid.com/?p=154835">review</a>, Destructoid</li>
+      <li><a href="https://colepowered.com/?p=33958">Shadows of Doubt DevBlog #4: Case Folders &amp; Cork Boards</a>, ColePowered</li>
+      <li><a href="https://www.pressreader.com/australia/edge/20190620/282278141843961">Outer Wilds review</a>, Edge</li>
+      <li><a href="https://www.gamesradar.com/the-making-of-paradise-killer">The making of Paradise Killer</a>, GamesRadar</li>
+      <li><a href="https://Www.wikipedia.org/wiki/Orwell_(video_game)">Orwell</a>, Wikipedia; <a href="https://gamedeveloper.com/design/believing-is-seeing-i-orwell-i-and-surveillance-sims">Believing is seeing</a>, Game Developer</li>
+      <li><a href="https://en.wikipedia.org/wiki/Her_Story_(video_game)">Her Story</a>, Wikipedia; <a href="https://mechanicsofmagic.com/2021/05/09/critical-play-her-story/">Critical Play: Her Story</a></li>
+      <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5445157/">The Candy Crush Sweet Tooth: near-misses</a>, Larche, Musielak &amp; Dixon</li>
+      <li><a href="https://candycrush.fandom.com/wiki/Lives">Lives</a>, Candy Crush Saga Wiki (fan source)</li>
+      <li><a href="https://research.Duolingo.com/papers/yancey.kdd20.pdf">A Sleeping, Recovering Bandit Algorithm for Optimizing Recurring Notifications</a>, Yancey &amp; Settles, KDD 2020</li>
+      <li><a href="https://blog.duolingo.com/improving-the-streak">Improving the streak</a>, Duolingo blog</li>
+      <li><a href="https://www.lennysnewsletter.com/p/behind-the-product-duolingo-streaks">Behind the product: Duolingo streaks</a>, Lenny’s Newsletter (the 23.5-hour timing)</li>
+      <li><a href="https://spectrum.ieee.org/duolingo">How Duolingo’s AI learns what you need to learn</a>, IEEE Spectrum (Birdbrain)</li>
+    </ul>
+    <p class="meta">Heaven’s Vault, Ace Attorney, Danganronpa, L.A. Noire, Simulacra, Lifeline and Disco Elysium are described from the games themselves, without a separate source.</p>
+  </section>
+</div>

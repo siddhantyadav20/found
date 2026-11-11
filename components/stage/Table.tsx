@@ -33,7 +33,9 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { AIRPLANE, installed } from "@/lib/game/phone";
-import { offline } from "@/lib/game/engine";
+import { offline, pinning } from "@/lib/game/engine";
+import { glowAfter, nudgeAfter } from "@/lib/game/pin";
+import { glowApp } from "@/lib/found/glow";
 import RealClock from "./RealClock";
 import { DETECTIVE } from "@/lib/game/scene";
 import { leadFor, sayLead, waitingOn } from "@/lib/game/lead";
@@ -70,7 +72,7 @@ const YourSheet = dynamic(() => import("@/components/yours/Sheet"), { ssr: false
 const bannerFrom = (banner: string) => banner.split(" · ")[0];
 const bannerText = (banner: string) => banner.split(" · ").slice(1).join(" · ");
 
-/** How long a player can find nothing before the case file offers where to look. */
+/** How long a player can find nothing before the case file offers where to look, when there's no pace to go by. */
 const NUDGE_MS = 45_000;
 
 /** The least time between two of the night's turns, so they land one at a time (the 2026-10-01 review). */
@@ -243,7 +245,7 @@ export default function Table({
      minute because nobody said Nitin was waiting for a reply). */
   const lead = story.caseFile === false ? undefined : q ? leadFor(story, state, q) : undefined;
   const waiting = story.caseFile === false || q || recordHeld(story, state) ? undefined : waitingOn(story, state);
-  const nudgeKey = q ? q.id : waiting && waiting.kind !== "wait" ? `wait-${waiting.kind === "reply" ? waiting.thread : waiting.kind === "answer" ? waiting.question : waiting.kind === "open" ? waiting.evidence : waiting.app}` : undefined;
+  const nudgeKey = q ? q.id : waiting && waiting.kind !== "wait" ? `wait-${waiting.kind === "reply" ? waiting.thread : waiting.kind === "answer" ? waiting.question : waiting.kind === "open" || waiting.kind === "pin" ? waiting.evidence : waiting.app}` : undefined;
   // A detective asked to be left alone.
   const nudgeDone = !nudgeKey || detective || review || has(state, `fired:nudge-${nudgeKey}`);
   // Short, as a banner is read: where to look, not the question again.
@@ -253,6 +255,19 @@ export default function Table({
       ? sayLead(story, waiting, 3)
       : "";
   const progress = state.flags.length;
+  /* Before any words, the app the next clue is in glows on the Home Screen,
+     after the player's own pause (lib/game/pin.ts, lib/found/glow.ts): the
+     case file's own icon when something found is waiting to be pinned. */
+  const glowTo = !q || detective || review || story.filing !== "lines" || !pinning(story, state) || !lead ? undefined : lead.lead.kind === "pin" ? "casefile" : lead.lead.kind === "open" || lead.lead.kind === "do" ? lead.lead.app : undefined;
+  useEffect(() => {
+    if (!glowTo) return undefined;
+    const t = window.setTimeout(() => glowApp({ app: glowTo, until: progress }), glowAfter(state));
+    return () => window.clearTimeout(t);
+    // The pause starts again whenever anything happens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [glowTo, progress]);
+  // The player's own pace, where it's known from what they've pinned (lib/game/pin.ts); 45 seconds where it isn't.
+  const nudgeMs = story.filing === "lines" && pinning(story, state) ? nudgeAfter(state) : NUDGE_MS;
   // Never inside the case file itself: the question there already says where to look.
   const inCaseFile = openApp === "casefile";
   useEffect(() => {
@@ -261,9 +276,9 @@ export default function Table({
       flag(`fired:nudge-${nudgeKey}`);
       nudged(nudgeKey.startsWith("wait-") ? "waiting" : nudgeKey);
       setBanner({ app: "casefile", from: "Case file", text: nudgeText });
-    }, NUDGE_MS);
+    }, nudgeMs);
     return () => window.clearTimeout(t);
-  }, [nudgeKey, nudgeDone, nudgeText, progress, inCaseFile]);
+  }, [nudgeKey, nudgeDone, nudgeText, progress, inCaseFile, nudgeMs]);
 
   const dismissBanner = useCallback(() => setBanner(null), []);
 

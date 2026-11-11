@@ -955,3 +955,339 @@
   text-transform: uppercase;
   color: var(--cf-dim);
 }
+
+/* --- Pinning (2026-11-12) ---------------------------------------------------
+   The note as a detective's: what's known in ink, with the clue pinned beside
+   it; what isn't, pencilled and dashed; a short tray of what was just seen.
+   Filed lines are printed and stamped, and sit in "The night so far". */
+
+/* "Look in": the app the next clue is in, lit after the player's pause. */
+.lookIn[data-glow] {
+  color: var(--cf-red);
+  text-shadow: 0 0 12px rgb(255 122 69 / 55%);
+}
+
+.known {
+  display: grid;
+  gap: 8px;
+  margin: 2px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.known li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--cf-wash);
+}
+
+.knownFact {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 16.5px;
+  line-height: 1.35;
+  color: var(--cf-ink);
+}
+
+/* The pin: where it came from, small, after the fact. */
+.pinnedBy {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  position: relative;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--cf-dim);
+}
+
+.pinnedBy::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cf-red);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+}
+
+.gaps {
+  display: grid;
+  gap: 8px;
+  margin: 2px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+/* A gap: pencil, dashed, saying only what it's about. */
+.gap {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1.5px dashed var(--cf-rule-strong);
+  border-radius: 10px;
+  background: none;
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--cf-dim);
+}
+
+button.gap {
+  cursor: pointer;
+  transition:
+    border-color var(--t-quick, 0.15s),
+    background var(--t-quick, 0.15s);
+}
+
+/* A clue in hand: every gap is somewhere it could go. */
+button.gap[data-armed] {
+  border-color: var(--cf-ink);
+  color: var(--cf-ink);
+}
+
+/* The gap the glowing slip fits: lit, never filled, so it can't be mistaken for one the player chose. */
+button.gap[data-glow] {
+  border-color: var(--cf-red);
+  color: var(--cf-ink);
+}
+
+button.gap[data-target] {
+  border-style: solid;
+  border-color: var(--cf-red);
+  background: var(--cf-mark);
+  color: var(--cf-ink);
+}
+
+button.gap:focus-visible,
+.clue:focus-visible,
+.moreClues:focus-visible,
+.nightButton:focus-visible {
+  outline: 2px solid var(--cf-red);
+  outline-offset: 2px;
+}
+
+/* The tray: a row of slips, scrolled sideways when there are more than fit. */
+.tray {
+  display: flex;
+  gap: 8px;
+  /* Never wider than the note: it scrolls inside it (width 0 keeps its slips out of the card's own size). */
+  width: 0;
+  min-width: calc(100% + 4px);
+  box-sizing: border-box;
+  margin: 2px -2px 4px;
+  padding: 2px 2px 6px;
+  overflow-x: auto;
+  list-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.tray li {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.clue {
+  display: grid;
+  gap: 6px;
+  align-content: space-between;
+  width: 152px;
+  min-height: 92px;
+  padding: 10px;
+  border: 1px solid var(--cf-rule-strong);
+  border-radius: 10px;
+  background: var(--cf-sheet-2);
+  color: var(--cf-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform var(--t-quick, 0.15s) var(--ease-spring, ease-out),
+    border-color var(--t-quick, 0.15s);
+}
+
+.clue[data-held] {
+  border-color: var(--cf-red);
+  box-shadow: 0 0 0 2px var(--cf-red);
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+/* Shown, not told: the slip that fits wiggles, now and then, as Candy Crush shows a move. */
+.clue[data-glow] {
+  border-color: var(--cf-red);
+  box-shadow:
+    0 0 0 2px rgb(255 122 69 / 45%),
+    0 0 22px rgb(255 122 69 / 30%);
+  animation: wiggle 2.6s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 78%, 100% { transform: rotate(0); }
+  83% { transform: rotate(-2deg); }
+  88% { transform: rotate(2deg); }
+  93% { transform: rotate(-1deg); }
+}
+
+.clueText {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.clueApp {
+  font-family: var(--font-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cf-dim);
+}
+
+.moreClues {
+  justify-self: start;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--cf-dim);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* His account, set apart: the line he'd want filed. */
+.toFile[data-his] {
+  border-color: rgb(255 122 69 / 40%);
+}
+
+.breaks {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--cf-red);
+}
+
+/* A stamp: whose line it is, inked at an angle. */
+.stamp {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 5px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  vertical-align: 2px;
+  white-space: nowrap;
+  color: var(--cf-ok);
+  rotate: -3deg;
+}
+
+.stamp[data-whose="his"] {
+  color: var(--cf-red);
+}
+
+.stamp[data-whose="hunch"] {
+  color: var(--cf-dim);
+  border-style: dashed;
+}
+
+.toFile > .stamp {
+  margin-left: 0;
+}
+
+/* Filed: the line printed, and the stamp coming down on it. */
+.printed {
+  margin: 4px 0 6px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--cf-ink);
+}
+
+.printed .stamp {
+  animation: stamp 0.42s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+@keyframes stamp {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* The night so far: the hour on the left, the line on the right. */
+.night {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nightRow,
+.nightButton {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+
+.nightButton {
+  /* It's the whole row: across both of the row's columns, with its own two inside. */
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nightAt {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cf-dim);
+}
+
+.nightLine {
+  min-width: 0;
+}
+
+.nightLine .fileLine {
+  display: inline;
+  font-size: 15px;
+}
+
+.nightLine .tag {
+  margin-left: 8px;
+}
+
+/* The hour still open. */
+.nightRow[data-next] .nightAt,
+.fileLine[data-next] {
+  color: var(--cf-red);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clue[data-glow],
+  .printed .stamp {
+    animation: none;
+  }
+}

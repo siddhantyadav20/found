@@ -3,7 +3,8 @@ import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import type { Flag } from "@/content/types";
-import { add, claimsFor, clockNow, dueEvents, fileLine, filingFor, fileSentence, has, newCase, offline, remove, type CaseState } from "@/lib/game/engine";
+import { add, AUTOPIN, claimsFor, clockNow, dueEvents, fileLine, filingFor, fileSentence, has, newCase, offline, remove, type CaseState } from "@/lib/game/engine";
+import { breaksOn, glowAfter, nudgeAfter, pin, pinAll, tray } from "@/lib/game/pin";
 import { chosen, linesFor, rewindToChoice } from "@/lib/game/endings";
 import { heldOn, impulseOf, leaning, vowsOf } from "@/lib/game/reading";
 import { sceneOf, UNOPENED } from "@/lib/game/scene";
@@ -380,8 +381,8 @@ describe("Raakh's case file, as lines", () => {
     expect(fileLine(raakh, fresh(), "q1", "him").ok).toBe(false);
   });
 
-  it("fills a row the moment the phone shows it, and files with one tap once all of them hold", () => {
-    const s = saw(fresh(), "invoice", "ticket");
+  it("with the rows filling themselves, fills a row the moment the phone shows it, and files with one tap once all of them hold", () => {
+    const s = saw(add(fresh(), AUTOPIN), "invoice", "ticket");
     const { rows, lines } = filingFor(raakh, s, q("q1"));
     expect(rows.every((r) => r.by)).toBe(true);
     expect(lines.map((l) => l.claim.id)).toEqual(["him"]);
@@ -392,7 +393,7 @@ describe("Raakh's case file, as lines", () => {
   });
 
   it("empties a row again when what showed it is deleted for good", () => {
-    const s = saw(fresh(), "kunal-clip", "reel-take");
+    const s = pinAll(raakh, saw(fresh(), "kunal-clip", "reel-take"), q("q4"));
     expect(filingFor(raakh, s, q("q4")).rows.every((r) => r.by)).toBe(true);
     const gone = remove(s, "reel-take", "perm");
     expect(filingFor(raakh, gone, q("q4")).rows.filter((r) => !r.by).map((r) => r.fact.what)).toEqual(["who fired on the back lawn", "which shot hit Dilip"]);
@@ -406,10 +407,70 @@ describe("Raakh's case file, as lines", () => {
   });
 
   it("holds Q1's “me” until the phone puts the player in it", () => {
-    const filed = fileLine(raakh, saw(fresh(), "invoice", "ticket"), "q1", "him").state;
+    const filed = fileLine(raakh, pinAll(raakh, saw(fresh(), "invoice", "ticket"), q("q1")), "q1", "him").state;
     expect(filingFor(raakh, filed, q("q1")).lines).toEqual([]);
     const lifted = saw(filed, "waybill", "apple-account");
     expect(filingFor(raakh, lifted, q("q1")).lines.map((l) => l.claim.id)).toEqual(["me"]);
+  });
+
+  it("fills a row only when the player pins a clue that shows it", () => {
+    const s = saw(fresh(), "invoice", "ticket");
+    expect(filingFor(raakh, s, q("q1")).rows.every((r) => !r.by && r.shown)).toBe(true);
+    expect(filingFor(raakh, s, q("q1")).lines).toEqual([]);
+    expect(fileLine(raakh, s, "q1", "him").ok).toBe(false);
+    let x = s;
+    for (const [row, id] of [[0, "invoice"], [1, "invoice"], [2, "ticket"]] as const) {
+      const r = pin(raakh, x, q("q1"), row, id, 0);
+      expect(r.ok).toBe(true);
+      x = r.state;
+    }
+    expect(filingFor(raakh, x, q("q1")).lines.map((l) => l.claim.id)).toEqual(["him"]);
+    expect(fileLine(raakh, x, "q1", "him").ok).toBe(true);
+  });
+
+  it("answers a wrong pin with the near miss the script knows, or with what the row is about, and changes nothing", () => {
+    const s = saw(fresh(), "conscious", "not-speaking", "nitin-car");
+    const miss = pin(raakh, s, q("q5"), 0, "not-speaking");
+    expect(miss.ok).toBe(false);
+    expect(miss.reply).toMatch(/^At 2:41 he'd stopped speaking/);
+    expect(miss.state).toBe(s);
+    expect(pin(raakh, s, q("q5"), 0, "nitin-car").reply).toBe("That doesn't show whether Dilip was alive after the shot. It fits another line here.");
+    expect(pin(raakh, s, q("q5"), 1, "nitin-car").ok).toBe(true);
+  });
+
+  it("won't pin half of a clue that only works as a pair", () => {
+    const s = saw(fresh(), "fire-clip");
+    expect(pin(raakh, s, q("q7"), 2, "fire-clip").reply).toBe("That's part of it. On its own it doesn't show what burned.");
+    expect(pin(raakh, saw(s, "car-255"), q("q7"), 2, "fire-clip").ok).toBe(true);
+  });
+
+  it("offers a short tray: the latest clues for open rows, and one near miss", () => {
+    const s = saw(fresh(), "nitin-back", "conscious", "not-speaking", "nitin-car", "nitin-gate", "left-empty", "swift");
+    const { clues, more } = tray(raakh, s, q("q5"));
+    expect(clues.length).toBe(4);
+    expect(clues.filter((e) => ["not-speaking", "swift"].includes(e.id)).length).toBe(1);
+    expect(more.length).toBeGreaterThan(0);
+    // The newest first.
+    expect(clues[0].id).toBe("swift");
+  });
+
+  it("says where Sameer's account breaks, once the player has pinned what it can't square with", () => {
+    const q4 = q("q4");
+    const version = q4.kind === "file" ? q4.claims.find((c) => c.id === "version")! : undefined!;
+    const s = saw(fresh(), "kunal-clip", "reel-take", "vn-kunal", "kunal-story");
+    expect(breaksOn(raakh, s, q4, version)).toBeUndefined();
+    const pinned = pin(raakh, s, q4, 1, "reel-take").state;
+    expect(breaksOn(raakh, pinned, q4, version)).toBe("Sameer fired twice on the back lawn");
+  });
+
+  it("keeps the player's pace, and waits half again as long before showing them", () => {
+    let s = saw(fresh(), "invoice", "ticket");
+    expect(glowAfter(s)).toBe(20_000);
+    s = pin(raakh, s, q("q1"), 0, "invoice", 0).state;
+    s = pin(raakh, s, q("q1"), 1, "invoice", 20_000).state;
+    s = pin(raakh, s, q("q1"), 2, "ticket", 60_000).state;
+    expect(glowAfter(s)).toBe(45_000);
+    expect(nudgeAfter(s)).toBe(90_000);
   });
 
   it("lists every ending at the last question, with what each still needs, and shuts the Trade once Bhasin has gone", () => {

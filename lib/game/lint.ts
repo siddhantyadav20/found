@@ -188,6 +188,24 @@ function questionProblems(story: Story, q: Question): Problem[] {
     else if (!lead.facts?.length) out.push({ where: `${at}.${lead.id}`, what: "a lines case file needs this line's facts: they are its rows" });
     for (const f of lead?.facts ?? []) {
       if (/^that\b/i.test(f.what)) out.push({ where: `${at}.${lead!.id}`, what: `the row “${f.what}” says its answer before it's shown: start it with whether/who/what/how` });
+      /* A near miss offered beside the right clues (pinning, 2026-11-12): it
+         has to be real evidence, and it can't be one of the row's own ways in,
+         or the right answer would be called wrong. */
+      for (const id of Object.keys(f.misses ?? {})) {
+        if (!byId.has(id)) out.push({ where: `${at}.${lead!.id}`, what: `the row “${f.what}” has a near miss “${id}”, which doesn't exist` });
+        else if (factRoutes(f).some((r) => r.includes(id))) out.push({ where: `${at}.${lead!.id}`, what: `the row “${f.what}” calls “${id}” a near miss, and it's one of the row's own ways in` });
+      }
+    }
+    /* The note opens on where in the night a question is, never "Question 2
+       of 3": a heading, and a place in "The night so far". */
+    if (!q.scene) out.push({ where: at, what: "a lines case file needs a scene: the heading the note opens on, and where its line sits in the night" });
+    else if (!/^(before|after|\d\d:\d\d)$/.test(q.scene.at)) out.push({ where: at, what: `scene.at “${q.scene.at}” isn't a time like “01:14”, or “before” or “after”` });
+    /* Sameer's account says which of the true line's facts it can't stand
+       beside, so the note can say where it breaks once one is pinned. */
+    const facts = new Set((lead?.facts ?? []).map((f) => f.fact));
+    for (const c of q.claims.filter((x) => x.version)) {
+      if (!c.against?.length) out.push({ where: `${at}.${c.id}`, what: "Sameer's account needs `against`: the true line's facts it can't be squared with" });
+      for (const f of c.against ?? []) if (!facts.has(f)) out.push({ where: `${at}.${c.id}`, what: `against “${f}”, which isn't one of the true line's facts` });
     }
   }
   if (story.filing === "lines" && q.final) {

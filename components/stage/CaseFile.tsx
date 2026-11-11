@@ -9,6 +9,8 @@ import {
   fileLine,
   fileSentence,
   filingFor,
+  AUTOPIN,
+  pinning,
   type Line,
   toProve,
   has,
@@ -46,13 +48,14 @@ import {
   type Given,
 } from "@/lib/game/engine";
 import { DETECTIVE } from "@/lib/game/scene";
-import { appsFor, helpFor, helpText, sayLead, waitingOn } from "@/lib/game/lead";
+import { appsFor, clueName, helpFor, helpText, sayLead, waitingOn } from "@/lib/game/lead";
+import { breaksOn, glowAfter, glowFor, pin, tray, type Glow } from "@/lib/game/pin";
 import note from "@/components/owner/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
-import { flag, wrong } from "./playthrough";
+import { autopinned, flag, glowed, pinned, wrong } from "./playthrough";
 import { Asides, CloseTheCase, FoundList, NoteHead } from "./v3/CaseNote";
 import { nightly, stamp } from "@/lib/found/time";
-import { moment as momentTone } from "@/lib/found/tones";
+import { moment as momentTone, noted } from "@/lib/found/tones";
 import CloseCase from "./CloseCase";
 import { holding } from "@/lib/game/hold";
 import { markFilling } from "@/lib/found/filling";
@@ -154,6 +157,8 @@ export default function CaseFile({
     called?: string;
     /** A version this answer crossed out of the record. */
     crossed?: readonly string[];
+    /** The line as it went on the record, printed, and whose it is (2026-11-12: filing changes the note). */
+    printed?: { readonly text: string; readonly whose: "record" | "his" | "hunch" };
   } | null>(null);
   const [helped, setHelped] = useState<string | null>(null);
   // Proof a failed filing found on the table that shows nothing here: marked until it's taken off.
@@ -164,6 +169,26 @@ export default function CaseFile({
 
   // The last question's answer, waiting on the one line that says what it means (RAAKH-V3 §10).
   const [confirming, setConfirming] = useState<{ answer: Answer; claim: FileClaim } | null>(null);
+
+  /* Help that shows before it tells (2026-11-12): after the player's own
+     pause, the clue on the tray that fits a row glows. Keyed to the save,
+     so anything that happens puts it out and starts the pause again. */
+  const [glow, setGlow] = useState<{ key: string; g: Glow } | null>(null);
+  const glowQ = side.find((x) => x.id === aside) ?? main;
+  const glowKey = `${glowQ?.id}|${state.flags.length}`;
+  const glowing = glow?.key === glowKey ? glow.g : undefined;
+  useEffect(() => {
+    if (!glowQ || story.filing !== "lines" || glowQ.kind !== "file" || glowQ.final || !pinning(story, state) || state.flags.includes(DETECTIVE)) return undefined;
+    const t = window.setTimeout(() => {
+      const g = glowFor(story, state, glowQ);
+      if (!g) return;
+      setGlow({ key: glowKey, g });
+      glowed(glowQ.id);
+    }, glowAfter(state));
+    return () => window.clearTimeout(t);
+    // glowKey stands for the question and the save.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [glowKey]);
 
   /* Opening the case file is reading its header (IC4). A result read is a
      result the night can move on from, even if the case file is put away
@@ -242,6 +267,14 @@ export default function CaseFile({
         <div className={said.moment ? styles.afterMoment : undefined}>
         <p className={note.eyebrow}>{said.filed ? "Filed" : "Answered"}</p>
         <h3 className={note.question}>{said.ask}</h3>
+        {said.printed && (
+          <p className={styles.printed}>
+            {said.printed.text}
+            <span className={styles.stamp} data-whose={said.printed.whose}>
+              {said.printed.whose === "his" ? "His account" : said.printed.whose === "hunch" ? "Hunch" : "On record"}
+            </span>
+          </p>
+        )}
         {said.called !== undefined && (
           <p className={styles.called}>{said.called ? `You called it at ${stamp(said.called)}.` : "You called it."}</p>
         )}
@@ -277,7 +310,18 @@ export default function CaseFile({
      every proof under every line, and a separate "Also open", read like
      homework). A line that can be changed says so, and opens on a tap. */
   const offered = side.filter((x) => x.id !== q?.id);
-  const answeredList = (
+  const answeredList = story.filing === "lines" ? (
+    <Night
+      story={story}
+      state={state}
+      next={main && !main.final ? main : undefined}
+      open={offered.map((x) => x.id)}
+      onOpen={(id) => {
+        reset();
+        setAside(id);
+      }}
+    />
+  ) : (
     <Answered
       story={story}
       state={state}
@@ -338,13 +382,14 @@ export default function CaseFile({
     setSaid({
       text: r.reply,
       ok: r.ok,
-      ask: q.ask,
+      ask: q.scene?.ask ?? q.ask,
       q: q.id,
       filed: q.kind === "file",
       lit,
       moment: r.ok ? c?.moment : undefined,
       called: r.ok && c ? calledIt(story, state, c) : undefined,
       crossed,
+      printed: r.ok && c && lining ? { text: c.text.replace(/ \(A hunch\.\)$/, ""), whose: c.version ? "his" : c.hunch ? "hunch" : "record" } : undefined,
     });
     /* A failed filing says what's wrong with the table: what doesn't belong,
        or what's still missing and where it lives (2026-10-23). */
@@ -379,8 +424,10 @@ export default function CaseFile({
       setOffRows(Object.fromEntries(q.rows.filter((row) => at[row.id] && at[row.id] !== row.lane && at[row.id] !== row.orLane).map((row) => [row.id, at[row.id]])));
     } else setOffRows({});
     if (r.ok) {
-      // A reveal lands with the room going quiet around it.
+      // A reveal lands with the room going quiet around it; anything else filed, one tick of glass, and a tap where a phone can.
       if (c?.moment) momentTone();
+      else noted();
+      if (lining) navigator.vibrate?.(18);
       // When it was filed, so a hunch proved later can say when it was called: by the wall, and by the story's clock.
       const at = filedNow();
       save(c ? keepClock(story, { ...r.state, at: { ...r.state.at, [FILED_AT(q.id, c.id)]: at } }, FILED_AT(q.id, c.id), at) : r.state);
@@ -428,6 +475,19 @@ export default function CaseFile({
     give({ claim: claimId, proof: [] }, r);
   };
 
+  /* A clue pinned to a row: right, the row fills and the note ticks; wrong,
+     nothing changes, and the note says why, in one line (2026-11-12). */
+  const pinOne = (row: number, id: string) => {
+    const r = pin(story, state, q, row, id, filedNow());
+    pinned(q.id, r.ok);
+    if (r.ok) {
+      noted();
+      setSaid(null);
+      setHelped(null);
+      save(r.state);
+    } else if (r.reply) setSaid({ text: r.reply, ok: false, ask: q.ask, filed: true });
+  };
+
   const fileSaid = () => {
     if (!filable && !(detective && whole)) return;
     const r = fileSentence(story, state, q.id, words, picked);
@@ -469,11 +529,19 @@ export default function CaseFile({
         </section>
       )}
       <div className={note.card}>
-        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : (q.eyebrow ?? questionNo(story, state, q.id))}</p>
-        <h3 className={note.question}>{q.ask}</h3>
-        {!detective && (
+        {/* Where in the night this is, never "Question 2 of 3" (2026-11-12). */}
+        <p className={note.eyebrow}>{revisit ? "Revisit" : q.optional ? "On the side" : (q.scene?.label ?? q.eyebrow ?? questionNo(story, state, q.id))}</p>
+        <h3 className={note.question}>{q.scene?.ask ?? q.ask}</h3>
+        {/* Where to look, until there's nothing left to find: pinned through, it's time to call it. */}
+        {!detective && !(lining && !q.final && filingFor(story, state, q).rows.length > 0 && filingFor(story, state, q).rows.every((r) => r.by)) && (
           <p className={note.ask}>
-            Look in {(lining ? appsFor(story, state, q) : whereToLook(story, q.id)).map((a) => appLabel(story, a)).join(" · ")}
+            Look in{" "}
+            {(lining ? appsFor(story, state, q) : whereToLook(story, q.id)).map((a, i) => (
+              <span key={a} className={styles.lookIn} data-glow={(glowing?.kind === "app" && glowing.app === a) || undefined}>
+                {i > 0 ? " · " : ""}
+                {appLabel(story, a)}
+              </span>
+            ))}
           </p>
         )}
 
@@ -493,7 +561,19 @@ export default function CaseFile({
 
         {!striking && lining && (
           <>
-            <Lines story={story} state={state} q={q} onFile={fileOne} />
+            <Lines
+              story={story}
+              state={state}
+              q={q}
+              onFile={fileOne}
+              onPin={pinOne}
+              glow={glowing}
+              onAutopin={(on) => {
+                autopinned(on);
+                save(on ? { ...state, flags: [...state.flags, AUTOPIN] } : { ...state, flags: state.flags.filter((f) => f !== AUTOPIN) });
+                setSaid(null);
+              }}
+            />
             <div className={styles.dock}>
               {helped && <p className={note.hint}>{helped}</p>}
               {said && !said.ok && (
@@ -606,63 +686,174 @@ export default function CaseFile({
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /**
- * A question answered as lines (Story.filing, 2026-11-11). Its rows are
- * what its true line claims: each still waiting says only what it's about
- * ("who fired on the back lawn"), and fills itself, with what shows it, the
- * moment the phone does. Below them, what can be filed now, one tap each:
- * the true line once every row holds, and Sameer's account, or a hunch, once
- * the phone shows what they stand on. Nothing is typed, picked or tabled,
- * so nothing has to be remembered: the case file holds it.
+ * A question answered as lines (Story.filing, 2026-11-11), and since
+ * 2026-11-12 worked on as a detective's note: what's known, in ink, each with
+ * the clue pinned beside it; what isn't, as pencilled gaps that say only
+ * what they're about ("who sent the car"); and a short tray of what the
+ * player has just seen. Tap a clue, then the gap it answers (or the other
+ * way round). The game only checks it. Below, "Call it": the true line once
+ * every gap holds, Sameer's account (with where it breaks against what's
+ * pinned), or a hunch. A player who'd rather read turns on rows that fill
+ * themselves, and the tray goes away.
  */
-function Lines({ story, state, q, onFile }: { story: Story; state: CaseState; q: Question; onFile: (claimId: string) => void }) {
+function Lines({
+  story,
+  state,
+  q,
+  onFile,
+  onPin,
+  onAutopin,
+  glow,
+}: {
+  story: Story;
+  state: CaseState;
+  q: Question;
+  onFile: (claimId: string) => void;
+  onPin: (row: number, id: string) => void;
+  onAutopin: (on: boolean) => void;
+  glow?: Glow;
+}) {
   const { rows, lines } = filingFor(story, state, q);
+  const pins = pinning(story, state);
+  const [held, setHeld] = useState<string | null>(null);
+  const [target, setTarget] = useState<number | null>(null);
+  const [more, setMore] = useState(false);
   const label = (id: string) => story.evidence.find((e) => e.id === id)?.label ?? id;
-  const shown = rows.filter((r) => r.by).length;
+  const known = rows.filter((r) => r.by);
+  const gaps = rows.filter((r) => !r.by);
+  const { clues, more: rest } = tray(story, state, q);
+  const attempt = (row: number, id: string) => {
+    setHeld(null);
+    setTarget(null);
+    onPin(row, id);
+  };
+  const clue = (e: Evidence) => (
+    <li key={e.id}>
+      <button
+        type="button"
+        className={styles.clue}
+        data-held={held === e.id || undefined}
+        data-glow={(glow?.kind === "clue" && glow.evidence === e.id) || undefined}
+        aria-pressed={held === e.id}
+        onClick={() => (target !== null ? attempt(target, e.id) : setHeld((h) => (h === e.id ? null : e.id)))}
+      >
+        <span className={styles.clueText}>{e.label}</span>
+        <span className={styles.clueApp}>{e.from ?? appLabel(story, e.app)}</span>
+      </button>
+    </li>
+  );
   return (
     <>
-      {rows.length > 0 && (
+      {known.length > 0 && (
         <div className={styles.step}>
-          <p className={styles.stepHead}>
-            {shown === rows.length ? "Everything this needs is on the phone" : `${shown} of ${rows.length} shown so far`}
-          </p>
-          <ul className={styles.facts} aria-label="What this needs">
-            {rows.map((r) => (
-              <li key={r.fact.fact} data-done={r.by ? "" : undefined}>
-                {r.by ? r.fact.fact : capital(r.fact.what)}
-                {r.by && <span className={styles.rowBy}>{r.by.map(label).join(" · ")}</span>}
+          <p className={styles.stepHead}>What I know</p>
+          <ul className={styles.known}>
+            {known.map((r) => (
+              <li key={r.fact.fact}>
+                <p className={styles.knownFact}>{r.fact.fact}.</p>
+                <p className={styles.pinnedBy}>{r.by!.map((id) => clueName(label(id))).join(" · ")}</p>
               </li>
             ))}
           </ul>
         </div>
       )}
+      {gaps.length > 0 && (
+        <div className={styles.step}>
+          <p className={styles.stepHead}>What I don&apos;t</p>
+          <ul className={styles.gaps}>
+            {gaps.map((r) =>
+              pins ? (
+                <li key={r.fact.fact}>
+                  <button
+                    type="button"
+                    className={styles.gap}
+                    data-armed={held ? "" : undefined}
+                    data-target={target === r.i || undefined}
+                    data-glow={(glow?.kind === "clue" && glow.row === r.i && target === null) || undefined}
+                    aria-pressed={target === r.i}
+                    onClick={() => (held ? attempt(r.i, held) : setTarget((t) => (t === r.i ? null : r.i)))}
+                  >
+                    {capital(r.fact.what)}
+                  </button>
+                </li>
+              ) : (
+                <li key={r.fact.fact} className={styles.gap}>
+                  {capital(r.fact.what)}
+                </li>
+              ),
+            )}
+          </ul>
+        </div>
+      )}
+
+      {pins && gaps.length > 0 && (
+        <div className={styles.step}>
+          <p className={styles.stepHead}>
+            {held ? "Now tap the line it answers" : target !== null ? "Now tap the clue that shows it" : "Just seen · tap one, then the line it answers"}
+          </p>
+          {clues.length ? (
+            <ul className={styles.tray}>{clues.map(clue)}</ul>
+          ) : (
+            <p className={styles.whyNot}>Nothing you&apos;ve found yet answers these. Keep looking through his phone.</p>
+          )}
+          {rest.length > 0 && (
+            <>
+              <button type="button" className={styles.moreClues} aria-expanded={more} onClick={() => setMore((m) => !m)}>
+                {more ? "Fewer" : `Everything else you've found here (${rest.length})`}
+              </button>
+              {more && <ul className={styles.tray}>{rest.map(clue)}</ul>}
+            </>
+          )}
+        </div>
+      )}
+
       {lines.length > 0 ? (
-        <ul className={styles.lineList} aria-label="What you can file">
-          {lines.map((l) => (
-            <LineToFile key={l.claim.id} line={l} final={Boolean(q.final)} onFile={onFile} />
-          ))}
-        </ul>
+        <>
+          {!q.final && <p className={styles.stepHead}>Call it</p>}
+          <ul className={styles.lineList} aria-label="What you can file">
+            {lines.map((l) => (
+              <LineToFile key={l.claim.id} line={l} final={Boolean(q.final)} onFile={onFile} breaks={l.claim.version ? breaksOn(story, state, q, l.claim) : undefined} />
+            ))}
+          </ul>
+        </>
       ) : (
         <p className={styles.whyNot}>
-          {shown < rows.length ? "Each row fills in when you open what shows it on the phone." : "Nothing else the phone shows can go on the record yet."}
+          {gaps.length
+            ? pins
+              ? "Pin a clue to every line, then call it."
+              : "Each row fills in when you open what shows it on the phone."
+            : "Nothing else the phone shows can go on the record yet."}
         </p>
+      )}
+      {!q.final && rows.length > 0 && (
+        <button type="button" className={styles.moreClues} onClick={() => onAutopin(pins)}>
+          {pins ? "Fill the lines for me" : "Let me pin the clues myself"}
+        </button>
       )}
     </>
   );
 }
 
-/** One line that can go on the record: its words, whose they are, and the tap that files it. */
-function LineToFile({ line, final, onFile }: { line: Line; final: boolean; onFile: (claimId: string) => void }) {
+/** One line that can go on the record: its words, whose they are, where his account breaks, and the tap that files it. */
+function LineToFile({ line, final, onFile, breaks }: { line: Line; final: boolean; onFile: (claimId: string) => void; breaks?: string }) {
   const c = line.claim;
-  const whose = c.version ? "As Sameer tells it" : c.hunch ? "A hunch" : undefined;
   const ready = Boolean(line.proof);
   const why = line.closed ?? (line.needs.length ? `Still to show: ${line.needs.join("; ")}.` : undefined);
   return (
-    <li className={styles.toFile} data-ready={ready || undefined}>
-      {whose && <p className={styles.whose}>{whose}</p>}
-      <p className={styles.fileLine}>
-        {c.text.replace(/ \(A hunch\.\)$/, "")}
-      </p>
+    <li className={styles.toFile} data-ready={ready || undefined} data-his={c.version || undefined}>
+      {c.version ? (
+        <span className={styles.stamp} data-whose="his">
+          His account
+        </span>
+      ) : c.hunch ? (
+        <span className={styles.stamp} data-whose="hunch">
+          A hunch
+        </span>
+      ) : null}
+      <p className={styles.fileLine}>{c.text.replace(/ \(A hunch\.\)$/, "")}</p>
       {c.english && <p className={styles.english}>{c.english}</p>}
+      {/* Calling his account, the note says where it breaks against what's pinned, and still lets it be filed. */}
+      {breaks && <p className={styles.breaks}>Doesn&apos;t square with what you pinned: {breaks}.</p>}
       {!ready && why && <p className={styles.whyNot}>{why}</p>}
       <button type="button" className={c.version || c.hunch ? note.secondary : note.primary} disabled={!ready} onClick={() => onFile(c.id)}>
         {final ? "This one" : c.version ? "File his account" : c.hunch ? "File it as a hunch" : "File it"}
@@ -721,6 +912,78 @@ function Answered({ story, state, open, onOpen }: { story: Story; state: CaseSta
               )}
               {now?.version && !out && <p className={styles.sources}>Sameer&apos;s version</p>}
               {now?.hunch && <p className={styles.sources}>Your hunch</p>}
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+/** Where a question's line sits in the night: before it, by the clock (the small hours after the evening), or after. */
+const nightOrder = (at: string | undefined): number => {
+  if (!at || at === "before") return -1;
+  if (at === "after") return 10_000;
+  const [h, m] = at.split(":").map(Number);
+  return (h < 12 ? h + 24 : h) * 60 + m;
+};
+
+/** "01:14" → "1:14 AM"; "before" and "after" as words. */
+const nightTime = (at: string | undefined): string => {
+  if (!at || at === "before") return "Before";
+  if (at === "after") return "Since";
+  const [h, m] = at.split(":").map(Number);
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
+};
+
+/**
+ * The night so far (2026-11-12): what's on the record, at the hour it's
+ * about, with whose account it is stamped beside it. One later proved wrong
+ * stays, struck. The open question shows as the next hour with nothing in
+ * it yet, so how far there is to go reads in the night's own time, not as
+ * "2 of 3". A line that can be changed opens on a tap.
+ */
+function Night({ story, state, next, open, onOpen }: { story: Story; state: CaseState; next?: Question; open: readonly string[]; onOpen: (id: string) => void }) {
+  const qs = story.questions.filter((q) => answered(state, q.id) || (open.includes(q.id) && q.id !== next?.id));
+  if (!qs.length && !next) return null;
+  const rows = [...qs.map((q) => ({ q, next: false })), ...(next ? [{ q: next, next: true }] : [])].toSorted(
+    (a, b) => nightOrder(a.q.scene?.at) - nightOrder(b.q.scene?.at) || story.questions.indexOf(a.q) - story.questions.indexOf(b.q),
+  );
+  return (
+    <section className={styles.record} aria-label="The night so far">
+      <p className={styles.groupHead}>The night so far</p>
+      <ol className={styles.night}>
+        {rows.map(({ q, next: isNext }) => {
+          const now = filedClaims(q, state).at(-1);
+          const out = struckOut(q, state);
+          const tag = open.includes(q.id) ? (needsRevisit(q, state) ? "Revisit" : editable(q, state) ? "Change" : "Open") : undefined;
+          const text = isNext ? "?" : now ? now.text.replace(/ \(A hunch\.\)$/, "") : answered(state, q.id) ? q.reply : q.ask;
+          const whose = !now || isNext ? undefined : now.version ? "his" : now.hunch ? "hunch" : "record";
+          const body = (
+            <>
+              <span className={styles.nightAt}>{nightTime(q.scene?.at)}</span>
+              <span className={styles.nightLine}>
+                <span className={styles.fileLine} data-struck={out || undefined} data-next={isNext || undefined}>
+                  {text}
+                </span>
+                {whose && !out && (
+                  <span className={styles.stamp} data-whose={whose}>
+                    {whose === "his" ? "His account" : whose === "hunch" ? "Hunch" : "On record"}
+                  </span>
+                )}
+                {tag && <span className={styles.tag}>{tag}</span>}
+              </span>
+            </>
+          );
+          return (
+            <li key={q.id} className={styles.nightRow} data-next={isNext || undefined}>
+              {tag ? (
+                <button type="button" className={styles.nightButton} onClick={() => onOpen(q.id)}>
+                  {body}
+                </button>
+              ) : (
+                body
+              )}
             </li>
           );
         })}

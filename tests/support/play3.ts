@@ -28,6 +28,7 @@ import {
 } from "@/lib/game/engine";
 import { finish } from "@/lib/game/endings";
 import { leadFor, sayLead, waitingOn, type Lead } from "@/lib/game/lead";
+import { pin, pinAll } from "@/lib/game/pin";
 import { CHATS_UNLOCKED, installed, library, loaded, memos, offload, restored, unlocked, isCode } from "@/lib/game/phone";
 import {
   darkDone,
@@ -178,6 +179,8 @@ export function solve(story: Story, s: CaseState, qid: string, policy: Policy): 
   if (q.kind !== "file") throw new Error(`${qid}: not a sentence`);
   // A lines case file (2026-11-11): the lines on offer, filed with one tap each.
   if (story.filing === "lines") {
+    // A player who only does what the help says pins only when told to; any other player pins what the phone shows.
+    if (!policy.follow) s = pinAll(story, s, q);
     const ready = filingFor(story, s, q).lines.filter((l) => l.proof);
     const rank = (c: (typeof ready)[number]["claim"]) => (c.hunch ? -10 : 0) + (c.version ? (policy.version ? -1 : 1) : 0);
     const lines = q.final
@@ -396,8 +399,16 @@ function act(s: CaseState, lead: Lead, policy: Policy, why: string): CaseState {
       return solve(story, s, lead.question, policy);
     case "wait":
       throw new Error(`follow: told to wait (${why}), and nothing is due. Last flags ${s.flags.slice(-6).join(" ")}`);
+    case "pin": {
+      const q = story.questions.find((y) => y.id === lead.question)!;
+      const r = pin(story, s, q, lead.row, lead.evidence, pinClock++ * 30_000);
+      if (!r.ok) throw new Error(`follow: told to pin ${lead.evidence} to “${lead.what}”, and it wouldn't: ${r.reply}`);
+      return r.state;
+    }
   }
 }
+/** When each pin lands, 30 seconds apart: enough for the pace to read as a real player's. */
+let pinClock = 0;
 
 /** Whether an item is somewhere the player could have deleted it from. */
 function visibleItem(s: CaseState, item: string): boolean {

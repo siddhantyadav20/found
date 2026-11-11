@@ -176,7 +176,10 @@ function Report({ id, funnel, token }: { id: CaseId; funnel: Funnel; token?: str
 
       <section className={styles.block}>
         <h2>Questions</h2>
-        <p className={styles.small}>Wrong tries per answer and hints are where a question is too hard. Nudges are the game offering help unasked.</p>
+        <p className={styles.small}>
+          Wrong tries per answer and hints are where a question is too hard. Nudges are the game offering help unasked. Wrong pins per answer should sit near one: near none
+          and it&apos;s a form again, three or more and the tray is a wall. {n("autopin:on")} turned on rows that fill themselves ({n("autopin:off")} turned it off again).
+        </p>
         <div className={styles.scroll}>
           <table className={styles.table}>
             <thead>
@@ -189,6 +192,9 @@ function Report({ id, funnel, token }: { id: CaseId; funnel: Funnel; token?: str
                 <th>Hint 2</th>
                 <th>Hint 3</th>
                 <th>Nudged</th>
+                <th>Pinned</th>
+                <th>Wrong pins / answer</th>
+                <th>Glowed</th>
               </tr>
             </thead>
             <tbody>
@@ -207,6 +213,10 @@ function Report({ id, funnel, token }: { id: CaseId; funnel: Funnel; token?: str
                     <td>{n(`hint:${x.id}:2`)}</td>
                     <td data-hot={solved && n(`hint:${x.id}:3`) / solved >= 0.4 ? true : undefined}>{n(`hint:${x.id}:3`)}</td>
                     <td>{n(`nudge:${x.id}`)}</td>
+                    <td>{n(`pin:${x.id}`)}</td>
+                    {/* About one is the aim: near none and it's a form again; three or more and the tray is a wall. */}
+                    <td data-hot={solved && n(`miss:${x.id}`) / solved >= 3 ? true : undefined}>{solved ? (n(`miss:${x.id}`) / solved).toFixed(1) : "—"}</td>
+                    <td>{n(`glow:${x.id}`)}</td>
                   </tr>
                 );
               })}

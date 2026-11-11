@@ -243,6 +243,24 @@ p.widget { cursor: default; }
     filter var(--t-quick);
 }
 
+/* The app the next clue is in, once the player has paused (lib/found/glow.ts):
+   a slow breath and a ring of light, as a nudge that shows before it tells. */
+.icon[data-glow] .tile {
+  border-radius: 22%;
+  animation: glow 1.8s var(--ease-out, ease-out) infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgb(255 196 92 / 0);
+    scale: 1;
+  }
+  45% {
+    box-shadow: 0 0 0 5px rgb(255 196 92 / 0.55), 0 0 22px 6px rgb(255 196 92 / 0.35);
+    scale: 1.06;
+  }
+}
+
 /* Pressed: the icon sinks and darkens a touch, like the real thing. */
 .icon:active .tile {
   scale: 0.88;
@@ -363,6 +381,11 @@ p.widget { cursor: default; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .icon[data-glow] .tile {
+    animation: none;
+    box-shadow: 0 0 0 4px rgb(255 196 92 / 0.6);
+  }
+
   .icon[data-busy] .progress {
     animation: none;
     --p: 60;

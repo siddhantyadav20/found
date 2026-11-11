@@ -11,6 +11,7 @@ import { stationOf, statusOf } from "@/lib/game/route";
 import Alert from "./ios/Alert";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Home.module.css";
+import { useGlowApp } from "@/lib/found/glow";
 
 /* ===========================================================================
    His home screen, with one thing a real phone wouldn't have: the widget at
@@ -73,6 +74,8 @@ export default function Home({
     );
     return () => window.clearTimeout(t);
   }, [fetching, onInstall]);
+  // The app the next clue is in, glowing once the player has paused (lib/found/glow.ts).
+  const glowing = useGlowApp(state.flags.length);
   const open = openQuestion(story, state);
   // Everything the chapter asks has been answered: what's left is done on your own phone.
   const allAsked = story.questions.filter((q) => !q.optional).every((q) => answered(state, q.id));
@@ -89,6 +92,7 @@ export default function Home({
         className={styles.icon}
         data-offloaded={where !== "installed" || undefined}
         data-busy={busy ? (fetching?.comes ? "loading" : "waiting") : undefined}
+        data-glow={glowing === app || undefined}
         // The dock draws no labels, as iOS doesn't; a screen reader still gets one.
         aria-label={where !== "installed" ? `${label}, offloaded` : unseen > 0 ? `${label}, ${unseen} new` : label}
         onClick={(e) => {
@@ -169,7 +173,7 @@ export default function Home({
           <span className={styles.widgetLabel}>{open ? (needsRevisit(open, state) ? "Revisit" : "Open question") : "Case file"}</span>
           <span className={styles.widgetText}>
             {open
-              ? open.ask
+              ? (open.scene?.ask ?? open.ask)
               : holding(story, state)
                 ? story.hold?.widget
                 : allAsked

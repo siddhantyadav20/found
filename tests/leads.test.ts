@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import type { Flag } from "@/content/types";
-import { add, newCase, openQuestion } from "@/lib/game/engine";
+import { add, AUTOPIN, newCase, openQuestion } from "@/lib/game/engine";
 import { chosen } from "@/lib/game/endings";
 import { helpFor, helpText, leadFor, sayLead, waitingOn } from "@/lib/game/lead";
+import { pin } from "@/lib/game/pin";
 import { play, raakh, type Policy } from "./support/play3";
 
 /* ===========================================================================
@@ -43,10 +44,23 @@ describe("what the help says", () => {
     expect(h?.state.flags).toContain("hint:q1:1");
   });
 
-  it("points at the next thing still missing, not at what's already been found", () => {
+  it("says to pin what's already been found before sending the player off to find more", () => {
     const s = add(fresh, "saw:apple-account");
+    const next = leadFor(raakh, s, q1);
+    expect(next?.lead.kind).toBe("pin");
+    expect(helpText(raakh, s, q1, 2)).toBe("You've already found what shows who S is. Pin it to that line in the case file.");
+    expect(helpText(raakh, s, q1, 3)).toMatch(/^In the case file, pin “.*” to “who S is”\.$/);
+  });
+
+  it("points at the next thing still missing, not at what's already been pinned", () => {
+    const s = pin(raakh, add(fresh, "saw:apple-account"), q1, 0, "apple-account").state;
     expect(leadFor(raakh, s, q1)?.what).toBe("what he does");
     expect(helpText(raakh, s, q1, 3)).toMatch(/^Open the mail “Invoice/);
+  });
+
+  it("with the rows filling themselves, goes straight to what's missing", () => {
+    const s = add(fresh, "saw:apple-account", AUTOPIN);
+    expect(leadFor(raakh, s, q1)?.what).toBe("what he does");
   });
 
   it("never names the thing at tier 2: a detective's last hint is only where", () => {

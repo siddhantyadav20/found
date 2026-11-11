@@ -213,6 +213,12 @@ export type FileClaim = {
    */
   readonly facts?: readonly Fact[];
   /**
+   * Sameer's account against the true line (2026-11-12): the true line's
+   * facts (by their `fact`) this one can't be squared with. Once the player
+   * has pinned one of them, the note says so beside his account.
+   */
+  readonly against?: readonly string[];
+  /**
    * Never offered as a line in a "lines" case file (`Story.filing`): a
    * hunch only a player putting the sentence together could have said, and
    * that printed as a button would say the answer for them.
@@ -230,6 +236,13 @@ export type Fact = {
   readonly fact: string;
   readonly what: string;
   readonly by: readonly (string | readonly string[])[];
+  /**
+   * The near misses for this row in a pinning case file (2026-11-12): a
+   * clue that looks like it answers the row and doesn't, and what the note
+   * says when it's pinned here ("At 2:41 he'd stopped speaking…"). These
+   * are the first offered beside the right clues, so the choice is real.
+   */
+  readonly misses?: Readonly<Record<string, string>>;
 };
 
 /**
@@ -295,6 +308,15 @@ type Asked = {
   readonly final?: boolean;
   /** A heading over the question, when it isn't "Open question": "Q1, again". */
   readonly eyebrow?: string;
+  /**
+   * Where in the night the question is (2026-11-12), so the case file reads
+   * as a lead and not "Question 2 of 3": a heading that names the hour and
+   * the place without answering anything ("1:14 – 2:04 AM · The service
+   * gate"), a shorter question for the note when the full one is a
+   * compound, and where its line sits in "The night so far": a time on the
+   * night's clock ("01:14"), or before or after the night.
+   */
+  readonly scene?: { readonly label: string; readonly at: string; readonly ask?: string };
 };
 
 /**

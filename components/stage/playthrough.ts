@@ -107,6 +107,24 @@ export function wrong(question: string): void {
   if (id) track({ case: id, event: `wrong:${question}`, via: readProgress()?.via });
 }
 
+/** A clue pinned to a row: right (`pin:`) or not (`miss:`). */
+export function pinned(question: string, ok: boolean): void {
+  const id = boundCase();
+  if (id) track({ case: id, event: `${ok ? "pin" : "miss"}:${question}`, via: readProgress()?.via });
+}
+
+/** The fitting clue, or the app it's in, glowed after the player's pause. */
+export function glowed(question: string): void {
+  const id = boundCase();
+  if (id) track({ case: id, event: `glow:${question}`, via: readProgress()?.via });
+}
+
+/** Rows filling themselves, turned on or off. */
+export function autopinned(on: boolean): void {
+  const id = boundCase();
+  if (id) track({ case: id, event: `autopin:${on ? "on" : "off"}`, via: readProgress()?.via });
+}
+
 /** The game noticed a player was stuck, and offered help unasked. */
 export function nudged(question: string): void {
   const id = boundCase();

@@ -65,6 +65,7 @@ export const questions: readonly Question[] = [
     id: "q1",
     episode: 1,
     ask: "Who is S, and where is he running to?",
+    scene: { label: "The phone in the parcel", at: "before" },
     whereToLook: ["settings", "instagram", "mail"],
     hints: [
       "Who does this phone belong to? Try Settings.",
@@ -121,6 +122,7 @@ export const questions: readonly Question[] = [
     id: "q2",
     episode: 1,
     ask: "Dilip is missing. Who is he, and where was he last seen?",
+    scene: { label: "9:48 PM – 12:15 AM · Dilip", at: "21:48" },
     whereToLook: ["whatsapp", "photos", "notes"],
     hints: [
       "Zoom into the portrait in Favorites.",
@@ -146,7 +148,7 @@ export const questions: readonly Question[] = [
         facts: [
           { fact: "Dilip is a catering worker", what: "what Dilip did there", by: ["badge", "sethi-shoot", "sethi-dilip", "sethi-list"] },
           { fact: "He was last seen at the Sehgal wedding", what: "where he was last seen", by: ["poster", "sethi-dilip"] },
-          { fact: "He was holding the light for Sameer", what: "what he was holding", by: ["shot-list", "nitin-sick"] },
+          { fact: "He was holding the light for Sameer", what: "what he was holding", by: ["shot-list", "nitin-sick"], misses: { portrait: "That was 9:48. Where was he at 12:15?" } },
         ],
         also: ["portrait", "promise"],
         reply: "Dilip Kumar Mahto, nineteen, Sethi Caterers. At 9:48 Sameer photographed him smiling over a tray. At 12:15 he was holding Sameer's light. His family hasn't seen him since.",
@@ -160,6 +162,7 @@ export const questions: readonly Question[] = [
     id: "q3",
     episode: 1,
     ask: "Someone set this phone up for M. When, and how did it reach her?",
+    scene: { label: "Before the night · How it reached M", at: "before" },
     whereToLook: ["notes", "settings", "casefile"],
     hints: [
       "A phone with no passcode, and a note to M. When was he writing to her? And look at the waybill again.",
@@ -202,6 +205,7 @@ export const questions: readonly Question[] = [
     episode: 2,
     contestable: true,
     ask: "Who fired the shot that hit Dilip?",
+    scene: { label: "11:52 PM – 12:32 AM · The shots", at: "23:52" },
     whereToLook: ["photos", "voicememos", "whatsapp"],
     hints: [
       "Kunal's clip is on the dance floor. What happened on the back lawn, forty minutes later?",
@@ -226,7 +230,15 @@ export const questions: readonly Question[] = [
         orProof: [["kunal-clip", "memo"], ["kunal-clip", "frame"], ["kunal-clip", "kunal-frame"]],
         facts: [
           { fact: "Kunal fired on the dance floor at 11:52", what: "where Kunal fired first", by: ["kunal-clip"] },
-          { fact: "Sameer fired twice on the back lawn", what: "who fired on the back lawn", by: ["reel-take", "memo", "frame", "kunal-frame", ["bts", "gun-to-kunal"]] },
+          {
+            fact: "Sameer fired twice on the back lawn",
+            what: "who fired on the back lawn",
+            by: ["reel-take", "memo", "frame", "kunal-frame", ["bts", "gun-to-kunal"]],
+            misses: {
+              "vn-kunal": "That's what Sameer told M. What does the back lawn itself show?",
+              "kunal-story": "That's Kunal's gun at 12:22. Whose hand was it in on the lawn?",
+            },
+          },
           { fact: "The second shot hit Dilip", what: "which shot hit Dilip", by: ["reel-take", "memo", "frame", "kunal-frame"] },
         ],
         also: ["shot-list", "kunal-story", "promise", "kunal-papa", "dilip-107"],
@@ -251,6 +263,7 @@ export const questions: readonly Question[] = [
         proof: ["vn-kunal", "kunal-story"],
         reply: ON_RECORD,
         version: true,
+        against: ["Sameer fired twice on the back lawn"],
       },
       refuse("lawn", { place: "back lawn", who: "*", which: "*" }, "Look at the floor under Kunal's feet at 11:52."),
       refuse("first", { place: "*", who: "*", which: "first" }, "The first went straight up, for the camera. Listen again."),
@@ -262,6 +275,7 @@ export const questions: readonly Question[] = [
     id: "q5",
     episode: 2,
     ask: "After the shot, was Dilip alive, and what happened to the car that came for him?",
+    scene: { label: "1:14 – 2:04 AM · The service gate", at: "01:14", ask: "What happened to Dilip after the shot?" },
     whereToLook: ["whatsapp", "photos"],
     hints: [
       "Bhasin's group screenshots run on past 1 AM. One of the two chats Sameer locked is Dilip's own.",
@@ -286,8 +300,8 @@ export const questions: readonly Question[] = [
         proof: ["conscious", "nitin-car", "nitin-back"],
         orProof: each([["conscious"], ["dilip-107"]], [["nitin-car"]], [["nitin-back"], ["left-empty"]]),
         facts: [
-          { fact: "At 1:14 Dilip was awake", what: "whether Dilip was alive after the shot", by: ["conscious", "dilip-107"] },
-          { fact: "Nitin sent a car to the service gate", what: "who sent the car", by: ["nitin-car", "nitin-gate"] },
+          { fact: "At 1:14 Dilip was awake", what: "whether Dilip was alive after the shot", by: ["conscious", "dilip-107"], misses: { "not-speaking": "At 2:41 he'd stopped speaking. That isn't the same thing. Look earlier." } },
+          { fact: "Nitin sent a car to the service gate", what: "who sent the car", by: ["nitin-car", "nitin-gate"], misses: { swift: "That's the car at the gate. Who sent it?" } },
           { fact: "At 2:04 it left without him", what: "how the car left", by: ["nitin-back", "left-empty"] },
         ],
         also: ["swift", "site-plan", "no-112", "doctor", "call-115", "nitin-reply"],
@@ -307,6 +321,7 @@ export const questions: readonly Question[] = [
     id: "q5b",
     episode: 2,
     ask: "How does Bhasin know where this phone is?",
+    scene: { label: "12:02 AM · Who's watching", at: "00:02" },
     whereToLook: ["whatsapp", "settings"],
     hints: [
       "Who in this phone's life did Bhasin do favours for this autumn?",
@@ -328,7 +343,7 @@ export const questions: readonly Question[] = [
         text: "Bhasin set up Mummy's phone in October. Tonight it shows this one at B-14, Gate 2 side, and he's watching.",
         proof: ["mummy-phone", "mummy-pin", "bhasin-vn"],
         facts: [
-          { fact: "Bhasin gave Mummy a phone with location on", what: "how Bhasin can see this phone", by: ["mummy-phone"] },
+          { fact: "Bhasin gave Mummy a phone with location on", what: "how Bhasin can see this phone", by: ["mummy-phone"], misses: { "find-my": "That's this phone, sharing with Mummy. What did Bhasin do to hers?" } },
           { fact: "Tonight it shows this phone at B-14, Gate 2 side", what: "where it shows this phone", by: ["mummy-pin"] },
           { fact: "He's watching it", what: "whether Bhasin is watching", by: ["bhasin-vn", "bhasin-home", "bhasin-dark", "mummy-findmy"] },
         ],
@@ -350,6 +365,7 @@ export const questions: readonly Question[] = [
     episode: 3,
     contestable: true,
     ask: "Why did the car leave empty?",
+    scene: { label: "1:49 – 1:53 AM · The empty car", at: "01:52" },
     whereToLook: ["whatsapp", "photos", "safari"],
     hints: [
       "Nitin answered someone at 1:53. Where was Sameer at 1:49?",
@@ -375,7 +391,7 @@ export const questions: readonly Question[] = [
         proof: ["nitin-152", "sameer-room"],
         orProof: [["nitin-reply", "sameer-room"], ["nitin-152", "search-156"]],
         facts: [
-          { fact: "Sameer told Nitin Dilip had already gone", what: "what Sameer told Nitin", by: ["nitin-152", "nitin-reply"] },
+          { fact: "Sameer told Nitin Dilip had already gone", what: "what Sameer told Nitin", by: ["nitin-152", "nitin-reply"], misses: { "left-empty": "That's the car leaving. What did Nitin hear before it left?" } },
           { fact: "He knew Dilip was still there", what: "what Sameer knew at 1:52", by: ["sameer-room", "search-156"] },
         ],
         // Why he lied, for anyone who looks (fix brief H-07): what a hospital would have meant.
@@ -390,6 +406,7 @@ export const questions: readonly Question[] = [
         proof: ["swift", "left-empty"],
         reply: ON_RECORD,
         version: true,
+        against: ["Sameer told Nitin Dilip had already gone"],
       },
       refuse("believed", { cause: "Sameer told Nitin Dilip had already gone, believing it" }, "Believing it? Where was he at 1:49?"),
       refuse("gave-up", { cause: "Nitin gave up waiting" }, "Read 1:53 again. He's answering someone."),
@@ -402,6 +419,7 @@ export const questions: readonly Question[] = [
     episode: 3,
     contestable: true,
     ask: "What burned on the back plot?",
+    scene: { label: "4:47 AM · The back plot", at: "04:47" },
     whereToLook: ["notes", "photos", "whatsapp"],
     hints: [
       "The clip in Favorites is nine seconds of something longer. He kept the rest somewhere only he could open.",
@@ -431,7 +449,7 @@ export const questions: readonly Question[] = [
           /* The whole clip shows it: the mattress burning open, empty (and the
              kada on the hand that lit it). Or reason it: the boy left in the
              2:55 car, his waistcoat with him, two hours before the fire. */
-          { fact: "What burned was an empty mattress", what: "what burned", by: ["fire-original", ["car-255", "fire-clip"]] },
+          { fact: "What burned was an empty mattress", what: "what burned", by: ["fire-original", ["car-255", "fire-clip"]], misses: { "vn-burned": "That's what he believed burned. Watch the whole fire." } },
         ],
         also: ["fire-clip", "not-speaking"],
         moment: "Empty.",
@@ -448,6 +466,7 @@ export const questions: readonly Question[] = [
         orProof: [["vn-burned", "fire-clip"]],
         reply: ON_RECORD,
         version: true,
+        against: ["What burned was an empty mattress"],
       },
       refuse("watched", { role: "only watched", whose: "*", what: "*" }, "Listen to his Monday voice note to M. He says who lit it."),
     ],
@@ -461,6 +480,7 @@ export const questions: readonly Question[] = [
     episode: 3,
     contestable: true,
     ask: "Who is the patient they call Deepak, and why does “For M” stop at Nitin?",
+    scene: { label: "A week later · The patient called Deepak", at: "after", ask: "Who is the patient they call Deepak?" },
     whereToLook: ["whatsapp", "photos", "notes"],
     hints: [
       "Dilip's own number has written to this phone. Read what the nurse sent.",
@@ -483,7 +503,12 @@ export const questions: readonly Question[] = [
         orProof: [["slip", "badge", "anita", "nitin-152"], ["belongings", "anita-voice", "for-m", "lie-proved"]],
         facts: [
           ...PATIENT,
-          { fact: "Nitin's chat is the one place 1:52 still exists", what: "why the list stops at Nitin", by: ["nitin-152", ["for-m", "lie-proved"]] },
+          {
+            fact: "Nitin's chat is the one place 1:52 still exists",
+            what: "why the list stops at Nitin",
+            by: ["nitin-152", ["for-m", "lie-proved"]],
+            misses: { "vn-phone": "That's his reason, as he tells it. What does only Nitin's chat still have?" },
+          },
         ],
         also: ["car-255", "search-ticks", "fire-original", "dilip-video", "for-m"],
         moment: "Alive.",
@@ -497,6 +522,7 @@ export const questions: readonly Question[] = [
         facts: [...PATIENT, { fact: "He ran out of time", what: "why the list stops at Nitin", by: [["for-m", "vn-phone"]] }],
         reply: "Dilip Kumar Mahto is alive, in a room in Fatehpur Beri, under somebody else's name. He has been there a week. “For M” stops where it does, as Sameer tells it. They move him at seven.",
         version: true,
+        against: ["Nitin's chat is the one place 1:52 still exists"],
       },
       refuse("stranger", { who: "a stranger", why: "*" }, "Look at the badge in the bag. You've zoomed into it before."),
     ],

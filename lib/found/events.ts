@@ -11,6 +11,7 @@ import type { Flag, Story } from "@/content/types";
      again                                                        Choose differently
      left:<scene>                                                 where they put it down
      solved:<id>, wrong:<id>, hint:<id>:<tier>, nudge:<id>        where it's too hard
+     pin:<id>, miss:<id>, glow:<id>, autopin:on|off               how pinning clues to rows goes
      claim:<question>:<claim>                                     which reading they filed
      link:<link>                                                  how much of the chain they traced
      <choice>                                                     the chapter's own choices
@@ -132,7 +133,16 @@ export function eventsFor(ep: Story): readonly string[] {
         `hint:${id}:3`,
         // Offered rather than asked for: where the game noticed a player was stuck.
         `nudge:${id}`,
+        /* Pinning (2026-11-12): a clue pinned to the right row, a wrong pin
+           (the target is about one per question: near none is a form again,
+           three or more is a wall), and the fitting clue glowing after a pause. */
+        `pin:${id}`,
+        `miss:${id}`,
+        `glow:${id}`,
       ]),
+      // Who'd rather the rows filled themselves.
+      "autopin:on",
+      "autopin:off",
       // Stuck with nothing to answer: the night was waiting on the player, and the game said what for (2026-11-11).
       "nudge:waiting",
       // Which reading each claim was filed as, the owner's version or not.

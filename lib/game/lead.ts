@@ -11,6 +11,7 @@ import {
   homeIcons,
   leadClaim,
   offline,
+  pinning,
   seen,
   usable,
   type CaseState,
@@ -47,7 +48,9 @@ export type Lead =
   /** Another question has to be answered first. */
   | { readonly kind: "answer"; readonly question: string; readonly ask: string }
   /** The night moves on by itself: on the home screen (`quiet`), or in a moment. */
-  | { readonly kind: "wait"; readonly quiet: boolean };
+  | { readonly kind: "wait"; readonly quiet: boolean }
+  /** Something already found answers a row: pin it there (2026-11-12). */
+  | { readonly kind: "pin"; readonly question: string; readonly row: number; readonly evidence: string; readonly label: string; readonly what: string };
 
 /* --- where things are ----------------------------------------------------- */
 
@@ -351,6 +354,15 @@ function waitingRows(story: Story, s: CaseState, q: Question): { what: string; r
 
 /** What to open next for a question, and the row it's for. Nothing when everything it needs is shown. */
 export function leadFor(story: Story, s: CaseState, q: Question): { lead: Lead; what: string } | undefined {
+  // Already found and not yet pinned: the nearest thing of all to do.
+  if (story.filing === "lines" && !q.final && pinning(story, s)) {
+    const row = filingFor(story, s, q).rows.find((r) => !r.by && r.shown);
+    if (row?.shown) {
+      const evidence = row.shown.toSorted((a, b) => s.flags.lastIndexOf(`saw:${b}`) - s.flags.lastIndexOf(`saw:${a}`))[0];
+      const label = story.evidence.find((e) => e.id === evidence)?.label ?? evidence;
+      return { lead: { kind: "pin", question: q.id, row: row.i, evidence, label, what: row.fact.what }, what: row.fact.what };
+    }
+  }
   // Something to do now beats something to wait for, whichever row it's for.
   let waiting: { lead: Lead; what: string } | undefined;
   for (const row of waitingRows(story, s, q)) {
@@ -429,7 +441,17 @@ export function sayLead(story: Story, lead: Lead, tier: 2 | 3, what = ""): strin
       return `Answer ${quoted(lead.ask)} in the case file first.`;
     case "wait":
       return lead.quiet ? "Put the phone down for a moment: the night moves on while nobody's holding it." : "Give it a moment: something's on its way.";
+    case "pin":
+      return tier === 2
+        ? `You've already found what shows ${lead.what}. Pin it to that line in the case file.`
+        : `In the case file, pin ${quoted(clueName(lead.label))} to ${quoted(lead.what)}.`;
   }
+}
+
+/** A clue as a hint says it: its label up to the first ": ", unless that's too short to tell apart ("Screenshot"). */
+export function clueName(label: string): string {
+  const head = label.split(": ")[0].trim();
+  return head.length < 9 || /screenshot|deleted memo/i.test(head) ? label : head;
 }
 
 /** The help for a tier, worked out now: the written nudge first, then where, then what. */
