@@ -1,5 +1,5 @@
 import { STORIES } from "@/content/stories";
-import type { AppId, Flag, IncomingCall, Reply, ReplyOption, Story } from "@/content/types";
+import type { AppId, Flag, IncomingCall, Reply, ReplyOption, Story, Thread } from "@/content/types";
 import { conversation, offeredOptions, openReply, threadsIn } from "@/lib/game/chat";
 import {
   add,
@@ -7,8 +7,10 @@ import {
   answer,
   claimsFor,
   dueEvents,
+  fileLine,
   fileSentence,
   fire,
+  filingFor,
   has,
   homeIcons,
   keepClock,
@@ -25,6 +27,7 @@ import {
   type CaseState,
 } from "@/lib/game/engine";
 import { finish } from "@/lib/game/endings";
+import { leadFor, sayLead, waitingOn, type Lead } from "@/lib/game/lead";
 import { CHATS_UNLOCKED, installed, library, loaded, memos, offload, restored, unlocked, isCode } from "@/lib/game/phone";
 import {
   darkDone,
@@ -80,6 +83,14 @@ export type Policy = {
   readonly close?: Flag;
   /** Real time ran out (did:bhasin-left) once the terms have come. */
   readonly runOut?: boolean;
+  /**
+   * Open nothing the help doesn't point at (lib/game/lead.ts): no looking
+   * around, no replying unless someone is said to be waiting. What a player
+   * who only ever presses Hint can do.
+   */
+  readonly follow?: boolean;
+  /** Every lead followed, said as tier 3 would say it: for a failing test to show. */
+  readonly trail?: string[];
 };
 
 const apps = [...new Set(homeIcons(raakh).map((i) => i.app))] as AppId[];
@@ -165,6 +176,19 @@ function talk(s: CaseState, call: IncomingCall, policy: Policy): CaseState {
 export function solve(story: Story, s: CaseState, qid: string, policy: Policy): CaseState {
   const q = story.questions.find((x) => x.id === qid)!;
   if (q.kind !== "file") throw new Error(`${qid}: not a sentence`);
+  // A lines case file (2026-11-11): the lines on offer, filed with one tap each.
+  if (story.filing === "lines") {
+    const ready = filingFor(story, s, q).lines.filter((l) => l.proof);
+    const rank = (c: (typeof ready)[number]["claim"]) => (c.hunch ? -10 : 0) + (c.version ? (policy.version ? -1 : 1) : 0);
+    const lines = q.final
+      ? ready.filter((l) => l.claim.ending === (policy.ending ?? "room6"))
+      : ready.filter((l) => !l.claim.hunch || policy.hunch?.includes(qid)).toSorted((a, b) => rank(a.claim) - rank(b.claim));
+    for (const l of lines) {
+      const r = fileLine(story, s, qid, l.claim.id);
+      if (r.ok) return add(keepClock(story, r.state, `filed:${qid}:${l.claim.id}`, 0), `did:read-${qid}`);
+    }
+    throw new Error(`${qid}: no line this player can file (${s.flags.filter((f) => f.startsWith("saw:")).length} things seen)`);
+  }
   const can = (route: readonly string[]) => route.every((id) => seen(s, id));
   const wanted = q.final
     ? q.claims.filter((c) => c.ending === (policy.ending ?? "room6"))
@@ -275,6 +299,10 @@ export function play(policy: Policy = {}, stop: (s: CaseState, scene: Scene) => 
         break;
     }
 
+    if (policy.follow) {
+      s = follow(s, policy, step);
+      continue;
+    }
     s = look(s);
     // Say what the policy says, in any chat waiting on the player.
     let said = false;
@@ -313,6 +341,62 @@ export function play(policy: Policy = {}, stop: (s: CaseState, scene: Scene) => 
     throw new Error(`stuck at ${scene.kind}, question ${openQuestion(raakh, s)?.id ?? "none"}, episode flags ${s.flags.filter((f) => f.startsWith("ep:")).join(",")}; last flags ${s.flags.slice(-6).join(" ")}`);
   }
   throw new Error(`ran out of steps at ${sceneOf(raakh, s).kind}`);
+}
+
+/** One step of a player who does only what the help says. */
+function follow(s: CaseState, policy: Policy, step: number): CaseState {
+  const story = raakh;
+  const due = dueEvents(story, s)[0];
+  if (due) return fire(story, s, due.id, step);
+  const q = openQuestion(story, s);
+  if (q) {
+    try {
+      return solve(story, s, q.id, policy);
+    } catch {
+      // Not yet: ask where.
+    }
+    const next = leadFor(story, s, q);
+    if (!next) throw new Error(`follow: ${q.id} can't be filed and the help points nowhere. Trail:\n${policy.trail?.slice(-8).join("\n")}`);
+    return act(s, next.lead, policy, `${q.id}, “${next.what}”`);
+  }
+  const side = policy.version ? undefined : sideQuestions(story, s).find((x) => x.contestable);
+  if (side) {
+    try {
+      return solve(story, s, side.id, { ...policy, hunch: [] });
+    } catch {
+      // Not provable yet.
+    }
+  }
+  const lead = waitingOn(story, s);
+  if (!lead) throw new Error(`follow: nothing to answer, and the help says nothing is waiting. Last flags ${s.flags.slice(-6).join(" ")}. Trail:\n${policy.trail?.slice(-8).join("\n")}`);
+  return act(s, lead, policy, "waiting");
+}
+
+/** Do what a lead says, and fail loudly when doing it changes nothing. */
+function act(s: CaseState, lead: Lead, policy: Policy, why: string): CaseState {
+  const story = raakh;
+  policy.trail?.push(`${why}: ${sayLead(story, lead, 3)}`);
+  let x = s;
+  switch (lead.kind) {
+    case "open":
+      x = settle(story, see(story, add(s, "did:case-opened"), lead.evidence));
+      if (!seen(x, lead.evidence)) throw new Error(`follow: told to open ${lead.evidence} (${lead.where}), and it can't be opened yet`);
+      return x;
+    case "reply": {
+      const t = threadsIn(story, s, lead.app as Thread["app"]).find((y) => y.id === lead.thread);
+      const r = t && openReply(s, t);
+      const o = r && pick(s, r, policy);
+      if (!o) throw new Error(`follow: told ${lead.who} is waiting for a reply, and there's nothing to say`);
+      return keepClock(story, add(s, ...(o.sets ?? [])), `said:${o.sets?.[0]}`, 0);
+    }
+    case "do":
+      if (!lead.sets.length || lead.sets.every((f) => has(s, f))) throw new Error(`follow: told “${lead.text}”, which does nothing`);
+      return add(s, ...lead.sets);
+    case "answer":
+      return solve(story, s, lead.question, policy);
+    case "wait":
+      throw new Error(`follow: told to wait (${why}), and nothing is due. Last flags ${s.flags.slice(-6).join(" ")}`);
+  }
 }
 
 /** Whether an item is somewhere the player could have deleted it from. */

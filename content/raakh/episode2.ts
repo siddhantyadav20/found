@@ -286,6 +286,9 @@ const nitin: Thread = {
   messages: [
     { id: "n-o1", from: "them", at: "01:25", day: "29/11", with: "nitin-online", requires: ["fired:nitin-online"], text: "Bhai? Online dikh raha hai.", english: "Bro? You're showing online." },
     { id: "n-o2", from: "them", at: "01:25", day: "29/11", with: "nitin-online", requires: ["fired:nitin-online"], typing: 6, text: "Us raat ke baad se neend nahi aayi.", english: "I haven't slept since that night." },
+    /* Left unanswered (the 20-player playtest, 2026-11-08: Episode 2 never
+       ended for players who didn't reply, and nothing said so). */
+    { id: "n-o3", from: "them", at: "01:27", day: "29/11", with: "nitin-waits", requires: ["fired:nitin-waits"], typing: 4, text: "Bhai, reply kar. Tujhe kuch dikhana hai.", english: "Bro, reply. I've got something to show you." },
     /* 1:52 (scene 2.11, E42): what he kept, and how he says it. Not a
        coincidence (fix brief H-04): he waited for the minute, and says so. */
     {
@@ -463,6 +466,8 @@ export const events: readonly LiveEvent[] = [
   { id: "raju-searching", device: "owner", after: ["did:raju-told-shot", "did:done-raju-2"], delay: 40, app: "whatsapp", banner: `${RAJU} · Chhattarpur ke aas paas ke saare hospital dekh raha hoon.` },
   // Once Episode 2's last question is filed: Nitin, seeing the phone online.
   { id: "nitin-online", device: "owner", after: ["ask:q5b"], delay: 6, clock: "01:25", app: "whatsapp", banner: "Nitin · Bhai? Online dikh raha hai." },
+  // Still no reply, and the phone put down: he asks again, so the night doesn't sit waiting unseen.
+  { id: "nitin-waits", device: "owner", after: ["fired:nitin-online"], unless: [READY], delay: 50, quiet: true, app: "whatsapp", banner: "Nitin · Bhai, reply kar. Tujhe kuch dikhana hai." },
   { id: "nitin-copy", device: "owner", after: [READY], delay: 8, clock: "01:52", app: "whatsapp", banner: "Nitin · 📷 Photo" },
   // The bubble seen, or left a while: the episode freezes on it, and cuts to black.
   // Long enough for his typed line (7 s) to land and be read beside the screenshot, then held (2026-10-28).

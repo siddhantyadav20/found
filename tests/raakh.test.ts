@@ -3,7 +3,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import type { Flag } from "@/content/types";
-import { add, claimsFor, clockNow, dueEvents, fileSentence, has, newCase, offline, type CaseState } from "@/lib/game/engine";
+import { add, claimsFor, clockNow, dueEvents, fileLine, filingFor, fileSentence, has, newCase, offline, remove, type CaseState } from "@/lib/game/engine";
 import { chosen, linesFor, rewindToChoice } from "@/lib/game/endings";
 import { heldOn, impulseOf, leaning, vowsOf } from "@/lib/game/reading";
 import { sceneOf, UNOPENED } from "@/lib/game/scene";
@@ -362,5 +362,71 @@ describe("choose differently", () => {
 
   it("has nothing to go back to before the last choice", () => {
     expect(rewindToChoice(raakh, add(newCase("t", 0), "did:opened", "did:unlock"))).toBeUndefined();
+  });
+});
+
+/* The case file as lines (Story.filing, 2026-11-11): rows that fill
+   themselves, and one tap to file. */
+describe("Raakh's case file, as lines", () => {
+  const q = (id: string) => raakh.questions.find((x) => x.id === id)!;
+  const saw = (s: CaseState, ...ids: string[]) => add(s, ...ids.map((id): Flag => `saw:${id}`));
+  const fresh = () => add(newCase("lines", 0), "did:opened", "did:unlock");
+
+  it("starts with every row waiting and nothing to file", () => {
+    const { rows, lines } = filingFor(raakh, fresh(), q("q1"));
+    expect(rows.map((r) => r.fact.what)).toEqual(["who S is", "what he does", "where he's going, and when"]);
+    expect(rows.every((r) => !r.by)).toBe(true);
+    expect(lines).toEqual([]);
+    expect(fileLine(raakh, fresh(), "q1", "him").ok).toBe(false);
+  });
+
+  it("fills a row the moment the phone shows it, and files with one tap once all of them hold", () => {
+    const s = saw(fresh(), "invoice", "ticket");
+    const { rows, lines } = filingFor(raakh, s, q("q1"));
+    expect(rows.every((r) => r.by)).toBe(true);
+    expect(lines.map((l) => l.claim.id)).toEqual(["him"]);
+    const r = fileLine(raakh, s, "q1", "him");
+    expect(r.ok).toBe(true);
+    expect(has(r.state, "ask:q1")).toBe(true);
+    expect(has(r.state, "claim:q1:him")).toBe(true);
+  });
+
+  it("empties a row again when what showed it is deleted for good", () => {
+    const s = saw(fresh(), "kunal-clip", "reel-take");
+    expect(filingFor(raakh, s, q("q4")).rows.every((r) => r.by)).toBe(true);
+    const gone = remove(s, "reel-take", "perm");
+    expect(filingFor(raakh, gone, q("q4")).rows.filter((r) => !r.by).map((r) => r.fact.what)).toEqual(["who fired on the back lawn", "which shot hit Dilip"]);
+  });
+
+  it("offers Sameer's account once the phone shows it, and never prints a hunch that would give the answer away", () => {
+    const early = saw(fresh(), "shot-list", "kunal-papa");
+    expect(filingFor(raakh, early, q("q4")).lines).toEqual([]);
+    const his = saw(early, "vn-kunal", "kunal-story");
+    expect(filingFor(raakh, his, q("q4")).lines.map((l) => l.claim.id)).toEqual(["version"]);
+  });
+
+  it("holds Q1's “me” until the phone puts the player in it", () => {
+    const filed = fileLine(raakh, saw(fresh(), "invoice", "ticket"), "q1", "him").state;
+    expect(filingFor(raakh, filed, q("q1")).lines).toEqual([]);
+    const lifted = saw(filed, "waybill", "apple-account");
+    expect(filingFor(raakh, lifted, q("q1")).lines.map((l) => l.claim.id)).toEqual(["me"]);
+  });
+
+  it("lists every ending at the last question, with what each still needs, and shuts the Trade once Bhasin has gone", () => {
+    const s = add(fresh(), "did:reveal-done");
+    const lines = filingFor(raakh, s, q("qf")).lines;
+    expect(lines.map((l) => l.claim.id)).toEqual(["origin", "room6", "trade", "train"]);
+    expect(lines.find((l) => l.claim.id === "origin")?.proof).toEqual([]);
+    expect(lines.find((l) => l.claim.id === "room6")?.needs).toEqual(["that S is you", "where Dilip is"]);
+    const left = filingFor(raakh, add(s, "did:bhasin-left"), q("qf")).lines.find((l) => l.claim.id === "trade");
+    expect(left?.closed).toMatch(/Bhasin's car has gone/);
+  });
+
+  it("gives every question rows, and words a waiting row so it says what it's about, not what it is", () => {
+    for (const x of raakh.questions.filter((y) => !y.final)) {
+      const lead = x.kind === "file" ? x.claims.find((c) => !c.refuse && !c.version && !c.hunch && !c.free) : undefined;
+      expect(lead?.facts?.length, x.id).toBeGreaterThan(0);
+      for (const f of lead?.facts ?? []) expect(f.what, `${x.id}: ${f.what}`).not.toMatch(/^that /);
+    }
   });
 });

@@ -36,6 +36,8 @@ import { AIRPLANE, installed } from "@/lib/game/phone";
 import { offline } from "@/lib/game/engine";
 import RealClock from "./RealClock";
 import { DETECTIVE } from "@/lib/game/scene";
+import { leadFor, sayLead, waitingOn } from "@/lib/game/lead";
+import { holding as recordHeld } from "@/lib/game/hold";
 import { newsOnYours, yourMessages, yourUnread } from "@/lib/game/yours";
 import { TRAIN_UNDER, useBed } from "@/lib/found/nightSound";
 import { useFilling } from "@/lib/found/filling";
@@ -235,23 +237,33 @@ export default function Table({
      to look. Once per question, never counted as a hint (PLAYER-JOURNEY
      Stage 4): being lost is not held against anybody. */
   const q = openQuestion(story, state);
-  const qid = q?.id;
+  /* What the nudge is about, worked out from the script (lib/game/lead.ts):
+     the app the question's next row is in, or, with nothing to answer, what
+     the night is waiting for (2026-11-11: a player sat on Episode 2's last
+     minute because nobody said Nitin was waiting for a reply). */
+  const lead = story.caseFile === false ? undefined : q ? leadFor(story, state, q) : undefined;
+  const waiting = story.caseFile === false || q || recordHeld(story, state) ? undefined : waitingOn(story, state);
+  const nudgeKey = q ? q.id : waiting && waiting.kind !== "wait" ? `wait-${waiting.kind === "reply" ? waiting.thread : waiting.kind === "answer" ? waiting.question : waiting.kind === "open" ? waiting.evidence : waiting.app}` : undefined;
   // A detective asked to be left alone.
-  const nudgeDone = !q || detective || review || has(state, `fired:nudge-${q.id}`);
+  const nudgeDone = !nudgeKey || detective || review || has(state, `fired:nudge-${nudgeKey}`);
   // Short, as a banner is read: where to look, not the question again.
-  const nudgeText = q ? `Stuck? Try ${whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}.` : "";
+  const nudgeText = q
+    ? `Stuck? ${lead ? sayLead(story, lead.lead, 2, lead.what) : `Try ${whereToLook(story, q.id).map((a) => appLabel(story, a)).join(", ")}.`}`
+    : waiting
+      ? sayLead(story, waiting, 3)
+      : "";
   const progress = state.flags.length;
   // Never inside the case file itself: the question there already says where to look.
   const inCaseFile = openApp === "casefile";
   useEffect(() => {
-    if (!qid || nudgeDone || inCaseFile) return undefined;
+    if (!nudgeKey || nudgeDone || inCaseFile) return undefined;
     const t = window.setTimeout(() => {
-      flag(`fired:nudge-${qid}`);
-      nudged(qid);
+      flag(`fired:nudge-${nudgeKey}`);
+      nudged(nudgeKey.startsWith("wait-") ? "waiting" : nudgeKey);
       setBanner({ app: "casefile", from: "Case file", text: nudgeText });
     }, NUDGE_MS);
     return () => window.clearTimeout(t);
-  }, [qid, nudgeDone, nudgeText, progress, inCaseFile]);
+  }, [nudgeKey, nudgeDone, nudgeText, progress, inCaseFile]);
 
   const dismissBanner = useCallback(() => setBanner(null), []);
 

@@ -238,6 +238,7 @@ function Open({
         {(missed || numeric) && note.hint && (
           <p className={styles.lockClue} aria-live="polite">
             Hint: {note.hint}
+            {missed && note.hintAgain && <span className={styles.lockAgain}>{note.hintAgain}</span>}
           </p>
         )}
       </div>

@@ -212,6 +212,12 @@ export type FileClaim = {
    * `proof` and `orProof` stay as the shortest whole sets, for the solver.
    */
   readonly facts?: readonly Fact[];
+  /**
+   * Never offered as a line in a "lines" case file (`Story.filing`): a
+   * hunch only a player putting the sentence together could have said, and
+   * that printed as a button would say the answer for them.
+   */
+  readonly unsaid?: boolean;
 };
 
 /**
@@ -1013,6 +1019,8 @@ export type Note = {
   readonly password?: string;
   /** Notes shows the owner's own hint once a wrong password has been tried. */
   readonly hint?: string;
+  /** Said under the hint once a guess has missed: where the answer is (the 20-player playtest, 2026-11-08). */
+  readonly hintAgain?: string;
   /** When the password can be known from what's on the phone: a solver unlocks it then, and not before. */
   readonly knownAfter?: readonly Flag[];
   /** Still coming down from iCloud until these hold: it won't open (RAAKH-V3 §7.8, "This note hasn't finished downloading"). */
@@ -1362,6 +1370,13 @@ export type Story = {
   readonly beats?: readonly Beat[];
   /** Airplane mode goes back off, and what's sent meanwhile waits rather than being lost. */
   readonly airplaneToggles?: boolean;
+  /**
+   * How a "file" question is answered (2026-11-11). Unset: a sentence to
+   * finish, and its proof to table. "lines": the question lists what it
+   * needs, each row fills itself as the phone shows it, and a line is filed
+   * with one tap once every row holds (lib/game/engine.ts `filingFor`).
+   */
+  readonly filing?: "lines";
   /** The case file is a note on this phone: what it's called, when it was made, and what its info panel says. */
   readonly caseNote?: { readonly title: string; readonly created: string; readonly header: string; readonly when: readonly Flag[] };
   readonly reveal?: Reveal;

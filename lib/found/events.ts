@@ -133,6 +133,8 @@ export function eventsFor(ep: Story): readonly string[] {
         // Offered rather than asked for: where the game noticed a player was stuck.
         `nudge:${id}`,
       ]),
+      // Stuck with nothing to answer: the night was waiting on the player, and the game said what for (2026-11-11).
+      "nudge:waiting",
       // Which reading each claim was filed as, the owner's version or not.
       ...ep.questions.flatMap((q) => (q.kind === "file" ? q.claims.map((c) => `claim:${q.id}:${c.id}`) : [])),
       // The chain: how far past the version they were handed people get.

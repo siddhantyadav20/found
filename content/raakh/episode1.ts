@@ -142,7 +142,7 @@ export const threads: readonly Thread[] = [
     app: "whatsapp",
     name: "Bhasin Uncle",
     messages: [
-      { id: "b-home", from: "them", at: "00:12", day: "29/11", with: "bhasin-home", requires: ["fired:bhasin-home"], text: "Ghar pe hi hai. Achha hai.", english: "It's at home. Good." },
+      { id: "b-home", from: "them", at: "00:12", day: "29/11", with: "bhasin-home", requires: ["fired:bhasin-home"], evidence: "bhasin-home", text: "Ghar pe hi hai. Achha hai.", english: "It's at home. Good." },
       {
         id: "b-dark",
         from: "them",
@@ -150,6 +150,7 @@ export const threads: readonly Thread[] = [
         day: "29/11",
         with: "bhasin-dark",
         requires: ["fired:bhasin-dark"],
+        evidence: "bhasin-dark",
         text: "Phone band kar diya? Koi baat nahi. Ghar ka pata hai.",
         english: "Switched it off? Doesn't matter. I know the house.",
       },

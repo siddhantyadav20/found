@@ -1123,6 +1123,9 @@ export default function Chat({
       .toLowerCase();
   const locked = threads.filter((t) => t.locked);
   const unlocked = has(state, CHATS_UNLOCKED);
+  const lock = story.chatLock;
+  const hiddenLock = Boolean(lock) && locked.length > 0 && (lock?.requires ?? []).every((f) => has(state, f));
+  const codeHeard = Boolean(lock?.knownWhen.some((r) => r.every((f) => has(state, f))));
   const today = dateNow(story, state);
   const cal = calendarOf(story, state);
   const wanted = query.trim().toLowerCase();
@@ -1159,6 +1162,22 @@ export default function Chat({
             <span className={local.archivedLabel}>Locked chats</span>
             <span className={local.archivedCount}>{locked.length}</span>
           </button>
+        </li>
+      )}
+      {/* Hidden and still locked: a quiet line saying they exist and how
+          they open (the 20-player playtest, 2026-11-08: 15 of 16 never found
+          that the code goes in search). Once the word has been heard, it
+          says whose word to try. */}
+      {view === "chats" && !unlocked && hiddenLock && (
+        <li className={local.lockedHint}>
+          <svg viewBox="0 0 24 24" className={local.archivedIcon} aria-hidden="true">
+            <rect x="5" y="10.5" width="14" height="10" rx="2.5" />
+            <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+          </svg>
+          <span>
+            Some chats are locked and hidden. Type the secret code in Search to see them.
+            {codeHeard && <em> The code is a word he kept promising.</em>}
+          </span>
         </li>
       )}
       {view === "chats" && archived.length > 0 && (

@@ -56,6 +56,7 @@ export const story: Story = {
   ],
   beats: [...episode1.beats, ...episode2.beats, ...episode3.beats],
   airplaneToggles: true,
+  filing: "lines",
 
   /* PG-COLD (RAAKH-V3 §7.1): audio on true black. On the first play, no
      words on screen where the voices are recorded; the captions stay

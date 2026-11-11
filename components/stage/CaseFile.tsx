@@ -6,7 +6,10 @@ import type { AppId, Evidence, FileClaim, Question, Say, Story } from "@/content
 import {
   editable,
   factProven,
+  fileLine,
   fileSentence,
+  filingFor,
+  type Line,
   toProve,
   has,
   keepClock,
@@ -43,6 +46,7 @@ import {
   type Given,
 } from "@/lib/game/engine";
 import { DETECTIVE } from "@/lib/game/scene";
+import { appsFor, helpFor, helpText, sayLead, waitingOn } from "@/lib/game/lead";
 import note from "@/components/owner/ios/Notes.module.css";
 import styles from "./CaseFile.module.css";
 import { flag, wrong } from "./playthrough";
@@ -286,6 +290,9 @@ export default function CaseFile({
     />
   );
 
+  const idle = !q && !holding(story, state) && !state.flags.includes("did:chose") && !state.flags.includes(DETECTIVE) ? waitingOn(story, state) : undefined;
+  const waiting = idle && idle.kind !== "wait" ? sayLead(story, idle, 3) : undefined;
+
   if (!q)
     return (
       <div className={styles.file}>
@@ -300,6 +307,8 @@ export default function CaseFile({
                 ? "Every question is filed. What happens to the record is up to you."
                 : "Nothing else to answer yet. Keep looking through his phone: the night isn't over."}
           </p>
+          {/* What the night is waiting for, worked out from the script: a reply, the phone put down (2026-11-11). */}
+          {waiting && <p className={note.hint}>{waiting}</p>}
         </div>
         {story.close && !holding(story, state) && <CloseCase story={story} state={state} open={episodeOf(state) === 3} />}
         {answeredList}
@@ -309,6 +318,8 @@ export default function CaseFile({
     );
 
   const detective = state.flags.includes(DETECTIVE);
+  // Answered as lines (Story.filing): no sentence to finish, no proof to table.
+  const lining = story.filing === "lines" && q.kind === "file";
   const revisit = needsRevisit(q, state);
   const onFile = revisit ? filedClaim(q, state) : undefined;
   // The old line has to be struck, by hand, before the board comes back.
@@ -337,7 +348,7 @@ export default function CaseFile({
     });
     /* A failed filing says what's wrong with the table: what doesn't belong,
        or what's still missing and where it lives (2026-10-23). */
-    if (!r.ok && c && !c.refuse && q.kind === "file" && q.say) {
+    if (!r.ok && c && !c.refuse && q.kind === "file" && q.say && !lining) {
       const p = readProof(story, state, c, (given as { proof: readonly string[] }).proof);
       // A detective isn't shown which proof was beside the point: that would say the sentence was right.
       setStray(detective ? [] : p.stray);
@@ -361,7 +372,7 @@ export default function CaseFile({
         setSaid({ text, ok: false, ask: q.ask, filed: true });
       }
     } else setStray([]);
-    if (!r.ok && detective && q.kind === "file" && q.say && !(c?.refuse && c.aloud)) setSaid({ text: DETECTIVE_NO, ok: false, ask: q.ask, filed: true });
+    if (!r.ok && !lining && detective && q.kind === "file" && q.say && !(c?.refuse && c.aloud)) setSaid({ text: DETECTIVE_NO, ok: false, ask: q.ask, filed: true });
     // Which rows were off, for a player who asked for help: the count alone was a guessing game.
     if (q.kind === "timeline" && !r.ok && !detective && Array.isArray(given)) {
       const at = Object.fromEntries((given as string[]).filter((p) => p.includes("@")).map((p) => p.split("@") as [string, string]));
@@ -409,6 +420,14 @@ export default function CaseFile({
     return `“${words[b]}” isn't what the phone shows.${apps.length ? ` The right word is on the phone: look in ${apps.map((a) => appLabel(story, a)).join(" or ")}.` : " Try another word."}`;
   };
 
+  /* One tap files a line, with what the phone shows for it now; the last
+     question still says what it means first, and waits for a yes. */
+  const fileOne = (claimId: string) => {
+    const r = fileLine(story, state, q.id, claimId);
+    if (q.final && r.ok && r.claim?.confirm) return setConfirming({ answer: r, claim: r.claim });
+    give({ claim: claimId, proof: [] }, r);
+  };
+
   const fileSaid = () => {
     if (!filable && !(detective && whole)) return;
     const r = fileSentence(story, state, q.id, words, picked);
@@ -454,7 +473,7 @@ export default function CaseFile({
         <h3 className={note.question}>{q.ask}</h3>
         {!detective && (
           <p className={note.ask}>
-            Look in {whereToLook(story, q.id).map((a) => appLabel(story, a)).join(" · ")}
+            Look in {(lining ? appsFor(story, state, q) : whereToLook(story, q.id)).map((a) => appLabel(story, a)).join(" · ")}
           </p>
         )}
 
@@ -472,7 +491,38 @@ export default function CaseFile({
           </div>
         )}
 
-        {!striking && (
+        {!striking && lining && (
+          <>
+            <Lines story={story} state={state} q={q} onFile={fileOne} />
+            <div className={styles.dock}>
+              {helped && <p className={note.hint}>{helped}</p>}
+              {said && !said.ok && (
+                <p className={styles.reply} role="status">
+                  {said.text}
+                </p>
+              )}
+              <div className={note.actions}>
+                <button
+                  type="button"
+                  className={note.secondary}
+                  onClick={() => {
+                    // Worked out from where the player is now (lib/game/lead.ts), never a line that went stale with the script.
+                    const taken = state.flags.filter((f) => f.startsWith(`hint:${q.id}:`)).length;
+                    if (detective && taken >= DETECTIVE_HINTS) return setHelped(`${helpText(story, state, q, DETECTIVE_HINTS)} A detective's hints stop there.`);
+                    const h = helpFor(story, state, q);
+                    if (!h) return;
+                    setHelped(h.text);
+                    save(h.state);
+                  }}
+                >
+                  Hint
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {!striking && !lining && (
           <>
             <Board
               q={q}
@@ -549,6 +599,75 @@ export default function CaseFile({
       {story.caseNote && <FoundList story={story} state={state} />}
       <CloseTheCase story={story} state={state} />
     </div>
+  );
+}
+
+/** "who S is" → "Who S is": a fact still waiting, said as a heading. */
+const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * A question answered as lines (Story.filing, 2026-11-11). Its rows are
+ * what its true line claims: each still waiting says only what it's about
+ * ("who fired on the back lawn"), and fills itself, with what shows it, the
+ * moment the phone does. Below them, what can be filed now, one tap each:
+ * the true line once every row holds, and Sameer's account, or a hunch, once
+ * the phone shows what they stand on. Nothing is typed, picked or tabled,
+ * so nothing has to be remembered: the case file holds it.
+ */
+function Lines({ story, state, q, onFile }: { story: Story; state: CaseState; q: Question; onFile: (claimId: string) => void }) {
+  const { rows, lines } = filingFor(story, state, q);
+  const label = (id: string) => story.evidence.find((e) => e.id === id)?.label ?? id;
+  const shown = rows.filter((r) => r.by).length;
+  return (
+    <>
+      {rows.length > 0 && (
+        <div className={styles.step}>
+          <p className={styles.stepHead}>
+            {shown === rows.length ? "Everything this needs is on the phone" : `${shown} of ${rows.length} shown so far`}
+          </p>
+          <ul className={styles.facts} aria-label="What this needs">
+            {rows.map((r) => (
+              <li key={r.fact.fact} data-done={r.by ? "" : undefined}>
+                {r.by ? r.fact.fact : capital(r.fact.what)}
+                {r.by && <span className={styles.rowBy}>{r.by.map(label).join(" · ")}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {lines.length > 0 ? (
+        <ul className={styles.lineList} aria-label="What you can file">
+          {lines.map((l) => (
+            <LineToFile key={l.claim.id} line={l} final={Boolean(q.final)} onFile={onFile} />
+          ))}
+        </ul>
+      ) : (
+        <p className={styles.whyNot}>
+          {shown < rows.length ? "Each row fills in when you open what shows it on the phone." : "Nothing else the phone shows can go on the record yet."}
+        </p>
+      )}
+    </>
+  );
+}
+
+/** One line that can go on the record: its words, whose they are, and the tap that files it. */
+function LineToFile({ line, final, onFile }: { line: Line; final: boolean; onFile: (claimId: string) => void }) {
+  const c = line.claim;
+  const whose = c.version ? "As Sameer tells it" : c.hunch ? "A hunch" : undefined;
+  const ready = Boolean(line.proof);
+  const why = line.closed ?? (line.needs.length ? `Still to show: ${line.needs.join("; ")}.` : undefined);
+  return (
+    <li className={styles.toFile} data-ready={ready || undefined}>
+      {whose && <p className={styles.whose}>{whose}</p>}
+      <p className={styles.fileLine}>
+        {c.text.replace(/ \(A hunch\.\)$/, "")}
+      </p>
+      {c.english && <p className={styles.english}>{c.english}</p>}
+      {!ready && why && <p className={styles.whyNot}>{why}</p>}
+      <button type="button" className={c.version || c.hunch ? note.secondary : note.primary} disabled={!ready} onClick={() => onFile(c.id)}>
+        {final ? "This one" : c.version ? "File his account" : c.hunch ? "File it as a hunch" : "File it"}
+      </button>
+    </li>
   );
 }
 

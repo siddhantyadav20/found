@@ -178,6 +178,8 @@
 .archivedLabel { flex: 1; font-size: 16px; font-weight: 600; }
 .archivedCount { font-size: 14px; color: #8e8e93; }
 .archivedBack { margin: 0 0 4px; padding: 0; border: 0; background: none; color: #25d366; font: inherit; font-size: 16px; cursor: pointer; }
+.lockedHint { display: flex; align-items: flex-start; gap: 14px; padding: 8px 16px 12px; font-size: 13px; line-height: 1.4; color: #8e8e93; }
+.lockedHint em { display: block; margin-top: 2px; font-style: normal; color: #c7c7cc; }
 .archivedNote { margin: -4px 16px 10px; font-size: 13px; line-height: 1.4; color: #8e8e93; }
 
 /* Contact info: the name at the top of a chat, tapped. */

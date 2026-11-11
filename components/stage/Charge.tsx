@@ -11,38 +11,32 @@ import styles from "./Charge.module.css";
    The end of Episode 1: the found phone is about to die, and the player's own
    charger is the only thing that keeps it (PLAYER-JOURNEY Stage 5).
 
-   It asks once, warmly, and then waits: no nagging, no timer, no way to fail
-   it. Where the browser won't say whether a charger is in (Safari, Firefox),
-   there is a cable on screen after thirty seconds and the beat reads the same.
-   The words are the chapter's own (`story.gate`).
+   It asks once, warmly: no nagging, no timer, no way to fail it. The cable
+   is on screen from the start, one tap (the 20-player playtest, 2026-11-08,
+   and the handoff review of 2026-11-11: never make a player go and find a
+   real charger). A real one going in still counts, for anyone who has one
+   to hand. The words are the chapter's own (`story.gate`).
    =========================================================================== */
 
 export default function Charge({
   gate,
   onPlugged,
   hand,
-  waitMs = 30_000,
 }: {
   gate: Gate;
   onPlugged: () => void;
   /** The player's hand, with the kada, bringing the cable in (RAAKH-V3 §7.12, IC8): its still. */
   hand?: string;
-  /** How long before the on-screen cable is offered, where the browser can't see a charger. */
-  waitMs?: number;
 }) {
   const [battery, setBattery] = useState<BatteryLike | null | undefined>(undefined);
-  const [waited, setWaited] = useState(false);
 
   useEffect(() => {
     let live = true;
     void getBattery().then((b) => live && setBattery(b));
-    // Thirty seconds, not two minutes: one-handed in bed, nobody waits longer at a wall they aren't near.
-    const t = window.setTimeout(() => setWaited(true), waitMs);
     return () => {
       live = false;
-      window.clearTimeout(t);
     };
-  }, [waitMs]);
+  }, []);
 
   /* A charger going in is the moment itself. One that was already in (a
      laptop on mains) isn't a moment at all, so the player plugs his phone in
@@ -53,9 +47,6 @@ export default function Charge({
     battery.addEventListener("chargingchange", check);
     return () => battery.removeEventListener("chargingchange", check);
   }, [battery, onPlugged]);
-
-  // No battery to read, one already charging, or thirty seconds of nothing: a cable they can tap.
-  const cable = battery === null || Boolean(battery?.charging) || waited;
 
   return (
     <div className={styles.charge}>
@@ -75,19 +66,9 @@ export default function Charge({
 
       <p className={styles.ask}>{gate.ask}</p>
 
-      {cable ? (
-        <button type="button" className={`act ${styles.cable}`} onClick={onPlugged}>
-          Plug it in
-        </button>
-      ) : (
-        <>
-          <p className={styles.waiting}>Waiting for a charger…</p>
-          {/* Nobody should give up at a wall socket they aren't near. */}
-          <p className={styles.nearby}>
-            No charger nearby? In {waitMs < 10_000 ? "a few seconds" : "thirty seconds"} you can plug it in here.
-          </p>
-        </>
-      )}
+      <button type="button" className={`act ${styles.cable}`} onClick={onPlugged}>
+        Plug it in
+      </button>
     </div>
   );
 }

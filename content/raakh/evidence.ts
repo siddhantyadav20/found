@@ -70,6 +70,9 @@ export const evidence: readonly Evidence[] = [
   { code: "E27", id: "mummy-findmy", device: "owner", app: "whatsapp", label: "Mummy, 12:02 AM: she pressed Find My; Bhasin uncle rang her, asking", within: true },
   // Episode 2's door (fix brief §6): where this phone is, on Bhasin's gift.
   { code: "E27", id: "mummy-pin", device: "owner", app: "whatsapp", label: "Mummy's Find My, 12:02 AM: one pin, B-14 Navjeevan Apartments, Gate 2 side", within: true },
+  // Q5b's other way in (2026-11-11: named as proof, and never carried by anything until the script checker caught it).
+  { id: "bhasin-home", device: "owner", app: "whatsapp", label: "Bhasin, 12:12 AM: “Ghar pe hi hai. Achha hai.” He can see where this phone is", requires: ["fired:bhasin-home"], within: true },
+  { id: "bhasin-dark", device: "owner", app: "whatsapp", label: "Bhasin, 12:12 AM: “Ghar ka pata hai.” Switched off, and he still knows where", requires: ["fired:bhasin-dark"], within: true },
   { id: "bhasin-vn", device: "owner", app: "whatsapp", label: "Bhasin's voice note, 12:40 AM: the phone at Gate 2 by seven", within: true },
   { id: "new-phone", device: "owner", app: "paytap", label: "Tuesday, ₹11,499 to Croma: a second phone and a new SIM, for Mumbai", within: true },
   { code: "E27", id: "mummy-visit", device: "owner", app: "whatsapp", label: "Mummy, Tuesday: Bhasin uncle asked when he leaves for Mumbai", within: true },

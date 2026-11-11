@@ -53,7 +53,7 @@ const BEDI = ["slip", "belongings", "dilip-plea", "anita", "anita-voice"] as con
 /** Who the patient is, and that he's alive (Q8, truth and version alike). */
 const PATIENT = [
   { fact: "The patient they call Deepak is Dilip", what: "who the patient is", by: ["belongings", ["slip", "badge"], ["slip", "portrait"]] },
-  { fact: "He's alive", what: "that he's alive", by: ["anita", "anita-voice", "anita-read", "dilip-read"] },
+  { fact: "He's alive", what: "whether he's alive", by: ["anita", "anita-voice", "anita-read", "dilip-read"] },
 ] as const;
 
 const ON_RECORD = "On the record, as Sameer tells it.";
@@ -69,7 +69,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Who does this phone belong to? Try Settings.",
       "The invoice says what he does. A ticket in Mail says where he's going.",
-      "S is Sameer Khurrana, a wedding planner going to Mumbai. Table the invoice and the train ticket.",
+      "S is Sameer Khurrana, a wedding planner going to Mumbai. Open the invoice and the train ticket.",
     ],
     say: {
       line: "S is {name}, a {job}, and tomorrow afternoon he's on a train to {city}.",
@@ -125,7 +125,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Zoom into the portrait in Favorites.",
       "The run sheet says who held the light. Raju's poster says where he was last seen.",
-      "A catering worker, at the Sehgal wedding, holding the light. Table the badge, Raju's poster and the run sheet.",
+      "A catering worker, at the Sehgal wedding, holding the light. Open the badge, Raju's poster and the run sheet.",
     ],
     say: {
       line: "Dilip is a {role}, last seen {where}, holding {what} for Sameer.",
@@ -164,7 +164,7 @@ export const questions: readonly Question[] = [
     hints: [
       "A phone with no passcode, and a note to M. When was he writing to her? And look at the waybill again.",
       "Settings says the passcode is off. Notes has “For M”. The waybill on the parcel says where it left from.",
-      "Thursday night, it stops at Nitin, and it left from his own flat, B-14. Table “For M”, the passcode, and the waybill.",
+      "Thursday night, it stops at Nitin, and it left from his own flat, B-14. Open “For M”, the passcode, and the waybill.",
     ],
     say: {
       line: "He got it ready on {when}: the passcode off, and a list for M that stops at {name}. On Saturday morning it went to her from {from}.",
@@ -184,7 +184,7 @@ export const questions: readonly Question[] = [
         // Episode 1's door (fix brief §6): the waybill can't be left off.
         facts: [
           { fact: "On Thursday night he wrote M a list that stops at Nitin", what: "when he wrote the list", by: ["for-m"] },
-          { fact: "He turned the passcode off", what: "that the passcode is off", by: ["passcode-off"] },
+          { fact: "He turned the passcode off", what: "how the phone was left to open", by: ["passcode-off"] },
           { fact: "It went to her from his own flat, B-14", what: "where it was sent from", by: ["waybill"] },
         ],
         also: ["note", "call-thu", "apple-account", "gate-note", "find-my"],
@@ -206,7 +206,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Kunal's clip is on the dance floor. What happened on the back lawn, forty minutes later?",
       "Photos › Recently Deleted has the reel take, and Kunal's shared album has 12:29. Voice Memos can come back down now.",
-      "Sameer fired the second shot. Table Kunal's 11:52 clip and the reel take, played past the second shot.",
+      "Sameer fired the second shot. Open Kunal's 11:52 clip and the reel take, played past the second shot.",
     ],
     say: {
       line: "Kunal fired on the {place} at 11:52. Forty minutes later on the back lawn, {who} fired twice, and the {which} shot hit Dilip.",
@@ -242,6 +242,7 @@ export const questions: readonly Question[] = [
         proof: ["shot-list", "kunal-papa"],
         reply: "Filed, as your hunch. Nothing you've tabled puts the gun in his hand. Not yet.",
         hunch: "shot",
+        unsaid: true,
       },
       {
         id: "version",
@@ -265,7 +266,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Bhasin's group screenshots run on past 1 AM. One of the two chats Sameer locked is Dilip's own.",
       "Nitin's locked chat has a car in it, and when it came back. The screenshots saw it too.",
-      "1:14, awake; Nitin sent the car; at 2:04 it left without him. Table Pappu's 1:14, Nitin's 1:22 and Nitin's 2:04.",
+      "1:14, awake; Nitin sent the car; at 2:04 it left without him. Open Pappu's 1:14, Nitin's 1:22 and Nitin's 2:04.",
     ],
     say: {
       line: "At {time} Dilip was {state}. {who} sent a car to the service gate, and at 2:04 it left {how}.",
@@ -285,7 +286,7 @@ export const questions: readonly Question[] = [
         proof: ["conscious", "nitin-car", "nitin-back"],
         orProof: each([["conscious"], ["dilip-107"]], [["nitin-car"]], [["nitin-back"], ["left-empty"]]),
         facts: [
-          { fact: "At 1:14 Dilip was awake", what: "that Dilip was alive after the shot", by: ["conscious", "dilip-107"] },
+          { fact: "At 1:14 Dilip was awake", what: "whether Dilip was alive after the shot", by: ["conscious", "dilip-107"] },
           { fact: "Nitin sent a car to the service gate", what: "who sent the car", by: ["nitin-car", "nitin-gate"] },
           { fact: "At 2:04 it left without him", what: "how the car left", by: ["nitin-back", "left-empty"] },
         ],
@@ -310,7 +311,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Who in this phone's life did Bhasin do favours for this autumn?",
       "Mummy's chat: the phone he gave her in October, and what it showed her tonight at 12:02.",
-      "Bhasin set up Mummy's phone, and tonight it shows this one at B-14. Table Mummy's 14 October, her map at 12:02, and Bhasin's voice note.",
+      "Bhasin set up Mummy's phone, and tonight it shows this one at B-14. Open Mummy's 14 October, her map at 12:02, and Bhasin's voice note.",
     ],
     say: {
       line: "Bhasin set up {whose} phone in October. Tonight it shows this one at {where}, and he's watching.",
@@ -327,9 +328,9 @@ export const questions: readonly Question[] = [
         text: "Bhasin set up Mummy's phone in October. Tonight it shows this one at B-14, Gate 2 side, and he's watching.",
         proof: ["mummy-phone", "mummy-pin", "bhasin-vn"],
         facts: [
-          { fact: "Bhasin gave Mummy a phone with location on", what: "whose phone Bhasin set up", by: ["mummy-phone"] },
+          { fact: "Bhasin gave Mummy a phone with location on", what: "how Bhasin can see this phone", by: ["mummy-phone"] },
           { fact: "Tonight it shows this phone at B-14, Gate 2 side", what: "where it shows this phone", by: ["mummy-pin"] },
-          { fact: "He's watching it", what: "that Bhasin is watching", by: ["bhasin-vn", "bhasin-home", "bhasin-dark", "mummy-findmy"] },
+          { fact: "He's watching it", what: "whether Bhasin is watching", by: ["bhasin-vn", "bhasin-home", "bhasin-dark", "mummy-findmy"] },
         ],
         also: ["find-my", "mummy-bill", "mummy-visit"],
         reply: "On 14 October Bhasin gave Mummy a phone with location sharing on. At 12:02 she pressed Find My, and it showed one pin: B-14, Gate 2 side. He rang her within the minute.",
@@ -353,7 +354,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Nitin answered someone at 1:53. Where was Sameer at 1:49?",
       "Nitin sent you what he kept. Or set Ramesh's 1:49 beside Nitin's 1:53. Safari remembers what he searched at 1:54.",
-      "He told Nitin Dilip had gone, knowing he hadn't. Table Nitin's copy of 1:52 and Ramesh's 1:49.",
+      "He told Nitin Dilip had gone, knowing he hadn't. Open Nitin's copy of 1:52 and Ramesh's 1:49.",
     ],
     say: {
       line: "The car left empty because {cause}.",
@@ -375,7 +376,7 @@ export const questions: readonly Question[] = [
         orProof: [["nitin-reply", "sameer-room"], ["nitin-152", "search-156"]],
         facts: [
           { fact: "Sameer told Nitin Dilip had already gone", what: "what Sameer told Nitin", by: ["nitin-152", "nitin-reply"] },
-          { fact: "He knew Dilip was still there", what: "that Sameer knew Dilip hadn't gone", by: ["sameer-room", "search-156"] },
+          { fact: "He knew Dilip was still there", what: "what Sameer knew at 1:52", by: ["sameer-room", "search-156"] },
         ],
         // Why he lied, for anyone who looks (fix brief H-07): what a hospital would have meant.
         also: ["search-police", "search-mlc", "nitin-car", "nitin-gate", "nitin-back", "swift", "left-empty", "call-206", "site-plan", "doctor", "no-112"],
@@ -405,7 +406,7 @@ export const questions: readonly Question[] = [
     hints: [
       "The clip in Favorites is nine seconds of something longer. He kept the rest somewhere only he could open.",
       "Notes › “Agar kuch hua” is locked with his birthday, day then month. Settings has it. Watch the whole clip, to the end.",
-      "He lit it, on Bhasin's orders, and what burned was an empty mattress. Table the whole fire and the note's 3:31 line (password 1403).",
+      "He lit it, on Bhasin's orders, and what burned was an empty mattress. Open the whole fire and the note's 3:31 line (password 1403).",
     ],
     say: {
       line: "At 4:47 Sameer {role} on {whose} orders, and what burned was {what}.",
@@ -426,7 +427,7 @@ export const questions: readonly Question[] = [
         orProof: [["fire-original", "call-331"], ["fire-original", "kunal-jerrycan"], ["car-255", "fire-clip", "vn-burned"]],
         facts: [
           { fact: "Sameer lit the fire", what: "who lit it", by: ["fire-original", "kunal-jerrycan", "vn-burned"] },
-          { fact: "On Bhasin's orders", what: "whose orders he was following", by: ["note-text", "call-331", "kunal-jerrycan", "car-255"] },
+          { fact: "On Bhasin's orders", what: "whether anyone told him to", by: ["note-text", "call-331", "kunal-jerrycan", "car-255"] },
           /* The whole clip shows it: the mattress burning open, empty (and the
              kada on the hand that lit it). Or reason it: the boy left in the
              2:55 car, his waistcoat with him, two hours before the fire. */
@@ -464,7 +465,7 @@ export const questions: readonly Question[] = [
     hints: [
       "Dilip's own number has written to this phone. Read what the nurse sent.",
       "The badge on the waistcoat in the bag: you've seen it before, in Favorites. And item 4 of “For M” is Nitin's chat. What does only Nitin still have?",
-      "Dilip, alive; Nitin's chat is the one place 1:52 still exists. Table the bag photo, the nurse's voice note, and Nitin's copy of 1:52.",
+      "Dilip, alive; Nitin's chat is the one place 1:52 still exists. Open the bag photo, the nurse's voice note, and Nitin's copy of 1:52.",
     ],
     say: {
       line: "The patient is {who}, alive. “For M” stops at Nitin because {why}.",

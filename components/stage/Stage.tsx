@@ -221,7 +221,7 @@ export default function Stage() {
     /* The only thing the player is given to do with their hands between
        episodes, and the reason anybody goes looking for a cable. */
     case "charge":
-      return <Charge gate={story.gate} hand={meta.scene?.cable} waitMs={story.reveal ? 5000 : 30_000} onPlugged={() => flag(...PLUGGED_IN)} />;
+      return <Charge gate={story.gate} hand={meta.scene?.cable} onPlugged={() => flag(...PLUGGED_IN)} />;
 
     /* The phone dying: an alert, two flickers, a shape in the glass (PG-DEATH). */
     case "death":

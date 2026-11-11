@@ -687,6 +687,86 @@ export function fileSentence(story: Story, s: CaseState, id: string, words: Read
   return { ...first!, claim: real[0] };
 }
 
+/* --- lines (Story.filing "lines", 2026-11-11) ---------------------------
+   No sentence to finish and no proof to table: a question lists what it
+   needs, one row per fact of its true line, and each row fills itself the
+   moment the phone shows it (any one of the fact's routes, still on the
+   phone). A line can be filed once everything it claims is shown, with one
+   tap, through `answer` like any other filing, so what filing sets, pays and
+   strikes is unchanged. Sameer's version, and a hunch, are lines too, offered
+   once the phone shows what they stand on. */
+
+/** One row of a question: a fact of its true line, and what shows it now, if anything still does. */
+export type Row = { readonly fact: Fact; readonly by?: readonly string[] };
+
+/**
+ * A line the player could file: the claim, the proof the phone shows for it
+ * now (none, while it can't be filed), what it still needs, said as the
+ * facts' `what`, and why it's shut, when it is (Bhasin's car has gone).
+ */
+export type Line = { readonly claim: FileClaim; readonly proof?: readonly string[]; readonly needs: readonly string[]; readonly closed?: string };
+
+/** The question's true line: the one its rows are read from. */
+export const leadClaim = (q: Question): FileClaim | undefined =>
+  q.kind === "file" ? q.claims.find((c) => !c.refuse && !c.version && !c.hunch && !c.free && !c.ending) : undefined;
+
+/** The first of a fact's routes the phone still shows: everything in it found, and none of it deleted for good. */
+export const shownBy = (story: Story, s: CaseState, f: Fact): readonly string[] | undefined =>
+  factRoutes(f).find((r) => r.every((id) => usable(story, s, id)));
+
+/** Everything a claim stands on now, fact by fact (or its first whole route), or nothing if it can't stand yet. */
+export function proofNow(story: Story, s: CaseState, c: FileClaim): string[] | undefined {
+  if (c.free) return [];
+  if (c.facts?.length) {
+    const by = c.facts.map((f) => shownBy(story, s, f));
+    return by.every(Boolean) ? [...new Set(by.flatMap((r) => r ?? []))] : undefined;
+  }
+  const route = [c.proof, ...(c.orProof ?? [])].find((r) => r.length > 0 && r.every((id) => usable(story, s, id)));
+  return route ? [...route] : undefined;
+}
+
+/** A refusal with the same words as this claim: every blank the same word, or any word ("*"). */
+const sameWords = (refusal: FileClaim, c: FileClaim): boolean =>
+  Boolean(refusal.words && c.words) && Object.entries(refusal.words!).every(([b, w]) => w === "*" || c.words![b] === w);
+
+/**
+ * A question's rows, and the lines on offer. Away from the last question, a
+ * line is only listed once it can be filed: the rows already say what the
+ * true line is still waiting for, and a version or a hunch listed early
+ * would say what it is. The last question lists every ending, with what
+ * each still needs.
+ */
+export function filingFor(story: Story, s: CaseState, q: Question): { rows: Row[]; lines: Line[] } {
+  if (q.kind !== "file") return { rows: [], lines: [] };
+  const rows = (leadClaim(q)?.facts ?? []).map((fact) => ({ fact, by: shownBy(story, s, fact) }));
+  const revisiting = needsRevisit(q, s) || editable(q, s);
+  const filed = new Set(filedClaims(q, s).map((c) => c.id));
+  const lines = q.claims
+    .filter((c) => !c.refuse && !c.unsaid && !filed.has(c.id) && !(revisiting && c.version))
+    .map((c): Line => {
+      const at = q.claims.indexOf(c);
+      // A refusal written in front of it stands until what lifts it is found (Q1's "me": "Not yet.").
+      const held = q.claims.slice(0, at).find((r) => r.refuse && sameWords(r, c) && !lifted(s, r));
+      const shut = (c.unless ?? []).some((f) => has(s, f));
+      const said = shut ? q.claims.find((r) => r.refuse && r.aloud && sameWords(r, c)) : undefined;
+      const needs = (c.facts ?? []).filter((f) => !shownBy(story, s, f)).map((f) => f.what);
+      const proof = held || shut ? undefined : proofNow(story, s, c);
+      return { claim: c, proof, needs, closed: shut ? (said?.refuse ?? WRONG) : held?.aloud ? held.refuse : undefined };
+    })
+    .filter((l) => q.final || l.proof);
+  return { rows, lines };
+}
+
+/** File a line with what the phone shows for it now: one tap, judged like any other filing. */
+export function fileLine(story: Story, s: CaseState, id: string, claimId: string): Answer & { claim?: FileClaim } {
+  const q = story.questions.find((x) => x.id === id);
+  if (!q || q.kind !== "file") return { state: s, ok: false, reply: WRONG };
+  const line = filingFor(story, s, q).lines.find((l) => l.claim.id === claimId);
+  if (!line) return { state: s, ok: false, reply: WRONG };
+  if (!line.proof) return { state: s, ok: false, reply: line.closed ?? (line.needs[0] ? `Nothing yet shows ${line.needs[0]}.` : UNPROVED), claim: line.claim };
+  return { ...answer(story, s, id, { claim: claimId, proof: line.proof }), claim: line.claim };
+}
+
 /* --- the chain ---------------------------------------------------------- */
 
 export const isTraced = (s: CaseState, link: Link): boolean =>

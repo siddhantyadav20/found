@@ -230,6 +230,13 @@
   color: var(--os-text);
 }
 
+.lockAgain {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--os-text-secondary, #8e8e93);
+}
+
 /* A photo or video in a note: the width of the note, its corners rounded. */
 .attachment {
   display: grid;

@@ -474,14 +474,14 @@ const WEDDING: readonly [string, string][] = [
   ["19:58", "The varmala: Ishita lifted by her brothers"],
   ["20:25", "The couple on the stage, a queue of relatives with envelopes"],
   ["20:52", "A shagun envelope changing hands: Ishita weds Rohan, in gold"],
-  ["21:15", "The buffet under fairy lights, steam off the tandoor"],
+  ["21:15", "The buffet tandoor: naan on the clay wall, coals going under it"],
   ["21:31", "Waiters in maroon waistcoats, trays up, a line of them"],
   ["22:10", "Mrs Sehgal dancing with the bride's grandmother"],
   ["22:36", "The sangeet floor from the stage, phones in the air"],
   ["23:05", "Kunal and his friends on the floor, a bottle passed along"],
   ["23:20", "The sangeet floor from the DJ booth, smoke and lasers"],
   ["23:48", "Confetti cannons, the couple ducking"],
-  ["00:05", "The mandap at midnight, empty chairs, the pandit's plate"],
+  ["00:05", "The mandap after the pheras, lights still on, two plastic chairs and the puja plates left"],
 ];
 
 export const photos: readonly Photo[] = [
@@ -725,6 +725,7 @@ export const notes: readonly Note[] = [
     locked: true,
     password: "1403",
     hint: "birthday · ddmm",
+    hintAgain: "His date of birth is in Settings, under his name.",
     knownAfter: ["saw:apple-account"],
     downloadsAfter: ["fired:data-renewed"],
     evidence: "note-text",

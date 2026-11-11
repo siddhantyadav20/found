@@ -911,3 +911,47 @@
   background: var(--cf-ok);
   box-shadow: inset 0 0 0 2px var(--cf-sheet);
 }
+
+/* --- Lines (Story.filing, 2026-11-11) -------------------------------------- */
+
+/* What showed a row, under it: small, so the fact reads first. */
+.rowBy {
+  display: block;
+  margin-top: 1px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--cf-dim);
+}
+
+.lineList {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A line waiting to be filed: dashed until the phone shows all of it. */
+.toFile {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 12px;
+  border: 1px dashed var(--cf-rule-strong);
+  border-radius: 12px;
+}
+
+.toFile[data-ready] {
+  border-style: solid;
+  border-color: var(--cf-ink);
+}
+
+.whose {
+  margin: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cf-dim);
+}
