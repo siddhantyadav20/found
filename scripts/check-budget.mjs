@@ -99,7 +99,7 @@ const ALLOWED_LARGE = {
   "found/raakh/clip-fire-whole.mp4":
     "31 seconds of video, the longest clip in the chapter; it loads only when the locked note's clip is played (preload=metadata).",
   "found/trailer/raakh.mp4":
-    "Raakh's 72-second trailer on its chapter page; the <video> is only created when someone presses play.",
+    "Raakh's 80-second trailer (v7) on its chapter page; the <video> is only created when someone presses play.",
 };
 
 const KB = 1024;

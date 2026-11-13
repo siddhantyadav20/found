@@ -107,8 +107,9 @@ export const REELS: readonly Reel[] = [
       clock: { time: "7:00", caption: "They want it back by seven" },
       tagline: ["A wedding in Delhi.", "Every phone was recording."],
     },
-    // v4 (2026-11-04), cropped to its scope frame and cut down to 720p for the web.
-    trailer: { src: "/found/trailer/raakh.mp4", poster: "/found/trailer/raakh-poster.jpg", length: "1:12" },
+    // v7 (2026-11-13), reimagined from zero: new Indian footage, the real game captured from the
+    // build, one continuous bed. Cropped to its scope frame and cut down to 720p for the web.
+    trailer: { src: "/found/trailer/raakh.mp4", poster: "/found/trailer/raakh-poster.jpg", length: "1:20" },
     reviews: [
       { stars: 4.5, quote: "A work of art", source: "Reddit" },
       { stars: 4.5, quote: "Fresh in the world of slop", source: "Instagram" },
