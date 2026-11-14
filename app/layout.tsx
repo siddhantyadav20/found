@@ -3,6 +3,7 @@ import { siteUrl } from "@/lib/origin";
 import { brucke, display, hand, mono, phone, sans } from "./fonts";
 import "./globals.css";
 import "./ios.css";
+import "./curtain.css";
 import Preloader from "@/components/cinema/Preloader";
 
 export const metadata: Metadata = {

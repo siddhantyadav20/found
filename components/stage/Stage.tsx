@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import { StorageWarning } from "@/components/found/KeepCase";
 import { useCase } from "@/components/found/StoryContext";
@@ -27,6 +27,7 @@ import { useReplay } from "@/lib/found/shelf";
 import type { CaseId } from "@/content/cases";
 import { track } from "@/lib/found/track";
 import Charge from "./Charge";
+import Curtain from "./Curtain";
 import ColdOpen from "./ColdOpen";
 import Moment from "./Moment";
 import Seat from "./Seat";
@@ -72,6 +73,12 @@ function seenCold(id: string): boolean {
     return false;
   }
 }
+
+/* Every scene goes through the curtain (Curtain.tsx, app/curtain.css): the
+   kind names the pair a change of scene animates as. The lock screen and
+   the table are one kind, because the lift between them is the lock
+   screen's own. */
+const show = (kind: string, node: ReactNode) => <Curtain kind={kind}>{node}</Curtain>;
 
 /* The ending and its card: loaded only when a play gets there. */
 const Aftermath = dynamic(() => import("./ending/Aftermath"), { ssr: false, loading: () => <Loader full label="The morning after" /> });
@@ -135,10 +142,10 @@ export default function Stage() {
 
   // The save is in this browser: until it's read, the server's guess would be the first screen.
   const hydrated = useSyncExternalStore(noSubscribe, () => true, () => false);
-  if (!hydrated) return <Loader full />;
+  if (!hydrated) return show("loading", <Loader full />);
 
   if (state && away !== null && midCase)
-    return (
+    return show("away", (
       <Away
         story={story}
         state={state}
@@ -149,12 +156,12 @@ export default function Stage() {
           setAway(null);
         }}
       />
-    );
+    ));
 
   /* The cold open plays before a first parcel each visit; once the chapter
      has been finished, with its words and a Skip (PG-COLD). */
   if (!state && story.coldOpen && (!replay || story.reveal) && !coldSeen && !coldDone) {
-    return (
+    return show("cold", (
       <ColdOpen
         cold={story.coldOpen}
         voices={story.voices}
@@ -169,22 +176,22 @@ export default function Stage() {
           setColdDone(true);
         }}
       />
-    );
+    ));
   }
 
   // Found on a seat: no parcel, no note. Picking it up is opening it.
   if ((!state || scene.kind === "parcel") && story.seat) {
-    return (
+    return show("seat", (
       <Seat
         seat={story.seat}
         meta={meta}
         onOpen={() => save(add(newCase(Math.random().toString(36).slice(2, 10), Date.now(), via), "did:opened", "did:unlock", "saw:note"))}
       />
-    );
+    ));
   }
 
   if (!state || scene.kind === "parcel") {
-    return (
+    return show("parcel", (
       <>
         <Parcel
           meta={meta}
@@ -210,32 +217,32 @@ export default function Stage() {
         {/* Private browsing: say so before the night starts, and offer a case number. */}
         <StorageWarning caseId={id as CaseId} />
       </>
-    );
+    ));
   }
 
   switch (scene.kind) {
     /* The phone has no passcode. Somebody turned it off before it was sent. */
     case "note":
-      return <Note arrival={story.arrival} scene={meta.scene?.open} onTurn={() => flag("did:unlock", "saw:note")} />;
+      return show("note", <Note arrival={story.arrival} scene={meta.scene?.open} onTurn={() => flag("did:unlock", "saw:note")} />);
 
     /* The only thing the player is given to do with their hands between
        episodes, and the reason anybody goes looking for a cable. */
     case "charge":
-      return <Charge gate={story.gate} hand={meta.scene?.cable} onPlugged={() => flag(...PLUGGED_IN)} />;
+      return show("charge", <Charge gate={story.gate} hand={meta.scene?.cable} onPlugged={() => flag(...PLUGGED_IN)} />);
 
     /* The phone dying: an alert, two flickers, a shape in the glass (PG-DEATH). */
     case "death":
       // Over the phone as it was, nothing on it moving (`review`), until the screen goes.
-      return (
+      return show("death", (
         <>
           <Table story={story} meta={meta} state={state} replay={replay} review />
           <PhoneDeath alert={story.death?.alert ?? ""} onDone={() => flag(DEATH_SEEN)} />
         </>
-      );
+      ));
 
     /* "Next on…", after an episode (PG-NEXT). */
     case "next":
-      return (
+      return show("next", (
         <Reel
           key={`next-${scene.episode}`}
           story={story}
@@ -244,12 +251,12 @@ export default function Stage() {
           label={`Next on ${story.title}`}
           onDone={() => flag(teaserShown(scene.episode))}
         />
-      );
+      ));
 
     /* One line on black, a voice on black, or a bubble held before the black (PG-DARK). */
     case "dark": {
       const { dark } = scene;
-      return (
+      return show("dark", (
         <DarkScreen
           key={dark.id}
           dark={dark}
@@ -260,36 +267,36 @@ export default function Stage() {
             flag(darkDone(dark.id), ...(dark.sets ?? []));
           }}
         />
-      );
+      ));
     }
 
     /* The reveal (RAAKH-V3 §9, scene 3.10). */
     case "reveal":
-      return <RevealDirector story={story} state={state} />;
+      return show("reveal", <RevealDirector story={story} state={state} />);
 
     /* The last question filed: what comes before the ending. */
     case "before":
-      return <BeforeEnding story={story} state={state} ending={scene.ending} />;
+      return show("before", <BeforeEnding story={story} state={state} ending={scene.ending} />);
 
     /* Put away before the reveal: it's still ringing. Opened again, it's as it was. */
     case "unopened":
-      return <UnopenedScene story={story} onOpen={() => state && save({ ...state, flags: state.flags.filter((f) => f !== UNOPENED) })} />;
+      return show("unopened", <UnopenedScene story={story} onOpen={() => state && save({ ...state, flags: state.flags.filter((f) => f !== UNOPENED) })} />);
 
     /* The last hour: the record, and what the player does with it. */
     case "finale":
-      return <Finale story={story} state={state} onLater={() => flag("did:decide-later")} />;
+      return show("finale", <Finale story={story} state={state} onLater={() => flag("did:decide-later")} />);
 
     /* An episode, closed: what the player has to show for it, and what's still open. */
     case "recap":
-      return story.recaps?.[scene.episode]?.filed ? (
+      return show("recap", story.recaps?.[scene.episode]?.filed ? (
         <FoundSoFar story={story} state={state} episode={scene.episode} still={meta.scene?.recaps?.[scene.episode - 1]} onDone={() => flag(recapShown(scene.episode))} />
       ) : (
         <Recap story={story} state={state} episode={scene.episode} onDone={() => flag(recapShown(scene.episode))} />
-      );
+      ));
 
     /* Before a later episode: what the player filed, and tonight's briefing. */
     case "opener":
-      return story.previously?.[scene.episode] ? (
+      return show("opener", story.previously?.[scene.episode] ? (
         <Reel
           key={`previously-${scene.episode}`}
           story={story}
@@ -300,14 +307,14 @@ export default function Stage() {
         />
       ) : (
         <Previously story={story} state={state} episode={scene.episode} onDone={() => flag(openerShown(scene.episode))} />
-      );
+      ));
 
     /* A new episode: its title, and the minute it opens on, never explained. */
     case "title": {
       const clock = story.clocks[scene.episode - 1];
       // Episode 3 opens on the bubble that ended Episode 2 (RAAKH-V3 §9.1).
       const bubble = scene.episode === 3 ? story.dark?.find((d) => d.bubble)?.bubble : undefined;
-      return (
+      return show("title", (
         <TitleCard
           n={scene.episode}
           title={story.episodes[scene.episode - 1]}
@@ -325,18 +332,18 @@ export default function Stage() {
           }
           onDone={() => flag(titleShown(scene.episode))}
         />
-      );
+      ));
     }
 
     /* The act is done. What it cost, the last image, and black. */
     case "ending": {
       const end = story.reveal ? chosen(story, state) : undefined;
-      return end ? <LockscreenEnding story={story} state={state} end={end} /> : <Aftermath story={story} state={state} />;
+      return show("ending", end ? <LockscreenEnding story={story} state={state} end={end} /> : <Aftermath story={story} state={state} />);
     }
 
     case "end-card":
       if (looking)
-        return (
+        return show("end-card", (
           <>
             <Table story={story} meta={meta} state={state} replay={replay} review />
             {story.clues ? (
@@ -345,23 +352,23 @@ export default function Stage() {
               <LookAgain story={story} state={state} onDone={() => setLooking(false)} />
             )}
           </>
-        );
-      return story.reveal ? (
+        ));
+      return show("end-card", story.reveal ? (
         <EndCardV3 story={story} state={state} onLookAgain={() => setLooking(true)} />
       ) : (
         <EndCard story={story} state={state} onLookAgain={() => setLooking(true)} />
-      );
+      ));
 
     /* The story stops: the doors open, and the player chooses. */
     case "moment": {
       const { moment } = scene;
-      return <Moment key={moment.id} moment={moment} state={state} voices={story.voices} onChoose={(sets) => flag(momentDone(moment.id), ...sets)} />;
+      return show("moment", <Moment key={moment.id} moment={moment} state={state} voices={story.voices} onChoose={(sets) => flag(momentDone(moment.id), ...sets)} />);
     }
 
     /* A call arriving on its own, on either phone. */
     case "ringing": {
       const { call } = scene;
-      return (
+      return show("ringing", (
         <Ringing
           key={call.id}
           call={call}
@@ -377,9 +384,9 @@ export default function Stage() {
             flag(`did:done-${call.id}`);
           }}
         />
-      );
+      ));
     }
   }
 
-  return <Table story={story} meta={meta} state={state} replay={replay} />;
+  return show("table", <Table story={story} meta={meta} state={state} replay={replay} />);
 }

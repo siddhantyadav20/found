@@ -1,0 +1,10 @@
+src/
+audio/
+prev/
+out/
+seg/
+cards/
+inserts/out/
+inserts/out-render.log
+marks.json
+cards.json

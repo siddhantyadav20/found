@@ -16,12 +16,7 @@
   padding: 32px var(--gutter);
   background: #000;
   color: var(--cream);
-  animation: dim 1.2s ease-out both;
-}
-
-@keyframes dim {
-  from { background: #1a1815; }
-  to { background: #000; }
+  /* The dim is the curtain's (app/curtain.css): the phone itself goes dark over 1.2 s, and this is the black under it. */
 }
 
 .darkLine {

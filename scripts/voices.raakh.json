@@ -7,17 +7,23 @@
    {
     "who": "Sameer-low",
     "at": 0.4,
-    "text": "एम… मैं जानता हूँ तू रिप्लाई नहीं करेगी।"
+    "text": "एम… मैं जानता हूँ तू रिप्लाई नहीं करेगी।",
+    "style": "Barely above a breath. He has rehearsed this and it still comes out wrong.",
+    "tag": "barely a breath"
    },
    {
     "who": "Sameer-low",
     "at": 5,
-    "text": "कल शादी में… कुणाल फ़ायरिंग कर रहा था।"
+    "text": "कल शादी में… कुणाल फ़ायरिंग कर रहा था।",
+    "style": "A long stop before 'Kunal'. He is choosing what to tell her.",
+    "tag": "long pause before Kunal"
    },
    {
     "who": "Sameer-low",
     "at": 11,
-    "text": "एक लड़का गिर गया।"
+    "text": "एक लड़का गिर गया।",
+    "style": "Flat. Four words, and then nothing.",
+    "tag": "flat, then nothing"
    }
   ]
  },
@@ -51,7 +57,9 @@
    {
     "who": "Sameer-low",
     "at": 4.5,
-    "text": "आग मैंने लगाई।"
+    "text": "आग मैंने लगाई।",
+    "style": "The second sentence after a silence, very quiet, as if he hopes she won't hear it.",
+    "tag": "after a silence, very quiet"
    }
   ]
  },
@@ -63,7 +71,9 @@
    {
     "who": "Sameer-low",
     "at": 0.4,
-    "text": "अगर मुझे कुछ हुआ… सब फ़ोन में है।"
+    "text": "अगर मुझे कुछ हुआ… सब फ़ोन में है।",
+    "style": "Steady for once. A will, not a plea.",
+    "tag": "steady, like a will"
    }
   ]
  },
@@ -75,12 +85,16 @@
    {
     "who": "Sameer",
     "at": 1,
-    "text": "मैं शादियाँ प्लान करता हूँ, पर मेरा हर फ़ंक्शन एक फ़िल्म जैसा होता है।"
+    "text": "मैं शादियाँ प्लान करता हूँ, पर मेरा हर फ़ंक्शन एक फ़िल्म जैसा होता है।",
+    "style": "Rehearsing a pitch to a mirror: bright, salesy, a little false.",
+    "tag": "rehearsing, salesy, false"
    },
    {
     "who": "Sameer",
     "at": 7,
-    "text": "नहीं। फिर से। …मैं शादियों में कहानियाँ ढूँढता हूँ।"
+    "text": "नहीं। फिर से। …मैं शादियों में कहानियाँ ढूँढता हूँ।",
+    "style": "He stops himself, annoyed, and tries the line again, quieter and better.",
+    "tag": "annoyed, tries again quieter"
    }
   ]
  },
@@ -97,12 +111,16 @@
    {
     "who": "Sameer-low",
     "at": 7,
-    "text": "दूसरी… मैं पोज़ कर रहा था।"
+    "text": "दूसरी… मैं पोज़ कर रहा था।",
+    "style": "He trails off after 'doosri'. The next words come slowly.",
+    "tag": "trails off, slow"
    },
    {
     "who": "Sameer-low",
     "at": 11,
-    "text": "मुझे लगा ख़ाली है।"
+    "text": "मुझे लगा ख़ाली है।",
+    "style": "Almost inaudible. He does not believe it himself.",
+    "tag": "almost inaudible"
    }
   ]
  },
@@ -119,7 +137,9 @@
    {
     "who": "Dilip",
     "at": 6,
-    "text": "ठीक बोला ना? मुंबई में अंग्रेज़ी बोलनी पड़ेगी।"
+    "text": "ठीक बोला ना? मुंबई में अंग्रेज़ी बोलनी पड़ेगी।",
+    "style": "Shy and hopeful, half laughing at himself.",
+    "tag": "shy, half laughing"
    }
   ]
  },
@@ -131,7 +151,9 @@
    {
     "who": "Kunal",
     "at": 10,
-    "text": "ओए होए!"
+    "text": "ओए होए!",
+    "style": "A drunk whoop on a dance floor, over a crowd.",
+    "tag": "drunk whoop over a crowd"
    }
   ]
  },
@@ -141,7 +163,9 @@
   "lines": [
    {
     "who": "Raju",
-    "text": "हेलो? समीर भैया?"
+    "text": "हेलो? समीर भैया?",
+    "style": "Hesitant. He expects to be hung up on again.",
+    "tag": "hesitant"
    }
   ]
  },
@@ -259,12 +283,16 @@
    {
     "who": "Sameer-low",
     "at": 2,
-    "text": "एम। कोड वो है… जो वो रोज़ पूछता था।"
+    "text": "एम। कोड वो है… जो वो रोज़ पूछता था।",
+    "style": "Talking to M as if she were in the room. A riddle he is pleased with for a second.",
+    "tag": "to M, pleased for a second"
    },
    {
     "who": "Sameer-low",
     "at": 11,
-    "text": "नहीं। रहने दे।"
+    "text": "नहीं। रहने दे।",
+    "style": "He changes his mind: short, tired, done.",
+    "tag": "changes his mind, done"
    }
   ]
  },
@@ -366,7 +394,9 @@
    {
     "who": "Raju",
     "at": 0,
-    "text": "…हेलो? आप कौन? ये समीर भैया का फ़ोन है ना?"
+    "text": "…हेलो? आप कौन? ये समीर भैया का फ़ोन है ना?",
+    "style": "Confused, then suspicious. A stranger has answered his brother's employer's phone.",
+    "tag": "confused, then suspicious"
    }
   ]
  },
@@ -402,7 +432,9 @@
    {
     "who": "Raju",
     "at": 0,
-    "text": "दिलीप कौन? दिलीप कौन?!"
+    "text": "दिलीप कौन? दिलीप कौन?!",
+    "style": "Breaking. The second 'Dilip kaun' is almost a shout.",
+    "tag": "breaking, almost shouting"
    }
   ]
  },
@@ -450,7 +482,9 @@
    {
     "who": "Raju",
     "at": 0.8,
-    "text": "…ज़िंदा है?"
+    "text": "…ज़िंदा है?",
+    "style": "One word, and he cannot say the rest. Hope he is afraid of.",
+    "tag": "one word, afraid to hope"
    }
   ]
  },
@@ -462,7 +496,9 @@
    {
     "who": "Raju",
     "at": 0,
-    "text": "पक्की? …वो भी यही बोलता था।"
+    "text": "पक्की? …वो भी यही बोलता था।",
+    "style": "Bitter on 'pakki'. He has heard the word too many times.",
+    "tag": "bitter on pakki"
    }
   ]
  },
@@ -498,7 +534,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "समीर—"
+    "text": "समीर—",
+    "style": "She says his name as a fact, and stops dead. Nothing after it.",
+    "tag": "says the name, stops dead"
    }
   ]
  },
@@ -510,7 +548,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "…हेलो?"
+    "text": "…हेलो?",
+    "style": "Recovering. Playing someone who doesn't know who answered.",
+    "tag": "recovering, acting"
    }
   ]
  },
@@ -546,7 +586,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "क्योंकि मैं उसका कन्फ़ेशन बॉक्स नहीं हूँ।"
+    "text": "क्योंकि मैं उसका कन्फ़ेशन बॉक्स नहीं हूँ।",
+    "style": "Sharp, from somewhere old.",
+    "tag": "sharp"
    }
   ]
  },
@@ -618,7 +660,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "लेकिन अगर ये आपके हाथ में है, तो एक काम करना। कुछ डिलीट मत करना। कुछ भी।"
+    "text": "लेकिन अगर ये आपके हाथ में है, तो एक काम करना। कुछ डिलीट मत करना। कुछ भी।",
+    "style": "Slower. Each of the last three words on its own. This is the one thing she needs him to hear.",
+    "tag": "slower, each word alone"
    }
   ]
  },
@@ -630,7 +674,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "तो सुन। कुछ डिलीट मत करना। कुछ भी।"
+    "text": "तो सुन। कुछ डिलीट मत करना। कुछ भी।",
+    "style": "Dropping the act. 'Tu', not 'aap'. Quiet and absolutely clear.",
+    "tag": "dropping the act, quiet, clear"
    }
   ]
  },
@@ -688,12 +734,16 @@
    {
     "who": "Bhasin",
     "at": 3,
-    "text": "नीलम जी कह रही थी कोई और है। अच्छा नाटक है।"
+    "text": "नीलम जी कह रही थी कोई और है। अच्छा नाटक है।",
+    "style": "Dry amusement on 'achha naatak hai'.",
+    "tag": "dry amusement"
    },
    {
     "who": "Bhasin",
     "at": 8,
-    "text": "सुबह सात बजे तक फ़ोन गेट दो पे छोड़ देना। बाक़ी हम देख लेंगे।"
+    "text": "सुबह सात बजे तक फ़ोन गेट दो पे छोड़ देना। बाक़ी हम देख लेंगे।",
+    "style": "Instructions, as to a driver.",
+    "tag": "instructions to a driver"
    }
   ]
  },
@@ -744,7 +794,9 @@
    {
     "who": "Bhasin",
     "at": 0.4,
-    "text": "समीर।"
+    "text": "समीर।",
+    "style": "Just the name. A man who has arrived.",
+    "tag": "just the name, arrived"
    },
    {
     "who": "Bhasin",
@@ -761,7 +813,9 @@
    {
     "who": "Bhasin",
     "at": 0.5,
-    "text": "समीर। अब तुझे पता है लड़का ज़िंदा है। तो सीधी बात।"
+    "text": "समीर। अब तुझे पता है लड़का ज़िंदा है। तो सीधी बात।",
+    "style": "Patient, almost kind. He is explaining how the world works.",
+    "tag": "patient, almost kind"
    },
    {
     "who": "Bhasin",
@@ -781,7 +835,9 @@
    {
     "who": "Bhasin",
     "at": 26,
-    "text": "और अगर फ़ोन नीचे नहीं आया… तो लड़का भी कहीं नहीं जाएगा। आधा घंटा है।"
+    "text": "और अगर फ़ोन नीचे नहीं आया… तो लड़का भी कहीं नहीं जाएगा। आधा घंटा है।",
+    "style": "The pause before 'toh ladka bhi kahin nahi jaayega' is the threat. Then the time, like a train time.",
+    "tag": "pause before the threat"
    }
   ]
  },
@@ -793,7 +849,9 @@
    {
     "who": "Anita",
     "at": 0.5,
-    "text": "एक लड़का है। एक हफ़्ते से।"
+    "text": "एक लड़का है। एक हफ़्ते से।",
+    "style": "The first words after checking the corridor.",
+    "tag": "after checking the corridor"
    },
    {
     "who": "Anita",
@@ -813,7 +871,9 @@
    {
     "who": "Anita",
     "at": 20,
-    "text": "वो रोज़ एक ही नाम लेता है। समीर भैया।"
+    "text": "वो रोज़ एक ही नाम लेता है। समीर भैया।",
+    "style": "The last line slower, and she lets the name sit.",
+    "tag": "slower, lets the name sit"
    }
   ]
  },
@@ -825,7 +885,9 @@
    {
     "who": "Dilip-weak",
     "at": 0.5,
-    "text": "भैया… आप आ रहे हो ना?"
+    "text": "भैया… आप आ रहे हो ना?",
+    "style": "From a bed, the phone held for him. The question he asks every day.",
+    "tag": "from a bed, the daily question"
    },
    {
     "who": "Dilip-weak",
@@ -835,12 +897,16 @@
    {
     "who": "Dilip-weak",
     "at": 10.5,
-    "text": "माँ को मत बताना कि गोली लगी थी।"
+    "text": "माँ को मत बताना कि गोली लगी थी।",
+    "style": "Urgent for a moment, then spent.",
+    "tag": "urgent, then spent"
    },
    {
     "who": "Dilip-weak",
     "at": 14,
-    "text": "बस… आप आ जाओ।"
+    "text": "बस… आप आ जाओ।",
+    "style": "Three words. Nothing left after them.",
+    "tag": "three words, nothing left"
    }
   ]
  },
@@ -852,7 +918,9 @@
    {
     "who": "Guard",
     "at": 0,
-    "text": "खुराना साहब, माफ़ करना, इतनी रात को। भसीन साहब नीचे गाड़ी में बैठे हैं। कह रहे हैं आपको बुला दूँ।"
+    "text": "खुराना साहब, माफ़ करना, इतनी रात को। भसीन साहब नीचे गाड़ी में बैठे हैं। कह रहे हैं आपको बुला दूँ।",
+    "style": "Apologetic, lowering his voice because of the hour.",
+    "tag": "apologetic, lowered voice"
    }
   ]
  },
@@ -864,7 +932,9 @@
    {
     "who": "Guard",
     "at": 0,
-    "text": "साहब… बी चौदह आपका ही है ना? तीन साल से गेट खोल रहा हूँ आपके लिए।"
+    "text": "साहब… बी चौदह आपका ही है ना? तीन साल से गेट खोल रहा हूँ आपके लिए।",
+    "style": "Puzzled and a little hurt. He knows this man's voice.",
+    "tag": "puzzled, a little hurt"
    }
   ]
  },
@@ -876,7 +946,9 @@
    {
     "who": "Guard",
     "at": 0.4,
-    "text": "साहब, मैं आवाज़ पहचानता हूँ।"
+    "text": "साहब, मैं आवाज़ पहचानता हूँ।",
+    "style": "Plainly. Not an accusation. A fact he is sure of.",
+    "tag": "plainly, sure of it"
    }
   ]
  },
@@ -900,7 +972,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "समीर। अब बस।"
+    "text": "समीर। अब बस।",
+    "style": "Not angry. Tired and final. 'Ab bas' is permission to stop.",
+    "tag": "tired and final"
    }
   ]
  },
@@ -948,7 +1022,9 @@
    {
     "who": "Meera",
     "at": 0.6,
-    "text": "ठीक है, समीर। मत देख।"
+    "text": "ठीक है, समीर। मत देख।",
+    "style": "Gentle, and it closes a door.",
+    "tag": "gentle, closing a door"
    }
   ]
  },
@@ -965,7 +1041,9 @@
    {
     "who": "Meera",
     "at": 6.5,
-    "text": "…तू चाहता था कोई तुझे पकड़े, समीर। इसलिए तूने ये फ़ोन खोला।"
+    "text": "…तू चाहता था कोई तुझे पकड़े, समीर। इसलिए तूने ये फ़ोन खोला।",
+    "style": "After a breath. She is telling him something kind that he will not like.",
+    "tag": "after a breath, kind"
    }
   ]
  },
@@ -982,7 +1060,9 @@
    {
     "who": "Meera",
     "at": 6.5,
-    "text": "…तू देख रहा था तेरा झूठ कितना टिकता है।"
+    "text": "…तू देख रहा था तेरा झूठ कितना टिकता है।",
+    "style": "After a breath. Not cruel; exact.",
+    "tag": "after a breath, exact"
    }
   ]
  },
@@ -1006,7 +1086,9 @@
    {
     "who": "Meera",
     "at": 0,
-    "text": "समीर?"
+    "text": "समीर?",
+    "style": "A question. The first time tonight she lets it be one.",
+    "tag": "a real question"
    }
   ]
  },
@@ -1114,7 +1196,9 @@
    {
     "who": "Raju",
     "at": 0.8,
-    "text": "…अगर ये भी झूठ हुआ—"
+    "text": "…अगर ये भी झूठ हुआ—",
+    "style": "He cannot finish the sentence.",
+    "tag": "cannot finish"
    }
   ]
  },
@@ -1150,12 +1234,16 @@
    {
     "who": "Dilip-weak",
     "at": 3,
-    "text": "…भैया। आप आ गए।"
+    "text": "…भैया। आप आ गए।",
+    "style": "Waking, barely. Recognition before the words.",
+    "tag": "waking, barely"
    },
    {
     "who": "Dilip-weak",
     "at": 7,
-    "text": "लाइट रेडी है।"
+    "text": "लाइट रेडी है।",
+    "style": "A joke, the only one he has, and it costs him.",
+    "tag": "a joke that costs him"
    }
   ]
  },
@@ -1184,7 +1272,9 @@
    {
     "who": "Sameer-low",
     "at": 0.2,
-    "text": "मैं समीर खुराना हूँ।"
+    "text": "मैं समीर खुराना हूँ।",
+    "style": "To his own front camera at six in the morning, in a hospital corridor: flat, exhausted, each clause said separately and left standing.",
+    "tag": "flat, exhausted, to his own camera"
    }
   ]
  },
@@ -1196,7 +1286,9 @@
    {
     "who": "Sameer-low",
     "at": 0.2,
-    "text": "दूसरी गोली मैंने चलाई थी।"
+    "text": "दूसरी गोली मैंने चलाई थी।",
+    "style": "To his own front camera at six in the morning, in a hospital corridor: flat, exhausted, each clause said separately and left standing.",
+    "tag": "flat, exhausted, to his own camera"
    }
   ]
  },
@@ -1208,7 +1300,9 @@
    {
     "who": "Sameer-low",
     "at": 0.2,
-    "text": "उस रात गोली चली थी। मैं वहाँ था।"
+    "text": "उस रात गोली चली थी। मैं वहाँ था।",
+    "style": "To his own front camera at six in the morning, in a hospital corridor: flat, exhausted, each clause said separately and left standing.",
+    "tag": "flat, exhausted, to his own camera"
    }
   ]
  },
@@ -1220,7 +1314,9 @@
    {
     "who": "Sameer-low",
     "at": 0.2,
-    "text": "एक बजकर बावन मिनट पे मैंने नितिन को झूठ बोला। गाड़ी मेरी वजह से ख़ाली गई।"
+    "text": "एक बजकर बावन मिनट पे मैंने नितिन को झूठ बोला। गाड़ी मेरी वजह से ख़ाली गई।",
+    "style": "To his own front camera at six in the morning, in a hospital corridor: flat, exhausted, each clause said separately and left standing.",
+    "tag": "flat, exhausted, to his own camera"
    }
   ]
  },
@@ -1232,7 +1328,9 @@
    {
     "who": "Sameer-low",
     "at": 0.2,
-    "text": "चार सैंतालीस पे आग मैंने लगाई थी, भसीन सर के कहने पे।"
+    "text": "चार सैंतालीस पे आग मैंने लगाई थी, भसीन सर के कहने पे।",
+    "style": "To his own front camera at six in the morning, in a hospital corridor: flat, exhausted, each clause said separately and left standing.",
+    "tag": "flat, exhausted, to his own camera"
    }
   ]
  },
@@ -1244,7 +1342,9 @@
    {
     "who": "Sameer-low",
     "at": 0.2,
-    "text": "ये दिलीप है। दिलीप कुमार महतो। ज़िंदा है।"
+    "text": "ये दिलीप है। दिलीप कुमार महतो। ज़िंदा है।",
+    "style": "To his own front camera at six in the morning, in a hospital corridor: flat, exhausted, each clause said separately and left standing.",
+    "tag": "flat, exhausted, to his own camera"
    }
   ]
  },
@@ -1256,7 +1356,9 @@
    {
     "who": "Dilip",
     "at": 0.4,
-    "text": "भैया, मैं दिलीप। भसीन सर ने आपका नया नंबर दिया। बोले आपने ही मुझे घर भिजवाया।"
+    "text": "भैया, मैं दिलीप। भसीन सर ने आपका नया नंबर दिया। बोले आपने ही मुझे घर भिजवाया।",
+    "style": "Formal and shy, a voice note to someone he still calls bhaiya.",
+    "tag": "formal, shy"
    },
    {
     "who": "Dilip",
@@ -1266,7 +1368,9 @@
    {
     "who": "Dilip",
     "at": 12,
-    "text": "…मुंबई में लाइट का काम हो तो बुला लेना।"
+    "text": "…मुंबई में लाइट का काम हो तो बुला लेना।",
+    "style": "After a pause, braver: the ask he has been working up to.",
+    "tag": "after a pause, braver"
    }
   ]
  }

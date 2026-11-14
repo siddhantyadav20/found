@@ -139,3 +139,14 @@ export function moment(): void {
       { f: 440, at: 0, len: 0.4, peak: 0.012 },
     ]);
 }
+
+/** Plugged in: the charging chime, two soft notes close together, as a phone says it when the cable goes in. */
+export function plugged(): void {
+  const v = voice();
+  if (v)
+    play(v, [
+      { f: 1046.5, at: 0, len: 0.22, peak: 0.045 },
+      { f: 1396.9, at: 0.11, len: 0.5, peak: 0.05 },
+      { f: 2793.8, at: 0.11, len: 0.12, peak: 0.006 },
+    ]);
+}

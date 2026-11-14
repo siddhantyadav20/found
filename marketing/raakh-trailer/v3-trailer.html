@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root { --cream: #faf7ef; --cream-2: rgb(250 247 239 / 72%); --cream-3: rgb(250 247 239 / 46%); --red: #ff2a14; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; background: #000; overflow: hidden; }
+  canvas#c { position: absolute; inset: 0; }
+  .t { position: absolute; left: 70px; right: 70px; text-align: center; color: var(--cream); opacity: 0; }
+  .who { top: 1668px; font: 500 21px/1 "Geist Mono"; letter-spacing: .3em; color: var(--cream-2); white-space: nowrap; }
+  .who::before { content: ""; display: inline-block; width: 9px; height: 9px; background: var(--red); margin-right: 15px; transform: translateY(-2px); }
+  .sub { top: 1712px; font: 500 43px/1.22 "Geist"; letter-spacing: -.005em; text-shadow: 0 2px 16px rgb(0 0 0 / 85%); }
+  .subMid { top: 50%; transform: translateY(-50%); font: italic 400 70px/1.12 "Instrument Serif"; }
+  .stamp { top: 1676px; }
+  .stamp b { display: inline-block; font: 500 30px/1 "Geist Mono"; letter-spacing: .34em; color: var(--red); padding: 12px 6px 12px 20px; border: 3px solid var(--red); }
+  .stamp i { display: block; margin-top: 22px; font: 400 19px/1 "Geist Mono"; font-style: normal; letter-spacing: .3em; color: var(--cream-3); }
+  .title { top: 46%; transform: translateY(-50%); font: 400 250px/1 "Anton"; letter-spacing: .07em; padding-left: .07em;
+           text-shadow: 0 0 50px rgb(255 120 30 / 40%), 0 0 140px rgb(255 90 20 / 28%); }
+  .chapter { top: 35.5%; font: 500 22px/1 "Geist Mono"; letter-spacing: .5em; padding-left: .5em; color: var(--cream-2); }
+  .tag { top: 58%; font: italic 400 50px/1.15 "Instrument Serif"; color: var(--cream-2); }
+  #end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 46px; opacity: 0; }
+  #end svg { width: 420px; height: auto; fill: var(--cream); }
+  #end .l1 { font: 500 24px/1 "Geist Mono"; letter-spacing: .42em; padding-left: .42em; color: var(--cream); }
+  #end .l2 { font: 400 26px/1 "Geist Mono"; letter-spacing: .12em; color: var(--cream-3); }
+  /* an incoming call, as iOS draws it */
+  #banner { position: absolute; left: 26px; right: 26px; top: 64px; height: 156px; border-radius: 46px; opacity: 0;
+            background: rgb(28 28 30 / 78%); -webkit-backdrop-filter: blur(30px) saturate(1.6); backdrop-filter: blur(30px) saturate(1.6);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%), 0 18px 50px rgb(0 0 0 / 45%); display: flex; align-items: center; padding: 0 30px; gap: 26px; }
+  #banner .av { width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(#9aa0a8, #6b7078); display: grid; place-items: center; }
+  #banner .av svg { width: 52px; fill: #f2f2f2; }
+  #banner .tx { flex: 1; }
+  #banner .n { font: 600 36px/1.15 "Geist"; color: #fff; letter-spacing: -.01em; }
+  #banner .s { font: 400 28px/1.2 "Geist"; color: rgb(235 235 245 / 60%); margin-top: 4px; }
+  #banner .b { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; }
+  #banner .b svg { width: 46px; fill: #fff; }
+  #banner .no { background: #ff3b30; } #banner .no svg { transform: rotate(135deg); }
+  #banner .yes { background: #34c759; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="banner">
+  <div class="av"><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5 0-9 2.5-9 5.5V22h18v-2.5C21 16.5 17 14 12 14z"/></svg></div>
+  <div class="tx"><div class="n">+91 62••• •4417</div><div class="s">mobile</div></div>
+  <div class="b no"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></div>
+  <div class="b yes"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></div>
+</div>
+<div id="words"></div>
+<div id="end"><svg id="logo"></svg><div class="l1">PLAY FREE  ·  IN YOUR BROWSER</div><div class="l2">found-game.vercel.app</div></div>
+<script type="module">
+import { SHOTS, TEXTS, WIN, W, H, FPS } from "./timeline.js";
+import { LOGO_VIEWBOX, LOGO_PATH } from "./logo.js";
+const manifest = await fetch("manifest.json").then((r) => r.json());
+const logo = document.getElementById("logo");
+logo.setAttribute("viewBox", LOGO_VIEWBOX); logo.innerHTML = `<path d="${LOGO_PATH}"/>`;
+const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+const tmp = new OffscreenCanvas(W, H), tctx = tmp.getContext("2d");
+const banner = document.getElementById("banner"), endEl = document.getElementById("end");
+
+// words
+const words = document.getElementById("words");
+const els = TEXTS.map((x) => {
+  const d = document.createElement("div");
+  d.className = "t " + x.style;
+  if (x.style === "stamp") d.innerHTML = `<b>${x.text}</b><i>${x.under}</i>`; else d.innerHTML = x.text;
+  words.appendChild(d); return d;
+});
+
+// images, cached
+const cache = new Map();
+function img(url) {
+  if (cache.has(url)) return cache.get(url);
+  const p = new Promise((res, rej) => { const i = new Image(); i.onload = () => i.decode().then(() => res(i), () => res(i)); i.onerror = () => rej(new Error("missing " + url)); i.src = url; });
+  cache.set(url, p);
+  if (cache.size > 500) cache.delete(cache.keys().next().value);
+  return p;
+}
+const frame = (dir, i) => `${dir}/${String(i).padStart(5, "0")}.jpg`;
+const count = (dir) => manifest[dir] || 1;
+
+// deterministic noise
+const hash = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+const wob = (t, seed) => Math.sin(t * 1.3 + seed) * 0.5 + Math.sin(t * 2.9 + seed * 2.1) * 0.3 + Math.sin(t * 5.3 + seed * 3.7) * 0.2;
+const ease = (p) => 0.55 * p + 0.45 * (0.5 - 0.5 * Math.cos(Math.PI * p));
+const lerp = (a, b, p) => a + (b - a) * p;
+
+// grain tiles
+const grains = Array.from({ length: 8 }, (_, k) => {
+  const g = new OffscreenCanvas(540, 960), gc = g.getContext("2d"), d = gc.createImageData(540, 960);
+  for (let i = 0; i < d.data.length; i += 4) { const v = 128 + (hash(i * 0.37 + k * 9973) - 0.5) * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  gc.putImageData(d, 0, 0); return g;
+});
+
+function place(iw, ih, rect, s, fx, fy) {
+  const k = Math.max(rect.w / iw, rect.h / ih) * s, dw = iw * k, dh = ih * k;
+  let x = rect.x + rect.w / 2 - fx * dw, y = rect.y + rect.h / 2 - fy * dh;
+  x = Math.min(rect.x, Math.max(x, rect.x + rect.w - dw)); y = Math.min(rect.y, Math.max(y, rect.y + rect.h - dh));
+  return { x, y, k, dw, dh };
+}
+
+async function drawShot(sh, t) {
+  const p = Math.min(1, Math.max(0, (t - sh.t0) / (sh.t1 - sh.t0))), e = ease(p);
+  const rect = sh.win ? WIN : { x: 0, y: 0, w: W, h: H };
+  let im;
+  if (sh.kind === "still" || sh.kind === "ui") im = await img(sh.src);
+  else if (sh.kind === "clip") { const n = count(sh.dir); const i = Math.min(n, Math.max(1, Math.floor(sh.from + (t - sh.t0) * FPS * sh.rate))); im = await img(frame(sh.dir, i)); }
+  else if (sh.kind === "pex") { const n = count(sh.dir); const i = Math.min(n, 1 + Math.floor((t - sh.t0) * FPS)); im = await img(frame(sh.dir, i)); }
+  if (!im) return;
+  const s = lerp(sh.s[0], sh.s[1], e);
+  let fx = lerp(sh.f[0][0], sh.f[1][0], e), fy = lerp(sh.f[0][1], sh.f[1][1], e);
+  if (sh.kind === "ui") { fx /= 1170; fy /= 2532; }
+  const P = place(im.naturalWidth, im.naturalHeight, rect, s, fx, fy);
+  const seed = sh.t0 * 7.13, amp = (sh.shake || 0) * 2.2;
+  const sx = wob(t * 0.9, seed) * amp, sy = wob(t * 0.8, seed + 4) * amp, rot = wob(t * 0.6, seed + 9) * amp * 0.0007;
+  let b = 1;
+  if (sh.flick) b *= 1 + sh.flick * (wob(t * 9, seed) + (hash(Math.floor(t * 12) + seed) - 0.5) * 0.8);
+  if (sh.wake) b *= Math.min(1, (t - sh.t0) / sh.wake);
+  ctx.save();
+  ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+  ctx.translate(rect.x + rect.w / 2 + sx, rect.y + rect.h / 2 + sy); ctx.rotate(rot); ctx.translate(-(rect.x + rect.w / 2), -(rect.y + rect.h / 2));
+  const grade = sh.kind === "ui" ? `brightness(${b})` : `brightness(${b * 0.96}) contrast(1.07) saturate(.86)`;
+  ctx.filter = grade;
+  ctx.drawImage(im, P.x, P.y, P.dw, P.dh);
+  ctx.filter = "none";
+  // the voice note playing
+  if (sh.play) {
+    const q = Math.min(1, Math.max(0, (t - sh.play.t0) / (sh.play.t1 - sh.play.t0)));
+    const X0 = P.x + sh.play.x0 * P.k, X1 = P.x + sh.play.x1 * P.k, Y = P.y + sh.play.y * P.k, hh = sh.play.h * P.k;
+    const xp = X0 + (X1 - X0) * q;
+    ctx.globalCompositeOperation = "screen"; ctx.fillStyle = "rgb(90 180 255 / 55%)"; ctx.fillRect(X0, Y - hh / 2, xp - X0, hh);
+    ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = "#53bdeb"; ctx.beginPath(); ctx.arc(xp, Y, 11 * P.k, 0, Math.PI * 2); ctx.fill();
+  }
+  // real light over the stills: sparks, fog, embers
+  if (sh.ov) {
+    const n = count("frames/" + sh.ov.dir), m = Math.floor(t * FPS) % (2 * n - 2), i = 1 + (m < n ? m : 2 * n - 2 - m);
+    const o = await img(frame("frames/" + sh.ov.dir, i));
+    const Q = place(o.naturalWidth, o.naturalHeight, rect, 1.0, 0.5, 0.5);
+    ctx.globalCompositeOperation = "screen"; ctx.globalAlpha = sh.ov.a; ctx.drawImage(o, Q.x, Q.y, Q.dw, Q.dh);
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  }
+  // dust in the lamp light
+  if (sh.dust) {
+    ctx.globalCompositeOperation = "screen";
+    for (let k = 0; k < 70; k++) {
+      const x0 = hash(k + 1) * rect.w, y0 = hash(k + 50) * rect.h, sp = 6 + hash(k + 99) * 14;
+      const x = rect.x + ((x0 + wob(t * 0.3, k) * 30 + t * sp * 0.6) % rect.w), y = rect.y + ((y0 - t * sp + 3 * rect.h) % rect.h);
+      const r = 1 + hash(k + 7) * 2.6, a = sh.dust * 0.5 * (0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * 2 + k)));
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3); g.addColorStop(0, `rgb(255 225 180 / ${a})`); g.addColorStop(1, "rgb(255 225 180 / 0)");
+      ctx.fillStyle = g; ctx.fillRect(x - r * 3, y - r * 3, r * 6, r * 6);
+    }
+    ctx.globalCompositeOperation = "source-over";
+  }
+  ctx.restore();
+  // halation + vignette inside the picture
+  tctx.clearRect(0, 0, W, H); tctx.filter = "blur(22px) brightness(1.15)"; tctx.drawImage(cv, 0, 0); tctx.filter = "none";
+  ctx.save(); ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+  ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha = sh.kind === "ui" ? 0.05 : 0.11; ctx.drawImage(tmp, 0, 0);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  const v = ctx.createRadialGradient(rect.x + rect.w / 2, rect.y + rect.h / 2, rect.h * 0.28, rect.x + rect.w / 2, rect.y + rect.h / 2, rect.h * 0.78);
+  v.addColorStop(0, "rgb(0 0 0 / 0)"); v.addColorStop(1, `rgb(0 0 0 / ${sh.kind === "ui" ? 0.35 : 0.55})`);
+  ctx.fillStyle = v; ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+  ctx.restore();
+}
+
+window.renderAt = async (t) => {
+  ctx.globalCompositeOperation = "source-over"; ctx.globalAlpha = 1; ctx.filter = "none";
+  ctx.fillStyle = "#000"; ctx.fillRect(0, 0, W, H);
+  const base = SHOTS.find((s) => s.kind !== "flash" && t >= s.t0 && t < s.t1);
+  if (base && ["still", "ui", "clip", "pex"].includes(base.kind)) await drawShot(base, t);
+  if (base && base.kind === "title" && base.ov) await drawShot({ kind: "still", t0: base.t0, t1: base.t1, src: "assets/black.png", win: true, s: [1, 1], f: [[.5, .5], [.5, .5]], ov: base.ov }, t).catch(() => {});
+  // a dark floor under words when the phone fills the frame
+  const talking = TEXTS.some((x) => (x.style === "sub" || x.style === "who") && t >= x.t0 && t < x.t1);
+  if (base && base.kind === "ui" && talking) {
+    const g = ctx.createLinearGradient(0, 1380, 0, 1920); g.addColorStop(0, "rgb(0 0 0 / 0)"); g.addColorStop(0.45, "rgb(0 0 0 / 72%)"); g.addColorStop(1, "rgb(0 0 0 / 92%)");
+    ctx.fillStyle = g; ctx.fillRect(0, 1380, W, 540);
+  }
+  for (const f of SHOTS.filter((s) => s.kind === "flash" && t >= s.t0 && t < s.t1)) { ctx.fillStyle = "rgb(255 250 240 / 85%)"; ctx.fillRect(0, 0, W, H); }
+  // grain over everything
+  ctx.globalCompositeOperation = "overlay"; ctx.globalAlpha = 0.16;
+  const gi = Math.floor(t * FPS) % grains.length; ctx.drawImage(grains[gi], (gi * 37) % 40 - 40, (gi * 53) % 40 - 40, W + 80, H + 80);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+
+  // words
+  TEXTS.forEach((x, i) => {
+    const el = els[i]; const fi = x.style === "title" ? 0.05 : 0.12, fo = 0.14;
+    let o = 0;
+    if (t >= x.t0 && t < x.t1) o = Math.min(1, (t - x.t0) / fi, (x.t1 - t) / fo);
+    el.style.opacity = o;
+    if (x.style === "title") el.style.transform = `translateY(-50%) scale(${1.06 - 0.06 * Math.min(1, (t - x.t0) / 4.4)})`;
+  });
+  // the call banner
+  const sh = SHOTS.find((s) => s.banner && t >= s.t0 && t < s.t1);
+  if (sh) {
+    const [b0, b1] = sh.banner, q = Math.min(1, Math.max(0, (t - b0) / 0.38)), out = Math.min(1, Math.max(0, (b1 - t) / 0.2));
+    const eb = 1 - Math.pow(1 - q, 3) * Math.cos(q * 2.2);
+    banner.style.opacity = t >= b0 ? Math.min(q * 3, out) : 0;
+    banner.style.transform = `translateY(${(1 - eb) * -200}px) scale(${0.96 + 0.04 * eb})`;
+  } else banner.style.opacity = 0;
+  const end = SHOTS.find((s) => s.kind === "end" && t >= s.t0 && t < s.t1);
+  endEl.style.opacity = end ? Math.min(1, (t - end.t0) / 0.5) : 0;
+};
+window.ready = document.fonts.ready.then(() => true);
+</script>
+</body>
+</html>
