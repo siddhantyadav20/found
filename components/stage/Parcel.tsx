@@ -62,6 +62,9 @@ export default function Parcel({
   const torn = tearing || Boolean(replay);
   const from = useRef<number | null>(null);
   const done = useRef(false);
+  // The phone inside answers the hand once, a third of the way along (MOTION.md 3.2).
+  const felt = useRef(false);
+  const [holding, setHolding] = useState(false);
 
   /* It rings in the box: the phone inside is heard, in step with the
      shiver, before anyone has touched the strip. */
@@ -104,6 +107,15 @@ export default function Parcel({
     if (from.current === null) return;
     const next = Math.max(0, Math.min(1, (x - from.current) / (width * 0.6)));
     setPull(next);
+    if (next >= 0.3 && !felt.current) {
+      felt.current = true;
+      buzz();
+      try {
+        navigator.vibrate?.([8, 30, 8]);
+      } catch {
+        // The sound carries it.
+      }
+    }
     if (next >= TEAR) finish();
   };
 
@@ -116,15 +128,25 @@ export default function Parcel({
       {/* The parcel itself: the waybill on it, and the strip across its top. */}
       <div
         className={styles.parcel}
-        style={{ "--pull": pull } as React.CSSProperties}
+        // The strip resists: it follows the hand less the further it goes.
+        style={{ "--pull": pull ** 1.25 } as React.CSSProperties}
+        data-pulling={holding && !torn ? "" : undefined}
         onPointerDown={(e) => {
           if (replay) return;
           from.current = e.clientX;
+          felt.current = false;
+          setHolding(true);
           e.currentTarget.setPointerCapture(e.pointerId);
         }}
         onPointerMove={(e) => move(e.clientX, e.currentTarget.clientWidth)}
         onPointerUp={() => {
           from.current = null;
+          setHolding(false);
+          if (!done.current) setPull(0);
+        }}
+        onPointerCancel={() => {
+          from.current = null;
+          setHolding(false);
           if (!done.current) setPull(0);
         }}
       >

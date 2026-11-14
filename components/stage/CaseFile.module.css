@@ -89,21 +89,7 @@
 .answer { background: var(--cf-ink); border-color: var(--cf-ink); color: var(--cf-sheet); }
 .answer:disabled { opacity: 0.45; cursor: not-allowed; }
 
-.helped { font-size: 14px; color: var(--cf-red); line-height: 1.45; }
-.said { font-family: var(--font-display), Georgia, serif; font-size: 18px; line-height: 1.5; color: var(--cf-ink); }
-
 /* --- the other three boards ------------------------------------------------ */
-
-.field {
-  width: 100%;
-  padding: 11px 12px;
-  border: 1px solid var(--cf-rule-strong);
-  border-radius: 10px;
-  background: var(--cf-sheet);
-  color: var(--cf-ink);
-  font: inherit;
-  font-size: 16px;
-}
 
 .lanes {
   display: flex;
@@ -189,8 +175,6 @@
 }
 
 /* --- the record ------------------------------------------------------------ */
-
-.side { display: flex; flex-direction: column; gap: 0.35rem; }
 
 .record { display: flex; flex-direction: column; gap: 0.2rem; }
 .lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
@@ -458,13 +442,6 @@
   background: radial-gradient(circle, var(--cf-ink) 0 5px, var(--cf-sheet) 6px);
 }
 
-.learnNote {
-  flex-basis: 100%;
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--cf-dim);
-}
-
 /* In the notebook on a wide table (a direct child there, two levels down in the phone), nothing sits under the content. */
 :global([aria-label="Case file"]) > .file .dock {
   bottom: 0;
@@ -539,60 +516,6 @@
    Two numbered steps, the sentence read back the moment it's whole, a short
    list of proof, and the chapter's progress kept in view. */
 
-.progress {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  /* A grid item that would otherwise grow to its content: the episode's name gives way instead. */
-  min-width: 0;
-  margin: -2px 0 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px dashed var(--cf-rule-strong);
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--cf-dim);
-}
-
-.progressEp {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.progressDots {
-  flex: none;
-  display: inline-flex;
-  gap: 4px;
-  margin-left: auto;
-}
-
-.progressDots i {
-  width: 14px;
-  height: 4px;
-  border-radius: 10px;
-  background: var(--cf-rule-strong);
-}
-
-.progressDots i[data-done] {
-  background: var(--cf-ink);
-}
-
-.progressDots i[data-now] {
-  background: var(--cf-red);
-}
-
-.progressLinks {
-  flex: none;
-  padding: 2px 6px;
-  border: 1px solid var(--cf-rule-strong);
-  border-radius: 10px;
-  color: var(--cf-ink);
-}
-
 .stepHead {
   display: flex;
   align-items: center;
@@ -601,19 +524,6 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--cf-ink);
-}
-
-.stepNo {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--cf-ink);
-  color: var(--cf-sheet);
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
 }
 
 /* A word that isn't what the phone shows: struck in the red pen. */
@@ -649,14 +559,6 @@
 .proofText {
   display: grid;
   gap: 2px;
-}
-
-.proofApp {
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--cf-faint);
 }
 
 /* On the table, and shows nothing here: marked until it's taken off. */
@@ -913,16 +815,6 @@
 }
 
 /* --- Lines (Story.filing, 2026-11-11) -------------------------------------- */
-
-/* What showed a row, under it: small, so the fact reads first. */
-.rowBy {
-  display: block;
-  margin-top: 1px;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: var(--cf-dim);
-}
 
 .lineList {
   display: grid;

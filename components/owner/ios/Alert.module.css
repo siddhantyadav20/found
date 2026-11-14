@@ -81,3 +81,20 @@
     animation: none;
   }
 }
+
+/* Dismissed: the pane shrinks a little and fades with its scrim. */
+.scrim[data-leaving] {
+  animation: fade 0.15s var(--ease-in) reverse both;
+  pointer-events: none;
+}
+
+.scrim[data-leaving] .box {
+  animation: leave 0.15s var(--ease-in) both;
+}
+
+@keyframes leave {
+  to {
+    opacity: 0;
+    scale: 0.96;
+  }
+}

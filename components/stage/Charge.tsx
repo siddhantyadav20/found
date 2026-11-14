@@ -69,7 +69,7 @@ export default function Charge({
   }, [battery]);
 
   return (
-    <div className={styles.charge}>
+    <div className={styles.charge} data-plugging={plugging || undefined}>
       {hand ? (
         <Still src={hand} priority className={styles.hand} />
       ) : (

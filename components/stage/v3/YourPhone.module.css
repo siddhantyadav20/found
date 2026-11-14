@@ -31,6 +31,19 @@
   animation: up 0.62s var(--ease-out) both;
 }
 
+/* Your phone ringing in your hand: it shivers with its ring (MOTION.md 3.5). */
+.phone:has([data-ringing]) {
+  animation:
+    up 0.62s var(--ease-out) both,
+    ring-shiver 3.4s 0.62s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone:has([data-ringing]) {
+    animation: none;
+  }
+}
+
 @keyframes up {
   from { translate: 0 100%; }
   to { translate: 0 0; }

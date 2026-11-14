@@ -83,13 +83,6 @@ span.who {
   font-weight: 600;
 }
 
-.moved {
-  margin: 70px 24px;
-  font-size: 14px;
-  color: var(--ios-grey);
-  text-align: center;
-}
-
 .row {
   display: grid;
   justify-items: start;
@@ -119,12 +112,6 @@ span.who {
     translate: 0 14px;
     scale: 0.96;
   }
-}
-
-.sender {
-  margin: 4px 14px 1px;
-  font-size: 12px;
-  color: var(--ios-grey);
 }
 
 .bubble {
@@ -198,28 +185,6 @@ span.who {
   display: none;
 }
 
-.photo {
-  display: block;
-  width: 62%;
-  padding: 0;
-  overflow: hidden;
-  border: 0;
-  border-radius: 18px;
-  background: none;
-  cursor: pointer;
-}
-
-.receipt {
-  margin: 1px 6px 4px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ios-grey);
-}
-
-.card {
-  max-width: 86%;
-}
-
 /* --- The bottom: what can be sent ------------------------------------------ */
 
 .composer {
@@ -270,130 +235,4 @@ span.who {
   width: 17px;
   height: 17px;
   fill: currentColor;
-}
-
-/* What the player can send: glass chips, stacked where the keyboard would be. */
-.replies {
-  flex: none;
-  display: grid;
-  gap: 6px;
-  margin: 4px 10px 30px;
-  animation: rise 0.35s var(--ease-out) both;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    translate: 0 10px;
-  }
-}
-
-.replyOption {
-  justify-self: end;
-  max-width: 86%;
-  padding: 9px 14px;
-  border: 0;
-  border-radius: 19px;
-  background: rgba(10, 132, 255, 0.2);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow:
-    inset 0 0 0 1px rgba(10, 132, 255, 0.55),
-    var(--glass-edge);
-  color: var(--os-text);
-  font: inherit;
-  font-size: 16px;
-  text-align: right;
-  cursor: pointer;
-}
-
-.replyOption:hover {
-  background: rgba(10, 132, 255, 0.32);
-}
-
-.replyOption[data-silent] {
-  background: rgba(120, 120, 128, 0.16);
-  box-shadow: var(--glass-edge);
-  color: var(--ios-grey);
-  font-style: italic;
-}
-
-/* --- Naming an unknown number ---------------------------------------------- */
-
-.naming {
-  display: flex;
-  gap: 8px;
-  padding: 0 12px 8px;
-}
-
-.nameInput {
-  flex: 1;
-  min-width: 0;
-  padding: 9px 14px;
-  border: 0;
-  border-radius: 12px;
-  background: rgba(118, 118, 128, 0.24);
-  color: var(--os-text);
-  font: inherit;
-  font-size: 16px;
-}
-
-.nameSave {
-  padding: 9px 16px;
-  border: 0;
-  border-radius: 99px;
-  background: var(--ios-blue);
-  color: #fff;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* --- A person's details, behind their name at the top ---------------------- */
-
-.contactSheet {
-  position: absolute;
-  inset: 0;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--os-top) + 2px) 16px 40px;
-  background: var(--os-bg);
-  animation: sheet 0.38s var(--ease-out) both;
-}
-
-@keyframes sheet {
-  from {
-    translate: 0 100%;
-  }
-}
-
-.contactSheet ul {
-  margin-top: 24px;
-}
-
-.contactBar {
-  display: flex;
-  justify-content: flex-end;
-  min-height: 44px;
-}
-
-.contactAvatar {
-  align-self: center;
-  margin-top: 6px;
-}
-
-.contactName {
-  margin: 12px 0 2px;
-  font-size: 28px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.contactSub {
-  margin: 0;
-  font-size: 15px;
-  color: var(--ios-grey);
-  text-align: center;
 }

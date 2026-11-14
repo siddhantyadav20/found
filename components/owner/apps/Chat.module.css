@@ -23,44 +23,11 @@
   opacity: 0.85;
 }
 
-/* The note's waveform, bar by bar, and the knob that runs along it as it plays. */
+/* The note's waveform (ios/Waveform): what's been heard in full, the rest faint. */
 .wave {
-  position: relative;
   flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  height: 24px;
-}
-
-.wave span {
-  flex: 1;
-  min-height: 3px;
-  border-radius: 2px;
-  background: currentColor;
-  opacity: 0.5;
-}
-
-.wave::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 12px;
-  height: 12px;
-  margin: -6px 0 0 -6px;
-  border-radius: 50%;
-  background: #53bdeb;
-}
-
-.wave[data-playing]::after {
-  animation: listen var(--len, 10s) linear forwards;
-}
-
-@keyframes listen {
-  to {
-    left: 100%;
-  }
+  --wave-off: color-mix(in srgb, currentColor 40%, transparent);
+  --wave-on: currentColor;
 }
 
 /* A mark in a chat's preview line: a mic, a camera, a page. */
@@ -177,7 +144,7 @@
 .archivedIcon { flex: none; width: 52px; height: 22px; fill: none; stroke: #8e9598; stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
 .archivedLabel { flex: 1; font-size: 16px; font-weight: 600; }
 .archivedCount { font-size: 14px; color: #8e8e93; }
-.archivedBack { margin: 0 0 4px; padding: 0; border: 0; background: none; color: #25d366; font: inherit; font-size: 16px; cursor: pointer; }
+
 .lockedHint { display: flex; align-items: flex-start; gap: 14px; padding: 8px 16px 12px; font-size: 13px; line-height: 1.4; color: #8e8e93; }
 .lockedHint em { display: block; margin-top: 2px; font-style: normal; color: #c7c7cc; }
 .archivedNote { margin: -4px 16px 10px; font-size: 13px; line-height: 1.4; color: #8e8e93; }
@@ -634,6 +601,47 @@ button.setRow {
 
 .turn[data-first] {
   margin-top: 6px;
+}
+
+/* A message arriving while the chat is open: theirs rises from the left, as
+   WhatsApp's do; the player's own flies from the answer they tapped
+   (motion.ts land), and only rises when it didn't. */
+.turn[data-fresh] > * {
+  animation: arrive 0.42s var(--ease-out) both;
+  transform-origin: 0 100%;
+}
+
+.turn[data-fresh][data-out] > * {
+  transform-origin: 100% 100%;
+}
+
+.turn [data-flown] {
+  animation: none;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+    scale: 0.94;
+  }
+}
+
+/* The line under the name: "typing…", "online", last seen, cross-faded. */
+.subSwap {
+  animation: subIn var(--t-quick) var(--ease-out) both;
+}
+
+@keyframes subIn {
+  from {
+    opacity: 0;
+    translate: 0 3px;
+  }
+}
+
+/* The ticks turning blue: a short colour change, as WhatsApp's do. */
+.ticks {
+  transition: stroke var(--t-short) var(--ease-out);
 }
 
 .turn [data-tail] {

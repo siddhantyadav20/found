@@ -9,11 +9,8 @@ import { fileURLToPath } from "node:url";
  * components — they are the handful of pure functions everything else is built
  * on, and those run in plain Node.
  *
- * `lib/spring.ts` is the clearest case. It claims to be the *exact* discrete
- * solution to a damped harmonic oscillator rather than a stepped integration,
- * and the whole reason that matters is a property no screenshot can show: the
- * same motion at 60Hz and at 120Hz. That is a two-line assertion and it is the
- * only way anyone will ever notice if it stops being true.
+ * The game's engine is the clearest case: `tests/support/play3.ts` walks every
+ * episode as a perfect player and as curious ones, which no screenshot can do.
  *
  * The `@` alias mirrors `tsconfig.json`'s `paths`, which is how every import in
  * the app is written.

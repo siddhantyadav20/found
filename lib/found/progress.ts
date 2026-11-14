@@ -99,8 +99,6 @@ export function readProgress(): CaseState | null {
   return state;
 }
 
-export const progressServerSide = (): CaseState | null => null;
-
 export function subscribeProgress(fn: () => void): () => void {
   listeners.add(fn);
   return () => {

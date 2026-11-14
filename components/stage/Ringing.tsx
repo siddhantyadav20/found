@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 import type { IncomingCall, Reply, ReplyOption, Voices } from "@/content/types";
 import { has, type CaseState } from "@/lib/game/engine";
 import { connected, ended, ringtone } from "@/lib/found/tones";
 import { say } from "@/lib/found/voice";
+import { EASE, flyFrom, land, launch } from "@/lib/found/motion";
+import { Meter } from "@/components/owner/ios/Waveform";
 import styles from "./Ringing.module.css";
 
 /* ===========================================================================
@@ -45,7 +47,7 @@ type Line = {
   readonly who: string;
   readonly line: string;
   readonly english?: string;
-  readonly voice?: { readonly src: string; readonly seconds: number };
+  readonly voice?: { readonly src: string; readonly seconds: number; readonly peaks?: string };
   readonly mine?: boolean;
 };
 
@@ -162,6 +164,16 @@ export default function Ringing({
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [shown, path.length, listening]);
   const over = answered && !listening && (!exchange || options.length === 0);
+
+  /* Answering moves the caller's name from high on the screen to the top:
+     it travels there rather than jumping (MOTION.md 3.3). */
+  const head = useRef<HTMLDivElement>(null);
+  const headWas = useRef<DOMRect | null>(null);
+  useLayoutEffect(() => {
+    const from = headWas.current;
+    headWas.current = null;
+    if (answered && from && head.current) flyFrom(from, head.current, { ms: 400, ease: EASE.inOut, scale: false });
+  }, [answered]);
   const hangUp = () => {
     ended();
     onSay(path);
@@ -190,10 +202,11 @@ export default function Ringing({
     <div
       className={styles.screen}
       data-answered={answered || undefined}
+      data-ringing={!answered || undefined}
       data-compact={compact || undefined}
       style={wallpaper ? ({ "--wallpaper": `url(${wallpaper})` } as CSSProperties) : undefined}
     >
-      <div className={styles.head}>
+      <div className={styles.head} ref={head}>
         {/* Yours, not his: said once, in your phone's own blue. */}
         {call.device === "yours" && !compact && <p className={styles.yours}>Your phone</p>}
         <p className={styles.who}>{call.from}</p>
@@ -209,7 +222,7 @@ export default function Ringing({
       {answered ? (
         <div className={styles.lines} aria-live="polite" ref={linesRef}>
           {lines.slice(0, shown).map((l) => (
-            <p key={l.key} className={styles.line} data-mine={l.mine || undefined}>
+            <p key={l.key} className={styles.line} data-mine={l.mine || undefined} ref={l.mine ? land : undefined}>
               {/* An unsaved number has no name on this phone: the caller is only the caller. */}
               <span className={styles.speaker}>{!l.mine && call.from.startsWith("+") ? "Caller" : l.who}</span>
               <span lang={l.english ? "hi-Latn" : undefined}>{l.line}</span>
@@ -220,9 +233,7 @@ export default function Ringing({
           {/* They're still talking: said where the player is waiting, so the pause doesn't read as a stall. */}
           {listening && (
             <p className={styles.listening} role="status">
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
+              <Meter peaks={sayNow ? current?.voice?.peaks : undefined} key={current?.key} className={styles.meter} />
               {shown === 0 ? "Connecting…" : "Listening…"}
             </p>
           )}
@@ -247,7 +258,15 @@ export default function Ringing({
             <div className={styles.say}>
               {exchange.prompt && <p className={styles.prompt}>{exchange.prompt}</p>}
               {options.map((o) => (
-                <button key={o.id} type="button" className={styles.option} onClick={() => setPath((p) => [...p, o])}>
+                <button
+                  key={o.id}
+                  type="button"
+                  className={styles.option}
+                  onClick={(e) => {
+                    launch(e.currentTarget);
+                    setPath((p) => [...p, o]);
+                  }}
+                >
                   <span lang={o.english ? "hi-Latn" : undefined}>{o.text}</span>
                   {o.english && <span className={styles.english}>{o.english}</span>}
                 </button>
@@ -296,6 +315,7 @@ export default function Ringing({
                 aria-label="Accept"
                 onClick={() => {
                   connected();
+                  headWas.current = head.current?.getBoundingClientRect() ?? null;
                   setAnswered(true);
                   onAnswer();
                 }}

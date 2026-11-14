@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { ReplyOption, Said, Story } from "@/content/types";
 import { clockNow, clockOf, filedClaim, has, type CaseState } from "@/lib/game/engine";
@@ -12,6 +12,8 @@ import { say, useVoice } from "@/lib/found/voice";
 import { phoneClock, stamp } from "@/lib/found/time";
 import Ringing from "../Ringing";
 import { flag, sayAll } from "../playthrough";
+import Waveform from "@/components/owner/ios/Waveform";
+import { EASE, inFlight, land, launch } from "@/lib/found/motion";
 import { DarkLine } from "./DarkScreen";
 import { YourPhoneNote, YourPhoneOverlay } from "./YourPhone";
 import card from "./Screens.module.css";
@@ -54,14 +56,14 @@ function VoiceNote({ story, onDone }: { story: Story; onDone: () => void }) {
     const go = window.setTimeout(() => setPlaying(true), 900);
     return () => window.clearTimeout(go);
   }, []);
-  useVoice(v.key ? story.voices?.[v.key]?.src : undefined, playing);
+  const rec = v.key ? story.voices?.[v.key] : undefined;
+  useVoice(rec?.src, playing);
   useEffect(() => {
     if (!playing) return undefined;
     const began = performance.now();
     const tick = window.setInterval(() => setT((performance.now() - began) / 1000), 120);
     return () => window.clearInterval(tick);
   }, [playing]);
-  const bars = useMemo(() => Array.from({ length: 34 }, (_, i) => 0.25 + Math.abs(Math.sin(i * 1.7)) * 0.75), []);
   const shown = v.lines.filter((l) => l.at <= t);
   return (
     <div className={styles.stage} role="dialog" aria-label={`A voice note from ${v.who}`}>
@@ -74,11 +76,15 @@ function VoiceNote({ story, onDone }: { story: Story; onDone: () => void }) {
           </span>
         </div>
         <div className={styles.vnBubble}>
-          <div className={styles.vnWave} aria-hidden="true">
-            {bars.map((h, i) => (
-              <span key={i} style={{ height: `${Math.round(h * 100)}%` }} data-on={i / bars.length < t / v.seconds || undefined} />
-            ))}
-          </div>
+          <Waveform
+            className={styles.vnWave}
+            peaks={rec?.peaks}
+            seed={v.who}
+            bars={34}
+            seconds={v.seconds}
+            playing={playing && t < v.seconds}
+            at={Math.min(t, v.seconds)}
+          />
         </div>
         <ol className={styles.vnWords} aria-live="polite">
           {shown.map((l) => (
@@ -197,6 +203,13 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
   const [ready, setReady] = useState(false);
   const [shot, setShot] = useState(has(state, "did:camera-photo"));
   const [flashing, setFlashing] = useState(false);
+  /* The photo is taken (MOTION.md 3.5): the iris shuts, the flash, and the
+     frame shrinks into the thumbnail at the bottom left. */
+  const finder = useRef<HTMLDivElement>(null);
+  const thumb = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    if (shot && inFlight()) land(thumb.current, { uniform: true, ms: 380, ease: EASE.in, delay: 90 });
+  }, [shot]);
   // Three seconds of nothing: no music, no words. Then the shutter.
   useEffect(() => {
     const t = window.setTimeout(() => setReady(true), 3000);
@@ -205,7 +218,7 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
   return (
     <div className={styles.camera} role="dialog" aria-label="The front camera">
       <p className={styles.camTop}>PHOTO</p>
-      <div className={styles.finder}>
+      <div className={styles.finder} ref={finder}>
         <Image src={r.camera.src} alt={r.camera.alt} fill sizes="100vw" priority />
         <span className={styles.blink} aria-hidden="true" />
         <span className={styles.kada}>
@@ -221,7 +234,7 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
         )}
       </div>
       <div className={styles.camBar}>
-        <span className={styles.thumb} aria-label={shot ? "The photo you took" : undefined}>
+        <span className={styles.thumb} ref={thumb} aria-label={shot ? "The photo you took" : undefined}>
           {shot && <Image src={r.camera.src} alt="" fill sizes="52px" style={{ objectFit: "cover" }} />}
         </span>
         <button
@@ -230,6 +243,7 @@ function Camera({ story, state, onDone }: { story: Story; state: CaseState; onDo
           disabled={!ready || shot}
           aria-label="Take Photo"
           onClick={() => {
+            if (finder.current) launch(finder.current);
             setFlashing(true);
             setShot(true);
             flag("did:camera-photo");

@@ -58,16 +58,3 @@
   font-size: 13px;
   color: var(--ios-grey);
 }
-
-.card {
-  display: grid;
-  justify-items: center;
-  gap: 10px;
-  margin: 8px 0 26px;
-}
-
-.cardName {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-}

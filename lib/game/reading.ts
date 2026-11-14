@@ -1,6 +1,5 @@
 import type { Clue, Flag, IncomingCall, Question, Reply, ReplyOption, Said, Story } from "@/content/types";
 import { all, ANY_GONE, answered, chosenIn, clockOf, filedClaims, filedClaim, has, struckOut, type CaseState } from "./engine";
-import { restored } from "./phone";
 
 /* ===========================================================================
    How the phone was read (RAAKH-V3 §14, §15): read back off the save, never
@@ -149,6 +148,3 @@ export const walkedPast = (story: Story, s: CaseState): Clue[] => (story.clues ?
 
 export const saidNow = (s: CaseState, l: Said): boolean =>
   all(s, l.needs) && (!l.any || l.any.some((f) => has(s, f))) && !(l.unless ?? []).some((f) => has(s, f));
-
-/** Put back from Recently Deleted, whichever way it got there. */
-export const isRecovered = (s: CaseState, item: string): boolean => has(s, restored(item)) || has(s, `did:recovered-${item}`);

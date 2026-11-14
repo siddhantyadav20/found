@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useKeptScroll } from "@/lib/found/keptScroll";
 
-import type { Message, ReplyOption, Story, Thread } from "@/content/types";
+import type { Message, ReplyOption, Story, Thread, Voices } from "@/content/types";
 import {
   conversation,
   offeredOptions,
@@ -28,9 +28,11 @@ import { stamp } from "@/lib/found/time";
 import { received, sent } from "@/lib/found/tones";
 import { paceFactor, usePace } from "@/lib/found/pace";
 import { useVoice } from "@/lib/found/voice";
+import { inFlight, land, launch, useBlip } from "@/lib/found/motion";
 import { TabBar } from "../AppView";
 import { Chevron } from "../ios/AppBar";
 import Clip from "../ios/Clip";
+import Waveform from "../ios/Waveform";
 import styles from "../ios/Chats.module.css";
 import local from "./Chat.module.css";
 import shots from "./Photos.module.css";
@@ -229,22 +231,19 @@ function Voice({
   seconds,
   transcript,
   english,
-  src,
+  voice,
+  seed,
 }: {
   seconds: number;
   transcript: string;
   english?: string;
-  src?: string;
+  voice?: Voices[string];
+  seed: string;
 }) {
   // The play button runs the note's length, with its recording where there is
   // one (`Story.voices`), and the words are always there underneath.
   const [playing, setPlaying] = useState(false);
-  useVoice(src, playing);
-  useEffect(() => {
-    if (!playing) return undefined;
-    const t = window.setTimeout(() => setPlaying(false), seconds * 1000);
-    return () => window.clearTimeout(t);
-  }, [playing, seconds]);
+  useVoice(voice?.src, playing);
   return (
     <span className={styles.voice}>
       <span className={styles.voiceRow}>
@@ -264,22 +263,16 @@ function Voice({
             />
           </svg>
         </button>
-        <span
+        <Waveform
           className={local.wave}
-          data-playing={playing || undefined}
-          style={{ ["--len" as string]: `${seconds}s` }}
-          aria-hidden="true"
-        >
-          {/* The note's own shape: the same bars every time it's drawn. */}
-          {Array.from({ length: 30 }, (_, i) => (
-            <span
-              key={i}
-              style={{
-                height: `${Math.round(22 + 78 * Math.abs(Math.sin(i * 1.7 + seconds) * Math.cos(i * 0.55)))}%`,
-              }}
-            />
-          ))}
-        </span>
+          peaks={voice?.peaks}
+          seed={seed}
+          bars={30}
+          seconds={seconds}
+          playing={playing}
+          onEnd={() => setPlaying(false)}
+          knob
+        />
         <span className={styles.voiceTime}>
           0:{String(seconds).padStart(2, "0")}
         </span>
@@ -461,6 +454,7 @@ function Bubble({
   onLink,
   voices,
   tail,
+  fresh,
 }: {
   m: Message;
   at: string;
@@ -469,7 +463,10 @@ function Bubble({
   voices?: Story["voices"];
   /** The first of a run from one sender: the bubble's tail, as WhatsApp draws it. */
   tail?: boolean;
+  /** Sent while the chat was open: its ticks turn as it goes, not all at once. */
+  fresh?: boolean;
 }) {
+  const ticks = useTicks(m.ticks ?? "read", Boolean(fresh && m.from === "owner"));
   if (m.from === "system") return <p className={styles.service}>{m.text}</p>;
 
   const out = m.from === "owner";
@@ -479,7 +476,6 @@ function Bubble({
     a?.kind === "handwriting" ||
     a?.kind === "video" ||
     a?.kind === "poster";
-  const ticks = m.ticks ?? "read";
   return (
     <div
       className={styles.bubble}
@@ -524,7 +520,8 @@ function Bubble({
               seconds={a.seconds}
               transcript={a.transcript}
               english={a.english}
-              src={voices?.[`voice:${m.id}`]?.src}
+              voice={voices?.[`voice:${m.id}`]}
+              seed={m.id}
             />
           )}
 
@@ -634,6 +631,27 @@ function Bubble({
 }
 
 /** WhatsApp's ticks, drawn: one grey (sent), two grey (delivered), two blue (read). */
+type TickState = "sent" | "delivered" | "read";
+
+/**
+ * A message just sent goes as WhatsApp's do (MOTION.md #2): one grey tick,
+ * two at +0.9 s, blue a few seconds later. Never past what the story says it
+ * reached: M's notes stay on one grey tick for ever, and that is the clue.
+ */
+function useTicks(final: TickState, fresh: boolean): TickState {
+  const [now, setNow] = useState<TickState>(fresh ? "sent" : final);
+  useEffect(() => {
+    if (!fresh || final === "sent") return undefined;
+    const two = window.setTimeout(() => setNow("delivered"), 900);
+    const blue = final === "read" ? window.setTimeout(() => setNow("read"), 2000 + Math.random() * 2000) : 0;
+    return () => {
+      window.clearTimeout(two);
+      window.clearTimeout(blue);
+    };
+  }, [fresh, final]);
+  return now;
+}
+
 function Ticks({ state }: { state: "sent" | "delivered" | "read" }) {
   return (
     <svg
@@ -724,6 +742,8 @@ function Conversation({
   /* What is on screen. Everything already there shows at once; what arrives
      while the chat is open is revealed one message at a time. */
   const [shown, setShown] = useState(messages.length);
+  // What was already there when the chat opened; anything after it arrives.
+  const [opening] = useState(messages.length);
   const body = useRef<HTMLDivElement>(null);
   const pending = shown < messages.length;
   const nextFromThem = pending && messages[shown]?.from !== "owner";
@@ -738,7 +758,8 @@ function Conversation({
         if (nextFromThem) received();
         setShown((n) => n + 1);
       },
-      nextFromThem ? typingMs : 250,
+      // The player's own line goes up at once when it flies there from the tapped answer.
+      nextFromThem ? typingMs : inFlight() ? 0 : 250,
     );
     return () => window.clearTimeout(t);
   }, [pending, nextFromThem, shown, typingMs]);
@@ -797,6 +818,11 @@ function Conversation({
   // In airplane mode nothing leaves his phone either. Yours isn't in airplane mode.
   const offline = app !== "yours:chats" && isOffline(story, state);
 
+  /* WhatsApp says somebody is there: "online" for a moment after their
+     message lands, then back to when they were last seen. */
+  const theirs = messages.slice(0, shown).filter((m) => m.from !== "owner" && m.from !== "system").length;
+  const onlineNow = useBlip(theirs, 2200) && app === "whatsapp";
+
   if (info && thread.contact)
     return (
       <section className={styles.chats} data-app={app}>
@@ -827,6 +853,14 @@ function Conversation({
       </section>
     );
   const reply = offline ? undefined : openReply(state, thread);
+  const typing = (pending && nextFromThem) || (coming && !pending);
+  const whoSub = typing
+    ? "typing…"
+    : onlineNow
+      ? "online"
+      : thread.subLater && thread.subLater.after.every((f) => state.flags.includes(f))
+        ? thread.subLater.sub
+        : (thread.sub ?? thread.number ?? "");
 
   return (
     <section
@@ -860,11 +894,10 @@ function Conversation({
           <span className={styles.whoText}>
             <span className={styles.whoName}>{thread.name}</span>
             <span className={styles.whoSub} aria-live="polite">
-              {(pending && nextFromThem) || (coming && !pending)
-                ? "typing…"
-                : thread.subLater && thread.subLater.after.every((f) => state.flags.includes(f))
-                  ? thread.subLater.sub
-                  : (thread.sub ?? thread.number ?? "")}
+              {/* Keyed by what it says, so "typing…" and "online" cross-fade in rather than swap. */}
+              <span key={whoSub} className={local.subSwap}>
+                {whoSub}
+              </span>
             </span>
           </span>
         </button>
@@ -908,7 +941,15 @@ function Conversation({
              first of each run gets the tail and some air above it. */
           const first = !prev || newDay || prev.from === "system" || prev.from !== m.from || prev.who !== m.who;
           return (
-            <div key={m.id} className={local.turn} data-out={m.from === "owner" || undefined} data-first={first || undefined}>
+            <div
+              key={m.id}
+              className={local.turn}
+              data-out={m.from === "owner" || undefined}
+              data-first={first || undefined}
+              data-fresh={i >= opening || undefined}
+              // The player's line flies in from the answer they tapped (MOTION.md #2).
+              ref={i >= opening && m.from === "owner" ? (el) => land(el?.querySelector<HTMLElement>("[data-out]") ?? el) : undefined}
+            >
               {newDay && <p className={styles.day}>{cal.label(m.day!)}</p>}
               <Bubble
                 m={m}
@@ -916,6 +957,7 @@ function Conversation({
                 onLink={onLink}
                 voices={story.voices}
                 tail={first}
+                fresh={i >= opening}
               />
               {/* What the phone lets go of (RAAKH-V3 §17): WhatsApp's "Delete for me", which keeps nothing. */}
               {onDelete && m.evidence && story.evidence.find((e) => e.id === m.evidence)?.deletable && (
@@ -943,8 +985,9 @@ function Conversation({
               key={o.id}
               type="button"
               className={styles.replyOption}
-              onClick={() => {
+              onClick={(e) => {
                 sent();
+                launch(e.currentTarget);
                 onSay?.(o, reply.id);
               }}
             >

@@ -26,6 +26,20 @@
   transition: transform var(--t-long) var(--ease-out) calc(var(--delay) + var(--i, 0) * 0.03s);
 }
 
+/* Rises a little as it fades up: for running text, which has no clip to come out of. */
+.group [data-a="rise"] {
+  opacity: 0;
+  transform: translateY(1.4rem);
+}
+
+.group[data-in] [data-a="rise"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--t-long) var(--ease-out) calc(var(--delay) + var(--i, 0) * 0.06s),
+    transform var(--t-long) var(--ease-out) calc(var(--delay) + var(--i, 0) * 0.06s);
+}
+
 .parallax {
   overflow: clip;
 }

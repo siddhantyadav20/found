@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import type { Memo, Story } from "@/content/types";
+import type { Memo, Story, Voices } from "@/content/types";
 import type { CaseState } from "@/lib/game/engine";
 import { calendarOf, memos, mmss } from "@/lib/game/phone";
 import { Page } from "../AppView";
 import app from "../ios/App.module.css";
 import { Chevron } from "../ios/AppBar";
+import Waveform from "../ios/Waveform";
 import { heard } from "@/lib/found/heard";
 import { useVoice } from "@/lib/found/voice";
 import styles from "./VoiceMemos.module.css";
@@ -29,16 +30,6 @@ import { stamp } from "@/lib/found/time";
 const BARS = 48;
 const SKIP_S = 15;
 
-/** A waveform that belongs to one recording: the same shape every time it's drawn. */
-function wave(id: string): number[] {
-  let seed = 0;
-  for (const c of id) seed = (seed * 33 + c.charCodeAt(0)) >>> 0;
-  return Array.from({ length: BARS }, () => {
-    seed = (seed * 1664525 + 1013904223) >>> 0;
-    return 0.15 + (seed / 2 ** 32) * 0.85;
-  });
-}
-
 function Skip({ back }: { back?: boolean }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true">
@@ -51,7 +42,7 @@ function Skip({ back }: { back?: boolean }) {
   );
 }
 
-function Player({ memo, voice }: { memo: Memo; voice?: string }) {
+function Player({ memo, voice }: { memo: Memo; voice?: Voices[string] }) {
   const [elapsed, setElapsed] = useState(0);
   // Its evidence counts once it has been heard past its revealing line (fix brief H-23).
   const revealed = elapsed >= (memo.lines.find((l) => l.reveals)?.at ?? memo.seconds);
@@ -59,9 +50,8 @@ function Player({ memo, voice }: { memo: Memo; voice?: string }) {
     if (revealed && memo.evidence) heard(memo.evidence);
   }, [revealed, memo.evidence]);
   const [playing, setPlaying] = useState(false);
-  useVoice(voice, playing, elapsed);
+  useVoice(voice?.src, playing, elapsed);
   const words = useRef<HTMLOListElement>(null);
-  const bars = wave(memo.id);
   const total = memo.seconds;
   const shown = memo.lines.filter((l) => l.at <= elapsed && (playing || elapsed > 0));
 
@@ -91,15 +81,17 @@ function Player({ memo, voice }: { memo: Memo; voice?: string }) {
     }
   };
 
-  const progress = elapsed / total;
-
   return (
     <div className={styles.player}>
-      <div className={styles.wave} aria-hidden="true">
-        {bars.map((h, i) => (
-          <span key={i} style={{ height: `${Math.round(h * 100)}%` }} data-on={i / BARS < progress || undefined} />
-        ))}
-      </div>
+      <Waveform
+        className={styles.wave}
+        peaks={voice?.peaks}
+        seed={memo.id}
+        bars={BARS}
+        seconds={total}
+        playing={playing}
+        at={elapsed}
+      />
       <input
         type="range"
         className={styles.scrub}
@@ -248,7 +240,7 @@ export default function VoiceMemos({
                   <span>{mmss(m.seconds)}</span>
                 </span>
               </button>
-              {open === m.id && <Player key={m.id} memo={m} voice={story.voices?.[`memo:${m.id}`]?.src} />}
+              {open === m.id && <Player key={m.id} memo={m} voice={story.voices?.[`memo:${m.id}`]} />}
               {open === m.id && folder === "deleted" && (
                 <span className={styles.binActs}>
                   <button

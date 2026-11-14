@@ -149,8 +149,34 @@ def seconds_of(path):
     return float(re.search(r"estimated duration: ([\d.]+)", info).group(1))
 
 
+PEAKS_PER_SECOND = 25
+PEAK_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+
+def peaks_of(path):
+    """A recording's loudness, PEAKS_PER_SECOND times a second, one base-36 digit each (0 silent, z the
+    loudest moment): what a waveform draws and what moves it as it plays (2026-11-15). Read from the
+    file itself, so the shape on screen is the voice in the ear."""
+    tmp = path + ".peaks.wav"
+    subprocess.run(["afconvert", "-f", "WAVE", "-d", "LEI16@8000", "-c", "1", path, tmp], check=True)
+    try:
+        raw = open(tmp, "rb").read()
+    finally:
+        os.remove(tmp)
+    # The samples are the "data" chunk; afconvert's header is sometimes the extensible kind `wave` won't read.
+    at = raw.index(b"data") + 8
+    a = array.array("h")
+    a.frombytes(raw[at : len(raw) - ((len(raw) - at) % 2)])
+    rate = 8000
+    step = rate // PEAKS_PER_SECOND
+    rms = [math.sqrt(sum(x * x for x in a[i : i + step]) / max(1, len(a[i : i + step]))) for i in range(0, len(a), step)]
+    top = max(rms) or 1
+    # A square root, as the ear hears it: quiet words still show.
+    return "".join(PEAK_DIGITS[min(35, round(35 * math.sqrt(r / top)))] for r in rms)
+
+
 def write_voices_ts(built):
-    """content/raakh/voices.ts: every key, its file, how long it runs. `built` maps key to its public path;
+    """content/raakh/voices.ts: every key, its file, how long it runs, its loudness. `built` maps key to its public path;
     keys not in it keep the row they have, so a partial build never loses a recording."""
     src = open(VOICES_TS, encoding="utf-8").read()
     head, body = src.split("export const voices: Voices = {")
@@ -159,6 +185,7 @@ def write_voices_ts(built):
         rows[json.loads(m.group(1))] = m.group(2)
     for k, path in built.items():
         secs = seconds_of(os.path.join(ROOT, "public") + path)
-        rows[k] = f'{{ src: "{path}", seconds: {secs:.1f} }}'
+        peaks = peaks_of(os.path.join(ROOT, "public") + path)
+        rows[k] = f'{{ src: "{path}", seconds: {secs:.1f}, peaks: "{peaks}" }}'
     out = "\n".join(f"  {json.dumps(k, ensure_ascii=False)}: {v}," for k, v in rows.items())
     open(VOICES_TS, "w", encoding="utf-8").write(head + "export const voices: Voices = {\n" + out + "\n};\n")

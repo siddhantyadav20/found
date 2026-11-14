@@ -16,6 +16,7 @@ import { flag } from "../playthrough";
 import ending from "../ending/Ending.module.css";
 import styles from "./Screens.module.css";
 import own from "./Lockscreen.module.css";
+import RollingClock from "@/components/owner/ios/RollingClock";
 
 /* ===========================================================================
    The endings (RAAKH-V3 §11), on a lock screen (PG-LOCK): somebody saying
@@ -317,7 +318,7 @@ export default function LockscreenEnding({ story, state, end }: { story: Story; 
       </p>
       <p className={ending.lockDay}>{longDay(day.day, day.date)}</p>
       <p className={ending.lockClock}>
-        {phoneClock(clock)}
+        <RollingClock time={phoneClock(clock)} />
         <span className={ending.lockHalf}>{Number(clock.slice(0, 2)) < 12 ? "AM" : "PM"}</span>
       </p>
       <div className={ending.toldSlot} aria-live="polite">

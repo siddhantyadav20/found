@@ -51,6 +51,20 @@ export default function Note({ arrival, scene, onTurn }: { arrival: Arrival; sce
           type="button"
           className={styles.envelope}
           onClick={flip}
+          /* In the hand before it turns (MOTION.md 3.2): it tilts toward the
+             pointer, a few degrees, as a card does when it's picked up. */
+          onPointerMove={(e) => {
+            if (flipped) return;
+            const r = e.currentTarget.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            e.currentTarget.style.setProperty("--ry", `${(x * 16).toFixed(1)}deg`);
+            e.currentTarget.style.setProperty("--rx", `${(-y * 8).toFixed(1)}deg`);
+          }}
+          onPointerLeave={(e) => {
+            e.currentTarget.style.removeProperty("--ry");
+            e.currentTarget.style.removeProperty("--rx");
+          }}
           onPointerDown={(e) => {
             const x = e.clientX;
             const up = (ev: PointerEvent) => {

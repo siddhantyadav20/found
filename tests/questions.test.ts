@@ -13,7 +13,6 @@ import {
   offeredClaims,
   openApp,
   settle,
-  unseenIn,
   openQuestion,
   PARTLY,
   see,
@@ -356,11 +355,6 @@ describe("finding things", () => {
     expect(openApp(phone, start(), "settings").flags).toContain("saw:on-screen");
     expect(openApp(phone, start(), "whatsapp").flags).not.toContain("saw:in-a-chat");
     expect(see(phone, start(), "in-a-chat").flags).toContain("saw:in-a-chat");
-  });
-
-  it("badges what's inside something, never what has to be done by hand", () => {
-    expect(unseenIn(phone, start(), "whatsapp")).toBe(1);
-    expect(unseenIn(phone, start(), "photos")).toBe(0);
   });
 
   it("counts an act done in an earlier episode once its own episode comes", () => {

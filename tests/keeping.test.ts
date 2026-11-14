@@ -7,10 +7,8 @@ import {
   AWAY_MS,
   NUMBER_ALPHABET,
   ago,
-  arrivals,
   betterSolved,
   describeCase,
-  deskState,
   wasAway,
   isSolved,
   normalizeCaseNumber,
@@ -115,25 +113,8 @@ describe("your cases, in a line", () => {
   });
 });
 
-describe("the desk remembers", () => {
+describe("coming back", () => {
   const s = fresh();
-  const one: Solved = { episode: 1, minutes: 31, traced: 2, at: 0 };
-
-  it("draws the phone as it was left", () => {
-    expect(deskState(null, null)).toEqual({ kind: "new" });
-    expect(deskState(s, null)).toMatchObject({ kind: "playing", episode: 1 });
-    expect(deskState(add(s, "did:needs-charge"), one)).toEqual({ kind: "between" });
-    expect(deskState(add(s, "did:needs-charge", "did:charged", "ep:2"), one)).toMatchObject({ kind: "playing", episode: 2 });
-    expect(deskState(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3"), one)).toMatchObject({ kind: "playing", episode: 3 });
-    expect(deskState(add(s, "did:needs-charge", "did:charged", "ep:2", "ep:3", "did:chose"), one)).toEqual({ kind: "solved", solved: one, again: false });
-    expect(deskState(null, one)).toEqual({ kind: "solved", solved: one, again: true });
-  });
-
-  it("says something arrived only to someone who has been before", () => {
-    expect(arrivals(null, ["raakh", "case-two"])).toEqual([]);
-    expect(arrivals(["raakh"], ["raakh", "case-two"])).toEqual(["case-two"]);
-    expect(arrivals(["raakh", "case-two"], ["raakh", "case-two"])).toEqual([]);
-  });
 
   it("welcomes a player back after half an hour away", () => {
     expect(wasAway(s, AWAY_MS - 1)).toBe(false);

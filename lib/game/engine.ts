@@ -107,10 +107,6 @@ export const settle = (story: Story, s: CaseState): CaseState =>
 export const caseFile = (story: Story, s: CaseState): Evidence[] =>
   story.evidence.filter((e) => reachable(s, e) && seen(s, e.id));
 
-/** What an app's badge counts: reachable, unseen, and never a bait. */
-export const unseenIn = (story: Story, s: CaseState, app: AppId): number =>
-  story.evidence.filter((e) => e.app === app && !e.manual && reachable(s, e) && !seen(s, e.id)).length;
-
 /** What opening one app finds on its own: everything in it but the manual, and what is inside something. */
 export const openApp = (story: Story, s: CaseState, app: AppId): CaseState =>
   story.evidence.filter((e) => e.app === app && !e.manual && !e.within).reduce((acc, e) => see(story, acc, e.id), s);
@@ -198,20 +194,6 @@ export const struckOut = (q: Question, s: CaseState): boolean =>
 
 /** The blanks of a sentence, in the order they appear in it. */
 export const blanksOf = (line: string): string[] => [...line.matchAll(/\{(\w+)\}/g)].map((m) => m[1]);
-
-/**
- * Which claim a finished sentence files. `close` when no claim fits but one
- * is only a word away: the player is nearly there, and is told so.
- */
-export function claimFor(q: Question, words: Readonly<Record<string, string>>): { claim?: FileClaim; close: boolean } {
-  if (q.kind !== "file" || !q.say) return { close: false };
-  const names = blanksOf(q.say.line);
-  const fits = (c: FileClaim) => names.filter((n) => fitsWord(c, n, words[n])).length;
-  const claim = q.claims.find((c) => c.words && fits(c) === names.length);
-  if (claim) return { claim, close: false };
-  const best = Math.max(0, ...q.claims.filter((c) => c.words && !c.refuse).map(fits));
-  return { close: names.length > 1 && best === names.length - 1 };
-}
 
 /** A claim's word for a blank: the word itself, or "*", any word at all (a near miss that turns on one blank). */
 const fitsWord = (c: FileClaim, blank: string, word: string | undefined): boolean =>
@@ -365,12 +347,7 @@ export function factsReply(c: FileClaim, picked: readonly string[]): string {
  * and what the nearest way of proving it still needs (2026-10-23: say what's
  * missing, and where it is).
  */
-export function readProof(
-  story: Story,
-  s: CaseState,
-  c: FileClaim,
-  picked: readonly string[],
-): { ok: boolean; stray: string[]; missing: string[]; need: number } {
+export function readProof(c: FileClaim, picked: readonly string[]): { ok: boolean; stray: string[]; missing: string[]; need: number } {
   const routes = routesOf(c);
   if (c.facts?.length) {
     const proves = (id: string) => (c.also ?? []).includes(id) || c.facts!.some((f) => factRoutes(f).some((r) => r.includes(id)));
@@ -394,18 +371,6 @@ export function whereMissing(story: Story, s: CaseState, ids: readonly string[])
     .map((id) => story.evidence.find((e) => e.id === id))
     .filter((e): e is Evidence => Boolean(e))
     .map((e) => ({ app: e.app, found: seen(s, e.id), from: e.from }));
-}
-
-/**
- * The words of a finished sentence that no answer uses in that blank: what
- * to point at when it isn't what the phone shows. Refused near misses don't
- * count as answers here, so their words are "off" only when no real answer
- * shares them.
- */
-export function wordsOff(q: Question, words: Readonly<Record<string, string>>): string[] {
-  if (q.kind !== "file" || !q.say) return [];
-  const real = q.claims.filter((c) => c.words && !c.refuse);
-  return blanksOf(q.say.line).filter((b) => words[b] && !real.some((c) => c.words?.[b] === words[b]));
 }
 
 /** Where the words a blank is looking for are learned: the apps that teach them. */
@@ -510,7 +475,6 @@ export const UNPROVED = "That's what happened. Nothing on the table proves it ye
 export const UNCHECKED = "Check each of them on the phone before you decide.";
 export const STRUCK = "That's the line you struck. What you found since says otherwise.";
 export const UNSAID = "That isn't what the phone shows.";
-export const CLOSE = "Close. One part of that isn't what the phone shows.";
 export const THIN = "The board can't show that yet. Something's missing from it.";
 export const UNPLACED = "Every row needs a lane first.";
 /** The lanes are right; the board isn't answered until the player says what doesn't fit. */
@@ -923,14 +887,6 @@ const minutesOf = (hhmm: string): number => {
   return h * 60 + m;
 };
 
-/** How far the story's clock has run since the chapter opened, in seconds. */
-export function storySeconds(story: Story, s: CaseState, now: number): number {
-  const base = minutesOf(story.clocks[episodeOf(s) - 1].base);
-  const first = minutesOf(story.clocks[0].base);
-  const gap = ((base - first + 24 * 60) % (24 * 60)) * 60;
-  return gap + Math.max(0, Math.floor((now - episodeStart(s)) / 1000));
-}
-
 const hhmm = (t: number): string => `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
 
 /**
@@ -1074,9 +1030,3 @@ export function battery(story: Story, s: CaseState, now: number): number {
 }
 
 export const charging = (story: Story, s: CaseState): boolean => Boolean(story.clocks[episodeOf(s) - 1].charging);
-
-/** Note an app was open, for badges and the idle nudge. */
-export const logUsage = (s: CaseState, app: AppId, now: number): CaseState => ({
-  ...s,
-  at: { ...s.at, [app]: now },
-});

@@ -254,19 +254,6 @@
   aspect-ratio: 4 / 5;
 }
 
-.tileTitle {
-  padding: 0 6px;
-  font-size: 10px;
-  line-height: 1.3;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-}
-
-.tile[data-big] .tileTitle {
-  padding: 0 24px;
-  font-size: 15px;
-}
-
 .image {
   object-fit: cover;
 }
@@ -285,12 +272,6 @@
   margin: 4px 12px 0;
   font-size: 14px;
   line-height: 1.4;
-}
-
-.section {
-  margin: 10px 12px 6px;
-  font-size: 16px;
-  font-weight: 700;
 }
 
 /* --- A profile ----------------------------------------------------------- */

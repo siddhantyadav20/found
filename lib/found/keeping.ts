@@ -116,31 +116,6 @@ export const AWAY_MS = 30 * 60_000;
 
 export const wasAway = (s: CaseState, now: number): boolean => now - summarise(s).last >= AWAY_MS;
 
-/** How the desk draws a case's object: new, mid-case, charging between episodes, or bagged. */
-export type DeskState =
-  | { readonly kind: "new" }
-  | { readonly kind: "playing"; readonly episode: EpisodeNo; readonly last: number }
-  | { readonly kind: "between" }
-  /** `again`: the save is gone (started over), so opening it deals a new case. */
-  | { readonly kind: "solved"; readonly solved: Solved | null; readonly again: boolean };
-
-export function deskState(save: CaseState | null, solved: Solved | null): DeskState {
-  if (save) {
-    const p = summarise(save);
-    if (p.phase === "playing") return { kind: "playing", episode: p.episode, last: p.last };
-    if (p.phase === "between") return { kind: "between" };
-    return { kind: "solved", solved, again: false };
-  }
-  return solved ? { kind: "solved", solved, again: true } : { kind: "new" };
-}
-
-/**
- * Cases this browser hasn't seen on the desk before. Nothing is new to a
- * first visit (`seen` null): everything is.
- */
-export const arrivals = (seen: readonly string[] | null, ids: readonly string[]): string[] =>
-  seen ? ids.filter((id) => !seen.includes(id)) : [];
-
 export type CaseLine = { readonly status: string; readonly result: string | null; readonly cta: string };
 
 /** How the desk and the restore page describe one of your cases. */

@@ -131,3 +131,39 @@ button.lg:active {
   -webkit-mask: var(--icon-squircle) center / 100% 100% no-repeat;
   mask: var(--icon-squircle) center / 100% 100% no-repeat;
 }
+
+/* The phone's picture of a screen it just left (components/owner/pushMotion.ts):
+   still, as it was, with nothing in it running its entrance again. */
+[data-ghost],
+[data-ghost] * {
+  animation: none !important;
+}
+
+[data-ghost] * {
+  transition: none !important;
+}
+
+/* A phone ringing shivers in the hand (MOTION.md #8): in step with ringtone()
+   in lib/found/tones.ts, which buzzes [400, 200, 400] ms every 3.4 s. Stepped
+   50 ms frames: a motor, not a wobble. */
+@keyframes ring-shiver {
+  0%, 100% { translate: 0 0; }
+  0.0% { translate: 1px -0.5px; }
+  1.471% { translate: -1px 0.5px; }
+  2.941% { translate: 0.8px -0.4px; }
+  4.412% { translate: -0.8px 0.4px; }
+  5.882% { translate: 1px -0.5px; }
+  7.353% { translate: -1px 0.5px; }
+  8.824% { translate: 0.6px -0.3px; }
+  10.294% { translate: -0.6px 0.3px; }
+  11.765% { translate: 0 0; }
+  17.647% { translate: 1px -0.5px; }
+  19.118% { translate: -1px 0.5px; }
+  20.588% { translate: 0.8px -0.4px; }
+  22.059% { translate: -0.8px 0.4px; }
+  23.529% { translate: 1px -0.5px; }
+  25.0% { translate: -1px 0.5px; }
+  26.471% { translate: 0.6px -0.3px; }
+  27.941% { translate: -0.6px 0.3px; }
+  29.412% { translate: 0 0; }
+}

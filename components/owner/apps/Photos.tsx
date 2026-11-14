@@ -24,6 +24,7 @@ import styles from "../ios/Photos.module.css";
 import paper from "./Photos.module.css";
 import Sketch from "./Sketch";
 import { stamp } from "@/lib/found/time";
+import { inFlight, land, launch } from "@/lib/found/motion";
 
 /* ===========================================================================
    Photos, as current iOS lays it out and as the pilot drew it: Library and
@@ -481,6 +482,8 @@ function Viewer({
   return (
     <div
       className={frame.viewer}
+      data-viewer
+      data-own-motion
       data-no-swipe
       onPointerDown={onDown}
       onPointerUp={onUp}
@@ -546,6 +549,12 @@ function Viewer({
         <div
           className={frame.viewerImage}
           data-video={photo.video ? "" : undefined}
+          // The photo grows out of the thumbnail it was opened from (MOTION.md #6).
+          ref={(el) => {
+            if (!el || !inFlight()) return;
+            el.closest<HTMLElement>("[data-viewer]")?.setAttribute("data-flown", "");
+            land(el.firstElementChild as HTMLElement | null, { uniform: true, ms: 420 });
+          }}
         >
           <Picture photo={photo} big veiled={!here} />
           {!here &&
@@ -834,7 +843,10 @@ export default function Photos({
           type="button"
           key={p.id}
           className={styles.thumb}
-          onClick={() => show(p)}
+          onClick={(e) => {
+            launch(e.currentTarget);
+            show(p);
+          }}
           aria-label={
             loaded(state, p)
               ? `${p.title}, ${cal.label(p.day)} ${stamp(p.at)}`

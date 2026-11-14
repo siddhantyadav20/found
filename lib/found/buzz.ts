@@ -12,7 +12,7 @@
    =========================================================================== */
 
 import { play, warm } from "@/lib/sfx";
-import { acquire, burst, prefersQuiet, resonator, stage } from "@/lib/sound";
+import { acquire, burst, prefersQuiet, stage } from "@/lib/sound";
 
 /** Present, not loud: it lands dozens of times a night (2026-10-28, "irritating at this point"). */
 const BUZZ_PEAK = 0.09;
@@ -22,11 +22,6 @@ const BUZZ_LEVEL = 0.5;
 /** Texts arriving close together buzz once, as a phone in a pocket feels them. */
 const BUZZ_GAP_MS = 3500;
 let lastBuzz = 0;
-
-/** Call inside a click: the browser only lets audio start after a gesture. */
-export function wakeAudio(): void {
-  acquire()?.wake();
-}
 
 /** Fetch and decode the recorded buzz ahead of the first text. */
 export function warmBuzz(): void {
@@ -96,43 +91,3 @@ export function buzz(): void {
   }
 }
 
-let lastKey = 0;
-
-/** A keypad press: a tick of glass, quieter than the site's terminal keys. */
-export function keyTap(): void {
-  if (prefersQuiet()) return;
-  const now = Date.now();
-  if (now - lastKey < 40) return;
-  lastKey = now;
-  const voice = acquire();
-  if (!voice) return;
-  voice.wake();
-  const { ctx } = voice;
-  const out = stage(voice, 0.05);
-  const t = ctx.currentTime + 0.005;
-  burst(ctx, out, { at: t, seconds: 0.035, level: 0.9, type: "highpass", hz: 2600, colour: "white" });
-  burst(ctx, resonator(ctx, out, { hz: 1850, q: 18, level: 0.4 }), { at: t, seconds: 0.03, level: 0.6, type: "bandpass", hz: 1850 });
-}
-
-/** A wrong code: two low, flat blips. Refusal, not alarm. */
-export function refuse(): void {
-  if (prefersQuiet()) return;
-  const voice = acquire();
-  if (!voice) return;
-  voice.wake();
-  const { ctx } = voice;
-  const out = stage(voice, 0.06);
-  for (const offset of [0, 0.13]) {
-    const t = ctx.currentTime + 0.01 + offset;
-    const osc = ctx.createOscillator();
-    osc.type = "triangle";
-    osc.frequency.value = 196;
-    const env = ctx.createGain();
-    env.gain.setValueAtTime(0.0001, t);
-    env.gain.exponentialRampToValueAtTime(1, t + 0.01);
-    env.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
-    osc.connect(env).connect(out);
-    osc.start(t);
-    osc.stop(t + 0.1);
-  }
-}

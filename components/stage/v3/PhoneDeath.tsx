@@ -34,15 +34,19 @@ export default function PhoneDeath({ alert, onDone }: { alert: string; onDone: (
       } catch {
         // No buzz; the flicker carries it.
       }
+      // The real phone on the table is what dies (Screen.module.css, `die`).
+      document.documentElement.dataset.dying = "";
       const t = window.setTimeout(() => setStep("black"), 1900);
       return () => window.clearTimeout(t);
     }
     const t = window.setTimeout(onDone, 1400);
     return () => window.clearTimeout(t);
   }, [step, onDone]);
+  // Whatever comes next has a screen that works.
+  useEffect(() => () => void delete document.documentElement.dataset.dying, []);
 
   return (
-    <div className={styles.death} data-over={step === "alert" || undefined} role="dialog" aria-label="The phone dies">
+    <div className={styles.death} data-over={step === "alert" || undefined} data-step={step} role="dialog" aria-label="The phone dies">
       {step === "alert" && (
         <div className={styles.alertOver}>
           <div className={styles.deathAlert} role="alert">
@@ -55,13 +59,9 @@ export default function PhoneDeath({ alert, onDone }: { alert: string; onDone: (
         </div>
       )}
       {step === "off" && (
-        <>
-          <div className={styles.screenOn} />
-          <div className={styles.flicker} />
-          <div className={styles.silhouette}>
-            <Shape />
-          </div>
-        </>
+        <div className={styles.silhouette}>
+          <Shape />
+        </div>
       )}
     </div>
   );

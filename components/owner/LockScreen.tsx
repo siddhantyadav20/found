@@ -7,6 +7,7 @@ import type { AppId } from "@/content/types";
 import type { Notice } from "./Phone";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/LockScreen.module.css";
+import RollingClock from "./ios/RollingClock";
 
 /* ===========================================================================
    The found phone's lock screen: the first time the player sees its owner's
@@ -88,7 +89,7 @@ export default function LockScreen({
       <span className={styles.slide}>
         <span className={styles.top}>
           <span className={styles.day}>{day}</span>
-          <span className={styles.clock}>{clock}</span>
+          <RollingClock time={clock} className={styles.clock} />
         </span>
         <span className={styles.notes}>
           {notes.map((n) => (

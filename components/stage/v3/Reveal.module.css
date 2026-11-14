@@ -47,20 +47,9 @@
 }
 
 .vnWave {
-  display: flex;
-  align-items: center;
-  gap: 2px;
   height: 30px;
-}
-
-.vnWave span {
-  flex: 1;
-  border-radius: 2px;
-  background: var(--rule);
-}
-
-.vnWave span[data-on] {
-  background: var(--cream);
+  --wave-off: var(--rule);
+  --wave-on: var(--cream);
 }
 
 .vnWords {
@@ -206,17 +195,22 @@
   mask: radial-gradient(closest-side, #000 52%, transparent);
 }
 
+/* The iris shuts for a frame or two, then the flash: a photo taken, not a fade. */
 .flash {
   position: absolute;
   inset: 0;
   background: #fff;
-  animation: flash 0.5s ease-out both;
+  animation: flash 0.56s ease-out both;
 }
 
 @keyframes flash {
-  from { opacity: 0.9; }
-  to { opacity: 0; }
+  0%, 14% { opacity: 1; background: #000; }
+  15% { opacity: 0.9; background: #fff; }
+  to { opacity: 0; background: #fff; }
 }
+
+/* The thumbnail shrinks in from the whole frame: over everything while it travels. */
+.thumb { z-index: 2; }
 
 .camBar {
   display: flex;

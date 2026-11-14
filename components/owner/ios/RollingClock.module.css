@@ -1,0 +1,37 @@
+.clock {
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+}
+
+/* As wide as the digit it shows; tall as one line, cutting off the rest of the reel. */
+.digit {
+  position: relative;
+  display: inline-block;
+  height: 1lh;
+  overflow: hidden;
+}
+
+.digit::before {
+  content: attr(data-d);
+  visibility: hidden;
+}
+
+.reel {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transition: translate 0.6s var(--ease-in-out);
+}
+
+.reel::before {
+  content: "0\a 1\a 2\a 3\a 4\a 5\a 6\a 7\a 8\a 9";
+  display: block;
+  translate: -50% 0;
+  white-space: pre;
+  text-align: center;
+}
+
+/* The colon: drawn, not text, like the digits. */
+.still::before {
+  content: attr(data-d);
+}

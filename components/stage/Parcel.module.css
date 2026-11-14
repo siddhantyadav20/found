@@ -32,8 +32,15 @@
   animation: shiver 1.6s ease-in-out infinite;
 }
 
+/* Torn: the box relaxes, a hair past still (MOTION.md 3.2). */
 .scene[data-torn] .parcel {
-  animation: none;
+  animation: settle 0.6s var(--ease-spring-soft) both;
+}
+
+@keyframes settle {
+  from {
+    scale: 1.012;
+  }
 }
 
 .photo {
@@ -103,7 +110,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   translate: calc(var(--pull, 0) * 70%) 0;
-  transition: translate var(--t-quick);
+  transition: translate var(--t-short) var(--ease-spring-soft);
   mask:
     radial-gradient(circle var(--hole) at 0 50%, #0000 98%, #000),
     radial-gradient(circle var(--hole) at 100% 50%, #0000 98%, #000);
@@ -588,4 +595,9 @@
   .ask {
     animation: none;
   }
+}
+
+/* In the hand, the strip goes where the hand does; let go, it springs back. */
+.parcel[data-pulling] .strip {
+  transition: none;
 }

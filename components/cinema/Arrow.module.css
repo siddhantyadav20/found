@@ -34,3 +34,40 @@
 .round[data-to="up"] svg {
   transform: rotate(-90deg);
 }
+
+/* Whatever it's on answers the pointer: the arrow leans the way it points and
+   the disc swells a little; pressed, it gives (2026-11-15). */
+.round {
+  transition: scale var(--t-quick) var(--ease-spring);
+}
+
+.round svg {
+  transition: translate var(--t-quick) var(--ease-out);
+}
+
+@media (hover: hover) {
+  :is(a, button):hover > .round,
+  :is(a, button):hover .round {
+    scale: 1.08;
+  }
+
+  :is(a, button):hover .round[data-to="right"] svg {
+    translate: 2px 0;
+  }
+
+  :is(a, button):hover .round[data-to="left"] svg {
+    translate: -2px 0;
+  }
+
+  :is(a, button):hover .round[data-to="down"] svg {
+    translate: 0 2px;
+  }
+
+  :is(a, button):hover .round[data-to="up"] svg {
+    translate: 0 -2px;
+  }
+}
+
+:is(a, button):active .round {
+  scale: 0.94;
+}

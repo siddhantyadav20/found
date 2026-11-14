@@ -6,20 +6,10 @@ note addressed to someone else, and everything on it is true, but not in the
 right order. **Chapter 2 is *Last Local*** (Mumbai). The front page is a
 film-site front (`components/cinema/`) with both chapters.
 
-- The story (canon, never edited): `SCRIPT.md`
-- The game adaptation: `CHAPTER1.md`
-- The experience rules: `PLAYER-JOURNEY.md`
-- The build plan, phase by phase: `ROADMAP.md`
-- The decisions behind all of it: `PROJECT.md`
-
-**The final cut (2026-10-23):** the cast fixed, faces and voices, Instagram in
-place of your phone, a simpler case file, episode recaps (CHAPTER1.md, "The
-final cut"). **Where the code was (2026-10-01):** *Shagun* plays whole, three episodes to
-four endings, and is live for a friends' playtest at found-game.vercel.app.
-The last pass was the review of 2026-10-01 (ROADMAP, "After the review"). The
-retired *Don't Cut the Call* is at the git tag `dont-cut-the-call`. Found was
-piloted inside the portfolio at `sidbuilds.in/found` and became its own app on
-2026-09-15.
+Planning docs (the script, the chapter specs, the roadmap, playtests, the
+motion audit), playtest exports, marketing and the trailer tooling live in
+`Misc/`, which is git-ignored: kept on this machine, never deployed. They were
+in git until 2026-11-15, so history still has them.
 
 ## Running it
 
@@ -43,13 +33,14 @@ To play on your phone, open `http://<your-mac's-LAN-IP>:3001` on the same Wi-Fi.
 | `npm run lint` · `typecheck` · `test` | ESLint · `tsc` · Vitest (a solver plays the chapter end to end) |
 | `npm run budget` | Size ceilings on JS and `public/`; run after a build |
 | `npm run sfx` | Re-cut the buzz from `samples-src/` (`samples.config.mjs`) |
-| `npm run audio` | Re-mix the voice memos from `samples-src/` (needs macOS `say` + `afconvert`) |
+| `python3 -I scripts/voices-direct.py --backend elevenlabs samples-src/voices-eleven` | Rebuild Raakh's voices from the cached ElevenLabs lines (`--cached` shows coverage; macOS `afconvert`) |
+| `python3 scripts/voice-peaks.py` | Re-read every recording's loudness into `content/raakh/voices.ts` (the `peaks` the waveforms draw; a voice build writes them too) |
 
 ## Layout
 
 ```
 app/
-  page.tsx               / — the desk: one parcel among unnamed found things
+  (site)/                / and the site's pages: chapters, about, contact, legal (components/cinema/)
   c/[case]/              /c/<case> — a case, from its arrival
   d/[code]/              /d/<code> — a passed-on case, with a friend's name on it
   r/[number]/            /r/<case number> — brings a case number's cases onto this device
@@ -61,7 +52,8 @@ components/
                          Ringing, Charge, TitleCard, PassItOn, ending/
   owner/                 the found phone's iOS and its apps
   yours/                 the player's own phone
-  found/                 Desk, KeepCase, Restore, StoryContext, shareCards
+  found/                 KeepCase, Restore, StoryContext, shareCards
+  cinema/                the site: nav, chapter pages, the strip and roll, the intro
 content/
   types.ts               the story schema
   cases.ts · stories.ts  every case, light and in full
@@ -86,10 +78,6 @@ tests/                   Vitest: the engine, the chapter's laws, keeping, sharin
   a year after the last write. Dev switches: `?storage=refused` for the
   private-browsing warning, `?inapp=instagram|facebook` for the in-app guard
   (add `?os=android` for "Open in Chrome").
-- **The desk reads the same keys** (plus `found:<case>:battery`) to draw the
-  phone as you left it. Dev switches: `?arrived=1` on `/` for "Something else
-  arrived", `?away=1` on a case for "While you were away" without waiting
-  half an hour.
 - **Drops need a store.** `next dev` uses the in-memory stand-in
   (`lib/upstashDev.ts`, emptied on restart). `next start` with no Upstash
   variables can't seal anything, so "Pass it on" falls back to the case's plain

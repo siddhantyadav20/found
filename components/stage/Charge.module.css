@@ -87,34 +87,6 @@
   text-wrap: balance;
 }
 
-.waiting {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--cream-2);
-}
-
-.waiting::before {
-  content: "";
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--red);
-  animation: low 1.2s ease-in-out infinite;
-}
-
-.nearby {
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--cream-3);
-}
-
 .cable { width: 100%; min-height: 52px; }
 
 /* --- Plugged in ---------------------------------------------------------------
@@ -201,5 +173,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cell span, .waiting::before, .bigCell, .bigFill, .pluggedLevel { animation: none; }
+  .cell span,
+.bigCell,
+.bigFill,
+.pluggedLevel { animation: none; }
+}
+
+/* The cable going in: the hand nudges, once (MOTION.md 3.2). */
+.charge[data-plugging] .hand {
+  animation: nudge 0.24s var(--ease-out);
+}
+
+@keyframes nudge {
+  50% {
+    translate: 0 3px;
+  }
 }

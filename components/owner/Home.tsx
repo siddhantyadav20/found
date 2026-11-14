@@ -105,7 +105,8 @@ export default function Home({
           <AppGlyph app={app} />
           {busy && <span className={styles.progress} aria-hidden="true" />}
           {unseen > 0 && where === "installed" && (
-            <span className={styles.badge} aria-hidden="true">
+            // Keyed by its number, so a new count pops again (MOTION.md 3.3).
+            <span key={unseen} className={styles.badge} aria-hidden="true">
               {unseen}
             </span>
           )}

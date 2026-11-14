@@ -1,43 +1,6 @@
 /* Voice Memos: a list that opens in place into a player, as the app does.
    The pilot's Recorder styles (c03aa03), carried over. */
 
-.segments {
-  display: flex;
-  gap: 2px;
-  margin: 0 4px 14px;
-  padding: 2px;
-  border-radius: 9px;
-  background: rgba(118, 118, 128, 0.24);
-}
-
-.segments button {
-  position: relative;
-  flex: 1;
-  padding: 6px 0;
-  border: 0;
-  border-radius: 7px;
-  background: none;
-  color: var(--os-text);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.segments button[data-on] {
-  background: #636366;
-}
-
-.dot {
-  position: absolute;
-  top: 6px;
-  margin-left: 4px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--os-danger);
-}
-
 .list {
   margin: 0;
   padding: 0;
@@ -90,20 +53,9 @@
 }
 
 .wave {
-  display: flex;
-  align-items: center;
-  gap: 2px;
   height: 46px;
-}
-
-.wave span {
-  flex: 1;
-  border-radius: 2px;
-  background: rgba(235, 235, 245, 0.3);
-}
-
-.wave span[data-on] {
-  background: var(--os-danger);
+  --wave-off: rgba(235, 235, 245, 0.3);
+  --wave-on: var(--os-danger);
 }
 
 .scrub {

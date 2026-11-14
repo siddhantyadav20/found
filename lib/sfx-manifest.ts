@@ -44,5 +44,3 @@ export const SFX: Record<SfxCue, SfxEntry> = {
   "found-fire": { takes: ["found-fire-1.m4a"], gain: 0.55, sustained: true },
 };
 /* @generated:end */
-
-export const CUES = Object.keys(SFX) as SfxCue[];

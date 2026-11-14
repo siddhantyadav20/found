@@ -60,7 +60,7 @@ export function StatusBar({
           data-charging={charging || undefined}
         >
           <span className={styles.cell}>
-            <span className={styles.fill} style={{ width: `${width}%` }} />
+            <span className={styles.fill} style={{ scale: `${width / 100} 1` }} />
             <span className={styles.cellNum} data-dark={width >= 55 || undefined}>
               {battery}
             </span>

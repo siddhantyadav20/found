@@ -18,6 +18,11 @@ function hush(except?: HTMLAudioElement) {
   talking = except ?? null;
 }
 
+/** Somebody is talking now: a recording is playing. */
+export function talkingNow(): boolean {
+  return Boolean(talking && !talking.paused);
+}
+
 // Turning the sound off stops whoever is talking.
 if (typeof window !== "undefined") subscribeSound((on) => !on && hush());
 

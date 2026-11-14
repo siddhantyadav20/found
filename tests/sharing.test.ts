@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { CASES, CASE_IDS, isCaseId } from "@/content/cases";
 import { STORIES } from "@/content/stories";
 import { add, newCase, type CaseState } from "@/lib/game/engine";
-import { cleanDropName, displayName, dropLabel, NAME_MAX } from "@/lib/found/dropName";
+import { cleanDropName, displayName, NAME_MAX } from "@/lib/found/dropName";
 import { SHARING, eventsFor, isFoundEvent } from "@/lib/found/events";
 import { saveKey } from "@/lib/found/progress";
 import { resultLine, resultOf, shareText } from "@/lib/found/result";
@@ -56,10 +56,8 @@ describe("the name on a passed-on parcel", () => {
     expect(Array.from(cleanDropName("a".repeat(40)))).toHaveLength(NAME_MAX);
   });
 
-  it("reads back as a name, and falls back to the story's own label", () => {
+  it("reads back as a name", () => {
     expect(displayName("ANANYA RAO")).toBe("Ananya Rao");
-    expect(dropLabel("ANANYA", ["TO YOU", "BY HAND"])).toEqual(["TO ANANYA", "BY HAND"]);
-    expect(dropLabel("", ["BY HAND"])).toEqual(["BY HAND"]);
   });
 });
 

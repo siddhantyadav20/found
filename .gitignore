@@ -29,12 +29,14 @@ npm-debug.log*
 next-env.d.ts
 
 # Source recordings (CC0, Freesound) and the original photo downloads. What
-# ships is the cut in public/ — see scripts/build-samples.mjs and
-# scripts/build-found-audio.mjs. Keep the originals in a backup.
+# ships is the cut in public/ — see scripts/build-samples.mjs. Keep the
+# originals in a backup.
 /samples-src
 
 # Claude Code's per-machine permission allowlist.
 .claude/settings.local.json
 
-# Trailers for social (scripts/trailers.py): large, rebuilt on demand, shared by hand.
-/marketing/*.mp4
+# Everything that doesn't ship and doesn't belong in git: marketing, trailer
+# tooling, playtest exports and reports, planning docs. Kept on this machine
+# to review and prune by hand.
+/Misc/

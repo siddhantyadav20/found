@@ -26,8 +26,3 @@ export function cleanDropName(raw: unknown): string {
 export function displayName(to: string): string {
   return to.toLocaleLowerCase("en-IN").replace(/(^|\s)(\p{L})/gu, (_, gap: string, c: string) => gap + c.toLocaleUpperCase("en-IN"));
 }
-
-/** The envelope's label for a drop: the name if there is one, the story's own otherwise. */
-export function dropLabel(to: string, fallback: readonly string[]): readonly string[] {
-  return to ? [`TO ${to}`, "BY HAND"] : fallback;
-}

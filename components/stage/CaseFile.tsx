@@ -394,7 +394,7 @@ export default function CaseFile({
     /* A failed filing says what's wrong with the table: what doesn't belong,
        or what's still missing and where it lives (2026-10-23). */
     if (!r.ok && c && !c.refuse && q.kind === "file" && q.say && !lining) {
-      const p = readProof(story, state, c, (given as { proof: readonly string[] }).proof);
+      const p = readProof(c, (given as { proof: readonly string[] }).proof);
       // A detective isn't shown which proof was beside the point: that would say the sentence was right.
       setStray(detective ? [] : p.stray);
       if (!detective) {

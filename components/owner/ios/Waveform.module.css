@@ -1,0 +1,101 @@
+/* The waveform (Waveform.tsx). Its colours come from where it's drawn:
+   --wave-off for the unplayed bars, --wave-on for the played, --wave-knob. */
+
+.wave {
+  --p: 0;
+  --amp: 0;
+  position: relative;
+  display: block;
+  height: 24px;
+}
+
+.row,
+.lit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--wave-gap, 2px);
+}
+
+.row > span,
+.lit > span {
+  flex: 1;
+  min-height: 3px;
+  border-radius: 2px;
+  background: var(--wave-off, currentColor);
+  /* The bars nearest the playhead swell with the voice: 1 at the playhead,
+     nothing three bars away. max(x, -x) is abs() everywhere. */
+  scale: 1
+    calc(
+      1 + 0.4 * var(--amp) *
+        max(0, 1 - max(var(--i) - var(--p), var(--p) - var(--i)) * var(--n) / 3)
+    );
+}
+
+.lit {
+  clip-path: inset(0 calc(100% - var(--p) * 100%) 0 0);
+}
+
+.lit > span {
+  background: var(--wave-on, currentColor);
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--p) * 100%);
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--wave-knob, #53bdeb);
+  transition: scale var(--t-quick) var(--ease-spring);
+}
+
+.wave[data-playing] .knob {
+  scale: 1.15;
+}
+
+/* The call's meter: five bars from the voice, or breathing without one. */
+.meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 14px;
+}
+
+.meter > span {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: currentColor;
+  scale: 1 0.25;
+  transition: scale 60ms linear;
+}
+
+.meter:not([data-live]) > span {
+  animation: breathe 1.2s infinite var(--ease-in-out);
+}
+
+.meter:not([data-live]) > span:nth-child(2) { animation-delay: 0.12s; }
+.meter:not([data-live]) > span:nth-child(3) { animation-delay: 0.24s; }
+.meter:not([data-live]) > span:nth-child(4) { animation-delay: 0.36s; }
+.meter:not([data-live]) > span:nth-child(5) { animation-delay: 0.48s; }
+
+@keyframes breathe {
+  50% {
+    scale: 1 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave {
+    --amp: 0 !important;
+  }
+
+  .meter > span {
+    animation: none !important;
+    scale: 1 0.4 !important;
+  }
+}

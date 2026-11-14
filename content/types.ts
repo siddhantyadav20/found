@@ -498,7 +498,8 @@ export type NightBeat = {
 };
 
 /** Recorded voices, by what they belong to ("voice:m-1", "call:raju:0"): a file, and how long it runs. */
-export type Voices = Readonly<Record<string, { readonly src: string; readonly seconds: number }>>;
+/** `peaks`: the recording's loudness, 25 base-36 digits a second, for the waveform that draws it. */
+export type Voices = Readonly<Record<string, { readonly src: string; readonly seconds: number; readonly peaks?: string }>>;
 
 /** What the player does with the record: send it, post it, or give the phone back unread. */
 export type Act = "send" | "post" | "return";

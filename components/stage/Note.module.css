@@ -69,11 +69,20 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform var(--t-mid) var(--ease-out);
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform var(--t-short) var(--ease-out);
 }
 
 .scene[data-flipped] .card {
   transform: rotateY(180deg);
+  transition-duration: var(--t-mid);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope {
+    --rx: 0deg !important;
+    --ry: 0deg !important;
+  }
 }
 
 .front,

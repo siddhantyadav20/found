@@ -7,7 +7,9 @@ import type { AppId } from "@/content/types";
 import { buzz, warmBuzz } from "@/lib/found/buzz";
 import { noted } from "@/lib/found/tones";
 import { useWakeLock } from "@/lib/found/wakeLock";
+import { useIdleDim } from "@/lib/found/idle";
 import Alert from "./ios/Alert";
+import { usePushMotion } from "./pushMotion";
 import { AppGlyph } from "./ios/icons";
 import styles from "./ios/Screen.module.css";
 import { PLANE, StatusBar, WIFI } from "./ios/StatusBar";
@@ -124,6 +126,7 @@ export default function Phone({
   const screenRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<HTMLDivElement>(null);
   const shadeRef = useRef<HTMLDivElement>(null);
+  const push = usePushMotion(appRef, appKey);
   const [shade, setShade] = useState<"closed" | "dragging" | "open">("closed");
   /* A banner held open stays open until the next one: keyed, not reset. */
   const [heldOpen, setHeldOpen] = useState<string | null>(null);
@@ -133,6 +136,7 @@ export default function Phone({
   const lowAlert = useLowBattery(battery, Boolean(charging || lock));
 
   useWakeLock(true);
+  const idle = useIdleDim();
   useEffect(() => warmBuzz(), []);
 
   /* A banner arriving is a motor against a table before it is anything else. */
@@ -216,11 +220,13 @@ export default function Phone({
         view.style.transition = "none";
         view.style.translate = `${Math.max(0, dx)}px 0`;
         view.style.boxShadow = "-16px 0 36px rgba(0, 0, 0, 0.5)";
+        push.peek(Math.max(0, dx), width);
       },
       end: ({ dx, vx }) => {
         const go = dx > width * 0.33 || vx > 0.45;
         view.style.transition = `translate ${BACK_MS}ms var(--ease-out)`;
         view.style.translate = go ? `${width}px 0` : "0px 0";
+        push.settle(go, BACK_MS);
         window.setTimeout(() => {
           if (go) back.click();
           view.style.transition = "";
@@ -308,7 +314,7 @@ export default function Phone({
   };
 
   return (
-    <div className={styles.device}>
+    <div className={styles.device} data-light={lock ? "dim" : app ? "bright" : undefined}>
       <div
         ref={screenRef}
         className={styles.screen}
@@ -316,6 +322,8 @@ export default function Phone({
         onPointerDown={swipeBack}
       >
         <span className={styles.osIsland} aria-hidden="true" />
+        {/* Left alone a minute, the screen dims; a touch brings it back (MOTION.md #9). */}
+        <span className={styles.idle} data-on={idle || undefined} aria-hidden="true" />
         <StatusBar time={time} battery={battery} recording={recording} charging={charging} airplane={airplane} locked={Boolean(lock)} />
 
         {lock ?? (

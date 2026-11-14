@@ -196,9 +196,3 @@ export function devRedis(
     }
   });
 }
-
-/** Drops everything. Exported for tests, which must not inherit each other's
- *  state through a module-level Map. */
-export function devRedisReset(): void {
-  store.clear();
-}

@@ -82,6 +82,23 @@
 :global(html[data-entered]) .page:not([data-out]) {
   opacity: 1;
   transition: opacity var(--t-mid) ease var(--page-delay);
+  /* And settles up into place (2026-11-15). Backwards only: once it has
+     arrived nothing is left on the page that would hold its fixed parts. */
+  animation: pageIn var(--t-long) var(--ease-out) var(--page-delay) backwards;
+}
+
+/* Leaving: the page sinks back a touch as it fades. */
+.page[data-out] {
+  translate: 0 0.6rem;
+  transition:
+    opacity var(--t-quick) ease,
+    translate var(--t-quick) var(--ease-in);
+}
+
+@keyframes pageIn {
+  from {
+    translate: 0 1rem;
+  }
 }
 
 @media (max-width: 991px) {

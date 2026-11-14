@@ -606,6 +606,3 @@ export const questions: readonly Question[] = [
     reply: "On the record.",
   },
 ];
-
-/** Episode 1's sentence, which the last question turns back into for "Sameer Khurrana". */
-export const FIRST_SENTENCE = "S is Sameer Khurrana, a wedding planner, and tomorrow afternoon he's on a train to Mumbai.";

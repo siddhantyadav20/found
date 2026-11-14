@@ -21,7 +21,7 @@ import {
   UNOPENED,
 } from "@/lib/game/scene";
 import { chosen } from "@/lib/game/endings";
-import { AWAY_MS } from "@/lib/found/keeping";
+import { summarise, wasAway } from "@/lib/found/keeping";
 import { bindProgress, readProgress, subscribeProgress } from "@/lib/found/progress";
 import { useReplay } from "@/lib/found/shelf";
 import type { CaseId } from "@/content/cases";
@@ -132,9 +132,7 @@ export default function Stage() {
   /* Opened after a real gap: when they were last here, read once per visit. */
   const [away, setAway] = useState<number | null>(() => {
     const s = readProgress();
-    if (!s) return null;
-    const last = Math.max(s.started, ...Object.values(s.at));
-    return Date.now() - last >= AWAY_MS ? last : null;
+    return s && wasAway(s, Date.now()) ? summarise(s).last : null;
   });
   // Back from the end card (Choose differently) is a choice made now, not a return after a gap.
   if (away !== null && (scene.kind === "end-card" || scene.kind === "ending")) setAway(null);

@@ -131,6 +131,8 @@ function Open({
 }) {
   const [typed, setTyped] = useState("");
   const [open, setOpen] = useState(!note.locked || opened);
+  // Locked when it was opened here: it comes out of a blur once the password takes (MOTION.md 3.3).
+  const [wasOpen] = useState(open);
   const [shaking, setShaking] = useState(false);
   const [missed, setMissed] = useState(false);
 
@@ -245,7 +247,7 @@ function Open({
     );
 
   return (
-    <article className={styles.note}>
+    <article className={styles.note} data-reveal={!wasOpen || undefined}>
       <p className={styles.noteMeta}>
         {day} at {stamp(note.at)}
         {note.edited && ` · Edited ${note.edited}`}

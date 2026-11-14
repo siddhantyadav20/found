@@ -67,20 +67,6 @@
   pointer-events: none;
 }
 
-/* A story's timestamp, set on the photo the way the app stamps it. */
-.overlay {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  padding: 3px 8px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.45);
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.02em;
-}
-
 .pending {
   position: absolute;
   inset: auto 0 0;
@@ -121,6 +107,17 @@
   from {
     opacity: 0;
     scale: 0.94;
+  }
+}
+
+/* Opened from a thumbnail: the photo itself travels, and the black fades up behind it. */
+.viewer[data-flown] {
+  animation: blackIn 0.3s var(--ease-out) both;
+}
+
+@keyframes blackIn {
+  from {
+    background-color: transparent;
   }
 }
 
@@ -223,68 +220,6 @@
   }
 }
 
-/* Live Text: a glass button in the photo's corner, as iOS puts it. */
-.liveText {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(40, 40, 46, 0.55);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-edge);
-  color: #fff;
-  cursor: pointer;
-}
-
-.liveText svg {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.liveText[data-on] {
-  background: #ffd60a;
-  color: #111;
-}
-
-/* What Live Text found, lifted off the photo. */
-.recognised {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  padding: 8px 16px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow:
-    0 0 0 2px #ffd60a,
-    0 10px 30px rgba(0, 0, 0, 0.5);
-  color: #111;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  user-select: text;
-  -webkit-user-select: text;
-  animation: lift 0.35s var(--ease-spring) both;
-}
-
-@keyframes lift {
-  from {
-    opacity: 0;
-    scale: 0.85;
-  }
-}
-
 /* The info card: when, which camera, where, and any note. */
 .info {
   display: grid;
@@ -309,30 +244,6 @@
   margin: 0;
   font-size: 13px;
   color: var(--ios-grey);
-}
-
-.infoList {
-  display: grid;
-  margin: 8px 0 0;
-}
-
-.infoList div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 9px 0;
-  border-top: 0.5px solid var(--ios-separator);
-}
-
-.infoList dt {
-  font-size: 14px;
-  color: var(--ios-grey);
-}
-
-.infoList dd {
-  margin: 0;
-  font-size: 14px;
-  text-align: right;
 }
 
 .infoNote {

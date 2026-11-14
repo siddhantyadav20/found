@@ -64,5 +64,3 @@ export function newsOnYours(story: Story, s: CaseState): string | undefined {
   const text = last?.text ?? "New message";
   return `${waiting.name} · ${text.length > 72 ? `${text.slice(0, 70).trimEnd()}…` : text}`;
 }
-
-export const somethingNew = (story: Story, s: CaseState): boolean => Boolean(newsOnYours(story, s));

@@ -12,7 +12,8 @@ import styles from "./Motion.module.css";
 
 /**
  * Inside it, `data-a="line"` rules draw across, `data-a="alpha"` fades up and
- * `data-a="item"` rises out of its clip, a beat after each other, the first
+ * `data-a="item"` rises out of its clip and `data-a="rise"` fades up from a
+ * little lower, a beat after each other, the first
  * time the group comes on screen.
  */
 export function Group({

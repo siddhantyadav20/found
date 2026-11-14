@@ -1,83 +1,12 @@
 /* The stage: the parcel before anything is opened, then the table with
    two phones on it. */
 
-.stage {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 18px;
-  min-height: 100dvh;
-  padding: calc(18px + env(safe-area-inset-top)) var(--gutter) calc(32px + env(safe-area-inset-bottom));
-  color: var(--cream);
-  background: #000;
-}
-
-.eyebrow {
-  align-self: stretch;
-  max-width: 22rem;
-  width: 100%;
-  margin-inline: auto;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--cream);
-}
-
-
-.sticker {
-  position: absolute;
-  inset: auto 1.1rem 1.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  padding: 0.75rem 0.85rem;
-  text-align: left;
-  color: #17161a;
-  background: #f3efe7;
-  box-shadow: 0 0.2rem 0.6rem rgb(0 0 0 / 25%);
-}
-
-.to {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-}
-
 .note {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 0.62rem;
   line-height: 1.35;
   letter-spacing: 0.04em;
   color: #4b4741;
-}
-
-.hint {
-  max-width: 24rem;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 1.05rem;
-  line-height: 1.45;
-}
-
-.minutes {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.78rem;
-  color: #8d8781;
-}
-
-.building {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  max-width: 26rem;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 1.05rem;
-  line-height: 1.5;
 }
 
 /* The in-app browser note: an offer, never a wall. */
@@ -290,48 +219,6 @@
   .edge,
   .edgeNote { display: none; }
 }
-
-.overBanner {
-  position: fixed;
-  inset: max(0.8rem, env(safe-area-inset-top)) 0.8rem auto;
-  z-index: 60;
-  padding: 0.8rem 0.9rem;
-  border: 0;
-  border-radius: 0.9rem;
-  background: rgb(44 46 52 / 97%);
-  color: #ece9e4;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.78rem;
-  line-height: 1.35;
-  text-align: left;
-  cursor: pointer;
-  box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 50%);
-}
-
-.cutLine {
-  position: fixed;
-  inset: auto 1rem calc(1.2rem + env(safe-area-inset-bottom));
-  max-width: 24rem;
-  margin: 0 auto;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: #8d8781;
-  text-align: center;
-}
-
-/* --- app screens ---------------------------------------------------------- */
-
-.article { display: flex; flex-direction: column; gap: 0.6rem; }
-.kicker { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-2); }
-.headline { margin: 0; font-family: var(--font-sans), system-ui, sans-serif; font-size: 1.15rem; line-height: 1.3; }
-.small { font-size: 0.72rem; color: var(--cream-2); }
-
-.rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-.rows li { display: flex; flex-direction: column; gap: 0.15rem; }
-.rows span { font-size: 0.75rem; color: var(--cream-2); }
-
-.soon { font-size: 0.8rem; line-height: 1.55; color: var(--cream-2); }
 
 /* --- the notebook ----------------------------------------------------------
    On a wide table the case file lies beside the two phones: the evidence on

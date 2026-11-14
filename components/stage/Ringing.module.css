@@ -124,25 +124,23 @@
   color: #8f8a83;
 }
 
-.listening span {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: listen 1.2s infinite ease-in-out;
-}
+.meter { margin-right: 6px; }
 
-.listening span:nth-child(2) { animation-delay: 0.15s; }
-.listening span:nth-child(3) { animation-delay: 0.3s; margin-right: 6px; }
+/* What's said arrives as a line in a thread does; the player's own flies in
+   from the answer they picked (motion.ts land). */
+.line { animation: lineIn 0.42s var(--ease-out) both; }
+.line[data-flown] { animation: none; }
+@keyframes lineIn { from { opacity: 0; translate: 0 10px; } }
 
-@keyframes listen {
-  0%, 80%, 100% { opacity: 0.25; }
-  40% { opacity: 1; }
-}
+/* The answers come up together, one after another. */
+.say > * { animation: lineIn 0.4s var(--ease-out) both; }
+.say > :nth-child(2) { animation-delay: 60ms; }
+.say > :nth-child(3) { animation-delay: 120ms; }
+.say > :nth-child(4) { animation-delay: 180ms; }
+.say > :nth-child(5) { animation-delay: 240ms; }
 
-@media (prefers-reduced-motion: reduce) {
-  .listening span { animation: none; opacity: 0.6; }
-}
+/* The red button, once there's nothing left to say. */
+.end { animation: lineIn 0.4s var(--ease-out) both; }
 
 /* Inside the second phone (PG-YOURPHONE): the same call, smaller, no wallpaper of his. */
 .screen[data-compact] {

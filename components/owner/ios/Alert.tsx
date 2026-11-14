@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import styles from "./Alert.module.css";
 
 /* ===========================================================================
@@ -20,12 +22,19 @@ export default function Alert({
   button?: string;
   onClose: () => void;
 }) {
+  // It goes as iOS's do, a little smaller and fading, before it's gone (MOTION.md 3.3).
+  const [leaving, setLeaving] = useState(false);
+  const close = () => {
+    if (leaving) return;
+    setLeaving(true);
+    window.setTimeout(onClose, 160);
+  };
   return (
-    <div className={styles.scrim} role="alertdialog" aria-modal="true" aria-label={title} data-no-swipe>
+    <div className={styles.scrim} role="alertdialog" aria-modal="true" aria-label={title} data-no-swipe data-leaving={leaving || undefined}>
       <div className={`${styles.box} lg-thick`}>
         <p className={styles.title}>{title}</p>
         <p className={styles.message}>{message}</p>
-        <button type="button" className={styles.button} onClick={onClose}>
+        <button type="button" className={styles.button} onClick={close}>
           {button}
         </button>
       </div>
